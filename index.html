@@ -170,9 +170,11 @@ nav.tabbar a svg{width:21px;height:21px;}
 .chhead{margin-bottom:20px; text-align:center;}
 .chhead .bk{font-family:"Noto Serif TC",serif; font-size:13px; color:var(--gold); font-weight:700; letter-spacing:.14em;}
 .chhead h1{font-size:26px; margin:6px 0 0; font-weight:900; letter-spacing:.06em;}
+.chhead h1.bktitle{font-size:28px; letter-spacing:.12em;}
 .chhead .rule{width:52px; height:2px; background:var(--gold); margin:12px auto 0; opacity:.55;}
-html.pure .chhead h1{display:none;}
-html.pure .chhead .rule{margin-top:4px;}
+/* 純淨模式只藏章題；整卷連讀時顯示的是卷名，要留著 */
+html.pure .chhead h1.chtitle{display:none;}
+html.pure .chhead h1.chtitle+.rule{margin-top:4px;}
 .reader{font-family:"Noto Serif TC","Georgia",serif;}
 .reader p{margin:0 0 16px; font-size:17px; line-height:2.05; text-align:justify;}
 .reader p.prose{text-indent:2em;}

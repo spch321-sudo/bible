@@ -1,12 +1,12 @@
 /* 沉浸式聖經 — Service Worker
    每次改動內容或程式，務必把 VERSION 往上加，
    否則已安裝的使用者不會看到更新。 */
-const VERSION = 'ib-v1.0.1';
+const VERSION = 'ib-v1.0.4';
 
 const SHELL = [
   './', './index.html', './app.js', './manifest.json', './toc.json', './cover.jpg',
   './icon-72.png', './icon-96.png', './icon-128.png', './icon-144.png',
-  './icon-152.png', './icon-180.png', './icon-192.png', './icon-384.png', './icon-512.png'
+  './icon-152.png', './icon-180.png', './icon-192.png', './icon-384.png', './icon-512.png', './icon-maskable-192.png', './icon-maskable-512.png'
 ];
 
 self.addEventListener('install', e => {
