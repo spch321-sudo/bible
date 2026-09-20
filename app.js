@@ -10,7 +10,7 @@ const API = {
   tts : 'https://azure-tts.spch321.workers.dev'        // {voice, rate, sil, silc, sile, text}
 };
 const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
-const VERSION = 'v1.1.3';
+const VERSION = 'v1.1.2';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -302,7 +302,7 @@ async function viewToday(v){
       <img src="cover.jpg" alt="" loading="eager">
       <div class="hc-mask">
         <div class="hc-title">${esc(L.app)}</div>
-        <div class="hc-sub">${state.lang === 'zs' ? '新标点和合本 · 去章节 · 只留经文' : '新標點和合本 · 去章節 · 只留經文'}</div>
+        <div class="hc-sub">${state.lang === 'zs' ? '和合本 · 去章节 · 只留经文' : '和合本 · 去章節 · 只留經文'}</div>
       </div>
     </div>
 
