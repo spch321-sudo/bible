@@ -10,7 +10,7 @@ const API = {
   tts : 'https://azure-tts.spch321.workers.dev'        // {voice, rate, sil, silc, sile, text}
 };
 const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
-const VERSION = 'v1.1.6';
+const VERSION = 'v1.3.0';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -45,6 +45,36 @@ const I18N = {
         myHl:'我的畫線', myFav:'我的收藏', settings:'設定', font:'字級大小', theme:'主題',
         fonts:['標準','大','特大','超大'], themes:['自動','日','夜','羊皮紙'],
         voice:'朗讀聲音', langLabel:'語言', stats:['已讀章數','畫線','書籤'],
+        diag:'連線測試', diagRun:'測試小智與朗讀', diagBusy:'測試中…',
+        card:'做成美圖', cardTitle:'做成美圖分享', cardStyle:'版型', cardSize:'尺寸',
+        cardBorder:'邊框', cardFsL:'領受字級', cardFsHint:'只放大你寫的領受，經文與落款維持不變。',
+        cardShare:'分享', cardSave:'存到相簿',
+        cardHint:'按「分享」可直接選 LINE／IG／FB 傳出去；也可以長按上面的圖片存起來。',
+        cardSaved:'已下載，請從相簿分享',
+        photo:'加一張相片（選用）', photoPick:'從相簿選相片', photoSwap:'換一張', photoDel:'移除相片',
+        photoBg:['作背景','作背景'], photoStk:['貼在卡片上','贴在卡片上'],
+        photoHint:'可以當卡片背景，也可以像貼紙貼上去，大小與位置都能調。',
+        photoBad:'這張相片讀不出來，換一張試試',
+        stkShape:'相片形狀', stkSize:'相片大小', stkPos:'相片位置',
+        bgm:'背景音樂（選用）', bgmPick:'從檔案選音樂', bgmSwap:'換一首', bgmDel:'移除音樂',
+        bgmVol:'音樂音量', bgmNote:'錄製時會自動循環，混進影片或錄音裡。',
+        bgmHint:'選一首詩歌或輕音樂；若一時找不到，按選擇視窗左下角「瀏覽」，再到 iCloud 雲碟或「我的 iPhone」裡找。',
+        bgmBad:'這不是音樂檔，請選 mp3、m4a、wav 等音檔', bgmBig:'音檔太大（超過 25MB），請選短一點的',
+        bgmAdded:'已加入背景音樂', bgmNeed:'請先選一首背景音樂',
+        recSec:'錄成影片', recVoice:'只有聲音', recSelfie:'自拍畫面',
+        recIntro:'按下開始，對著手機把這段經文與領受讀出來。可以只錄聲音，也可以加上自拍畫面，合成一支影片直接傳出去。',
+        recIntroA:'這台裝置不支援合成影片，會先錄成語音；播放時可用手機「螢幕錄影」錄成影片。',
+        recReady:'按下開始，把想說的話錄進去', recStartV:'開始錄影片', recStartS:'開始自拍錄影',
+        recStartA:'開始錄音', recStop:'停止並完成', recing:'錄影中…', recingA:'錄音中…',
+        recTip:'建議 30～60 秒：先讀經文，再說這段話對你的意思。',
+        recDoneV:'影片做好了！可以分享出去', recDoneA:'錄好了！可以播放或分享',
+        recNo:'這台裝置不支援錄音', vidNo:'這台裝置不支援自動合成影片',
+        micDeny:'無法使用麥克風，請允許權限', camDeny:'無法使用相機，請允許權限',
+        selfieHint:'你的臉會以圓形貼在卡片右下角，錄影時同步合成。',
+        mcLen:'音樂卡片長度', mcStart:'不錄音，只配音樂', mcing:'音樂卡片製作中…',
+        mcHint:'卡片配上背景音樂做成影片，不必開口。選 15 或 30 秒很快就好，選「整首」要等音樂播完。',
+        works:'我的作品', noWorks:'還沒有作品。錄一段話或配一首音樂，就會出現在這裡。',
+        delAsk:'刪除這個作品？', deleted:'已刪除',
         emptyHl:'還沒有畫線。在經文上點一下就能畫線、寫默想。',
         emptyFav:'還沒有收藏小智的回答。',
         chatPH:'就這段經文提問…', send:'送出', examples:'範例問題',
@@ -71,6 +101,36 @@ const I18N = {
         myHl:'我的划线', myFav:'我的收藏', settings:'设置', font:'字级大小', theme:'主题',
         fonts:['标准','大','特大','超大'], themes:['自动','日','夜','羊皮纸'],
         voice:'朗读声音', langLabel:'语言', stats:['已读章数','划线','书签'],
+        diag:'连线测试', diagRun:'测试小智与朗读', diagBusy:'测试中…',
+        card:'做成美图', cardTitle:'做成美图分享', cardStyle:'版型', cardSize:'尺寸',
+        cardBorder:'边框', cardFsL:'领受字级', cardFsHint:'只放大你写的领受，经文与落款维持不变。',
+        cardShare:'分享', cardSave:'存到相册',
+        cardHint:'按“分享”可直接选 LINE／IG／FB 传出去；也可以长按上面的图片存起来。',
+        cardSaved:'已下载，请从相册分享',
+        photo:'加一张相片（选用）', photoPick:'从相册选相片', photoSwap:'换一张', photoDel:'移除相片',
+        photoBg:['作背景','作背景'], photoStk:['贴在卡片上','贴在卡片上'],
+        photoHint:'可以当卡片背景，也可以像贴纸贴上去，大小与位置都能调。',
+        photoBad:'这张相片读不出来，换一张试试',
+        stkShape:'相片形状', stkSize:'相片大小', stkPos:'相片位置',
+        bgm:'背景音乐（选用）', bgmPick:'从文件选音乐', bgmSwap:'换一首', bgmDel:'移除音乐',
+        bgmVol:'音乐音量', bgmNote:'录制时会自动循环，混进视频或录音里。',
+        bgmHint:'选一首诗歌或轻音乐；若一时找不到，按选择窗口左下角“浏览”，再到 iCloud 云碟或“我的 iPhone”里找。',
+        bgmBad:'这不是音乐文件，请选 mp3、m4a、wav 等音频', bgmBig:'音频太大（超过 25MB），请选短一点的',
+        bgmAdded:'已加入背景音乐', bgmNeed:'请先选一首背景音乐',
+        recSec:'录成视频', recVoice:'只有声音', recSelfie:'自拍画面',
+        recIntro:'按下开始，对着手机把这段经文与领受读出来。可以只录声音，也可以加上自拍画面，合成一支视频直接传出去。',
+        recIntroA:'这台设备不支持合成视频，会先录成语音；播放时可用手机“录屏”录成视频。',
+        recReady:'按下开始，把想说的话录进去', recStartV:'开始录视频', recStartS:'开始自拍录像',
+        recStartA:'开始录音', recStop:'停止并完成', recing:'录像中…', recingA:'录音中…',
+        recTip:'建议 30～60 秒：先读经文，再说这段话对你的意思。',
+        recDoneV:'视频做好了！可以分享出去', recDoneA:'录好了！可以播放或分享',
+        recNo:'这台设备不支持录音', vidNo:'这台设备不支持自动合成视频',
+        micDeny:'无法使用麦克风，请允许权限', camDeny:'无法使用相机，请允许权限',
+        selfieHint:'你的脸会以圆形贴在卡片右下角，录像时同步合成。',
+        mcLen:'音乐卡片长度', mcStart:'不录音，只配音乐', mcing:'音乐卡片制作中…',
+        mcHint:'卡片配上背景音乐做成视频，不必开口。选 15 或 30 秒很快就好，选“整首”要等音乐播完。',
+        works:'我的作品', noWorks:'还没有作品。录一段话或配一首音乐，就会出现在这里。',
+        delAsk:'删除这个作品？', deleted:'已删除',
         emptyHl:'还没有划线。在经文上点一下就能划线、写默想。',
         emptyFav:'还没有收藏小智的回答。',
         chatPH:'就这段经文提问…', send:'发送', examples:'范例问题',
@@ -96,7 +156,9 @@ const VOICES = {
        {n:'晓辰', v:'zh-CN-Xiaochen:DragonHDLatestNeural'}]
 };
 
-const DEFAULTS = { lang:'zh', font:0, theme:0, flow:false, chnum:true, hidenote:false, voice:{zh:0, zs:0} };
+const DEFAULTS = { lang:'zh', font:0, theme:0, flow:false, chnum:true, hidenote:false,
+                   cardTpl:'navy', cardSize:'t', cardBorder:'classic', cardFs:1,
+                   voice:{zh:0, zs:0} };
 /* 「淨」鍵依序切換的四種組合：[整卷連讀?, 顯示章號?] */
 const VIEW_CYCLE = [[false, true], [false, false], [true, true], [true, false]];
 let state = Object.assign({}, DEFAULTS);
@@ -276,12 +338,15 @@ async function render(){
     else if (tab === 'search')    await viewSearch(v);
     else if (tab === 'companion') await viewCompanion(v);
     else if (tab === 'me')        await viewMe(v);
+    else if (tab === 'studio')    await viewStudio(v);
     else { go('#/today'); return; }
   }catch(e){
     v.innerHTML = `<div class="empty">載入失敗：${esc(e.message || e)}</div>`;
     console.error(e);
   }
-  if (tab !== 'read'){ bmMode = false; document.documentElement.classList.remove('bmmode'); window.scrollTo(0, 0); }
+  if (tab !== 'read'){ bmMode = false; document.documentElement.classList.remove('bmmode'); }
+  if (tab !== 'studio'){ stopSelfie(); recSelfie = false; }
+  if (tab !== 'read' && tab !== 'studio') window.scrollTo(0, 0);
 }
 
 /* ================================================================ 今日 */
@@ -404,14 +469,14 @@ function chapterHTML(bookId, cno, chap, withHead){
                                .map(m => hlKey(m.b, m.c, m.p, m.s)));
   const body = chap.map((bl, bi) => {
     if (bl[0] === 'b') return '<div class="stanza"></div>';
-    let inner = '', notes = '', si = 0;
+    let inner = '', notes = '', si = 0, curV = 0;
     for (let j = 1; j < bl.length; j += 2){
       const vno = bl[j], txt = bl[j + 1];
-      if (vno) inner += `<span class="vn">${vno}</span>`;
+      if (vno){ inner += `<span class="vn">${vno}</span>`; curV = vno; }
       for (const sx of splitSentences(txt)){
         const k = hlKey(bookId, cno, bi, si);
         const h = user.hl[k];
-        inner += `<span class="sent" data-c="${cno}" data-p="${bi}" data-s="${si}"`
+        inner += `<span class="sent" data-c="${cno}" data-p="${bi}" data-s="${si}" data-v="${curV}"`
                + `${h ? ` data-hl="1" data-color="${h.c}"` : ''}${bm.has(k) ? ' data-bm="1"' : ''}`
                + `>${markNotes(esc(sx))}</span>`;
         if (h && h.n) notes += `<div class="hl-note" data-c="${cno}" data-p="${bi}" data-s="${si}" data-color="${h.c}">${esc(h.n)}</div>`;
@@ -561,7 +626,7 @@ function onSentTap(el){
   if (bmMode){ toggleBm(el, cno); return; }
   const k = hlKey(RD.book, cno, el.dataset.p, el.dataset.s);
   if (!user.hl[k]){
-    user.hl[k] = { c:'gold', n:'', t:el.textContent, b:RD.book, ch:cno, ts:Date.now() };
+    user.hl[k] = { c:'gold', n:'', t:el.textContent, b:RD.book, ch:cno, v:+el.dataset.v || 0, ts:Date.now() };
     el.setAttribute('data-hl', '1'); el.setAttribute('data-color', 'gold');
     saveUser();
   } else {
@@ -577,7 +642,7 @@ function toggleBm(el, cno){
     el.removeAttribute('data-bm');
     toast(t().bmDel);
   } else {
-    user.marks.push({ b:RD.book, c:cno, p, s:sx, t:el.textContent.slice(0, 40), ts:Date.now() });
+    user.marks.push({ b:RD.book, c:cno, p, s:sx, v:+el.dataset.v || 0, t:el.textContent.slice(0, 40), ts:Date.now() });
     el.setAttribute('data-bm', '1');
     toast(t().bmAdd);
   }
@@ -600,6 +665,7 @@ function openHlSheet(el){
       <button class="btn" data-a="ask">${esc(L.ask)}</button>
     </div>
     <div class="hlsheet-acts2">
+      <button class="btn gold" data-a="card">🖼 ${esc(L.card)}</button>
       <button class="btn danger" data-a="del">${esc(L.del)}</button>
       <button class="btn" data-a="close">${esc(L.close)}</button>
     </div></div>`;
@@ -618,6 +684,10 @@ function openHlSheet(el){
   $$('[data-a]', mask).forEach(b => b.onclick = () => {
     const a = b.dataset.a;
     if (a === 'save') commit();
+    else if (a === 'card'){
+      h.c = color; h.n = ta.value.trim(); saveUser();
+      mask.remove(); openStudio(h);
+    }
     else if (a === 'close') mask.remove();
     else if (a === 'del'){ delete user.hl[k]; saveUser(); mask.remove(); render(); }
     else if (a === 'ask'){
@@ -627,6 +697,1026 @@ function openHlSheet(el){
     }
   });
 }
+
+/* ================================================================ 經文美圖
+   把畫線的經文與領受畫成一張圖，直接分享到 LINE／IG／FB。
+   作法與《321愛的關懷》相同：canvas 畫好 → navigator.share 傳檔，
+   不支援就退回下載，讓使用者自己從相簿分享。 */
+const CARD_TPL = {
+  navy:  { n:['深藍聖夜','深蓝圣夜'], bg:['#123F92','#0D3988','#071A42'], glow:'rgba(212,166,91,.30)',
+           ink:'#F2ECDD', accent:'#F7EFDC', gold:'#D4A65B', sub:'#BBA98A', frame:'rgba(212,166,91,.42)' },
+  paper: { n:['素樸信箋','素朴信笺'], bg:['#FBF8F1','#F4EFE3','#EDE6D6'], glow:'rgba(212,166,91,.45)',
+           ink:'#3A3122', accent:'#23211C', gold:'#A9762F', sub:'#8A7C63', frame:'rgba(169,118,47,.34)' },
+  dawn:  { n:['晨曦盼望','晨曦盼望'], bg:['#FFF6EC','#FBE9D2','#F6D9B8'], glow:'rgba(255,214,150,.6)',
+           ink:'#3A2A1A', accent:'#8A4B16', gold:'#C97A22', sub:'#8A6A4A', frame:'rgba(181,101,29,.30)' },
+  grace: { n:['青草安歇','青草安歇'], bg:['#F2F7F1','#E4EFE6','#D6E7DA'], glow:'rgba(160,200,170,.5)',
+           ink:'#1C2E26', accent:'#255943', gold:'#3C8A64', sub:'#5C7A6A', frame:'rgba(46,106,80,.28)' },
+  rose:  { n:['溫柔玫瑰','温柔玫瑰'], bg:['#FCF5F3','#F6E7E3','#EFD8D2'], glow:'rgba(220,160,150,.45)',
+           ink:'#33221E', accent:'#8A3D2E', gold:'#B36A54', sub:'#8A6A62', frame:'rgba(154,74,58,.28)' },
+  sky:   { n:['平安晴空','平安晴空'], bg:['#F1F7FB','#DFEEF6','#CFE4F0'], glow:'rgba(150,200,230,.5)',
+           ink:'#1B2A33', accent:'#1E5270', gold:'#2E7DA0', sub:'#5A7684', frame:'rgba(37,96,128,.28)' },
+  linen: { n:['素雅棉麻','素雅棉麻'], bg:['#F7F4EE','#EFEAE0','#E6DFD2'], glow:'rgba(200,190,170,.4)',
+           ink:'#2A2620', accent:'#4A4234', gold:'#8A7A5A', sub:'#7A7263', frame:'rgba(90,80,64,.26)' },
+  night: { n:['深夜星光','深夜星光'], bg:['#101E1B','#16302A','#0E2420'], glow:'rgba(232,201,122,.26)',
+           ink:'#EDEAE0', accent:'#E8C97A', gold:'#E8C97A', sub:'#9FB0AA', frame:'rgba(232,201,122,.34)' },
+  plain: { n:['純白簡潔','纯白简洁'], bg:['#FFFFFF','#FFFFFF','#FFFFFF'], glow:'rgba(0,0,0,0)',
+           ink:'#23211C', accent:'#0D3988', gold:'#A9762F', sub:'#6B6255', frame:'rgba(13,57,136,.22)' }
+};
+const CARD_ORDER = ['navy','paper','dawn','grace','rose','sky','linen','night','plain'];
+const CARD_SIZES = { p:[1080,1920,['直式 9:16','直式 9:16']],
+                     t:[1080,1350,['直式 4:5','直式 4:5']],
+                     s:[1080,1080,['方形','方形']],
+                     w:[1920,1080,['橫式','横式']] };
+const CARD_BORDERS = [ ['classic',['古典雙框','古典双框']], ['corner',['雅緻角飾','雅致角饰']],
+                       ['inline',['內斂細線','内敛细线']], ['dots',['珠鏈點框','珠链点框']],
+                       ['ornate',['華麗花角','华丽花角']], ['none',['無邊框','无边框']] ];
+const CARD_FS = [[0.9,['小一點','小一点']], [1,['標準','标准']], [1.2,['大','大']],
+                 [1.45,['特大','特大']], [1.7,['超大','超大']]];
+let cardImg = null;
+const cardTpl = () => CARD_TPL[state.cardTpl] ? state.cardTpl : 'navy';
+const cardSize = () => CARD_SIZES[state.cardSize] ? state.cardSize : 't';
+const cardBorder = () => CARD_BORDERS.some(b => b[0] === state.cardBorder) ? state.cardBorder : 'classic';
+const cardFs = () => Math.min(1.8, Math.max(.85, +state.cardFs || 1));
+
+/* ---- 相片（作背景／貼在卡片上）---- */
+let photoImg = null, photoMode = 'bg', suppressSticker = false, selfieLayout = false;
+let stkSize = 0.30, stkPos = 'br', stkShape = 'p';
+const STK_SIZES  = [[0.22,['小張','小张']],[0.30,['中等','中等']],[0.38,['大張','大张']],
+                    [0.46,['滿版','满版']],[0.62,['超大','超大']],[0.84,['整排','整排']]];
+const STK_POS    = [['bl',['左下','左下']],['bc',['正下','正下']],['br',['右下','右下']],
+                    ['tl',['左上','左上']],['tr',['右上','右上']]];
+const STK_SHAPES = [['p',['直式','直式']],['w',['橫式 16:9','横式 16:9']],['s',['方形','方形']]];
+const stkRatio = () => stkShape === 'w' ? 0.72 : (stkShape === 's' ? 1.06 : 1.12);
+function pickPhoto(inp){
+  const f = inp && inp.files && inp.files[0]; if (!f) return;
+  const rd = new FileReader();
+  rd.onload = () => {
+    const im = new Image();
+    im.onload = () => { photoImg = im; if (!photoMode) photoMode = 'bg'; studioRefresh(); };
+    im.onerror = () => toast(t().photoBad);
+    im.src = rd.result;
+  };
+  rd.onerror = () => toast(t().photoBad);
+  rd.readAsDataURL(f);
+}
+function coverDraw(ctx, img, x, y, w, h){
+  const ir = img.width / img.height, r = w / h;
+  let sw, sh, sx, sy;
+  if (ir > r){ sh = img.height; sw = sh * r; sx = (img.width - sw) / 2; sy = 0; }
+  else { sw = img.width; sh = sw / r; sx = 0; sy = (img.height - sh) / 2; }
+  ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
+}
+
+/* ---- 背景音樂 ---- */
+let bgmBlob = null, bgmName = '', bgmVol = 0.22, mcLen = 30;
+const MC_LENS = [[15,['15 秒','15 秒']],[30,['30 秒','30 秒']],[60,['1 分鐘','1 分钟']],[0,['整首','整首']]];
+const BGM_VOLS = [[0.12,['小聲','小声']],[0.22,['適中','适中']],[0.38,['明顯','明显']]];
+const AUD_EXT = /\.(mp3|m4a|aac|wav|aif|aiff|caf|flac|ogg|opus|mp4|mov|webm|wma)$/i;
+function pickBgm(inp){
+  const f = inp && inp.files && inp.files[0]; if (!f) return;
+  const ok = (f.type && (f.type.indexOf('audio') === 0 || f.type.indexOf('video') === 0)) || AUD_EXT.test(f.name || '');
+  if (!ok){ toast(t().bgmBad); return; }
+  if (f.size > 25 * 1024 * 1024){ toast(t().bgmBig); return; }
+  bgmBlob = f; bgmName = f.name || '背景音樂'; studioRefresh(); toast(t().bgmAdded);
+}
+
+function cardRef(h){
+  const b = BOOK[h.b];
+  const nm = b ? bname(b) : h.b;
+  return h.v ? `${nm} ${h.ch}:${h.v}` : `${nm} ${t().chapter(h.ch)}`;
+}
+function rr(ctx, x, y, w, h, r){
+  ctx.beginPath(); ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);         ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+/* 中文避頭尾：標點不落在行首，開引號不落在行尾 */
+const NO_START = '，。、；：？！）」』】》〉·…—％‰';
+const NO_END   = '（「『【《〈';
+function wrapText(ctx, text, maxW){
+  const out = [];
+  (text || '').split('\n').forEach(par => {
+    if (!par){ out.push(''); return; }
+    let line = '';
+    for (const ch of par){
+      if (ctx.measureText(line + ch).width > maxW && line){
+        if (NO_START.indexOf(ch) >= 0){ line += ch; continue; }   // 標點吊在行尾
+        let carry = '';
+        while (line.length > 1 && NO_END.indexOf(line[line.length - 1]) >= 0){
+          carry = line[line.length - 1] + carry; line = line.slice(0, -1);   // 開引號帶到下一行
+        }
+        out.push(line); line = carry + ch;
+      } else line += ch;
+    }
+    out.push(line);
+  });
+  return out;
+}
+/* ---- 邊框 ---- */
+function drawCardBorder(ctx, W, H, pad, F, T){
+  const B = cardBorder(); if (B === 'none') return;
+  const line = T.frame, line2 = T.frame.replace(/[\d.]+\)$/, '0.55)'), gold = T.gold;
+  const m = pad * .5, x = m, y = m, w = W - m * 2, h = H - m * 2, R = Math.round(18 * F);
+  if (B === 'classic'){
+    ctx.strokeStyle = line; ctx.lineWidth = Math.max(2, W * .0022); rr(ctx, x, y, w, h, R); ctx.stroke();
+    ctx.strokeStyle = line2; ctx.lineWidth = Math.max(1, W * .0009);
+    rr(ctx, x + 9 * F, y + 9 * F, w - 18 * F, h - 18 * F, Math.round(12 * F)); ctx.stroke();
+    ctx.fillStyle = gold;
+    [[x,y],[x+w,y],[x,y+h],[x+w,y+h]].forEach(([cx, cy]) => {
+      ctx.beginPath(); ctx.arc(cx, cy, Math.round(5 * F), 0, 7); ctx.fill(); });
+  } else if (B === 'corner'){
+    ctx.strokeStyle = gold; ctx.lineWidth = Math.max(2, W * .003); ctx.lineCap = 'round';
+    const L = Math.round(56 * F);
+    const seg = (cx, cy, dx, dy) => { ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + dx * L, cy);
+      ctx.moveTo(cx, cy); ctx.lineTo(cx, cy + dy * L); ctx.stroke(); };
+    seg(x, y, 1, 1); seg(x + w, y, -1, 1); seg(x, y + h, 1, -1); seg(x + w, y + h, -1, -1);
+    ctx.lineCap = 'butt';
+  } else if (B === 'inline'){
+    ctx.strokeStyle = line2; ctx.lineWidth = Math.max(1, W * .0013);
+    rr(ctx, x + 6 * F, y + 6 * F, w - 12 * F, h - 12 * F, Math.round(14 * F)); ctx.stroke();
+  } else if (B === 'dots'){
+    ctx.fillStyle = line2;
+    const r0 = Math.max(2, W * .0026), gap = Math.round(26 * F);
+    const ex = x + 6 * F, ey = y + 6 * F, ew = w - 12 * F, eh = h - 12 * F;
+    const dot = (px, py) => { ctx.beginPath(); ctx.arc(px, py, r0, 0, 7); ctx.fill(); };
+    for (let px = ex; px <= ex + ew; px += gap){ dot(px, ey); dot(px, ey + eh); }
+    for (let py = ey; py <= ey + eh; py += gap){ dot(ex, py); dot(ex + ew, py); }
+  } else if (B === 'ornate'){
+    ctx.strokeStyle = line; ctx.lineWidth = Math.max(2, W * .0022); rr(ctx, x, y, w, h, R); ctx.stroke();
+    ctx.strokeStyle = gold; ctx.lineWidth = Math.max(1.5, W * .0016); ctx.lineCap = 'round';
+    const L = Math.round(34 * F), o = Math.round(16 * F);
+    const flo = (cx, cy, dx, dy) => {
+      ctx.beginPath(); ctx.moveTo(cx + dx * o, cy + dy * o); ctx.lineTo(cx + dx * (o + L), cy + dy * o);
+      ctx.moveTo(cx + dx * o, cy + dy * o); ctx.lineTo(cx + dx * o, cy + dy * (o + L)); ctx.stroke();
+      ctx.fillStyle = gold; ctx.beginPath(); ctx.arc(cx + dx * o, cy + dy * o, Math.round(4.5 * F), 0, 7); ctx.fill(); };
+    flo(x, y, 1, 1); flo(x + w, y, -1, 1); flo(x, y + h, 1, -1); flo(x + w, y + h, -1, -1);
+    ctx.lineCap = 'butt';
+  }
+}
+/* ---- 自拍圓框（錄影時合成到右下角）---- */
+function drawSelfieCircle(cx, vid, W, H, F){
+  if (!vid || !vid.videoWidth) return;
+  const pad = Math.round(W * .085), R = Math.round(Math.min(W, H) * 0.115);
+  const cxx = W - pad - R + 4 * F, cyy = H - pad - R + 4 * F;
+  cx.save();
+  cx.shadowColor = 'rgba(0,0,0,.28)'; cx.shadowBlur = Math.round(22 * F); cx.shadowOffsetY = Math.round(8 * F);
+  cx.beginPath(); cx.arc(cxx, cyy, R, 0, 7); cx.fillStyle = '#000'; cx.fill();
+  cx.restore();
+  cx.save(); cx.beginPath(); cx.arc(cxx, cyy, R, 0, 7); cx.clip();
+  const vw = vid.videoWidth, vh = vid.videoHeight, side = Math.min(vw, vh);
+  cx.translate(cxx, cyy); cx.scale(-1, 1);
+  cx.drawImage(vid, (vw - side) / 2, (vh - side) / 2, side, side, -R, -R, R * 2, R * 2);
+  cx.restore();
+  cx.beginPath(); cx.arc(cxx, cyy, R, 0, 7);
+  cx.lineWidth = Math.max(3, W * .006); cx.strokeStyle = '#F4EFE3'; cx.stroke();
+  cx.beginPath(); cx.arc(cxx, cyy, R + 4 * F, 0, 7);
+  cx.lineWidth = Math.max(2, W * .003); cx.strokeStyle = 'rgba(212,166,91,.85)'; cx.stroke();
+}
+
+function drawVerseCard(cv, h, W, H){
+  const ctx = cv.getContext('2d'); cv.width = W; cv.height = H;
+  const T = CARD_TPL[cardTpl()];
+  const F = W / 1080, pad = Math.round(W * .085), iw = W - pad * 2;
+  const sans = '"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif';
+  const serif = '"Noto Serif TC","Songti TC","STSong","PMingLiU",serif';
+
+  /* 背景 */
+  const g = ctx.createLinearGradient(0, 0, W * .3, H);
+  g.addColorStop(0, T.bg[0]); g.addColorStop(.55, T.bg[1]); g.addColorStop(1, T.bg[2]);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  /* 相片當背景時鋪上半透明遮罩，字才看得清楚 */
+  if (photoImg && photoMode === 'bg'){
+    coverDraw(ctx, photoImg, 0, 0, W, H);
+    const hx = T.bg[1].replace('#', '');
+    const R0 = parseInt(hx.slice(0, 2), 16), G0 = parseInt(hx.slice(2, 4), 16), B0 = parseInt(hx.slice(4, 6), 16);
+    const sc = ctx.createLinearGradient(0, 0, 0, H);
+    sc.addColorStop(0,  `rgba(${R0},${G0},${B0},0.46)`);
+    sc.addColorStop(.5, `rgba(${R0},${G0},${B0},0.66)`);
+    sc.addColorStop(1,  `rgba(${R0},${G0},${B0},0.56)`);
+    ctx.fillStyle = sc; ctx.fillRect(0, 0, W, H);
+  }
+  const rg = ctx.createRadialGradient(W * .84, H * .10, 10, W * .84, H * .10, W * .75);
+  rg.addColorStop(0, T.glow); rg.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = rg; ctx.fillRect(0, 0, W, H);
+
+  drawCardBorder(ctx, W, H, pad, F, T);
+
+  /* 團契名 */
+  const grp = state.lang === 'zs' ? '国度321空中团契' : '國度321空中團契';
+  const grpSz = Math.round(27 * F), grpY = pad + Math.round(42 * F);
+  ctx.textAlign = 'center'; ctx.fillStyle = T.sub; ctx.font = `600 ${grpSz}px ${sans}`;
+  const gw = ctx.measureText(grp).width;
+  ctx.fillText(grp, W / 2, grpY);
+  ctx.strokeStyle = T.frame.replace(/[\d.]+\)$/, '0.6)'); ctx.lineWidth = Math.max(1, 1.5 * F);
+  [[W / 2 - gw / 2 - 28 * F, -1], [W / 2 + gw / 2 + 28 * F, 1]].forEach(([x0, d]) => {
+    ctx.beginPath(); ctx.moveTo(x0, grpY - 9 * F); ctx.lineTo(x0 + d * 30 * F, grpY - 9 * F); ctx.stroke();
+  });
+
+  /* 版位：經文＋領受垂直置中 */
+  const hasSticker = photoImg && photoMode === 'sticker' && !suppressSticker;
+  const stkBottom = hasSticker && stkPos !== 'tl' && stkPos !== 'tr';
+  const liftRoom = stkBottom ? Math.round(W * stkSize * stkRatio()) + Math.round(30 * F) : 0;
+  const topRoom = pad + Math.round(100 * F), botRoom = pad + Math.round(70 * F) + liftRoom;
+  const room = H - topRoom - botRoom;
+  const FB = cardFs();          /* 領受字級（經文不變，版面才不會被擠掉） */
+  /* 經文本身可能已經帶了引號（例如神說的話），不要再包一層 */
+  /* 句子是在逗號處切開的，尾巴留著逗號放進引號裡很怪，去掉 */
+  const raw = (h.t || '').trim().replace(/[，、；：,]+$/, '');
+  const verse = (/^[「『]/.test(raw) ? '' : '「') + raw + (/[」』]$/.test(raw) ? '' : '」');
+  const note = (h.n || '').trim();
+
+  let vs = Math.round(58 * F), vl;
+  while (true){
+    ctx.font = `600 ${vs}px ${serif}`;
+    vl = wrapText(ctx, verse, iw);
+    if (vl.length <= 7 || vs <= Math.round(30 * F)) break;
+    vs -= Math.round(3 * F);
+  }
+  const fixed = vs * .9 + vl.length * vs * 1.52 + Math.round(64 * F) + (note ? Math.round(86 * F) : 0);
+  let ns = Math.round(38 * F * FB), nl = [];
+  if (note){
+    while (true){
+      ctx.font = `${ns}px ${sans}`;
+      nl = wrapText(ctx, note, iw);
+      if (fixed + nl.length * ns * 1.76 <= room || ns <= Math.round(21 * F)) break;
+      ns -= Math.round(2 * F);
+    }
+  }
+  const total = fixed + (note ? nl.length * ns * 1.76 : 0);
+  let y = topRoom + Math.max(0, (room - total) / 2);
+
+  /* 經文 */
+  ctx.fillStyle = T.accent; ctx.font = `600 ${vs}px ${serif}`;
+  y += vs * .9;
+  vl.forEach(l => { ctx.fillText(l, W / 2, y); y += vs * 1.52; });
+
+  /* 出處 */
+  ctx.font = `${Math.round(30 * F)}px ${sans}`; ctx.fillStyle = T.gold;
+  ctx.fillText(cardRef(h), W / 2, y); y += Math.round(64 * F);
+
+  /* 領受 */
+  if (note){
+    ctx.fillStyle = T.gold;
+    ctx.beginPath(); ctx.arc(W / 2, y, Math.round(5 * F), 0, 7); ctx.fill();
+    ctx.strokeStyle = T.gold; ctx.lineWidth = 2.5 * F;
+    ctx.beginPath(); ctx.moveTo(W / 2 - 52 * F, y); ctx.lineTo(W / 2 - 16 * F, y); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(W / 2 + 16 * F, y); ctx.lineTo(W / 2 + 52 * F, y); ctx.stroke();
+    y += Math.round(86 * F);
+    ctx.textAlign = 'left'; ctx.fillStyle = T.ink; ctx.font = `${ns}px ${sans}`;
+    nl.forEach(l => { ctx.fillText(l, pad, y); y += ns * 1.76; });
+    ctx.textAlign = 'center';
+  }
+
+  /* 落款（貼紙或自拍佔住底部時往上讓開） */
+  const lift = stkBottom ? Math.round(W * stkSize * stkRatio()) + Math.round(16 * F) : 0;
+  ctx.textAlign = 'center'; ctx.fillStyle = T.sub; ctx.font = `600 ${Math.round(25 * F)}px ${sans}`;
+  ctx.fillText(t().app + '　' + (state.lang === 'zs' ? '新标点和合本' : '新標點和合本'),
+               W / 2, H - pad * .72 - Math.round(24 * F) - lift);
+
+  /* 相片貼紙（拍立得風格） */
+  if (hasSticker){
+    const sw = Math.round(W * stkSize), sh = Math.round(sw * stkRatio());
+    const top = stkPos === 'tl' || stkPos === 'tr';
+    const bx = (stkPos === 'bl' || stkPos === 'tl') ? pad - 4 * F
+             : (stkPos === 'bc') ? Math.round((W - sw) / 2)
+             : W - pad - sw + 4 * F;
+    const by = top ? pad + Math.round(70 * F) : H - pad - sh + 4 * F;
+    ctx.save();
+    ctx.translate(bx + sw / 2, by + sh / 2);
+    ctx.rotate((stkShape === 'w' ? -1.4 : -3) * Math.PI / 180);
+    ctx.shadowColor = 'rgba(0,0,0,.30)'; ctx.shadowBlur = Math.round(24 * F); ctx.shadowOffsetY = Math.round(9 * F);
+    const fr = Math.round(10 * F), pb = (stkShape === 'p') ? Math.round(26 * F) : fr;
+    rr(ctx, -sw / 2, -sh / 2, sw, sh, Math.round(10 * F)); ctx.fillStyle = '#FDFBF6'; ctx.fill();
+    ctx.shadowColor = 'transparent';
+    const iw2 = sw - fr * 2, ih2 = sh - fr - pb;
+    ctx.save(); rr(ctx, -sw / 2 + fr, -sh / 2 + fr, iw2, ih2, Math.round(4 * F)); ctx.clip();
+    coverDraw(ctx, photoImg, -sw / 2 + fr, -sh / 2 + fr, iw2, ih2); ctx.restore();
+    ctx.restore();
+  }
+}
+function cardBlob(url){
+  const b = atob(url.split(',')[1]), a = new Uint8Array(b.length);
+  for (let i = 0; i < b.length; i++) a[i] = b.charCodeAt(i);
+  return new Blob([a], { type:'image/png' });
+}
+function renderCard(h){
+  const [W, H] = CARD_SIZES[cardSize()];
+  const cv = document.createElement('canvas');
+  drawVerseCard(cv, h, W, H);
+  cardImg = cv.toDataURL('image/png');
+  const box = $('#cardPv');
+  if (box) box.innerHTML = `<img src="${cardImg}" alt="">`;
+}
+function cardDownload(){
+  if (!cardImg) return;
+  const a = document.createElement('a');
+  a.href = cardImg; a.download = '321bible-' + Date.now() + '.png'; a.click();
+  toast(t().cardSaved, 3200);
+}
+async function cardShare(){
+  if (!cardImg) return;
+  const f = new File([cardBlob(cardImg)], '321bible.png', { type:'image/png' });
+  if (navigator.canShare && navigator.canShare({ files:[f] })){
+    try{ await navigator.share({ files:[f], title: t().app }); return; }
+    catch(e){ if (e && e.name === 'AbortError') return; }
+  }
+  cardDownload();
+}
+/* ================================================================ 影片修復
+   iOS Safari 的 MediaRecorder 產出的是「分段 MP4」，而且把長度寫成 0，
+   LINE、相簿與大多數 App 都讀不出來，看起來就像「無法分享」。
+   下面整段是《321愛的關懷》驗證過的重新封裝程式（moof/mdat → moov+mdat）。 */
+
+function mx_u32(b,p){return b[p]*16777216+b[p+1]*65536+b[p+2]*256+b[p+3];}
+function mx_i32(b,p){const v=mx_u32(b,p);return v>=2147483648?v-4294967296:v;}
+function mx_u64(b,p){return mx_u32(b,p)*4294967296+mx_u32(b,p+4);}
+function mx_typ(b,p){return String.fromCharCode(b[p],b[p+1],b[p+2],b[p+3]);}
+
+function mx_boxes(b,start,end){
+  const out=[];let p=start;
+  while(p+8<=end){
+    let size=mx_u32(b,p),hs=8;
+    if(size===1){size=mx_u64(b,p+8);hs=16;}
+    else if(size===0)size=end-p;
+    if(size<8||p+size>end)break;
+    out.push({type:mx_typ(b,p+4),start:p,size:size,hs:hs,body:p+hs,end:p+size});
+    p+=size;
+  }
+  return out;
+}
+function mx_find(list,t){return list.filter(x=>x.type===t);}
+function mx_one(list,t){const r=mx_find(list,t);return r.length?r[0]:null;}
+function mx_children(b,mx_box){return mx_boxes(b,mx_box.body,mx_box.end);}
+
+function mx_parseTrun(b,tr,tfhd,baseOffset){
+  const flags=mx_u32(b,tr.body)&0xffffff;
+  const cnt=mx_u32(b,tr.body+4);
+  let p=tr.body+8;
+  let dataOff=0;
+  if(flags&0x1){dataOff=mx_i32(b,p);p+=4;}
+  let firstFlags=null;
+  if(flags&0x4){firstFlags=mx_u32(b,p);p+=4;}
+  const samples=[];
+  let off=baseOffset+dataOff;
+  for(let i=0;i<cnt;i++){
+    let dur=tfhd.defDur, size=tfhd.defSize, fl=tfhd.defFlags, cto=0;
+    if(flags&0x100){dur=mx_u32(b,p);p+=4;}
+    if(flags&0x200){size=mx_u32(b,p);p+=4;}
+    if(flags&0x400){fl=mx_u32(b,p);p+=4;}
+    if(flags&0x800){cto=mx_i32(b,p);p+=4;}
+    if(i===0&&firstFlags!==null)fl=firstFlags;
+    samples.push({off:off,size:size,dur:dur,cto:cto,sync:!(fl&0x10000)});
+    off+=size;
+  }
+  return {samples:samples,dataOff:dataOff};
+}
+
+function mx_parseTfhd(b,mx_box){
+  const flags=mx_u32(b,mx_box.body)&0xffffff;
+  const trackId=mx_u32(b,mx_box.body+4);
+  let p=mx_box.body+8;
+  let base=null;
+  if(flags&0x1){base=mx_u64(b,p);p+=8;}
+  if(flags&0x2){p+=4;}
+  let defDur=0,defSize=0,defFlags=0;
+  if(flags&0x8){defDur=mx_u32(b,p);p+=4;}
+  if(flags&0x10){defSize=mx_u32(b,p);p+=4;}
+  if(flags&0x20){defFlags=mx_u32(b,p);p+=4;}
+  return {trackId:trackId,base:base,defDur:defDur,defSize:defSize,defFlags:defFlags,
+          defaultBaseIsMoof:!!(flags&0x020000),hasBase:!!(flags&0x1)};
+}
+
+/* ---- 產生 mx_box ---- */
+function mx_box(type,...parts){
+  let len=8;parts.forEach(p=>len+=p.length);
+  const head=new Uint8Array(8);
+  head[0]=(len>>>24)&255;head[1]=(len>>>16)&255;head[2]=(len>>>8)&255;head[3]=len&255;
+  for(let i=0;i<4;i++)head[4+i]=type.charCodeAt(i);
+  const out=new Uint8Array(len);out.set(head,0);
+  let p=8;parts.forEach(x=>{out.set(x,p);p+=x.length;});
+  return out;
+}
+function mx_b32(v){return new Uint8Array([(v>>>24)&255,(v>>>16)&255,(v>>>8)&255,v&255]);}
+function mx_b64(v){const hi=Math.floor(v/4294967296),lo=v>>>0;
+  return new Uint8Array([(hi>>>24)&255,(hi>>>16)&255,(hi>>>8)&255,hi&255,
+                         (lo>>>24)&255,(lo>>>16)&255,(lo>>>8)&255,lo&255]);}
+function mx_cat(arr){let n=0;arr.forEach(a=>n+=a.length);const o=new Uint8Array(n);let p=0;
+  arr.forEach(a=>{o.set(a,p);p+=a.length;});return o;}
+
+function mx_remux(bytes){
+  const b=bytes;
+  const top=mx_boxes(b,0,b.length);
+  const ftyp=mx_one(top,"ftyp");
+  const moov=mx_one(top,"moov");
+  if(!moov)throw new Error("no moov");
+  const moofs=mx_find(top,"moof");
+  if(!moofs.length)return null;              /* 不是分段 MP4，不用處理 */
+
+  const mvBoxes=mx_children(b,moov);
+  const mvhd=mx_one(mvBoxes,"mvhd");
+  const mvTimescale=mx_u32(b,mvhd.body+(b[mvhd.body]===1?20:12));
+  const traks=mx_find(mvBoxes,"trak");
+
+  /* 收集每個 track 的所有 sample */
+  const tracks={};
+  traks.forEach(tk=>{
+    const tkhd=mx_one(mx_children(b,tk),"tkhd");
+    const v=b[tkhd.body];
+    const id=mx_u32(b,tkhd.body+(v===1?20:12));
+    tracks[id]={trak:tk,samples:[]};
+  });
+
+  moofs.forEach(mf=>{
+    const trafs=mx_find(mx_children(b,mf),"traf");
+    trafs.forEach(tf=>{
+      const tfc=mx_children(b,tf);
+      const tfhdBox=mx_one(tfc,"tfhd");
+      if(!tfhdBox)return;
+      const tfhd=mx_parseTfhd(b,tfhdBox);
+      const t=tracks[tfhd.trackId];
+      if(!t)return;
+      /* 基準位移：預設是 moof 起點（default-base-is-moof） */
+      const base=tfhd.hasBase?tfhd.base:mf.start;
+      let running=null;
+      mx_find(tfc,"trun").forEach(tr=>{
+        const flags=mx_u32(b,tr.body)&0xffffff;
+        const hasOff=!!(flags&0x1);
+        const r=mx_parseTrun(b,tr,tfhd,hasOff?base:(running===null?base:running));
+        r.samples.forEach(s=>t.samples.push(s));
+        if(r.samples.length){
+          const last=r.samples[r.samples.length-1];
+          running=last.off+last.size;
+        }
+      });
+    });
+  });
+
+  /* 依序把 sample 資料集中成一個 mdat */
+  const order=[];
+  Object.keys(tracks).forEach(id=>{
+    tracks[id].samples.forEach((s,i)=>order.push({id:+id,i:i,off:s.off,size:s.size}));
+  });
+  order.sort((a,b2)=>a.off-b2.off);
+  let mdatSize=0;order.forEach(o=>mdatSize+=o.size);
+
+  const newOff={};
+  let cur=0;
+  order.forEach(o=>{
+    if(!newOff[o.id])newOff[o.id]=[];
+    newOff[o.id][o.i]=cur;cur+=o.size;
+  });
+
+  /* ---- 為每個 track 重建 stbl ---- */
+  function buildStbl(id,stblOld,mediaTimescale){
+    const ss=tracks[id].samples;
+    const offs=newOff[id]||[];
+    const old=mx_children(b,stblOld);
+    const keep=[];
+    ["stsd"].forEach(t=>{const x=mx_one(old,t);if(x)keep.push(b.slice(x.start,x.end));});
+
+    /* stts */
+    const stts=[];
+    let runDur=-1,runCnt=0;
+    ss.forEach(s=>{
+      if(s.dur===runDur){runCnt++;}
+      else{if(runCnt)stts.push([runCnt,runDur]);runDur=s.dur;runCnt=1;}
+    });
+    if(runCnt)stts.push([runCnt,runDur]);
+    const sttsBody=[mx_b32(0),mx_b32(stts.length)];
+    stts.forEach(e=>{sttsBody.push(mx_b32(e[0]));sttsBody.push(mx_b32(e[1]));});
+    keep.push(mx_box("stts",mx_cat(sttsBody)));
+
+    /* ctts（若有 composition offset） */
+    if(ss.some(s=>s.cto!==0)){
+      const ctts=[];let rv=null,rc=0;
+      ss.forEach(s=>{if(s.cto===rv){rc++;}else{if(rc)ctts.push([rc,rv]);rv=s.cto;rc=1;}});
+      if(rc)ctts.push([rc,rv]);
+      const body=[new Uint8Array([1,0,0,0]),mx_b32(ctts.length)];
+      ctts.forEach(e=>{body.push(mx_b32(e[0]));body.push(mx_b32(e[1]>>>0));});
+      keep.push(mx_box("ctts",mx_cat(body)));
+    }
+
+    /* stss（關鍵影格）*/
+    const syncs=[];
+    ss.forEach((s,i)=>{if(s.sync)syncs.push(i+1);});
+    if(syncs.length&&syncs.length!==ss.length){
+      const body=[mx_b32(0),mx_b32(syncs.length)];
+      syncs.forEach(v=>body.push(mx_b32(v)));
+      keep.push(mx_box("stss",mx_cat(body)));
+    }
+
+    /* stsc：每個 sample 自成一個 chunk，最單純也最不會出錯 */
+    keep.push(mx_box("stsc",mx_cat([mx_b32(0),mx_b32(1),mx_b32(1),mx_b32(1),mx_b32(1)])));
+
+    /* stsz */
+    const szBody=[mx_b32(0),mx_b32(0),mx_b32(ss.length)];
+    ss.forEach(s=>szBody.push(mx_b32(s.size)));
+    keep.push(mx_box("stsz",mx_cat(szBody)));
+
+    /* co64：用 64 位元，長度固定，才好兩段式計算位移 */
+    const coBody=[mx_b32(0),mx_b32(ss.length)];
+    ss.forEach((s,i)=>coBody.push(mx_b64(offs[i]||0)));
+    keep.push({__co:true,data:mx_cat(coBody),count:ss.length});
+
+    return keep;
+  }
+
+  /* 兩段式：先算出 moov 長度，再填入真正的 chunk 位移 */
+  function assemble(mdatStart){
+    const newTraks=[];
+    traks.forEach(tk=>{
+      const tkc=mx_children(b,tk);
+      const tkhd=mx_one(tkc,"tkhd");
+      const v=b[tkhd.body];
+      const id=mx_u32(b,tkhd.body+(v===1?20:12));
+      const mdia=mx_one(tkc,"mdia");
+      const mdc=mx_children(b,mdia);
+      const mdhd=mx_one(mdc,"mdhd");
+      const mv=b[mdhd.body];
+      const mts=mx_u32(b,mdhd.body+(mv===1?20:12));
+      const ss=tracks[id].samples;
+      let dur=0;ss.forEach(s=>dur+=s.dur);
+
+      /* tkhd：填入 movie timescale 的時長 */
+      const tkhdBuf=b.slice(tkhd.start,tkhd.end);
+      const mvDur=Math.round(dur/mts*mvTimescale);
+      if(v===1)writeU64(tkhdBuf,tkhd.body-tkhd.start+28,mvDur);
+      else writeU32(tkhdBuf,tkhd.body-tkhd.start+20,mvDur);
+
+      /* mdhd：填入 media timescale 的時長 */
+      const mdhdBuf=b.slice(mdhd.start,mdhd.end);
+      if(mv===1)writeU64(mdhdBuf,mdhd.body-mdhd.start+24,dur);
+      else writeU32(mdhdBuf,mdhd.body-mdhd.start+16,dur);
+
+      const minf=mx_one(mdc,"minf");
+      const mic=mx_children(b,minf);
+      const stbl=mx_one(mic,"stbl");
+      const parts=buildStbl(id,stbl,mts);
+      const stblParts=parts.map(x=>x.__co?mx_box("co64",x.data):x);
+      const newStbl=mx_box("stbl",...stblParts);
+      const minfParts=mic.map(x=>x.type==="stbl"?newStbl:b.slice(x.start,x.end));
+      const newMinf=mx_box("minf",...minfParts);
+      const mdiaParts=mdc.map(x=>x.type==="minf"?newMinf:(x.type==="mdhd"?mdhdBuf:b.slice(x.start,x.end)));
+      const newMdia=mx_box("mdia",...mdiaParts);
+      const trakParts=tkc.filter(x=>x.type!=="edts").map(x=>
+        x.type==="mdia"?newMdia:(x.type==="tkhd"?tkhdBuf:b.slice(x.start,x.end)));
+      newTraks.push(mx_box("trak",...trakParts));
+    });
+
+    /* mvhd：填入整體時長 */
+    let maxDur=0;
+    Object.keys(tracks).forEach(id=>{
+      const tk=tracks[id];const trak=tk.trak;
+      const mdhd=mx_one(mx_children(b,mx_one(mx_children(b,trak),"mdia")),"mdhd");
+      const mv=b[mdhd.body];
+      const mts=mx_u32(b,mdhd.body+(mv===1?20:12));
+      let d=0;tk.samples.forEach(s=>d+=s.dur);
+      maxDur=Math.max(maxDur,Math.round(d/mts*mvTimescale));
+    });
+    const mvhdBuf=b.slice(mvhd.start,mvhd.end);
+    if(b[mvhd.body]===1)writeU64(mvhdBuf,mvhd.body-mvhd.start+24,maxDur);
+    else writeU32(mvhdBuf,mvhd.body-mvhd.start+16,maxDur);
+
+    return mx_box("moov",mvhdBuf,...newTraks);
+  }
+
+  function writeU32(buf,p,v){buf[p]=(v>>>24)&255;buf[p+1]=(v>>>16)&255;buf[p+2]=(v>>>8)&255;buf[p+3]=v&255;}
+  function writeU64(buf,p,v){const hi=Math.floor(v/4294967296),lo=v>>>0;
+    writeU32(buf,p,hi);writeU32(buf,p+4,lo);}
+
+  const ftypBuf=ftyp?b.slice(ftyp.start,ftyp.end)
+                    :mx_box("ftyp",mx_strBytes("isom"),mx_b32(512),mx_strBytes("isomiso2avc1mp41"));
+  const pass1=assemble(0);
+  const mdatStart=ftypBuf.length+pass1.length+16;   /* 16 = mdat 的 64 位元表頭 */
+  Object.keys(newOff).forEach(id=>{
+    newOff[id]=newOff[id].map(v=>v+mdatStart);
+  });
+  const moovNew=assemble(mdatStart);
+
+  /* 組出 mdat（64 位元長度） */
+  const mdatHead=new Uint8Array(16);
+  mdatHead[3]=1;
+  "mdat".split("").forEach((c,i)=>mdatHead[4+i]=c.charCodeAt(0));
+  const total=mdatSize+16;
+  const hi=Math.floor(total/4294967296),lo=total>>>0;
+  writeU32(mdatHead,8,hi);writeU32(mdatHead,12,lo);
+
+  const out=new Uint8Array(ftypBuf.length+moovNew.length+16+mdatSize);
+  let p=0;
+  out.set(ftypBuf,p);p+=ftypBuf.length;
+  out.set(moovNew,p);p+=moovNew.length;
+  out.set(mdatHead,p);p+=16;
+  order.forEach(o=>{out.set(b.subarray(o.off,o.off+o.size),p);p+=o.size;});
+  return out;
+}
+function mx_strBytes(s){const a=new Uint8Array(s.length);for(let i=0;i<s.length;i++)a[i]=s.charCodeAt(i);return a;}
+
+/* 只處理分段 MP4；其他格式或失敗時原封不動回傳，不影響既有流程 */
+async function fixVideoBlob(blob, mime){
+  try{
+    if (!blob || !/mp4/i.test(mime || blob.type || '')) return blob;
+    const buf = new Uint8Array(await blob.arrayBuffer());
+    const out = mx_remux(buf);
+    if (!out || !out.length) return blob;
+    return new Blob([out], { type:'video/mp4' });
+  }catch(e){ return blob; }
+}
+
+
+
+
+/* ================================================================ 作品庫（IndexedDB） */
+let wdb = null;
+function openWDB(){
+  return new Promise(r => {
+    try{
+      const q = indexedDB.open('ib_works', 1);
+      q.onupgradeneeded = e => { e.target.result.createObjectStore('rec', { keyPath:'id' }); };
+      q.onsuccess = e => { wdb = e.target.result; r(wdb); };
+      q.onerror = () => r(null);
+    }catch(e){ r(null); }
+  });
+}
+function wtx(mode){ return wdb.transaction('rec', mode).objectStore('rec'); }
+function putRec(o){ return new Promise(r => { const q = wtx('readwrite').put(o); q.onsuccess = () => r(1); q.onerror = () => r(0); }); }
+function allRec(){ return new Promise(r => { if (!wdb) return r([]); const q = wtx('readonly').getAll(); q.onsuccess = () => r(q.result || []); q.onerror = () => r([]); }); }
+function delRec(id){ return new Promise(r => { const q = wtx('readwrite').delete(id); q.onsuccess = () => r(1); q.onerror = () => r(0); }); }
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+/* ================================================================ 錄製 */
+let mr = null, chunks = [], recTimer = null, recSec = 0, recAnim = 0;
+let recSelfie = false, selfieStream = null, __mcGain = null;
+const sup = m => { try{ return window.MediaRecorder && MediaRecorder.isTypeSupported(m); }catch(e){ return false; } };
+const vidMime = () => ['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4',
+  'video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(sup) || '';
+const audMime = () => ['audio/mp4','audio/webm;codecs=opus','audio/webm'].find(sup) || '';
+const canVideo = () => !!(vidMime() && HTMLCanvasElement.prototype.captureStream);
+const extOf = m => (m || '').indexOf('mp4') >= 0 ? (m.indexOf('video') === 0 ? '.mp4' : '.m4a')
+                                                 : (m.indexOf('video') === 0 ? '.webm' : '.webm');
+
+function attachSelfie(){
+  const el = $('#selfiePrev');
+  if (!el || !selfieStream) return;
+  el.muted = true; el.defaultMuted = true; el.playsInline = true;
+  ['playsinline','webkit-playsinline','muted','autoplay'].forEach(a => el.setAttribute(a, ''));
+  if (el.srcObject !== selfieStream) el.srcObject = selfieStream;
+  const go2 = () => { const q = el.play(); if (q && q.catch) q.catch(() => {}); };
+  el.onloadedmetadata = go2; go2();
+  [80, 300, 800, 1600].forEach(ms => setTimeout(go2, ms));
+}
+function stopSelfie(){
+  try{ if (selfieStream) selfieStream.getTracks().forEach(tr => tr.stop()); }catch(e){}
+  const el = $('#selfiePrev');
+  if (el){ try{ el.pause(); }catch(e){} el.srcObject = null; }
+  selfieStream = null;
+}
+async function setSelfie(on){
+  recSelfie = !!on;
+  if (!on){ stopSelfie(); studioRefresh(); return; }
+  try{
+    selfieStream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'user' }, audio:false });
+  }catch(e){ recSelfie = false; toast(t().camDeny); }
+  studioRefresh();
+  setTimeout(attachSelfie, 60);
+}
+/* 卡片＋緩慢掃過的光暈；錄影就是把這張動態畫面錄下來 */
+function liveCanvas(W, H, withSelfie){
+  const base = document.createElement('canvas');
+  selfieLayout = !!withSelfie; suppressSticker = !!withSelfie;
+  drawVerseCard(base, studioItem, W, H);
+  selfieLayout = false; suppressSticker = false;
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const cx = cv.getContext('2d'), t0 = performance.now(), F = W / 1080;
+  const svid = $('#selfiePrev');
+  const loop = () => {
+    const el = (performance.now() - t0) / 1000;
+    cx.drawImage(base, 0, 0);
+    const gx = W * (0.12 + 0.76 * (((el / 16) % 2 > 1) ? 2 - (el / 16) % 2 : (el / 16) % 2));
+    const rg = cx.createRadialGradient(gx, H * .12, 10, gx, H * .12, W * .55);
+    rg.addColorStop(0, 'rgba(255,255,255,.10)'); rg.addColorStop(1, 'rgba(255,255,255,0)');
+    cx.fillStyle = rg; cx.fillRect(0, 0, W, H);
+    if (withSelfie) drawSelfieCircle(cx, svid, W, H, F);
+    recAnim = requestAnimationFrame(loop);
+  };
+  loop();
+  const lb = $('#liveBox');
+  if (lb){
+    cv.style.cssText = 'width:100%;max-width:300px;border-radius:14px;display:block;margin:0 auto;box-shadow:0 6px 20px rgba(0,0,0,.14)';
+    lb.innerHTML = ''; lb.appendChild(cv); lb.hidden = false;
+    const sw = $('#selfieWrap'); if (sw) sw.style.display = 'none';
+  }
+  return cv;
+}
+function recTick(label){
+  const st = $('#recSt'); if (st) st.innerHTML = '<span class="recdot"></span>' + label;
+  recTimer = setInterval(() => {
+    recSec++;
+    const e = $('#recTm');
+    if (e) e.textContent = String(Math.floor(recSec / 60)).padStart(2, '0') + ':' + String(recSec % 60).padStart(2, '0');
+  }, 1000);
+}
+async function saveWork(blob, type, kind){
+  try{
+    if (kind === 'video') blob = await fixVideoBlob(blob, type);
+    if (!wdb) await openWDB();
+    if (!wdb) throw new Error('IndexedDB 打不開');
+    await putRec({ id:uid(), ts:Date.now(), blob, mime:blob.type || type, kind, dur:recSec,
+                   v:studioItem.t, r:cardRef(studioItem), n:studioItem.n || '' });
+    mr = null;
+    await studioRefresh();
+    toast(kind === 'video' ? t().recDoneV : t().recDoneA, 3600);
+  }catch(e){
+    mr = null;
+    console.error('saveWork', e);
+    await studioRefresh();
+    toast('存檔失敗：' + (e && e.message || e), 4000);
+  }
+}
+async function toggleRec(){
+  if (mr && mr.state === 'recording'){ mr.stop(); return; }
+  if (!studioItem) return;
+  let mic;
+  try{ mic = await navigator.mediaDevices.getUserMedia({ audio:true }); }
+  catch(e){ toast(t().micDeny); return; }
+
+  const svid = $('#selfiePrev');
+  const useSelfie = recSelfie && svid && svid.videoWidth;
+  let ac = null, bgmEl = null, bgmURL = null, audioStream = mic;
+  if (bgmBlob){
+    try{
+      ac = new (window.AudioContext || window.webkitAudioContext)();
+      try{ await ac.resume(); }catch(_){}
+      const micSrc = ac.createMediaStreamSource(mic);
+      bgmURL = URL.createObjectURL(bgmBlob);
+      bgmEl = new Audio(); bgmEl.src = bgmURL; bgmEl.loop = true; bgmEl.crossOrigin = 'anonymous';
+      const gain = ac.createGain(); gain.gain.value = bgmVol;
+      const dst = ac.createMediaStreamDestination();
+      micSrc.connect(dst);
+      ac.createMediaElementSource(bgmEl).connect(gain).connect(dst);
+      audioStream = dst.stream;
+      await bgmEl.play().catch(() => {});
+    }catch(e){ ac = null; bgmEl = null; audioStream = mic; }
+  }
+
+  let stream = audioStream, kind = 'audio', mime = audMime();
+  if (canVideo()){
+    try{
+      const [W, H] = CARD_SIZES[cardSize()];
+      const cv = liveCanvas(W, H, useSelfie);
+      stream = new MediaStream([...cv.captureStream(24).getVideoTracks(), ...audioStream.getAudioTracks()]);
+      kind = 'video'; mime = vidMime();
+    }catch(e){ cancelAnimationFrame(recAnim); stream = mic; kind = 'audio'; mime = audMime(); }
+  }
+  try{
+    mr = new MediaRecorder(stream, Object.assign(mime ? { mimeType:mime } : {},
+        kind === 'video' ? { videoBitsPerSecond:2200000 } : {}));
+  }catch(e){
+    cancelAnimationFrame(recAnim);
+    try{ mr = new MediaRecorder(mic); kind = 'audio'; }catch(e2){ toast(t().recNo); return; }
+  }
+  chunks = []; recSec = 0;
+  mr.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+  mr.onstop = async () => {
+    clearInterval(recTimer); cancelAnimationFrame(recAnim);
+    mic.getTracks().forEach(tr => tr.stop());
+    stopSelfie();
+    try{ if (bgmEl){ bgmEl.pause(); bgmEl.src = ''; } }catch(_){}
+    try{ if (bgmURL) URL.revokeObjectURL(bgmURL); }catch(_){}
+    try{ if (ac) ac.close(); }catch(_){}
+    const type = mr.mimeType || mime || (kind === 'video' ? 'video/webm' : 'audio/webm');
+    await saveWork(new Blob(chunks, { type }), type, kind);
+  };
+  mr.start(1000);
+  const bt = $('#recBtn'); if (bt){ bt.textContent = t().recStop; bt.classList.add('danger'); }
+  recTick((kind === 'video' ? t().recing : t().recingA) + (bgmBlob ? '　♪' : ''));
+}
+/* 不開口：卡片配上背景音樂直接合成一支影片 */
+async function musicRec(){
+  if (mr && mr.state === 'recording'){ mr.stop(); return; }
+  if (!studioItem || !bgmBlob){ toast(t().bgmNeed); return; }
+  if (!canVideo()){ toast(t().vidNo); return; }
+  let ac, bgmEl, bgmURL, audioStream;
+  try{
+    ac = new (window.AudioContext || window.webkitAudioContext)();
+    try{ await ac.resume(); }catch(_){}
+    bgmURL = URL.createObjectURL(bgmBlob);
+    bgmEl = new Audio(); bgmEl.src = bgmURL; bgmEl.loop = false; bgmEl.crossOrigin = 'anonymous';
+    const gain = ac.createGain(); gain.gain.value = 1; __mcGain = gain;
+    const dst = ac.createMediaStreamDestination();
+    ac.createMediaElementSource(bgmEl).connect(gain).connect(dst);
+    audioStream = dst.stream;
+  }catch(e){ toast(t().bgmBad); return; }
+
+  const [W, H] = CARD_SIZES[cardSize()];
+  const cv = liveCanvas(W, H, false);
+  const mime = vidMime();
+  const stream = new MediaStream([...cv.captureStream(24).getVideoTracks(), ...audioStream.getAudioTracks()]);
+  try{ mr = new MediaRecorder(stream, Object.assign(mime ? { mimeType:mime } : {}, { videoBitsPerSecond:2200000 })); }
+  catch(e){ cancelAnimationFrame(recAnim); toast(t().vidNo); return; }
+
+  chunks = []; recSec = 0;
+  mr.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+  mr.onstop = async () => {
+    clearInterval(recTimer); cancelAnimationFrame(recAnim);
+    try{ if (bgmEl){ bgmEl.pause(); bgmEl.src = ''; } }catch(_){}
+    try{ if (bgmURL) URL.revokeObjectURL(bgmURL); }catch(_){}
+    try{ if (ac) ac.close(); }catch(_){}
+    const type = mr.mimeType || mime || 'video/webm';
+    await saveWork(new Blob(chunks, { type }), type, 'video');
+  };
+  mr.start(1000);
+  try{ await bgmEl.play(); }catch(e){}
+  bgmEl.onended = () => { if (mr && mr.state === 'recording') mr.stop(); };
+  const lim = mcLen > 0 ? mcLen : 8 * 60;
+  if (mcLen > 0){
+    setTimeout(() => { try{ __mcGain && __mcGain.gain.linearRampToValueAtTime(0, ac.currentTime + 1.8); }catch(_){} },
+               Math.max(0, lim - 2) * 1000);
+  }
+  setTimeout(() => { if (mr && mr.state === 'recording') mr.stop(); }, lim * 1000);
+  const bt = $('#mcBtn'); if (bt){ bt.textContent = t().recStop; bt.classList.add('danger'); }
+  recTick(t().mcing + '　♪');
+}
+/* ---- 作品的播放／分享／下載／刪除 ---- */
+async function getRec(id){ const a = await allRec(); return a.find(x => x.id === id); }
+async function readyBlob(r){
+  if (r.kind !== 'video') return r.blob;
+  const fixed = await fixVideoBlob(r.blob, r.mime);
+  if (fixed !== r.blob){ try{ await putRec(Object.assign({}, r, { blob:fixed, mime:'video/mp4' })); }catch(e){} }
+  return fixed;
+}
+async function dlRec(id){
+  const r = await getRec(id); if (!r) return;
+  const blob = await readyBlob(r);
+  const mime = (r.kind === 'video' && blob !== r.blob) ? 'video/mp4' : r.mime;
+  const u = URL.createObjectURL(blob), a = document.createElement('a');
+  a.href = u; a.download = '321bible-' + (r.kind === 'video' ? 'video' : 'voice') + extOf(mime); a.click();
+  setTimeout(() => URL.revokeObjectURL(u), 6000);
+}
+async function shareRec(id){
+  const r = await getRec(id); if (!r) return;
+  const blob = await readyBlob(r);
+  const mime = (r.kind === 'video' && blob !== r.blob) ? 'video/mp4' : r.mime;
+  const f = new File([blob], '321bible' + extOf(mime), { type:mime });
+  if (navigator.canShare && navigator.canShare({ files:[f] })){
+    try{ await navigator.share({ files:[f], title:t().app }); return; }
+    catch(e){ if (e && e.name === 'AbortError') return; }
+  }
+  dlRec(id); toast(t().cardSaved, 3200);
+}
+async function rmRec(id){
+  if (!confirm(t().delAsk)) return;
+  await delRec(id); studioRefresh(); toast(t().deleted);
+}
+let playURL = null;
+async function playRec(id){
+  const r = await getRec(id); if (!r) return;
+  if (playURL) URL.revokeObjectURL(playURL);
+  playURL = URL.createObjectURL(r.blob);
+  const box = $('#play_' + id);
+  if (!box) return;
+  box.innerHTML = r.kind === 'video'
+    ? `<video src="${playURL}" controls playsinline autoplay style="width:100%;border-radius:12px;display:block"></video>`
+    : `<audio src="${playURL}" controls autoplay style="width:100%"></audio>`;
+}
+
+/* ================================================================ 美圖工作室 */
+let studioItem = null;
+const LZ = k => { const v = t()[k]; return Array.isArray(v) ? v[state.lang === 'zs' ? 1 : 0] : v; };
+const pick2 = a => a[state.lang === 'zs' ? 1 : 0];
+function chips(id, items, cur, attr){
+  return `<div class="cardchips" id="${id}">${items.map(([v, n]) =>
+    `<button class="${String(cur) === String(v) ? 'on' : ''}" data-${attr}="${v}">${esc(pick2(n))}</button>`).join('')}</div>`;
+}
+async function studioRefresh(){
+  if (curTab() !== 'studio') return;
+  const y = window.scrollY;
+  await viewStudio($('#view'));
+  window.scrollTo(0, y);
+}
+function curTab(){ return (location.hash || '').indexOf('#/studio') === 0 ? 'studio' : ''; }
+
+async function viewStudio(v){
+  const L = t();
+  if (!studioItem){ go('#/me'); return; }
+  const works = wdb ? (await allRec()).sort((a, b) => b.ts - a.ts) : [];
+  const vOK = canVideo();
+  v.innerHTML = `
+    <div class="chtoolbar">
+      <button class="chtb-btn" id="stBack">‹</button>
+      <div class="chtb-spacer"></div>
+      <div class="muted" style="font-size:12.5px">${esc(cardRef(studioItem))}</div>
+    </div>
+    <div class="cardpv" id="cardPv"></div>
+    <div class="hlsheet-acts" style="margin:0 0 6px">
+      <button class="btn primary" id="btShare">${esc(L.cardShare)}</button>
+      <button class="btn" id="btSave">${esc(L.cardSave)}</button>
+    </div>
+    <div class="hl-hint" style="margin:8px 0 18px">${esc(L.cardHint)}</div>
+
+    <div class="section-title">${esc(L.cardStyle)}</div>
+    ${chips('cTpl', CARD_ORDER.map(k => [k, CARD_TPL[k].n]), cardTpl(), 't')}
+    <div class="section-title">${esc(L.cardBorder)}</div>
+    ${chips('cBrd', CARD_BORDERS, cardBorder(), 'b')}
+    <div class="section-title">${esc(L.cardSize)}</div>
+    ${chips('cSz', Object.keys(CARD_SIZES).map(k => [k, CARD_SIZES[k][2]]), cardSize(), 'z')}
+    <div class="section-title">${esc(L.cardFsL)}</div>
+    ${chips('cFs', CARD_FS, cardFs(), 'f')}
+    <div class="muted" style="font-size:12px;margin-top:6px">${esc(L.cardFsHint)}</div>
+
+    <div class="section-title">${esc(L.photo)}</div>
+    <div class="card">${photoImg ? `
+      ${chips('pMode', [['bg', L.photoBg], ['sticker', L.photoStk]], photoMode, 'm')}
+      ${photoMode === 'sticker' ? `
+        <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.stkShape)}</div>
+        ${chips('pShape', STK_SHAPES, stkShape, 'v')}
+        <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.stkSize)}</div>
+        ${chips('pSize', STK_SIZES, stkSize, 'v')}
+        <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.stkPos)}</div>
+        ${chips('pPos', STK_POS, stkPos, 'v')}` : ''}
+      <div class="hlsheet-acts2" style="margin-top:12px">
+        <label class="btn sm" style="cursor:pointer">${esc(L.photoSwap)}<input type="file" accept="image/*" hidden id="pRe"></label>
+        <button class="btn sm danger" id="pDel">${esc(L.photoDel)}</button>
+      </div>` : `
+      <label class="btn block" style="cursor:pointer">${esc(L.photoPick)}<input type="file" accept="image/*" hidden id="pNew"></label>
+      <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.photoHint)}</div>`}
+    </div>
+
+    <div class="section-title">${esc(L.bgm)}</div>
+    <div class="card">${bgmBlob ? `
+      <div style="font-weight:700;font-size:14px">♪ ${esc(bgmName)}</div>
+      <div class="muted" style="font-size:12px;margin:4px 0 10px">${esc(L.bgmNote)}</div>
+      <div class="muted" style="font-size:12px;margin-bottom:6px">${esc(L.bgmVol)}</div>
+      ${chips('bVol', BGM_VOLS, bgmVol, 'v')}
+      <div class="hlsheet-acts2" style="margin-top:12px">
+        <label class="btn sm" style="cursor:pointer">${esc(L.bgmSwap)}<input type="file" hidden id="bRe"></label>
+        <button class="btn sm danger" id="bDel">${esc(L.bgmDel)}</button>
+      </div>` : `
+      <label class="btn block" style="cursor:pointer">${esc(L.bgmPick)}<input type="file" hidden id="bNew"></label>
+      <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.bgmHint)}</div>`}
+    </div>
+
+    <div class="section-title">${esc(L.recSec)}</div>
+    <div class="card" style="text-align:center">
+      <div class="muted" style="font-size:12.5px;text-align:left;margin-bottom:10px">${esc(vOK ? L.recIntro : L.recIntroA)}</div>
+      ${vOK ? `<div class="cardchips" id="rMode" style="justify-content:center;margin-bottom:12px">
+        <button class="${!recSelfie ? 'on' : ''}" data-s="0">${esc(L.recVoice)}</button>
+        <button class="${recSelfie ? 'on' : ''}" data-s="1">📷 ${esc(L.recSelfie)}</button></div>` : ''}
+      <div id="recSt" class="muted" style="font-size:12.5px">${esc(L.recReady)}</div>
+      <div id="recTm" style="font-family:'Noto Serif TC',serif;font-size:30px;margin:6px 0">00:00</div>
+      <button class="btn primary block" id="recBtn">${esc(vOK ? (recSelfie ? '📷 ' + L.recStartS : L.recStartV) : L.recStartA)}</button>
+      <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.recTip)}</div>
+      ${(vOK && bgmBlob) ? `
+        <div class="muted" style="font-size:12px;margin:14px 0 6px">${esc(L.mcLen)}</div>
+        ${chips('mLen', MC_LENS, mcLen, 'v')}
+        <button class="btn gold block" id="mcBtn" style="margin-top:10px">🎵 ${esc(L.mcStart)}</button>
+        <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.mcHint)}</div>` : ''}
+      <div id="selfieWrap" style="${recSelfie ? '' : 'display:none'};margin-top:14px">
+        <video id="selfiePrev" playsinline webkit-playsinline muted autoplay
+          style="width:150px;height:150px;border-radius:50%;object-fit:cover;transform:scaleX(-1);border:3px solid var(--gold);background:#000"></video>
+        <div class="muted" style="font-size:12px;margin-top:6px">${esc(L.selfieHint)}</div>
+      </div>
+      <div id="liveBox" hidden style="margin-top:14px"></div>
+    </div>
+
+    <div class="section-title">${esc(L.works)}（${works.length}）</div>
+    <div class="card" style="padding:4px 16px">${works.length ? works.map(w => `
+      <div class="hitem">
+        <div class="q" style="font-size:14px">${esc(w.v || '')}</div>
+        <div class="m"><span>${esc(w.r || '')}　${w.kind === 'video' ? '🎬' : '🎙'} ${w.dur || 0}s</span>
+          <span><button data-play="${w.id}">▶</button><button data-sh="${w.id}">↗</button><button data-rm="${w.id}">✕</button></span></div>
+        <div id="play_${w.id}" style="margin-top:8px"></div>
+      </div>`).join('') : `<div class="empty">${esc(L.noWorks)}</div>`}</div>`;
+
+  renderCard(studioItem);
+  if (recSelfie) setTimeout(attachSelfie, 60);
+
+  $('#stBack').onclick = () => history.back();
+  $('#btShare').onclick = cardShare;
+  $('#btSave').onclick = cardDownload;
+  const bind = (sel, fn) => $$(sel, v).forEach(b => b.onclick = () => { fn(b); });
+  bind('#cTpl button', b => { state.cardTpl = b.dataset.t; saveState(); studioRefresh(); });
+  bind('#cBrd button', b => { state.cardBorder = b.dataset.b; saveState(); studioRefresh(); });
+  bind('#cSz  button', b => { state.cardSize = b.dataset.z; saveState(); studioRefresh(); });
+  bind('#cFs  button', b => { state.cardFs = +b.dataset.f; saveState(); studioRefresh(); });
+  bind('#pMode button', b => { photoMode = b.dataset.m; studioRefresh(); });
+  bind('#pShape button', b => { stkShape = b.dataset.v; if (stkShape === 'w' && stkSize < .38) stkSize = .46; studioRefresh(); });
+  bind('#pSize button', b => { stkSize = +b.dataset.v; studioRefresh(); });
+  bind('#pPos button', b => { stkPos = b.dataset.v; studioRefresh(); });
+  bind('#bVol button', b => { bgmVol = +b.dataset.v; studioRefresh(); });
+  bind('#mLen button', b => { mcLen = +b.dataset.v; studioRefresh(); });
+  bind('#rMode button', b => setSelfie(b.dataset.s === '1'));
+  const pd = $('#pDel'); if (pd) pd.onclick = () => { photoImg = null; studioRefresh(); };
+  const bd = $('#bDel'); if (bd) bd.onclick = () => { bgmBlob = null; bgmName = ''; studioRefresh(); };
+  ['pNew','pRe'].forEach(id => { const e = $('#' + id); if (e) e.onchange = () => pickPhoto(e); });
+  ['bNew','bRe'].forEach(id => { const e = $('#' + id); if (e) e.onchange = () => pickBgm(e); });
+  $('#recBtn').onclick = toggleRec;
+  const mb = $('#mcBtn'); if (mb) mb.onclick = musicRec;
+  bind('[data-play]', b => playRec(b.dataset.play));
+  bind('[data-sh]',   b => shareRec(b.dataset.sh));
+  bind('[data-rm]',   b => rmRec(b.dataset.rm));
+}
+function openStudio(h){ studioItem = h; go('#/studio'); }
 
 /* ================================================================ 搜尋 */
 let searchState = { q:'', results:[], busy:false };
@@ -840,6 +1930,11 @@ async function viewMe(v){
       <div><div class="sv">${user.marks.length}</div><div class="sk">${esc(L.stats[2])}</div></div>
     </div></div>
 
+    <div class="section-title">${esc(L.diag)}</div>
+    <div class="card">
+      <button class="btn block" id="diagBtn">${esc(L.diagRun)}</button>
+      <div id="diagOut" class="muted" style="margin-top:10px;white-space:pre-wrap;font-size:12px;line-height:1.7"></div>
+    </div>
     <div class="section-title">${esc(L.settings)}</div>
     <div class="card" style="padding:4px 16px">
       <div class="setrow"><div class="sl">${esc(L.langLabel)}</div><div class="segbtns" id="setLang">
@@ -882,8 +1977,8 @@ async function viewMe(v){
       <div class="hitem">
         <div class="q">${markNotes(esc(h.t))}</div>
         ${h.n ? `<div class="n">${esc(h.n)}</div>` : ''}
-        <div class="m"><span>${esc(BOOK[h.b] ? bname(BOOK[h.b]) : h.b)} ${esc(L.chapter(h.ch))}</span>
-          <span><button data-go="${h.b}|${h.ch}">↗</button><button data-del="${esc(k)}">✕</button></span></div>
+        <div class="m"><span>${esc(cardRef(h))}</span>
+          <span><button data-card="${esc(k)}">🖼</button><button data-go="${h.b}|${h.ch}">↗</button><button data-del="${esc(k)}">✕</button></span></div>
       </div>`).join('') : `<div class="empty">${esc(L.emptyHl)}</div>`}</div>
 
     <div class="section-title">${esc(L.myFav)}</div>
@@ -897,6 +1992,7 @@ async function viewMe(v){
       ${esc(L.app)} ${VERSION}<br>和合本聖經屬公有領域，沒有版權限制</div>`;
 
   $$('#setLang button', v).forEach(b => b.onclick = () => switchLang(b.dataset.l));
+  const dg = $('#diagBtn', v); if (dg) dg.onclick = () => runDiag();
   $$('#setFont button', v).forEach(b => b.onclick = () => { state.font = +b.dataset.i; saveState(); applyChrome(); render(); });
   $$('#setTheme button', v).forEach(b => b.onclick = () => { state.theme = +b.dataset.i; saveState(); applyChrome(); render(); });
   $$('#setMode button', v).forEach(b => b.onclick = () => { state.flow = b.dataset.i === '1'; saveState(); applyChrome(); render(); });
@@ -912,8 +2008,57 @@ async function viewMe(v){
     saveUser(); render();
   });
   $$('[data-del]', v).forEach(b => b.onclick = () => { delete user.hl[b.dataset.del]; saveUser(); render(); });
+  $$('[data-card]', v).forEach(b => b.onclick = () => { const h = user.hl[b.dataset.card]; if (h) openStudio(h); });
   $$('[data-go]', v).forEach(b => b.onclick = () => { const [x, y] = b.dataset.go.split('|'); go(`#/read/${x}/${y}`); });
   $$('[data-favdel]', v).forEach(b => b.onclick = () => { user.fav.splice(+b.dataset.favdel, 1); saveUser(); render(); });
+}
+
+/* ================================================================ 連線測試
+   小智／朗讀連不上時，這裡可以看到伺服器實際回了什麼（狀態碼＋回應內容），
+   才分得出是「伺服器拒絕」還是「App 送錯東西」。 */
+async function probe(url, body){
+  const t0 = Date.now();
+  try{
+    const r = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    const ct = r.headers.get('content-type') || '?';
+    let snip = '';
+    try{
+      if (/json|text/i.test(ct)) snip = (await r.text()).replace(/\s+/g, ' ').slice(0, 180);
+      else snip = '(' + (await r.blob()).size + ' bytes)';
+    }catch(e){ snip = '(讀不到內容)'; }
+    return `HTTP ${r.status} · ${ct} · ${Date.now() - t0}ms\n${snip}`;
+  }catch(e){
+    return `連不到（${(e && e.message) || 'network'}）· ${Date.now() - t0}ms`;
+  }
+}
+async function runDiag(){
+  const out = $('#diagOut'); const btn = $('#diagBtn');
+  if (!out) return;
+  if (btn){ btn.disabled = true; btn.textContent = t().diagBusy; }
+  out.textContent = t().diagBusy;
+  const lines = [];
+
+  lines.push('① 小智（最簡單的一句）');
+  lines.push(await probe(API.chat, { system:'你是小智。', messages:[{ role:'user', content:'你好' }] }));
+
+  lines.push('');
+  lines.push('② 小智（App 真正送的內容）');
+  lines.push(await probe(API.chat, {
+    system: (state.lang === 'zs'
+      ? '你是「小智」，国度321空中团契的圣经陪读。'
+      : '你是「小智」，國度321空中團契的聖經陪讀。'),
+    messages:[{ role:'user', content:'請用一句話說明創世記第一章。' }]
+  }));
+
+  lines.push('');
+  lines.push('③ 朗讀');
+  lines.push(await probe(API.tts, { voice: VOICES[state.lang][state.voice[state.lang]].v,
+    rate: TTS_RATE, sil: TTS_SIL, silc: TTS_SILC, sile: TTS_SILE, text:'神愛世人。' }));
+
+  lines.push('');
+  lines.push('來源：' + location.origin);
+  out.textContent = lines.join('\n');
+  if (btn){ btn.disabled = false; btn.textContent = t().diagRun; }
 }
 
 /* ================================================================ 朗讀 */
@@ -1114,6 +2259,7 @@ async function boot(){
   };
   try{
     await loadTOC();
+    openWDB();                       // 作品庫（不擋開機）
     if (!location.hash) location.hash = '#/today';
     await render();
   }catch(e){
