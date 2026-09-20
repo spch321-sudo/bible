@@ -10,7 +10,7 @@ const API = {
   tts : 'https://azure-tts.spch321.workers.dev'        // {voice, rate, sil, silc, sile, text}
 };
 const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
-const VERSION = 'v1.1.4';
+const VERSION = 'v1.1.5';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -927,16 +927,46 @@ function raShow(item){
 ['wheel','touchmove'].forEach(ev => window.addEventListener(ev, () => { raManualAt = Date.now(); }, { passive:true }));
 
 function ttsBtn(st){ const b = $('#rdTts'); if (b) b.setAttribute('data-state', st || ''); }
+
+/* iOS/Safari 兩個坑，都要照《321領導力》的作法避開：
+   ① 整個 App 只能有「一個」<audio> 元素，而且必須在使用者按下按鈕的那一瞬間
+      （還在 user gesture 裡）就先 play() 過一次，之後才准程式自己播。
+      如果等 fetch 回來再 new Audio()，手勢早就過期了，play() 會被擋下來，
+      看起來就像「真人語音壞掉、自動改用裝置語音」。
+   ② Worker 回傳的 Content-Type 不一定是 audio/mpeg；直接拿 response.blob()
+      交給 <audio> 會解不出來。改成自己讀 arrayBuffer 再指定 audio/mpeg。 */
+const SILENT_WAV = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQAAAAA=';
+let ttsEl = null, ttsUnlocked = false, ttsLastErr = '';
+function ttsAudio(){
+  if (!ttsEl){
+    ttsEl = new Audio();
+    ttsEl.preload = 'auto';
+    try{ ttsEl.playsInline = true; ttsEl.setAttribute('playsinline', ''); }catch(e){}
+  }
+  return ttsEl;
+}
+/* 必須在 onclick 同步呼叫，不可 await 之後才呼叫 */
+function ttsUnlock(){
+  if (ttsUnlocked) return;
+  try{
+    const a = ttsAudio();
+    a.src = SILENT_WAV;
+    const p = a.play();
+    if (p && p.then) p.then(() => { ttsUnlocked = true; }).catch(() => {});
+    else ttsUnlocked = true;
+  }catch(e){}
+}
 async function ttsFetch(text, voice){
   const body = JSON.stringify({ voice, rate: TTS_RATE, sil: TTS_SIL, silc: TTS_SILC, sile: TTS_SILE, text });
   for (let a = 0; a <= TTS_RETRY.length; a++){
     try{
       const r = await fetch(API.tts, { method:'POST', headers:{'Content-Type':'application/json'}, body });
       if (!r.ok) throw new Error('http ' + r.status);
-      const blob = await r.blob();
-      if (!blob || blob.size < 256) throw new Error('empty audio');
-      return URL.createObjectURL(blob);
+      const buf = await r.arrayBuffer();
+      if (!buf || buf.byteLength < 128) throw new Error('empty audio');
+      return URL.createObjectURL(new Blob([buf], { type:'audio/mpeg' }));
     }catch(e){
+      ttsLastErr = (e && e.message) ? String(e.message) : 'network';
       if (a === TTS_RETRY.length) throw e;
       await new Promise(r => setTimeout(r, TTS_RETRY[a]));
     }
@@ -958,20 +988,30 @@ async function ttsPlayFrom(i){
   if (!spk.on || spk.abort) return;
   if (i >= spk.items.length){ ttsStop(); return; }
   spk.idx = i; raShow(spk.items[i]);
-  for (let k = i + 1; k <= i + TTS_LOOKAHEAD; k++) ttsPrefetch(k);
+  /* 先排這一段自己的請求，再排後面的預抓——否則第一聲會等在後面兩段的後面 */
   if (spk.cache[i] === undefined) await ttsPrefetch(i);
+  for (let k = i + 1; k <= i + TTS_LOOKAHEAD; k++) ttsPrefetch(k);
   if (!spk.on || spk.abort) return;
   const url = spk.cache[i];
   if (!url){ return ttsNativeFrom(i); }
   ttsBtn('playing');
-  const a = new Audio(url); spk.audio = a;
-  a.onended = () => ttsPlayFrom(i + 1);
-  a.onerror = () => ttsNativeFrom(i);
-  try{ await a.play(); }catch(e){ ttsNativeFrom(i); }
+  const a = ttsAudio(); spk.audio = a;
+  const old = a.src;
+  a.onended = null; a.onerror = null;
+  a.src = url;
+  if (old && old.startsWith('blob:')){ try{ URL.revokeObjectURL(old); }catch(e){} }
+  a.onended = () => { if (spk.on && !spk.abort) ttsPlayFrom(i + 1); };
+  a.onerror = () => { if (i === 0) ttsNativeFrom(i); else if (spk.on && !spk.abort) ttsPlayFrom(i + 1); };
+  try{
+    const p = a.play();
+    if (p && p.catch) await p;
+  }catch(e){
+    if (i === 0) ttsNativeFrom(i); else if (spk.on && !spk.abort) ttsPlayFrom(i + 1);
+  }
 }
 function ttsNativeFrom(i){
   if (!('speechSynthesis' in window)){ toast(t().ttsErr); ttsStop(); return; }
-  if (!spk.native){ spk.native = true; toast(t().ttsFallback); }
+  if (!spk.native){ spk.native = true; toast(t().ttsFallback + (ttsLastErr ? '（' + ttsLastErr + '）' : '')); }
   if (!spk.on || spk.abort || i >= spk.items.length){ ttsStop(); return; }
   spk.idx = i; raShow(spk.items[i]); ttsBtn('playing');
   const u = new SpeechSynthesisUtterance(ttsPrep(spk.items[i].text));
@@ -982,6 +1022,7 @@ function ttsNativeFrom(i){
 }
 function ttsToggle(){
   if (spk.on){ ttsStop(); return; }
+  ttsUnlock();                       // 一定要在這裡（還在使用者的點擊手勢裡）
   const items = buildQueue();
   if (!items.length) return;
   spk = { on:true, items, idx:0, audio:null, cache:{}, native:false, abort:false };
@@ -990,17 +1031,24 @@ function ttsToggle(){
 }
 function ttsStop(){
   spk.on = false; spk.abort = true;
-  try{ if (spk.audio){ spk.audio.pause(); spk.audio = null; } }catch(e){}
+  try{ if (ttsEl){ ttsEl.pause(); } }catch(e){}
+  spk.audio = null;
   try{ if ('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){}
   raClear(); ttsBtn('');
 }
 async function ttsSpeakText(text){
+  ttsUnlock();
   const clean = ttsPrep(text.replace(/[#*>`_\-]/g, ''));
   if (!clean) return;
   const voice = VOICES[state.lang][state.voice[state.lang]].v;
   try{
     const url = await ttsFetch(clean.slice(0, 900), voice);
-    const a = new Audio(url); await a.play();
+    const a = ttsAudio();
+    const old = a.src;
+    a.onended = null; a.onerror = null;
+    a.src = url;
+    if (old && old.startsWith('blob:')){ try{ URL.revokeObjectURL(old); }catch(e){} }
+    const p = a.play(); if (p && p.catch) await p;
   }catch(e){
     if ('speechSynthesis' in window){
       const u = new SpeechSynthesisUtterance(clean);
