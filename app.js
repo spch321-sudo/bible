@@ -10,7 +10,7 @@ const API = {
   tts : 'https://azure-tts.spch321.workers.dev'        // {voice, rate, sil, silc, sile, text}
 };
 const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
-const VERSION = 'v1.1.3';
+const VERSION = 'v1.1.4';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
