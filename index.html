@@ -227,6 +227,12 @@ html.fs-xxl .declitem .d,html.fs-xxl .hitem .q{font-size:20px;}
   -webkit-box-decoration-break:clone; box-decoration-break:clone;
   transition: box-shadow .22s ease;
 }
+/* ---------- 書籤模式提示條 ---------- */
+.bm-hint{background:var(--gold-soft); color:var(--gold); border:1px solid var(--gold);
+  border-radius:9px; padding:9px 12px; font-size:12.5px; line-height:1.6; margin-bottom:14px; text-align:center;}
+html.bmmode .reader .sent{cursor:pointer;}
+html.bmmode .reader .sent:active{background:var(--gold-soft);}
+
 /* ---------- 書籤 ---------- */
 .reader .sent[data-bm]::after{
   content:"🔖"; font-size:.62em; vertical-align:.5em; margin-left:.1em; opacity:.85;
@@ -290,6 +296,9 @@ html.fs-xxl .declitem .d,html.fs-xxl .hitem .q{font-size:20px;}
 .msg.ai .msg-actions{display:flex; gap:2px; margin-top:8px; padding-top:6px; border-top:1px solid var(--border);}
 .msg.ai .msg-act{border:none; background:transparent; color:var(--ink-faint); font-size:12px; padding:4px 8px; border-radius:999px; cursor:pointer; font-family:inherit;}
 .msg.ai .msg-act.on{color:var(--gold); font-weight:700;}
+.xz-head{display:flex; align-items:center; gap:8px; margin-bottom:8px;
+  font-family:"Noto Serif TC",serif; font-weight:900; font-size:15px; color:var(--accent);}
+.xz-head img{width:24px; height:24px; border-radius:6px;}
 .chatctx{font-size:12px; color:var(--ink-faint); background:var(--surface-alt); border-radius:999px; padding:5px 12px; margin-bottom:8px; align-self:flex-start;}
 .chatinput{display:flex; gap:8px; padding:10px 0 calc(10px + env(safe-area-inset-bottom)); border-top:1px solid var(--border); background:var(--bg);}
 .chatinput textarea{flex:1; resize:none; border:1px solid var(--border-strong); border-radius:10px; padding:10px 12px; font-size:14.5px; background:var(--surface); color:var(--ink); font-family:inherit; max-height:100px;}

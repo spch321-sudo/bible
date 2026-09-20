@@ -10,7 +10,7 @@ const API = {
   tts : 'https://azure-tts.spch321.workers.dev'        // {voice, rate, sil, silc, sile, text}
 };
 const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
-const VERSION = 'v1.1.5';
+const VERSION = 'v1.1.6';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -25,7 +25,7 @@ function toast(msg, ms){
 
 /* ---------------------------------------------------------------- 語言字串 */
 const I18N = {
-  zh: { app:'321互動聖經', today:'今日', books:'經卷', search:'搜尋', companion:'陪讀', me:'我的',
+  zh: { app:'321互動聖經', today:'今日', books:'經卷', search:'搜尋', companion:'小智', companionFull:'小智AI屬靈同伴', me:'我的',
         ot:'舊約', nt:'新約', ch:'章', chapter:n=>`第 ${n} 章`, verses:'節',
         cont:'繼續閱讀', start:'開始讀經', daily:'今日默想', progress:'讀經進度',
         prev:'上一章', next:'下一章', toc:'目錄', pure:'閱讀方式', note:'註釋',
@@ -34,22 +34,24 @@ const I18N = {
         chnumHint:['每章開頭有淡雅的章題','完全看不到章號，純粹的經文'],
         prevBk:'上一卷', nextBk:'下一卷', bookDone:'已讀完這一卷',
         bm:'書籤', bmAdd:'已加書籤', bmDel:'已移除書籤', myBm:'我的書籤',
-        emptyBm:'還沒有書籤。讀到想記住的地方，按閱讀器上的 🔖 就會把位置記下來。',
+        emptyBm:'還沒有書籤。在閱讀器按 🔖 進入書籤模式，點一下讀到的那一句就記下來。',
+        bmHint:'書籤模式：點一下讀到的那一句就加書籤，再點一下移除。按 🔖 結束。',
+        bmModeOn:'書籤模式開啟', bmModeOff:'書籤模式結束',
         resume:'從上次的地方繼續',
         read:'讀這一章', done:'已讀完本章', markRead:'標記已讀',
         searchPH:'輸入要找的字句…', searchHint:'輸入兩個字以上開始搜尋', noResult:'找不到相符的經文',
         found:n=>`找到 ${n} 節`, loading:'載入中…',
-        hlTitle:'這一句', hlColor:'顏色', hlNote:'寫下默想…', save:'儲存', ask:'問陪讀', del:'刪除畫線', close:'關閉',
+        hlTitle:'這一句', hlColor:'顏色', hlNote:'寫下默想…', save:'儲存', ask:'問小智', del:'刪除畫線', close:'關閉',
         myHl:'我的畫線', myFav:'我的收藏', settings:'設定', font:'字級大小', theme:'主題',
         fonts:['標準','大','特大','超大'], themes:['自動','日','夜','羊皮紙'],
         voice:'朗讀聲音', langLabel:'語言', stats:['已讀章數','畫線','書籤'],
         emptyHl:'還沒有畫線。在經文上點一下就能畫線、寫默想。',
-        emptyFav:'還沒有收藏陪讀的回答。',
+        emptyFav:'還沒有收藏小智的回答。',
         chatPH:'就這段經文提問…', send:'送出', examples:'範例問題',
         ctx:(b,c)=>`目前經文：${b} 第 ${c} 章`, thinking:'小智思想中…',
         ttsFallback:'改用裝置內建語音朗讀', ttsErr:'朗讀服務連不上',
-        chatErr:'陪讀服務連不上，請稍後再試。' },
-  zs: { app:'321互动圣经', today:'今日', books:'经卷', search:'搜索', companion:'陪读', me:'我的',
+        chatErr:'小智連不上，請稍後再試。' },
+  zs: { app:'321互动圣经', today:'今日', books:'经卷', search:'搜索', companion:'小智', companionFull:'小智AI属灵同伴', me:'我的',
         ot:'旧约', nt:'新约', ch:'章', chapter:n=>`第 ${n} 章`, verses:'节',
         cont:'继续阅读', start:'开始读经', daily:'今日默想', progress:'读经进度',
         prev:'上一章', next:'下一章', toc:'目录', pure:'阅读方式', note:'注释',
@@ -58,21 +60,23 @@ const I18N = {
         chnumHint:['每章开头有淡雅的章题','完全看不到章号，纯粹的经文'],
         prevBk:'上一卷', nextBk:'下一卷', bookDone:'已读完这一卷',
         bm:'书签', bmAdd:'已加书签', bmDel:'已移除书签', myBm:'我的书签',
-        emptyBm:'还没有书签。读到想记住的地方，按阅读器上的 🔖 就会把位置记下来。',
+        emptyBm:'还没有书签。在阅读器按 🔖 进入书签模式，点一下读到的那一句就记下来。',
+        bmHint:'书签模式：点一下读到的那一句就加书签，再点一下移除。按 🔖 结束。',
+        bmModeOn:'书签模式开启', bmModeOff:'书签模式结束',
         resume:'从上次的地方继续',
         read:'读这一章', done:'已读完本章', markRead:'标记已读',
         searchPH:'输入要找的字句…', searchHint:'输入两个字以上开始搜索', noResult:'找不到相符的经文',
         found:n=>`找到 ${n} 节`, loading:'载入中…',
-        hlTitle:'这一句', hlColor:'颜色', hlNote:'写下默想…', save:'保存', ask:'问陪读', del:'删除划线', close:'关闭',
+        hlTitle:'这一句', hlColor:'颜色', hlNote:'写下默想…', save:'保存', ask:'问小智', del:'删除划线', close:'关闭',
         myHl:'我的划线', myFav:'我的收藏', settings:'设置', font:'字级大小', theme:'主题',
         fonts:['标准','大','特大','超大'], themes:['自动','日','夜','羊皮纸'],
         voice:'朗读声音', langLabel:'语言', stats:['已读章数','划线','书签'],
         emptyHl:'还没有划线。在经文上点一下就能划线、写默想。',
-        emptyFav:'还没有收藏陪读的回答。',
+        emptyFav:'还没有收藏小智的回答。',
         chatPH:'就这段经文提问…', send:'发送', examples:'范例问题',
         ctx:(b,c)=>`当前经文：${b} 第 ${c} 章`, thinking:'小智思想中…',
         ttsFallback:'改用设备内置语音朗读', ttsErr:'朗读服务连不上',
-        chatErr:'陪读服务连不上，请稍后再试。' }
+        chatErr:'小智连不上，请稍后再试。' }
 };
 const t = () => I18N[state.lang];
 
@@ -130,6 +134,7 @@ function applyChrome(){
   h.classList.toggle('pure', !state.chnum);      // pure = 不顯示章號
   h.classList.toggle('flow', state.flow);
   h.classList.toggle('hidenote', !!state.hidenote);
+  h.classList.toggle('bmmode', bmMode);
   const th = THEMES[state.theme] || 'auto';
   if (th === 'auto') h.removeAttribute('data-theme'); else h.setAttribute('data-theme', th);
   h.setAttribute('lang', state.lang === 'zs' ? 'zh-Hans' : 'zh-Hant');
@@ -237,7 +242,8 @@ function currentAnchor(){
   }
   return null;
 }
-let jumpTo = null;                       // 換頁前先放好要捲到的位置
+let jumpTo = null;
+let bmMode = false;                 // 書籤模式（只存在當下，不寫進設定）
 function anchorEl(a){
   return a ? $(`#reader .sent[data-c="${a.c}"][data-p="${a.p}"][data-s="${a.s}"]`) : null;
 }
@@ -275,7 +281,7 @@ async function render(){
     v.innerHTML = `<div class="empty">載入失敗：${esc(e.message || e)}</div>`;
     console.error(e);
   }
-  if (tab !== 'read') window.scrollTo(0, 0);
+  if (tab !== 'read'){ bmMode = false; document.documentElement.classList.remove('bmmode'); window.scrollTo(0, 0); }
 }
 
 /* ================================================================ 今日 */
@@ -443,11 +449,12 @@ async function viewReader(v, bookId, ch){
       <button class="chtb-btn" id="rdPrev">‹</button>
       <button class="chtb-btn" id="rdNext">›</button>
       <div class="chtb-spacer"></div>
-      <button class="chtb-btn" id="rdBm" title="${esc(L.bm)}">🔖</button>
+      <button class="chtb-btn ${bmMode ? 'on' : ''}" id="rdBm" title="${esc(L.bm)}">🔖</button>
       <button class="chtb-btn ${(state.flow || !state.chnum) ? 'on' : ''}" id="rdMode" title="${esc(L.pure)}">${state.lang === 'zs' ? '净' : '淨'}</button>
       <button class="chtb-btn" id="rdFont">A⁺</button>
       <button class="chtb-btn" id="rdTts">🔊</button>
     </div>
+    ${bmMode ? `<div class="bm-hint">${esc(L.bmHint)}</div>` : ''}
     <div class="chhead">${head}<div class="rule"></div></div>
     <div class="reader" id="reader">${body}</div>
     <div class="chfoot">
@@ -458,13 +465,11 @@ async function viewReader(v, bookId, ch){
 
   $('#rdToc').onclick  = () => go('#/books/' + bookId);
   $('#rdBm').onclick   = () => {
-    const a = currentAnchor(); if (!a) return;
-    const i = user.marks.findIndex(m => m.b === bookId && m.c === a.c && m.p === a.p && m.s === a.s);
-    if (i >= 0){ user.marks.splice(i, 1); toast(t().bmDel); }
-    else { user.marks.push({ b:bookId, c:a.c, p:a.p, s:a.s, t:a.t, ts:Date.now() }); toast(t().bmAdd); }
-    saveUser();
-    const el = anchorEl(a);
-    if (el){ i >= 0 ? el.removeAttribute('data-bm') : el.setAttribute('data-bm', '1'); }
+    bmMode = !bmMode;
+    applyChrome();
+    toast(bmMode ? t().bmModeOn : t().bmModeOff);
+    const y = window.scrollY;
+    render().then(() => window.scrollTo(0, y));
   };
   $('#rdMode').onclick = () => {
     const now = VIEW_CYCLE.findIndex(([f, c]) => f === state.flow && c === state.chnum);
@@ -553,6 +558,7 @@ function markRead(bookId, ch){
 /* ================================================================ 畫線 / 默想 */
 function onSentTap(el){
   const cno = +el.dataset.c || RD.ch;
+  if (bmMode){ toggleBm(el, cno); return; }
   const k = hlKey(RD.book, cno, el.dataset.p, el.dataset.s);
   if (!user.hl[k]){
     user.hl[k] = { c:'gold', n:'', t:el.textContent, b:RD.book, ch:cno, ts:Date.now() };
@@ -561,6 +567,21 @@ function onSentTap(el){
   } else {
     openHlSheet(el);
   }
+}
+/* 書籤：直接點那一句，再點一下移除 */
+function toggleBm(el, cno){
+  const p = +el.dataset.p, sx = +el.dataset.s;
+  const i = user.marks.findIndex(m => m.b === RD.book && m.c === cno && m.p === p && m.s === sx);
+  if (i >= 0){
+    user.marks.splice(i, 1);
+    el.removeAttribute('data-bm');
+    toast(t().bmDel);
+  } else {
+    user.marks.push({ b:RD.book, c:cno, p, s:sx, t:el.textContent.slice(0, 40), ts:Date.now() });
+    el.setAttribute('data-bm', '1');
+    toast(t().bmAdd);
+  }
+  saveUser();
 }
 function openHlSheet(el){
   const L = t();
@@ -711,6 +732,7 @@ async function viewCompanion(v){
   const L = t();
   const b = RD.book ? BOOK[RD.book] : null;
   v.innerHTML = `<div class="chatwrap">
+      <div class="xz-head"><img src="icon-72.png" alt=""><span>${esc(L.companionFull)}</span></div>
       ${b ? `<div class="chatctx">${esc(L.ctx(bname(b), RD.ch))}</div>` : ''}
       <button class="qs-toggle" id="qsBtn">💡 ${esc(L.examples)}</button>
       <div class="qs-panel" id="qsPanel" hidden></div>
@@ -755,6 +777,7 @@ function toggleFav(txt){
   else user.fav.push({ text:txt, b:RD.book, ch:RD.ch, ts:Date.now() });
   saveUser();
 }
+const CHAT_RETRY = [900, 1800];
 /* 代理可能回傳幾種格式，一律寬鬆解析（與 321領導力 的 extractReplyText 相同） */
 function extractReply(d){
   if (!d) return '';
@@ -777,20 +800,31 @@ async function sendChat(text){
     ? '你是「小智」，国度321空中团契的圣经陪读。以321理念（耶稣是我的榜样、圣经是我的准则、圣灵是我的引导；让耶稣作王、让耶稣得着一切的荣耀；建立属神的体系）回应，深入浅出、善用比喻，引用和合本圣经，回答简明。'
     : '你是「小智」，國度321空中團契的聖經陪讀。以321理念（耶穌是我的榜樣、聖經是我的準則、聖靈是我的引導；讓耶穌作王、讓耶穌得著一切的榮耀；建立屬神的體系）回應，深入淺出、善用比喻，引用和合本聖經，回答簡明。')
     + (b ? `（讀者目前在讀：${bname(b)} 第 ${RD.ch} 章）` : '');
-  let reply = '';
-  try{
-    const r = await fetch(API.chat, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        system: sys,
-        messages: chatLog.filter(m => m.text !== t().thinking).slice(-12)
-          .map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.text }))
-      })
-    });
-    if (!r.ok) throw new Error('proxy ' + r.status);
-    reply = extractReply(await r.json().catch(() => null));
-  }catch(e){ reply = ''; }
-  chatLog[chatLog.length - 1] = { role:'ai', text: reply || t().chatErr };
+  const payload = JSON.stringify({
+    system: sys,
+    messages: chatLog.filter(m => m.text !== t().thinking).slice(-12)
+      .map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.text }))
+  });
+  /* Worker 冷啟動時第一次呼叫常常會失敗，跟朗讀一樣退幾步再試。
+     真的連不上就把原因寫出來（http 500／逾時…），才知道是哪一邊的問題。 */
+  let reply = '', why = '';
+  for (let a = 0; a <= CHAT_RETRY.length; a++){
+    try{
+      const r = await fetch(API.chat, {
+        method:'POST', headers:{'Content-Type':'application/json'}, body: payload
+      });
+      if (!r.ok) throw new Error('http ' + r.status);
+      const data = await r.json().catch(() => null);
+      reply = extractReply(data);
+      if (!reply) why = '回覆是空的';
+      break;
+    }catch(e){
+      why = (e && e.message) ? String(e.message) : 'network';
+      if (a === CHAT_RETRY.length) break;
+      await new Promise(r => setTimeout(r, CHAT_RETRY[a]));
+    }
+  }
+  chatLog[chatLog.length - 1] = { role:'ai', text: reply || (t().chatErr + (why ? '（' + why + '）' : '')) };
   chatBusy = false; paintChat();
 }
 
