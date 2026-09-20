@@ -7,10 +7,11 @@
    ========================================================================== */
 const API = {
   chat: 'https://xiaozhi-proxy.spch321.workers.dev',   // {system, messages:[{role,content}]}
-  tts : 'https://azure-tts.spch321.workers.dev'        // {voice, rate, sil, silc, sile, text}
+  tts : 'https://azure-tts.spch321.workers.dev',       // {voice, rate, sil, silc, sile, text}
+  team: 'https://bible-team.spch321.workers.dev'       // 235 團隊同步（見 team-worker.js 的部署說明）
 };
 const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
-const VERSION = 'v1.5.0';
+const VERSION = 'v2.0.0';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -44,7 +45,9 @@ const I18N = {
         searchPH:'輸入要找的字句…', searchHint:'輸入兩個字以上開始搜尋', noResult:'找不到相符的經文',
         found:n=>`找到 ${n} 節`, loading:'載入中…',
         hlTitle:'這一句', hlColor:'顏色', hlNote:'寫下默想…', save:'儲存', ask:'問小智', del:'刪除畫線', close:'關閉',
-        myHl:'我的畫線', myFav:'我的收藏', settings:'設定', font:'字級大小', theme:'主題',
+        hlSpan:'範圍', spanUnit:n=>`${n} 句`, spanV:'整節', spanP:'整段',
+        spanHint:'按 ＋ 往下多畫一句，畫線就不只一句，可以連成一整段。',
+        team:'團隊', myHl:'我的畫線', myFav:'我的收藏', settings:'設定', font:'字級大小', theme:'主題',
         fonts:['標準','大','特大','超大'], themes:['自動','日','夜','羊皮紙'],
         voice:'朗讀聲音', langLabel:'語言', stats:['已讀章數','畫線','書籤'],
         diag:'連線測試', diagRun:'測試小智與朗讀', diagBusy:'測試中…',
@@ -54,6 +57,7 @@ const I18N = {
         blessHint:'可以自己寫，也可以請小智照這節經文寫一段關懷祝福；改完卡片會立刻跟著變。',
         useMine:'用我的領受', clearText:'不要內文',
         cardLines:'卡片上下的署名', cardTopL:'上面（團體名）', cardSignL:'下面（署名）',
+        cardToL:'稱呼（這張圖寫給誰）', cardToPH:'例：親愛的珍姐',
         cardLinesHint:'留空就用預設。例如下面改成「愛你的財哥、珍姐　敬上」。',
         cardShare:'分享', cardSave:'存到相簿',
         cardHint:'按「分享」可直接選 LINE／IG／FB 傳出去；也可以長按上面的圖片存起來。',
@@ -107,7 +111,9 @@ const I18N = {
         searchPH:'输入要找的字句…', searchHint:'输入两个字以上开始搜索', noResult:'找不到相符的经文',
         found:n=>`找到 ${n} 节`, loading:'载入中…',
         hlTitle:'这一句', hlColor:'颜色', hlNote:'写下默想…', save:'保存', ask:'问小智', del:'删除划线', close:'关闭',
-        myHl:'我的划线', myFav:'我的收藏', settings:'设置', font:'字级大小', theme:'主题',
+        hlSpan:'范围', spanUnit:n=>`${n} 句`, spanV:'整节', spanP:'整段',
+        spanHint:'按 ＋ 往下多划一句，划线就不只一句，可以连成一整段。',
+        team:'团队', myHl:'我的划线', myFav:'我的收藏', settings:'设置', font:'字级大小', theme:'主题',
         fonts:['标准','大','特大','超大'], themes:['自动','日','夜','羊皮纸'],
         voice:'朗读声音', langLabel:'语言', stats:['已读章数','划线','书签'],
         diag:'连线测试', diagRun:'测试小智与朗读', diagBusy:'测试中…',
@@ -117,6 +123,7 @@ const I18N = {
         blessHint:'可以自己写，也可以请小智照这节经文写一段关怀祝福；改完卡片会立刻跟着变。',
         useMine:'用我的领受', clearText:'不要内文',
         cardLines:'卡片上下的署名', cardTopL:'上面（团体名）', cardSignL:'下面（署名）',
+        cardToL:'称呼（这张图写给谁）', cardToPH:'例：亲爱的珍姐',
         cardLinesHint:'留空就用预设。例如下面改成“爱你的财哥、珍姐　敬上”。',
         cardShare:'分享', cardSave:'存到相册',
         cardHint:'按“分享”可直接选 LINE／IG／FB 传出去；也可以长按上面的图片存起来。',
@@ -172,7 +179,9 @@ const I18N = {
         found:n=>`${n} verse${n === 1 ? '' : 's'} found`, loading:'Loading…',
         hlTitle:'This sentence', hlColor:'Colour', hlNote:'Write your reflection…', save:'Save',
         ask:'Ask Xiaozhi', del:'Remove highlight', close:'Close',
-        myHl:'My highlights', myFav:'My saved replies', settings:'Settings', font:'Text size', theme:'Theme',
+        hlSpan:'Range', spanUnit:n=>`${n} sentence${n === 1 ? '' : 's'}`, spanV:'Whole verse', spanP:'Whole paragraph',
+        spanHint:'Tap ＋ to take in the next sentence, so a highlight can cover a whole passage.',
+        team:'Team', myHl:'My highlights', myFav:'My saved replies', settings:'Settings', font:'Text size', theme:'Theme',
         fonts:['Normal','Large','Larger','Largest'], themes:['Auto','Day','Night','Parchment'],
         voice:'Reading voice', langLabel:'Language', stats:['Chapters read','Highlights','Bookmarks'],
         diag:'Connection test', diagRun:'Test Xiaozhi and read-aloud', diagBusy:'Testing…',
@@ -182,6 +191,7 @@ const I18N = {
         blessHint:'Write it yourself, or let Xiaozhi write a short blessing from this verse. The card updates as you type.',
         useMine:'Use my reflection', clearText:'No body text',
         cardLines:'Lines above and below', cardTopL:'Top (your fellowship)', cardSignL:'Bottom (signature)',
+        cardToL:'To (who this card is for)', cardToPH:'e.g. Dear Joy',
         cardLinesHint:'Leave blank for the default — for example, “With love, Alex & Joy”.',
         cardShare:'Share', cardSave:'Save to photos',
         cardHint:'Tap Share to send it straight to LINE, Instagram or Facebook — or press and hold the image to save it.',
@@ -244,13 +254,14 @@ const VOICES = {
 
 const DEFAULTS = { lang:'zh', font:0, theme:0, flow:false, shCh:true, shV:true, hidenote:false,
                    cardTpl:'navy', cardSize:'t', cardBorder:'classic', cardFs:1,
-                   cardTop:'', cardSign:'',
+                   cardTop:'', cardSign:'', cardTo:'',
                    voice:{zh:0, zs:0, en:0} };
 /* 「淨」鍵依序切換的四種組合：[整卷連讀?, 顯示章號?] */
 /* 「淨」鍵循環的四種常用讀法：[整卷連讀, 顯示章, 顯示節] */
 const VIEW_CYCLE = [[false, true, true], [false, true, false], [false, false, false], [true, false, false]];
 let state = Object.assign({}, DEFAULTS);
-let user  = { progress:{}, hl:{}, fav:[], marks:[], last:null };
+let user  = { progress:{}, hl:{}, fav:[], marks:[], last:null,
+               uid:'', nick:'', teams:[], pts:0, badges:[], acts:{} };
 let TOC = [], BOOK = {}, SHARD = {};   // SHARD['zh|law'] = {BookId:[chapters]}
 
 function loadState(){
@@ -275,8 +286,13 @@ function saveState(){ try{ localStorage.setItem('ib_state', JSON.stringify(state
 function loadUser(){
   try{
     const u = JSON.parse(localStorage.getItem('ib_user') || '{}');
-    user = Object.assign({progress:{}, hl:{}, fav:[], marks:[], last:null}, u);
+    user = Object.assign({progress:{}, hl:{}, fav:[], marks:[], last:null,
+                          uid:'', nick:'', teams:[], pts:0, badges:[], acts:{}}, u);
     if (!Array.isArray(user.marks)) user.marks = [];
+    if (!Array.isArray(user.teams)) user.teams = [];
+    if (!Array.isArray(user.badges)) user.badges = [];
+    if (!user.acts || typeof user.acts !== 'object') user.acts = {};
+    if (!user.uid) user.uid = 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
   }catch(e){}
 }
 function saveUser(){ try{ localStorage.setItem('ib_user', JSON.stringify(user)); }catch(e){} }
@@ -296,7 +312,7 @@ function applyChrome(){
   h.setAttribute('data-lang', state.lang);
   $('#brandName').textContent = t().app;
   document.title = t().app;
-  ['today','books','search','companion','me'].forEach(k => { const e = $('#tab-' + k); if (e) e.textContent = t()[k]; });
+  ['today','books','search','companion','team','me'].forEach(k => { const e = $('#tab-' + k); if (e) e.textContent = t()[k]; });
   $$('#langswitch button').forEach(b => b.classList.toggle('active', b.dataset.lang === state.lang));
 }
 
@@ -446,6 +462,7 @@ async function render(){
     else if (tab === 'read')      await viewReader(v, r[1], parseInt(r[2] || '1', 10));
     else if (tab === 'search')    await viewSearch(v);
     else if (tab === 'companion') await viewCompanion(v);
+    else if (tab === 'team')      await viewTeam(v, r[1], r[2]);
     else if (tab === 'me')        await viewMe(v);
     else if (tab === 'studio')    await viewStudio(v);
     else { go('#/today'); return; }
@@ -576,22 +593,50 @@ const BLOCK_CLASS = { p:'prose', q1:'q1', q2:'q2', d:'dline' };
 function chapterHTML(bookId, cno, chap, withHead){
   const bm = new Set(user.marks.filter(m => m.b === bookId && m.c === cno)
                                .map(m => hlKey(m.b, m.c, m.p, m.s)));
-  const body = chap.map((bl, bi) => {
-    if (bl[0] === 'b') return '<div class="stanza"></div>';
-    let inner = '', notes = '', si = 0, curV = 0;
+  /* 先把整章的句子攤成一列，畫線才能跨句、跨段落連成一整段 */
+  const flat = [];
+  chap.forEach((bl, bi) => {
+    if (bl[0] === 'b') return;
+    let si = 0, curV = 0;
     for (let j = 1; j < bl.length; j += 2){
       const vno = bl[j], txt = bl[j + 1];
-      if (vno){ inner += `<span class="vn">${vno}</span>`; curV = vno; }
+      let first = true;
       for (const sx of splitSentences(txt)){
-        const k = hlKey(bookId, cno, bi, si);
-        const h = user.hl[k];
-        inner += `<span class="sent" data-c="${cno}" data-p="${bi}" data-s="${si}" data-v="${curV}"`
-               + `${h ? ` data-hl="1" data-color="${h.c}"` : ''}${bm.has(k) ? ' data-bm="1"' : ''}`
-               + `>${markNotes(esc(sx))}</span>`;
-        if (h && h.n) notes += `<div class="hl-note" data-c="${cno}" data-p="${bi}" data-s="${si}" data-color="${h.c}">${esc(h.n)}</div>`;
-        si++;
+        if (vno && first) curV = vno;
+        flat.push({ bi, si, vn:(vno && first) ? vno : 0, v:curV, tx:sx });
+        si++; first = false;
       }
     }
+  });
+  /* 每一句是被哪一條畫線蓋住的（h.sp = 這條畫線含幾句） */
+  const own = {};
+  flat.forEach((f, i) => {
+    const k = hlKey(bookId, cno, f.bi, f.si);
+    const h = user.hl[k];
+    if (!h) return;
+    const n = Math.max(1, +h.sp || 1);
+    for (let d = 0; d < n && i + d < flat.length; d++){
+      const g = flat[i + d];
+      own[g.bi + '|' + g.si] = { k, h, head:d === 0, p0:f.bi, s0:f.si };
+    }
+  });
+  const byBlock = {};
+  flat.forEach(f => { (byBlock[f.bi] = byBlock[f.bi] || []).push(f); });
+
+  const body = chap.map((bl, bi) => {
+    if (bl[0] === 'b') return '<div class="stanza"></div>';
+    let inner = '', notes = '';
+    (byBlock[bi] || []).forEach(f => {
+      if (f.vn) inner += `<span class="vn">${f.vn}</span>`;
+      const k = hlKey(bookId, cno, bi, f.si);
+      const o = own[bi + '|' + f.si];
+      inner += `<span class="sent" data-c="${cno}" data-p="${bi}" data-s="${f.si}" data-v="${f.v}"`
+             + (o ? ` data-hl="1" data-color="${o.h.c}"${o.head ? '' : ` data-op="${o.p0}" data-os="${o.s0}"`}` : '')
+             + (bm.has(k) ? ' data-bm="1"' : '')
+             + `>${markNotes(esc(f.tx))}</span>`;
+      if (o && o.head && o.h.n)
+        notes += `<div class="hl-note" data-c="${cno}" data-p="${bi}" data-s="${f.si}" data-color="${o.h.c}">${esc(o.h.n)}</div>`;
+    });
     return `<p class="${BLOCK_CLASS[bl[0]] || 'prose'}" data-c="${cno}" data-p="${bi}">${inner}</p>${notes}`;
   }).join('');
   const head = withHead ? `<h2 class="ch" data-c="${cno}">${esc(chapLabel(bookId, cno))}</h2>` : '';
@@ -685,13 +730,14 @@ async function viewReader(v, bookId, ch){
     ? (readOfBook(bookId) === b.ch ? L.bookDone : '')
     : (user.progress[bookId + '-' + ch] ? L.done : '');
 
-  window.scrollTo(0, 0);
+  if (!(spk.on && spk.items.length)) window.scrollTo(0, 0);
   const want = jumpTo; jumpTo = null;
   if (!(want && scrollToAnchor(want)) && flow && ch > 1){
     const target = $(`#reader p[data-c="${ch}"]`);
     if (target) requestAnimationFrame(() => target.scrollIntoView({ block:'start' }));
   }
   watchProgress(bookId, flow, b.ch);
+  ttsRebind();
 }
 
 /* 讀到哪裡就記到哪裡。分章模式捲到底即算讀完；
@@ -727,15 +773,16 @@ function watchProgress(bookId, flow, total){
 
 function markRead(bookId, ch){
   const k = bookId + '-' + ch;
-  if (!user.progress[k]){ user.progress[k] = Date.now(); saveUser(); }
+  if (!user.progress[k]){ user.progress[k] = Date.now(); saveUser(); teamPingSoon(); }
 }
 /* ================================================================ 畫線 / 默想 */
 function onSentTap(el){
   const cno = +el.dataset.c || RD.ch;
   if (bmMode){ toggleBm(el, cno); return; }
   const k = hlKey(RD.book, cno, el.dataset.p, el.dataset.s);
-  if (!user.hl[k]){
-    user.hl[k] = { c:'gold', n:'', t:el.textContent, b:RD.book, ch:cno, v:+el.dataset.v || 0, ts:Date.now() };
+  if (!user.hl[k] && el.dataset.op == null){
+    user.hl[k] = { c:'gold', n:'', sp:1, t:el.textContent, b:RD.book, ch:cno,
+                   v:+el.dataset.v || 0, ts:Date.now() };
     el.setAttribute('data-hl', '1'); el.setAttribute('data-color', 'gold');
     saveUser();
   } else {
@@ -757,10 +804,92 @@ function toggleBm(el, cno){
   }
   saveUser();
 }
+/* 同一章的句子，照畫面上的先後排成一列（分章模式與整卷連讀共用） */
+function sentList(cno){
+  return $$('#reader .sent').filter(e => (+e.dataset.c || RD.ch) === cno);
+}
+/* 畫線的顏色與範圍直接改在畫面上，不重畫整章。
+   重畫會把朗讀中那一段的顏色標示洗掉，也會把捲軸彈回最上面，
+   使用者就覺得「一畫線，朗讀就斷了」。 */
+function paintHl(cno){
+  const list = sentList(cno);
+  const cover = new Array(list.length).fill(null);
+  list.forEach((el, i) => {
+    const h = user.hl[hlKey(RD.book, cno, el.dataset.p, el.dataset.s)];
+    if (!h) return;
+    const n = Math.max(1, +h.sp || 1);
+    for (let d = 0; d < n && i + d < list.length; d++)
+      cover[i + d] = { h, head:d === 0, p0:el.dataset.p, s0:el.dataset.s };
+  });
+  list.forEach((el, i) => {
+    const o = cover[i];
+    if (o){
+      el.setAttribute('data-hl', '1'); el.setAttribute('data-color', o.h.c);
+      if (o.head){ el.removeAttribute('data-op'); el.removeAttribute('data-os'); }
+      else { el.setAttribute('data-op', o.p0); el.setAttribute('data-os', o.s0); }
+    } else {
+      ['data-hl','data-color','data-op','data-os'].forEach(a => el.removeAttribute(a));
+    }
+  });
+  paintNotes(cno, list, cover);
+}
+function paintNotes(cno, list, cover){
+  $$('#reader .hl-note').forEach(n => { if ((+n.dataset.c || RD.ch) === cno) n.remove(); });
+  let curP = null, after = null;
+  list.forEach((el, i) => {
+    const o = cover[i];
+    if (!o || !o.head || !o.h.n) return;
+    const p = el.closest('p'); if (!p) return;
+    if (p !== curP){ curP = p; after = p; }
+    const d = document.createElement('div');
+    d.className = 'hl-note';
+    d.dataset.c = cno; d.dataset.p = el.dataset.p; d.dataset.s = el.dataset.s;
+    d.setAttribute('data-color', o.h.c);
+    d.textContent = o.h.n;
+    d.onclick = () => openHlSheet(el);
+    after.after(d); after = d;
+  });
+}
+/* 把畫線含的幾句接回一段完整的經文（卡片、我的畫線、問小智都用這一段） */
+function spanApply(cno, el, h, n){
+  const list = sentList(cno);
+  const i = list.indexOf(el);
+  if (i < 0) return h;
+  n = Math.max(1, Math.min(n, list.length - i));
+  const part = list.slice(i, i + n);
+  h.sp = n;
+  h.t = part.map(e => e.textContent).join(isEN() ? ' ' : '').replace(/\s+/g, ' ').trim();
+  h.v = +part[0].dataset.v || 0;
+  const lastV = +part[part.length - 1].dataset.v || 0;
+  h.v2 = lastV > h.v ? lastV : 0;
+  return h;
+}
+/* 整節：這一節剩下的句子都畫進來；整段：這一段剩下的句子都畫進來 */
+function spanTo(cno, el, mode){
+  const list = sentList(cno);
+  const i = list.indexOf(el);
+  if (i < 0) return 1;
+  const v0 = el.dataset.v, p0 = el.dataset.p;
+  let n = 1;
+  while (i + n < list.length){
+    const e = list[i + n];
+    if (mode === 'v' ? e.dataset.v !== v0 : e.dataset.p !== p0) break;
+    n++;
+  }
+  return n;
+}
+
 function openHlSheet(el){
   const L = t();
-  const k = hlKey(RD.book, +el.dataset.c || RD.ch, el.dataset.p, el.dataset.s);
+  const cno = +el.dataset.c || RD.ch;
+  /* 點到的是被別條畫線蓋住的句子，就打開那一條 */
+  if (el.dataset.op != null){
+    const own = $(`#reader .sent[data-c="${cno}"][data-p="${el.dataset.op}"][data-s="${el.dataset.os}"]`);
+    if (own && own !== el) return openHlSheet(own);
+  }
+  const k = hlKey(RD.book, cno, el.dataset.p, el.dataset.s);
   const h = user.hl[k]; if (!h) return;
+  if (!h.sp) h.sp = 1;
   const mask = document.createElement('div'); mask.className = 'hlsheet-mask';
   mask.innerHTML = `<div class="hlsheet-card">
     <div class="hlsheet-title">${esc(L.hlTitle)}</div>
@@ -768,6 +897,15 @@ function openHlSheet(el){
     <div class="hlsheet-colorrow"><span class="hlsheet-colorlabel">${esc(L.hlColor)}</span>
       <div class="hlsheet-colors">${HL_COLORS.map(c =>
         `<button class="hlswatch ${h.c === c ? 'active' : ''}" data-c="${c}" style="background:${HL_SWATCH[c]}"></button>`).join('')}</div></div>
+    <div class="hlsheet-colorrow"><span class="hlsheet-colorlabel">${esc(L.hlSpan)}</span>
+      <div class="spanrow">
+        <button class="spanbtn" data-sp="-1">－</button>
+        <span class="spannum" id="spanNum">${esc(L.spanUnit(h.sp))}</span>
+        <button class="spanbtn" data-sp="1">＋</button>
+        <button class="spanbtn wide" data-sp="v">${esc(L.spanV)}</button>
+        <button class="spanbtn wide" data-sp="p">${esc(L.spanP)}</button>
+      </div></div>
+    <div class="hl-hint" style="margin:-2px 0 10px">${esc(L.spanHint)}</div>
     <textarea class="hlsheet-ta" placeholder="${esc(L.hlNote)}">${esc(h.n || '')}</textarea>
     <div class="hlsheet-acts">
       <button class="btn primary" data-a="save">${esc(L.save)}</button>
@@ -786,14 +924,24 @@ function openHlSheet(el){
     color = b.dataset.c;
     $$('.hlswatch', mask).forEach(x => x.classList.toggle('active', x === b));
     h.c = color; saveUser();
-    el.setAttribute('data-color', color);
-    const nt = $(`#reader .hl-note[data-c="${el.dataset.c}"][data-p="${el.dataset.p}"][data-s="${el.dataset.s}"]`);
-    if (nt) nt.setAttribute('data-color', color);
+    paintHl(cno);
+  });
+  /* 範圍：往下多畫一句、少畫一句，或一次畫整節／整段 */
+  const quote = $('.hlsheet-quote', mask), num = $('#spanNum', mask);
+  const setSpan = n => {
+    spanApply(cno, el, h, n); saveUser();
+    paintHl(cno);
+    if (quote) quote.textContent = h.t;
+    if (num) num.textContent = t().spanUnit(h.sp);
+  };
+  $$('[data-sp]', mask).forEach(b => b.onclick = () => {
+    const v = b.dataset.sp;
+    setSpan(v === 'v' || v === 'p' ? spanTo(cno, el, v) : (h.sp || 1) + (+v));
   });
   const ta = $('.hlsheet-ta', mask);
   const commit = () => {
     h.c = color; h.n = ta.value.trim(); saveUser();
-    mask.remove(); render();
+    mask.remove(); paintHl(cno);
   };
   $$('[data-a]', mask).forEach(b => b.onclick = () => {
     const a = b.dataset.a;
@@ -803,7 +951,7 @@ function openHlSheet(el){
       mask.remove(); openStudio(h);
     }
     else if (a === 'close') mask.remove();
-    else if (a === 'del'){ delete user.hl[k]; saveUser(); mask.remove(); render(); }
+    else if (a === 'del'){ delete user.hl[k]; saveUser(); mask.remove(); paintHl(cno); }
     else if (a === 'ask'){
       h.c = color; h.n = ta.value.trim(); saveUser(); mask.remove();
       chatPending = isEN() ? `Help me meditate on this verse: “${h.t}”`
@@ -906,7 +1054,8 @@ function chapLabel(bookId, n){
 function cardRef(h){
   const b = BOOK[h.b];
   const nm = b ? bname(b) : h.b;
-  return h.v ? `${nm} ${h.ch}:${h.v}` : (h.b === 'Psalms' ? chapLabel(h.b, h.ch) : `${nm} ${t().chapter(h.ch)}`);
+  const vv = (h.v2 && h.v2 > h.v) ? `${h.v}-${h.v2}` : h.v;   // 畫線跨節就寫成 3:16-17
+  return h.v ? `${nm} ${h.ch}:${vv}` : (h.b === 'Psalms' ? chapLabel(h.b, h.ch) : `${nm} ${t().chapter(h.ch)}`);
 }
 function rr(ctx, x, y, w, h, r){
   ctx.beginPath(); ctx.moveTo(x + r, y);
@@ -1052,11 +1201,25 @@ function drawVerseCard(cv, h, W, H){
     ctx.beginPath(); ctx.moveTo(x0, grpY - 9 * F); ctx.lineTo(x0 + d * 30 * F, grpY - 9 * F); ctx.stroke();
   });
 
+  /* 稱呼（若有）畫在團契名底下、經文上面，像一封信的開頭 */
+  const toName = (state.cardTo || '').trim();
+  if (toName){
+    let ts2 = Math.round(40 * F);
+    ctx.textAlign = 'center'; ctx.fillStyle = T.gold;
+    while (ts2 > Math.round(22 * F)){
+      ctx.font = `600 ${ts2}px ${serif}`;
+      if (ctx.measureText(toName).width <= iw) break;
+      ts2 -= Math.round(2 * F);
+    }
+    ctx.font = `600 ${ts2}px ${serif}`;
+    ctx.fillText(toName, W / 2, pad + Math.round(132 * F));
+  }
+
   /* 版位：經文＋領受垂直置中 */
   const hasSticker = photoImg && photoMode === 'sticker' && !suppressSticker;
   const stkBottom = hasSticker && stkPos !== 'tl' && stkPos !== 'tr';
   const liftRoom = stkBottom ? Math.round(W * stkSize * stkRatio()) + Math.round(30 * F) : 0;
-  const topRoom = pad + Math.round(100 * F), botRoom = pad + Math.round(70 * F) + liftRoom;
+  const topRoom = pad + Math.round((toName ? 176 : 100) * F), botRoom = pad + Math.round(70 * F) + liftRoom;
   const room = H - topRoom - botRoom;
   const FB = cardFs();          /* 領受字級（經文不變，版面才不會被擠掉） */
   /* 經文本身可能已經帶了引號（例如神說的話），不要再包一層 */
@@ -1742,7 +1905,11 @@ async function blessWrite(){
     : state.lang === 'zs'
     ? '你是「小智」，国度321空中团契的属灵同伴。请照使用者给的这节经文，写一段温暖的关怀祝福，送给弟兄姊妹。要求：先用一两句点出这节经文里神的心意，再写一句贴近生活的祝福，最后用一句祝福收尾。总共三到四句、120 字以内，口语、温暖、不说教，不要标题、不要条列、不要引号、不要再抄一次经文。'
     : '你是「小智」，國度321空中團契的屬靈同伴。請照使用者給的這節經文，寫一段溫暖的關懷祝福，送給弟兄姊妹。要求：先用一兩句點出這節經文裡神的心意，再寫一句貼近生活的祝福，最後用一句祝福收尾。總共三到四句、120 字以內，口語、溫暖、不說教，不要標題、不要條列、不要引號、不要再抄一次經文。';
-  const ask = L3('經文：', '经文：', 'Verse: ') + studioItem.t + ' (' + cardRef(studioItem) + ')';
+  const who = (state.cardTo || '').trim();
+  const ask = L3('經文：', '经文：', 'Verse: ') + studioItem.t + ' (' + cardRef(studioItem) + ')'
+            + (who ? L3(`\n這段話是寫給「${who}」的，請直接對他說話，但不要再寫一次稱呼。`,
+                        `\n这段话是写给“${who}”的，请直接对他说话，但不要再写一次称呼。`,
+                        `\nThis is written for "${who}" — speak directly to them, but do not repeat the greeting.`) : '');
   let out = '', why = '';
   for (let a = 0; a <= CHAT_RETRY.length; a++){
     try{
@@ -1812,7 +1979,10 @@ async function viewStudio(v){
 
     <div class="section-title">${esc(L.cardLines)}</div>
     <div class="card">
-      <div class="muted" style="font-size:12px;margin-bottom:6px">${esc(L.cardTopL)}</div>
+      <div class="muted" style="font-size:12px;margin-bottom:6px">${esc(L.cardToL)}</div>
+      <input class="cardinput" id="cardTo" value="${esc(state.cardTo || '')}"
+             placeholder="${esc(L.cardToPH)}">
+      <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.cardTopL)}</div>
       <input class="cardinput" id="cardTop" value="${esc(state.cardTop || '')}"
              placeholder="${esc(DEF_TOP())}">
       <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.cardSignL)}</div>
@@ -1930,6 +2100,7 @@ async function viewStudio(v){
     let tm = null;
     e.oninput = () => { clearTimeout(tm); tm = setTimeout(() => { state[key] = e.value; saveState(); renderCard(studioItem); }, 400); };
   };
+  bindInput('cardTo', 'cardTo');
   bindInput('cardTop', 'cardTop');
   bindInput('cardSign', 'cardSign');
   $('#recBtn').onclick = toggleRec;
@@ -1939,6 +2110,798 @@ async function viewStudio(v){
   bind('[data-rm]',   b => rmRec(b.dataset.rm));
 }
 function openStudio(h){ studioItem = h; studioNote = h.n || ''; go('#/studio'); }
+
+/* ================================================================ 235 團隊
+   兩個人成為屬靈同伴（2），三個人建立屬靈父母兒女的關係（3），
+   五重職份成為團隊（5）。一起委身讀經、彼此分享、代禱、關懷問責。
+   資料放在自己的 Cloudflare Worker（team-worker.js），只存暱稱、進度數字與文字，
+   連不上時就顯示上一次同步下來的內容，讀經本身完全不受影響。 */
+const TEAM_L = {
+  zh:{
+    t235:'235 團隊', mine:'我的團隊', none:'還沒有加入任何團隊',
+    intro:'兩個人成為屬靈同伴，三個人建立屬靈父母兒女的關係，五重職份成為團隊。一起委身讀經、彼此分享、代禱、關懷問責。',
+    kinds:{ '2':'屬靈同伴', '3':'屬靈父母兒女', '5':'五重職份團隊' },
+    kindD:{ '2':'一對一，每天彼此看得見、彼此問責。',
+            '3':'屬靈父母帶屬靈兒女，生命傳承。',
+            '5':'五重職份的同工團隊，一起服侍。' },
+    nick:'我的暱稱', nickPH:'弟兄姊妹怎麼稱呼你', nickHint:'隊友在團隊裡看到的就是這個名字。',
+    create:'建立團隊', join:'加入團隊', tname:'團隊名稱', tnamePH:'例：晨光同行',
+    ttype:'團隊類型', code:'邀請碼', codePH:'六碼邀請碼', codeHint:'把這六碼給要加入的人，他在「加入團隊」輸入就進來了。',
+    copy:'複製邀請碼', copied:'已複製邀請碼', doJoin:'加入', doCreate:'建立',
+    needNick:'請先填上你的暱稱', needName:'請填團隊名稱', needCode:'請填六碼邀請碼',
+    joined:'已加入團隊', created:'團隊建立好了',
+    goal:'讀經目標', noGoal:'還沒有設定共同目標', setGoal:'設定目標', editGoal:'改目標', clearGoal:'取消目標',
+    gTypes:{ daily:'每天讀幾章', book:'指定書卷期限', year:'一年讀經計畫', passage:'每天一段共讀' },
+    gDailyN:'每天幾章', gBook:'書卷', gDue:'截止日', gPassage:'今天共讀',
+    gChapter:'第幾章', gSave:'存下目標', gTitlePH:'目標名稱（可留空）',
+    todayDone:'今天讀了', chUnit:n=>`${n} 章`, ofN:(a,b)=>`${a} / ${b}`,
+    teamToday:(a,b)=>`全隊 ${b} 人，今天 ${a} 人讀了`,
+    tabs:{ feed:'分享', pray:'代禱', wall:'見證牆', reward:'獎勵', member:'成員' },
+    shPH:'今天讀到哪一句、神對你說了什麼…', prPH:'寫下代禱事項，隊友會為你禱告…',
+    caPH:'寫一句關懷的話…', wiPH:'寫下這次的見證，神在你身上做了什麼…',
+    send:'送出', sending:'送出中…', posted:'送出了', amen:'阿們', replyPH:'回應…',
+    reply:'回應', delPost:'刪除', delAsk:'要刪掉這一則嗎？',
+    noFeed:'還沒有人分享。第一個開口的，往往最蒙恩。',
+    noPray:'還沒有代禱事項。', noWall:'見證牆還是空的——達成目標就可以把領受貼上來。',
+    careT:'彼此關懷問責', careOk:'全隊這兩天都有讀經，感謝主。',
+    careMsg:(n,d)=>`${n} 已經 ${d} 天沒有讀經了`, careGo:'送出關懷', careNew:'今天還沒讀',
+    careSent:'關懷送出了', askXZ:'請小智代寫', writing:'小智寫作中…',
+    pts:'積分', badge:'徽章', rank:'排行', noBadge:'還沒有徽章，今天讀一章就開始了。',
+    reward:'獎勵辦法', addReward:'新增獎勵', rwTitle:'獎勵內容', rwTitlePH:'例：全隊一起吃飯慶祝',
+    rwCond:'達成條件', rwCondPH:'例：一個月讀完約翰福音', rwAdd:'加進去', rwGot:'已達成',
+    noReward:'隊長還沒有設獎勵。', rwMark:'標記達成',
+    owner:'隊長', member:'成員', leave:'離開團隊', leaveAsk:'要離開這個團隊嗎？離開後就看不到團隊的內容了。',
+    kick:'請出團隊', kickAsk:'要請這位隊友離開嗎？', rename:'改團隊名稱',
+    left:'已離開團隊', syncing:'同步中…', synced:'已同步',
+    err:'連不上團隊伺服器', offline:'現在連不上，下面是上次同步的內容。',
+    notSet:'團隊功能還沒有設定好：請先照 team-worker.js 的說明建立 Worker。',
+    never:'還沒開始讀', dAgo:n=>n===0?'今天':(n===1?'昨天':`${n} 天前`),
+    verseFrom:'附上經文', refresh:'重新整理', shareInvite:'邀請隊友'
+  },
+  zs:{
+    t235:'235 团队', mine:'我的团队', none:'还没有加入任何团队',
+    intro:'两个人成为属灵同伴，三个人建立属灵父母儿女的关系，五重职份成为团队。一起委身读经、彼此分享、代祷、关怀问责。',
+    kinds:{ '2':'属灵同伴', '3':'属灵父母儿女', '5':'五重职份团队' },
+    kindD:{ '2':'一对一，每天彼此看得见、彼此问责。',
+            '3':'属灵父母带属灵儿女，生命传承。',
+            '5':'五重职份的同工团队，一起服侍。' },
+    nick:'我的昵称', nickPH:'弟兄姊妹怎么称呼你', nickHint:'队友在团队里看到的就是这个名字。',
+    create:'建立团队', join:'加入团队', tname:'团队名称', tnamePH:'例：晨光同行',
+    ttype:'团队类型', code:'邀请码', codePH:'六码邀请码', codeHint:'把这六码给要加入的人，他在“加入团队”输入就进来了。',
+    copy:'复制邀请码', copied:'已复制邀请码', doJoin:'加入', doCreate:'建立',
+    needNick:'请先填上你的昵称', needName:'请填团队名称', needCode:'请填六码邀请码',
+    joined:'已加入团队', created:'团队建立好了',
+    goal:'读经目标', noGoal:'还没有设定共同目标', setGoal:'设定目标', editGoal:'改目标', clearGoal:'取消目标',
+    gTypes:{ daily:'每天读几章', book:'指定书卷期限', year:'一年读经计划', passage:'每天一段共读' },
+    gDailyN:'每天几章', gBook:'书卷', gDue:'截止日', gPassage:'今天共读',
+    gChapter:'第几章', gSave:'存下目标', gTitlePH:'目标名称（可留空）',
+    todayDone:'今天读了', chUnit:n=>`${n} 章`, ofN:(a,b)=>`${a} / ${b}`,
+    teamToday:(a,b)=>`全队 ${b} 人，今天 ${a} 人读了`,
+    tabs:{ feed:'分享', pray:'代祷', wall:'见证墙', reward:'奖励', member:'成员' },
+    shPH:'今天读到哪一句、神对你说了什么…', prPH:'写下代祷事项，队友会为你祷告…',
+    caPH:'写一句关怀的话…', wiPH:'写下这次的见证，神在你身上做了什么…',
+    send:'送出', sending:'送出中…', posted:'送出了', amen:'阿们', replyPH:'回应…',
+    reply:'回应', delPost:'删除', delAsk:'要删掉这一则吗？',
+    noFeed:'还没有人分享。第一个开口的，往往最蒙恩。',
+    noPray:'还没有代祷事项。', noWall:'见证墙还是空的——达成目标就可以把领受贴上来。',
+    careT:'彼此关怀问责', careOk:'全队这两天都有读经，感谢主。',
+    careMsg:(n,d)=>`${n} 已经 ${d} 天没有读经了`, careGo:'送出关怀', careNew:'今天还没读',
+    careSent:'关怀送出了', askXZ:'请小智代写', writing:'小智写作中…',
+    pts:'积分', badge:'徽章', rank:'排行', noBadge:'还没有徽章，今天读一章就开始了。',
+    reward:'奖励办法', addReward:'新增奖励', rwTitle:'奖励内容', rwTitlePH:'例：全队一起吃饭庆祝',
+    rwCond:'达成条件', rwCondPH:'例：一个月读完约翰福音', rwAdd:'加进去', rwGot:'已达成',
+    noReward:'队长还没有设奖励。', rwMark:'标记达成',
+    owner:'队长', member:'成员', leave:'离开团队', leaveAsk:'要离开这个团队吗？离开后就看不到团队的内容了。',
+    kick:'请出团队', kickAsk:'要请这位队友离开吗？', rename:'改团队名称',
+    left:'已离开团队', syncing:'同步中…', synced:'已同步',
+    err:'连不上团队服务器', offline:'现在连不上，下面是上次同步的内容。',
+    notSet:'团队功能还没有设定好：请先照 team-worker.js 的说明建立 Worker。',
+    never:'还没开始读', dAgo:n=>n===0?'今天':(n===1?'昨天':`${n} 天前`),
+    verseFrom:'附上经文', refresh:'重新整理', shareInvite:'邀请队友'
+  },
+  en:{
+    t235:'235 Team', mine:'My teams', none:'You have not joined a team yet',
+    intro:'Two become spiritual partners, three build the spiritual parent-and-child relationship, and the five-fold ministry becomes a team. Read the Bible together, share, pray for one another, and hold each other in loving accountability.',
+    kinds:{ '2':'Spiritual partner', '3':'Spiritual parent & child', '5':'Five-fold team' },
+    kindD:{ '2':'One to one — you see each other every day.',
+            '3':'A spiritual parent walking with a spiritual child.',
+            '5':'A five-fold ministry team serving together.' },
+    nick:'My name', nickPH:'What your team calls you', nickHint:'This is the name your team will see.',
+    create:'Create a team', join:'Join a team', tname:'Team name', tnamePH:'e.g. Morning Light',
+    ttype:'Team type', code:'Invite code', codePH:'6-character code', codeHint:'Give these six characters to whoever is joining.',
+    copy:'Copy invite code', copied:'Invite code copied', doJoin:'Join', doCreate:'Create',
+    needNick:'Please enter your name first', needName:'Please enter a team name', needCode:'Please enter the 6-character code',
+    joined:'Joined the team', created:'Team created',
+    goal:'Reading goal', noGoal:'No shared goal yet', setGoal:'Set a goal', editGoal:'Edit goal', clearGoal:'Remove goal',
+    gTypes:{ daily:'Chapters per day', book:'A book by a deadline', year:'Bible in a year', passage:'Today’s shared passage' },
+    gDailyN:'Chapters a day', gBook:'Book', gDue:'Due date', gPassage:'Read together today',
+    gChapter:'Chapter', gSave:'Save goal', gTitlePH:'Goal name (optional)',
+    todayDone:'Read today', chUnit:n=>`${n} ch.`, ofN:(a,b)=>`${a} / ${b}`,
+    teamToday:(a,b)=>`${a} of ${b} have read today`,
+    tabs:{ feed:'Sharing', pray:'Prayer', wall:'Testimony', reward:'Rewards', member:'Members' },
+    shPH:'What did God say to you today…', prPH:'Write your prayer request — your team will pray…',
+    caPH:'Write a word of care…', wiPH:'Write your testimony — what has God done…',
+    send:'Send', sending:'Sending…', posted:'Sent', amen:'Amen', replyPH:'Reply…',
+    reply:'Reply', delPost:'Delete', delAsk:'Delete this post?',
+    noFeed:'Nothing shared yet. The first to speak is often the most blessed.',
+    noPray:'No prayer requests yet.', noWall:'The testimony wall is empty — reach a goal and post what you received.',
+    careT:'Caring accountability', careOk:'Everyone has read in the last two days. Praise God.',
+    careMsg:(n,d)=>`${n} has not read for ${d} days`, careGo:'Send care', careNew:'Not read today',
+    careSent:'Your care was sent', askXZ:'Let Xiaozhi write it', writing:'Xiaozhi is writing…',
+    pts:'Points', badge:'Badges', rank:'Ranking', noBadge:'No badges yet — one chapter today starts it.',
+    reward:'Rewards', addReward:'Add a reward', rwTitle:'Reward', rwTitlePH:'e.g. A meal together',
+    rwCond:'Condition', rwCondPH:'e.g. Finish John in a month', rwAdd:'Add', rwGot:'Achieved',
+    noReward:'The leader has not set any rewards yet.', rwMark:'Mark as achieved',
+    owner:'Leader', member:'Member', leave:'Leave team', leaveAsk:'Leave this team? You will no longer see its content.',
+    kick:'Remove', kickAsk:'Remove this member from the team?', rename:'Rename team',
+    left:'You left the team', syncing:'Syncing…', synced:'Synced',
+    err:'Cannot reach the team server', offline:'Offline — showing the last synced content.',
+    notSet:'The team server is not set up yet — follow the instructions in team-worker.js.',
+    never:'Not started', dAgo:n=>n===0?'today':(n===1?'yesterday':`${n} days ago`),
+    verseFrom:'Attach the verse', refresh:'Refresh', shareInvite:'Invite'
+  }
+};
+const tl = () => TEAM_L[state.lang] || TEAM_L.zh;
+
+/* 積分：讀經最重，分享代禱關懷次之。全部由紀錄算出來，不另外累加，才不會算錯。 */
+const PT = { ch:2, share:5, pray:3, care:3, witness:8 };
+/* 徽章：只看得勝的軌跡，不比誰多誰少 */
+const BADGES = [
+  { id:'d7',    i:'🌱', n:['無己七日','无己七日','Seven Days'],        f:s => s.streak >= 7 },
+  { id:'d30',   i:'🌿', n:['同行三十天','同行三十天','Thirty Days'],    f:s => s.streak >= 30 },
+  { id:'d100',  i:'🌳', n:['百日不斷','百日不断','A Hundred Days'],      f:s => s.streak >= 100 },
+  { id:'ch50',  i:'📖', n:['五十章','五十章','50 Chapters'],            f:s => s.chs >= 50 },
+  { id:'ch200', i:'📚', n:['兩百章','两百章','200 Chapters'],           f:s => s.chs >= 200 },
+  { id:'chAll', i:'👑', n:['讀完全本','读完全本','Whole Bible'],         f:s => s.chs >= 1189 },
+  { id:'sh10',  i:'💬', n:['樂意分享','乐意分享','Ten Shares'],          f:s => (s.acts.share || 0) >= 10 },
+  { id:'pr10',  i:'🙏', n:['代禱的手','代祷的手','Ten Prayers'],         f:s => (s.acts.pray || 0) >= 10 },
+  { id:'ca10',  i:'🤝', n:['彼此關懷','彼此关怀','Ten Cares'],   f:s => (s.acts.care || 0) >= 10 },
+  { id:'wi1',   i:'✨', n:['第一個見證','第一个见证','First Testimony'], f:s => (s.acts.witness || 0) >= 1 }
+];
+const badgeName = b => isEN() ? b.n[2] : (isZS() ? b.n[1] : b.n[0]);
+
+let TEAM = { code:null, data:null, err:'', busy:false, sub:'feed' };
+
+function dayKey(ts){
+  const d = new Date(ts);
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+function daysBetween(a, b){ return Math.floor((b - a) / 86400000); }
+/* 我的讀經狀態：全部從 user.progress 的時間戳算出來 */
+function myStat(){
+  const byDay = {};
+  const vals = Object.values(user.progress);
+  vals.forEach(ts => { const d = dayKey(ts); byDay[d] = (byDay[d] || 0) + 1; });
+  const today = dayKey(Date.now());
+  let streak = 0;
+  const cur = new Date();
+  if (!byDay[today]) cur.setDate(cur.getDate() - 1);
+  while (byDay[dayKey(cur.getTime())]){ streak++; cur.setDate(cur.getDate() - 1); }
+  const lastTs = vals.length ? Math.max.apply(null, vals) : 0;
+  const lb = user.last && BOOK[user.last.book];
+  return {
+    days: Object.keys(byDay).length, streak, chs: vals.length, today: byDay[today] || 0,
+    last: lb ? `${bname(lb)} ${user.last.ch}` : '', lastTs,
+    acts: user.acts || {}, goalN: 0
+  };
+}
+function myPts(){
+  const s = myStat(), a = user.acts || {};
+  return s.chs * PT.ch + (a.share || 0) * PT.share + (a.pray || 0) * PT.pray
+       + (a.care || 0) * PT.care + (a.witness || 0) * PT.witness;
+}
+function myBadges(){ const s = myStat(); return BADGES.filter(b => b.f(s)).map(b => b.id); }
+function bumpAct(kind){
+  user.acts = user.acts || {};
+  user.acts[kind] = (user.acts[kind] || 0) + 1;
+  saveUser();
+}
+/* 對團隊目標的進度：{done, need, label} */
+function goalNow(goal, stat){
+  const L = tl();
+  if (!goal) return null;
+  if (goal.type === 'daily'){
+    const need = Math.max(1, goal.n || 1);
+    return { done: Math.min(stat.today, need), need, label: `${L.todayDone} ${L.ofN(stat.today, need)}` };
+  }
+  if (goal.type === 'book'){
+    const b = BOOK[goal.book];
+    if (!b) return { done:0, need:1, label:'—' };
+    let n = 0;
+    for (let c = 1; c <= b.ch; c++) if (user.progress[goal.book + '-' + c]) n++;
+    return { done:n, need:b.ch, label: `${bname(b)} ${L.ofN(n, b.ch)}` };
+  }
+  if (goal.type === 'year'){
+    const start = goal.ts || Date.now();
+    const elapsed = Math.max(1, daysBetween(start, Date.now()) + 1);
+    const should = Math.min(1189, Math.round(1189 * elapsed / 365));
+    return { done: Math.min(stat.chs, 1189), need: 1189,
+             label: `${L.ofN(stat.chs, 1189)}　→ ${should}` };
+  }
+  if (goal.type === 'passage'){
+    const b = BOOK[goal.book], c = Math.max(1, goal.n || 1);
+    const done = user.progress[goal.book + '-' + c] ? 1 : 0;
+    return { done, need:1, label: b ? `${bname(b)} ${chapLabel(goal.book, c)}` : '—' };
+  }
+  return null;
+}
+function goalTitle(goal){
+  const L = tl();
+  if (!goal) return '';
+  if (goal.title) return goal.title;
+  if (goal.type === 'daily')   return L.gTypes.daily + '：' + L.chUnit(goal.n || 1);
+  if (goal.type === 'book')    return (BOOK[goal.book] ? bname(BOOK[goal.book]) : goal.book)
+                                    + (goal.due ? '　→ ' + new Date(goal.due).toLocaleDateString() : '');
+  if (goal.type === 'year')    return L.gTypes.year;
+  if (goal.type === 'passage') return L.gPassage + '：' + (BOOK[goal.book] ? bname(BOOK[goal.book]) : goal.book)
+                                    + ' ' + chapLabel(goal.book, goal.n || 1);
+  return '';
+}
+
+/* ---- 伺服器 ---- */
+async function teamApi(op, extra){
+  const body = Object.assign({ op, uid:user.uid, nick:(user.nick || '').trim() }, extra || {});
+  let r;
+  try{ r = await fetch(API.team, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }); }
+  catch(e){ throw new Error(tl().err); }
+  let j = null;
+  try{ j = await r.json(); }catch(e){}
+  if (!j) throw new Error(tl().err + '（HTTP ' + r.status + '）');
+  if (!j.ok) throw new Error(j.err || ('HTTP ' + r.status));
+  return j;
+}
+/* 進團隊就把自己的進度送上去，順便把整個團隊抓下來 */
+async function teamPull(code, op, extra){
+  const stat = myStat();
+  const j = await teamApi(op || 'sync', Object.assign({
+    code, stat, pts: myPts(), badges: myBadges()
+  }, extra || {}));
+  if (j.team){
+    TEAM.code = j.team.code; TEAM.data = j.team; TEAM.err = '';
+    teamRemember(j.team);
+    try{ localStorage.setItem('ib_team_' + j.team.code, JSON.stringify(j.team)); }catch(e){}
+  }
+  return j;
+}
+function teamCached(code){
+  if (TEAM.data && TEAM.code === code) return TEAM.data;
+  try{ return JSON.parse(localStorage.getItem('ib_team_' + code) || 'null'); }catch(e){ return null; }
+}
+function teamRemember(tm){
+  user.teams = (user.teams || []).filter(x => x.code !== tm.code);
+  user.teams.push({ code:tm.code, name:tm.name, kind:tm.kind });
+  saveUser();
+}
+function teamForget(code){
+  user.teams = (user.teams || []).filter(x => x.code !== code);
+  saveUser();
+  try{ localStorage.removeItem('ib_team_' + code); }catch(e){}
+}
+const defNick = () => (user.nick || '').trim();
+
+/* 讀完一章就悄悄把進度送給隊友（延遲合併，不要一章一次請求）。
+   失敗就算了——讀經本身絕不能被團隊功能拖住。 */
+let teamPingTimer = null;
+function teamPingSoon(){
+  if (!(user.teams || []).length) return;
+  clearTimeout(teamPingTimer);
+  teamPingTimer = setTimeout(teamPingNow, 20000);
+}
+async function teamPingNow(){
+  for (const x of (user.teams || []).slice(0, 8)){
+    try{ await teamPull(x.code); }catch(e){}
+  }
+  if (curTeamCode() && TEAM.data) paintTeam($('#view'));
+}
+
+/* ================================================================ 團隊：首頁 */
+async function viewTeam(v, code, sub){
+  if (code) return viewTeamRoom(v, code.toUpperCase(), sub || 'feed');
+  const L = tl(), Lb = t();
+  const groups = ['2', '3', '5'].map(k => {
+    const list = (user.teams || []).filter(x => String(x.kind) === k);
+    return `<div class="section-title">${k}　${esc(L.kinds[k])}</div>
+      <div class="card" style="padding:12px 14px">
+        <div class="muted" style="font-size:12.5px;margin-bottom:${list.length ? '10px' : '0'}">${esc(L.kindD[k])}</div>
+        ${list.map(x => `<div class="rowlink" data-open="${esc(x.code)}">
+            <div class="tmavatar">${esc((x.name || '?').slice(0, 1))}</div>
+            <div class="meta"><div class="t">${esc(x.name)}</div><div class="s">${esc(x.code)}</div></div>
+            <div class="chev">›</div></div>`).join('')}
+      </div>`;
+  }).join('');
+
+  v.innerHTML = `
+    <div class="card" style="background:var(--accent-soft); border-color:var(--accent)">
+      <h3 style="color:var(--accent-ink)">${esc(L.t235)}</h3>
+      <div class="muted" style="line-height:1.9">${esc(L.intro)}</div>
+    </div>
+
+    <div class="section-title">${esc(L.nick)}</div>
+    <div class="card">
+      <input class="cardinput" id="tmNick" value="${esc(user.nick || '')}" placeholder="${esc(L.nickPH)}">
+      <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.nickHint)}</div>
+    </div>
+
+    <div class="section-title">${esc(L.mine)}</div>
+    ${(user.teams || []).length ? groups : `<div class="card"><div class="muted">${esc(L.none)}</div></div>${groups}`}
+
+    <div class="section-title">${esc(L.create)}</div>
+    <div class="card">
+      <input class="cardinput" id="tmName" placeholder="${esc(L.tnamePH)}">
+      <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.ttype)}</div>
+      <div class="cardchips" id="tmKind">
+        ${['2', '3', '5'].map(k => `<button data-k="${k}" class="${k === '5' ? 'on' : ''}">${k}　${esc(L.kinds[k])}</button>`).join('')}
+      </div>
+      <button class="btn primary block" id="tmCreate" style="margin-top:12px">${esc(L.doCreate)}</button>
+    </div>
+
+    <div class="section-title">${esc(L.join)}</div>
+    <div class="card">
+      <input class="cardinput" id="tmCode" placeholder="${esc(L.codePH)}" maxlength="6"
+             style="text-transform:uppercase; letter-spacing:.3em; text-align:center; font-weight:700">
+      <button class="btn block" id="tmJoin" style="margin-top:12px">${esc(L.doJoin)}</button>
+      <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.codeHint)}</div>
+    </div>`;
+
+  const nk = $('#tmNick', v);
+  nk.oninput = () => { user.nick = nk.value; saveUser(); };
+  $$('[data-open]', v).forEach(e => e.onclick = () => go('#/team/' + e.dataset.open));
+  let kind = '5';
+  $$('#tmKind button', v).forEach(b => b.onclick = () => {
+    kind = b.dataset.k;
+    $$('#tmKind button', v).forEach(x => x.classList.toggle('on', x === b));
+  });
+  $('#tmCreate', v).onclick = async () => {
+    if (!defNick()) return toast(L.needNick);
+    const name = $('#tmName', v).value.trim();
+    if (!name) return toast(L.needName);
+    const btn = $('#tmCreate', v); btn.disabled = true; btn.textContent = L.syncing;
+    try{
+      const j = await teamPull(null, 'create', { name, kind });
+      toast(L.created);
+      go('#/team/' + j.team.code);
+    }catch(e){ toast(e.message, 4000); btn.disabled = false; btn.textContent = L.doCreate; }
+  };
+  $('#tmJoin', v).onclick = async () => {
+    if (!defNick()) return toast(L.needNick);
+    const code = ($('#tmCode', v).value || '').trim().toUpperCase();
+    if (code.length !== 6) return toast(L.needCode);
+    const btn = $('#tmJoin', v); btn.disabled = true; btn.textContent = L.syncing;
+    try{
+      await teamPull(code, 'join');
+      toast(L.joined);
+      go('#/team/' + code);
+    }catch(e){ toast(e.message, 4000); btn.disabled = false; btn.textContent = L.doJoin; }
+  };
+}
+
+/* ================================================================ 團隊：團隊裡面 */
+const TM_SUBS = ['feed', 'pray', 'wall', 'reward', 'member'];
+function memberList(tm){
+  return Object.entries(tm.members || {}).map(([uid, m]) => Object.assign({ uid }, m));
+}
+function memberNick(tm, uid){
+  const m = (tm.members || {})[uid];
+  return m ? (m.nick || '?') : '？';
+}
+/* 幾天沒讀了；沒有紀錄就回 999 */
+function idleDays(m){
+  const ts = (m.stat && m.stat.lastTs) || 0;
+  if (!ts) return 999;
+  return Math.max(0, daysBetween(+ts, Date.now()));
+}
+
+async function viewTeamRoom(v, code, sub){
+  const L = tl();
+  TEAM.sub = TM_SUBS.includes(sub) ? sub : 'feed';
+  const cached = teamCached(code);
+  if (cached){ TEAM.code = code; TEAM.data = cached; paintTeam(v); }
+  else v.innerHTML = `<div class="empty">${esc(L.syncing)}</div>`;
+  try{
+    await teamPull(code);
+    if (curTeamCode() === code) paintTeam(v);
+  }catch(e){
+    TEAM.err = e.message;
+    if (curTeamCode() === code){
+      if (TEAM.data && TEAM.code === code) paintTeam(v);
+      else v.innerHTML = `<div class="empty">${esc(e.message)}</div>
+        <div class="card"><div class="muted">${esc(L.notSet)}</div></div>`;
+    }
+  }
+}
+function curTeamCode(){
+  const r = currentRoute();
+  return r[0] === 'team' && r[1] ? r[1].toUpperCase() : null;
+}
+async function teamRefresh(){
+  const v = $('#view');
+  if (curTeamCode() !== TEAM.code) return;
+  try{ await teamPull(TEAM.code); TEAM.err = ''; }catch(e){ TEAM.err = e.message; }
+  if (curTeamCode() === TEAM.code) paintTeam(v);
+}
+
+function paintTeam(v){
+  const L = tl(), tm = TEAM.data;
+  if (!tm) return;
+  const me = (tm.members || {})[user.uid] || {};
+  const owner = tm.owner === user.uid;
+  const mem = memberList(tm).sort((a, b) => (b.pts || 0) - (a.pts || 0));
+  const stat = myStat();
+  const g = goalNow(tm.goal, stat);
+  const readToday = mem.filter(m => (m.stat && m.stat.today) > 0).length;
+  const y = window.scrollY;
+
+  /* 今天還沒讀、或好幾天沒讀的隊友 */
+  const idle = mem.filter(m => m.uid !== user.uid && idleDays(m) >= 2)
+                  .sort((a, b) => idleDays(b) - idleDays(a));
+
+  v.innerHTML = `
+    <div class="chtoolbar">
+      <button class="chtb-btn" id="tmBack">‹</button>
+      <div class="tmtitle">${esc(tm.name)}<span class="tmkind">${esc(tm.kind)}　${esc(L.kinds[tm.kind] || '')}</span></div>
+      <div class="chtb-spacer"></div>
+      <button class="chtb-btn" id="tmSync" title="${esc(L.refresh)}">⟳</button>
+    </div>
+    ${TEAM.err ? `<div class="hl-hint">${esc(L.offline)}</div>` : ''}
+
+    <div class="card tmgoal">
+      <div class="tmgoalhead">
+        <div class="tmgoalt${tm.goal && tm.goal.book && (tm.goal.type === 'book' || tm.goal.type === 'passage') ? ' link' : ''}"
+             ${tm.goal && tm.goal.book ? `id="tmGoalGo" data-b="${esc(tm.goal.book)}" data-c="${tm.goal.type === 'passage' ? (tm.goal.n || 1) : 1}"` : ''}
+             >${esc(tm.goal ? goalTitle(tm.goal) : L.noGoal)}</div>
+        ${owner ? `<button class="btn sm" id="tmGoalBtn">${esc(tm.goal ? L.editGoal : L.setGoal)}</button>` : ''}
+      </div>
+      ${g ? `<div class="tmbar"><i style="width:${Math.round(Math.min(1, g.done / Math.max(1, g.need)) * 100)}%"></i></div>
+             <div class="muted" style="font-size:12.5px;margin-top:6px">${esc(g.label)}</div>` : ''}
+      <div class="tmfaces">
+        ${mem.map(m => {
+          const on = (m.stat && m.stat.today) > 0;
+          return `<div class="tmface ${on ? 'on' : ''}" data-mem="${esc(m.uid)}" title="${esc(m.nick || '')}">
+                    <span>${esc((m.nick || '?').slice(0, 1))}</span>
+                    <b>${esc((m.nick || '').slice(0, 4))}</b></div>`;
+        }).join('')}
+      </div>
+      <div class="muted" style="font-size:12.5px">${esc(L.teamToday(readToday, mem.length))}</div>
+    </div>
+
+    ${idle.length ? `<div class="card tmcare">
+      <div class="tmcareT">${esc(L.careT)}</div>
+      ${idle.map(m => `<div class="tmcarerow">
+          <div>${esc(idleDays(m) > 900 ? `${m.nick || '?'}　${L.never}` : L.careMsg(m.nick || '?', idleDays(m)))}</div>
+          <button class="btn sm gold" data-care="${esc(m.uid)}">${esc(L.careGo)}</button>
+        </div>`).join('')}
+      </div>` : `<div class="card tmcare ok"><div class="muted">${esc(L.careOk)}</div></div>`}
+
+    <div class="cardchips tmsubs" id="tmSubs">
+      ${TM_SUBS.map(s => `<button data-s="${s}" class="${s === TEAM.sub ? 'on' : ''}">${esc(L.tabs[s])}</button>`).join('')}
+    </div>
+    <div id="tmBody"></div>`;
+
+  $('#tmBack').onclick = () => go('#/team');
+  $('#tmSync').onclick = () => { toast(L.syncing); teamRefresh(); };
+  const gb = $('#tmGoalBtn'); if (gb) gb.onclick = () => openGoalSheet(tm);
+  const gg = $('#tmGoalGo');
+  if (gg && gg.classList.contains('link')) gg.onclick = () => go(`#/read/${gg.dataset.b}/${gg.dataset.c}`);
+  $$('#tmSubs button').forEach(b => b.onclick = () => { TEAM.sub = b.dataset.s; paintTeam(v); });
+  $$('[data-care]').forEach(b => b.onclick = () => openCareSheet(tm, b.dataset.care));
+  $$('[data-mem]').forEach(b => b.onclick = () => { TEAM.sub = 'member'; paintTeam(v); });
+
+  paintTeamBody(tm, owner, mem);
+  window.scrollTo(0, y);
+}
+
+function composer(kind, ph){
+  const L = tl();
+  return `<div class="card tmcomp">
+    <textarea class="hlsheet-ta" id="tmText" placeholder="${esc(ph)}"></textarea>
+    <div class="hlsheet-acts2">
+      <button class="btn sm primary" id="tmSend" data-k="${kind}">${esc(L.send)}</button>
+      <button class="btn sm gold" id="tmAI">✍️ ${esc(L.askXZ)}</button>
+      ${lastHl() ? `<button class="btn sm" id="tmVerse">📖 ${esc(L.verseFrom)}</button>` : ''}
+    </div>
+  </div>`;
+}
+/* 最近畫的那一句，可以一鍵附進分享裡 */
+function lastHl(){
+  const all = Object.values(user.hl || {});
+  if (!all.length) return null;
+  return all.sort((a, b) => (b.ts || 0) - (a.ts || 0))[0];
+}
+function paintTeamBody(tm, owner, mem){
+  const L = tl(), box = $('#tmBody');
+  if (!box) return;
+  const sub = TEAM.sub;
+
+  if (sub === 'member'){
+    box.innerHTML = `
+      <div class="section-title">${esc(L.rank)}</div>
+      <div class="card">${mem.map((m, i) => {
+        const bs = (m.badges || []).map(id => BADGES.find(b => b.id === id)).filter(Boolean);
+        const idl = idleDays(m);
+        return `<div class="tmmem">
+          <div class="tmrank">${i + 1}</div>
+          <div class="tmavatar">${esc((m.nick || '?').slice(0, 1))}</div>
+          <div class="meta">
+            <div class="t">${esc(m.nick || '?')}${m.uid === tm.owner ? ` <span class="pill">${esc(L.owner)}</span>` : ''}</div>
+            <div class="s">${esc(L.pts)} ${m.pts || 0}　·　${esc(idl > 900 ? L.never : L.dAgo(idl))}${m.stat && m.stat.streak ? `　·　🔥${m.stat.streak}` : ''}</div>
+            ${bs.length ? `<div class="tmbadges">${bs.map(b => `<span title="${esc(badgeName(b))}">${b.i}</span>`).join('')}</div>` : ''}
+          </div>
+          ${owner && m.uid !== user.uid ? `<button class="btn sm" data-kick="${esc(m.uid)}">${esc(L.kick)}</button>` : ''}
+        </div>`;
+      }).join('')}</div>
+      <div class="section-title">${esc(L.badge)}</div>
+      <div class="card">${(() => {
+        const mine = myBadges();
+        return mine.length
+          ? `<div class="tmbadgelist">${BADGES.filter(b => mine.includes(b.id))
+              .map(b => `<div class="tmbadge"><span>${b.i}</span><b>${esc(badgeName(b))}</b></div>`).join('')}</div>`
+          : `<div class="muted">${esc(L.noBadge)}</div>`;
+      })()}</div>
+      <div class="card">
+        <div class="muted" style="font-size:12.5px;margin-bottom:10px">${esc(L.code)}：<b style="letter-spacing:.3em;font-size:16px;color:var(--accent)">${esc(tm.code)}</b></div>
+        <div class="hlsheet-acts2">
+          <button class="btn sm" id="tmCopy">${esc(L.copy)}</button>
+          ${owner ? `<button class="btn sm" id="tmRename">${esc(L.rename)}</button>` : ''}
+          <button class="btn sm danger" id="tmLeave">${esc(L.leave)}</button>
+        </div>
+      </div>`;
+    $$('[data-kick]', box).forEach(b => b.onclick = async () => {
+      if (!confirm(L.kickAsk)) return;
+      try{ await teamPull(tm.code, 'kick', { target:b.dataset.kick }); paintTeam($('#view')); }catch(e){ toast(e.message); }
+    });
+    $('#tmCopy', box).onclick = () => {
+      try{ navigator.clipboard.writeText(tm.code); toast(L.copied); }catch(e){ toast(tm.code); }
+    };
+    const rn = $('#tmRename', box);
+    if (rn) rn.onclick = async () => {
+      const name = prompt(L.tname, tm.name);
+      if (!name) return;
+      try{ await teamPull(tm.code, 'rename', { name }); paintTeam($('#view')); }catch(e){ toast(e.message); }
+    };
+    $('#tmLeave', box).onclick = async () => {
+      if (!confirm(L.leaveAsk)) return;
+      try{ await teamApi('leave', { code:tm.code }); }catch(e){}
+      teamForget(tm.code); TEAM = { code:null, data:null, err:'', busy:false, sub:'feed' };
+      toast(L.left); go('#/team');
+    };
+    return;
+  }
+
+  if (sub === 'reward'){
+    const rw = tm.rewards || [];
+    box.innerHTML = `
+      ${owner ? `<div class="card">
+        <div class="muted" style="font-size:12px;margin-bottom:6px">${esc(L.rwTitle)}</div>
+        <input class="cardinput" id="rwT" placeholder="${esc(L.rwTitlePH)}">
+        <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.rwCond)}</div>
+        <input class="cardinput" id="rwC" placeholder="${esc(L.rwCondPH)}">
+        <button class="btn primary block" id="rwAdd" style="margin-top:12px">${esc(L.rwAdd)}</button>
+      </div>` : ''}
+      ${rw.length ? rw.map(r => `<div class="card tmrw">
+          <div class="tmrwT">🎁 ${esc(r.title || '')}</div>
+          ${r.cond ? `<div class="muted" style="font-size:12.5px;margin-top:4px">${esc(r.cond)}</div>` : ''}
+          ${(r.got || []).length ? `<div class="tmgot">${esc(L.rwGot)}：${(r.got || []).map(u => esc(memberNick(tm, u))).join('、')}</div>` : ''}
+          ${owner ? `<div class="hlsheet-acts2" style="margin-top:10px">
+             ${memberList(tm).map(m => `<button class="btn sm ${(r.got || []).includes(m.uid) ? 'gold' : ''}"
+                data-got="${esc(r.id)}" data-who="${esc(m.uid)}">${esc(m.nick || '?')}</button>`).join('')}
+             <button class="btn sm danger" data-rwdel="${esc(r.id)}">${esc(L.delPost)}</button></div>` : ''}
+        </div>`).join('') : `<div class="card"><div class="muted">${esc(L.noReward)}</div></div>`}`;
+    const ad = $('#rwAdd', box);
+    if (ad) ad.onclick = async () => {
+      const title = $('#rwT', box).value.trim();
+      if (!title) return toast(L.rwTitlePH);
+      try{ await teamPull(tm.code, 'reward', { title, cond: $('#rwC', box).value.trim() }); paintTeam($('#view')); }
+      catch(e){ toast(e.message); }
+    };
+    $$('[data-got]', box).forEach(b => b.onclick = async () => {
+      try{ await teamPull(tm.code, 'reward', { done:b.dataset.got, who:b.dataset.who }); paintTeam($('#view')); }
+      catch(e){ toast(e.message); }
+    });
+    $$('[data-rwdel]', box).forEach(b => b.onclick = async () => {
+      if (!confirm(L.delAsk)) return;
+      try{ await teamPull(tm.code, 'reward', { del:b.dataset.rwdel }); paintTeam($('#view')); }catch(e){ toast(e.message); }
+    });
+    return;
+  }
+
+  /* 分享／代禱／見證牆——同一套動態，只是種類不同 */
+  const kind = sub === 'pray' ? 'pray' : (sub === 'wall' ? 'witness' : 'share');
+  const ph   = sub === 'pray' ? L.prPH : (sub === 'wall' ? L.wiPH : L.shPH);
+  const empty= sub === 'pray' ? L.noPray : (sub === 'wall' ? L.noWall : L.noFeed);
+  const list = (tm.feed || []).filter(f => (kind === 'share' ? (f.kind === 'share' || f.kind === 'care' || f.kind === 'sys') : f.kind === kind));
+
+  box.innerHTML = composer(kind, ph) + (list.length ? list.map(f => feedHTML(tm, f)).join('')
+                 : `<div class="empty">${esc(empty)}</div>`);
+  bindComposer(tm, kind);
+  bindFeed(tm);
+}
+const FEED_ICON = { share:'💬', pray:'🙏', care:'🤝', witness:'✨', sys:'·' };
+const feedText = f => (f.kind === 'sys' && (f.text === 'join' || f.text === '加入了團隊'))
+                    ? tl().joined : (f.text || '');
+function feedHTML(tm, f){
+  const L = tl();
+  const mine = f.uid === user.uid;
+  const when = new Date(f.ts).toLocaleString();
+  return `<div class="card tmpost">
+    <div class="tmposthead">
+      <div class="tmavatar sm">${esc(memberNick(tm, f.uid).slice(0, 1))}</div>
+      <div class="meta"><div class="t">${FEED_ICON[f.kind] || ''} ${esc(memberNick(tm, f.uid))}${f.to ? ' → ' + esc(memberNick(tm, f.to)) : ''}</div>
+      <div class="s">${esc(when)}</div></div>
+    </div>
+    ${f.verse ? `<div class="tmverse">${esc(f.verse)}${f.ref ? `<span class="tmref">${esc(f.ref)}</span>` : ''}</div>`
+              : (f.ref ? `<div class="tmref solo">${esc(f.ref)}</div>` : '')}
+    <div class="tmtext">${esc(feedText(f))}</div>
+    <div class="tmacts">
+      <button class="tmact ${(f.amen || []).includes(user.uid) ? 'on' : ''}" data-amen="${esc(f.id)}">🙏 ${esc(L.amen)}${(f.amen || []).length ? ' ' + (f.amen || []).length : ''}</button>
+      <button class="tmact" data-rep="${esc(f.id)}">💬 ${esc(L.reply)}</button>
+      ${(mine || tm.owner === user.uid) ? `<button class="tmact" data-del="${esc(f.id)}">${esc(L.delPost)}</button>` : ''}
+    </div>
+    ${(f.replies || []).length ? `<div class="tmreplies">${f.replies.map(r =>
+        `<div class="tmreply"><b>${esc(memberNick(tm, r.uid))}</b>${esc(r.text)}</div>`).join('')}</div>` : ''}
+    <div class="tmrepbox" data-repbox="${esc(f.id)}" hidden>
+      <input class="cardinput" placeholder="${esc(L.replyPH)}">
+      <button class="btn sm primary">${esc(L.send)}</button>
+    </div>
+  </div>`;
+}
+function bindFeed(tm){
+  const L = tl();
+  $$('[data-amen]').forEach(b => b.onclick = async () => {
+    try{ await teamPull(tm.code, 'amen', { pid:b.dataset.amen }); paintTeam($('#view')); }catch(e){ toast(e.message); }
+  });
+  $$('[data-del]').forEach(b => b.onclick = async () => {
+    if (!confirm(L.delAsk)) return;
+    try{ await teamPull(tm.code, 'delpost', { pid:b.dataset.del }); paintTeam($('#view')); }catch(e){ toast(e.message); }
+  });
+  $$('[data-rep]').forEach(b => b.onclick = () => {
+    const box = $(`[data-repbox="${b.dataset.rep}"]`);
+    if (!box) return;
+    box.hidden = !box.hidden;
+    if (!box.hidden) $('input', box).focus();
+  });
+  $$('[data-repbox]').forEach(box => {
+    const inp = $('input', box), btn = $('button', box);
+    const go2 = async () => {
+      const text = inp.value.trim(); if (!text) return;
+      btn.disabled = true;
+      try{ await teamPull(tm.code, 'reply', { pid:box.dataset.repbox, text }); paintTeam($('#view')); }
+      catch(e){ toast(e.message); btn.disabled = false; }
+    };
+    btn.onclick = go2;
+    inp.onkeydown = e => { if (e.key === 'Enter') go2(); };
+  });
+}
+function bindComposer(tm, kind){
+  const L = tl();
+  const ta = $('#tmText'), send = $('#tmSend'), ai = $('#tmAI'), vb = $('#tmVerse');
+  let verse = '', ref = '';
+  if (vb) vb.onclick = () => {
+    const h = lastHl(); if (!h) return;
+    verse = (h.t || '').replace(/〔[^〕]*〕/g, '').replace(/\[[^\]]*\]/g, '').trim();
+    ref = cardRef(h);
+    vb.classList.add('gold'); vb.textContent = '📖 ' + ref;
+    toast(ref);
+  };
+  if (ai) ai.onclick = () => teamAIWrite(ta, ai, kind, verse || (lastHl() || {}).t || '');
+  if (send) send.onclick = async () => {
+    const text = (ta.value || '').trim();
+    if (!text) return toast(L.shPH);
+    send.disabled = true; send.textContent = L.sending;
+    try{
+      await teamPull(tm.code, 'post', { kind, text, verse, ref });
+      bumpAct(kind); await teamPull(tm.code);
+      toast(L.posted); paintTeam($('#view'));
+    }catch(e){ toast(e.message, 4000); send.disabled = false; send.textContent = L.send; }
+  };
+}
+/* 請小智照這個情境寫一段 */
+async function teamAIWrite(ta, btn, kind, verse){
+  const L = tl();
+  if (!ta || !btn) return;
+  const old = btn.textContent;
+  btn.disabled = true; btn.textContent = L.writing;
+  const who = { share:'讀經分享', pray:'代禱事項', care:'關懷的話', witness:'見證' }[kind] || '分享';
+  const sys = isEN()
+    ? 'You are Xiaozhi, a spiritual companion of Kingdom 321 Fellowship. Write a short, warm piece for a small group: three to four sentences, under 70 words, spoken and personal, never preachy. No headings, no bullets, no quotation marks.'
+    : `你是「小智」，國度321空中團契的屬靈同伴。請幫使用者寫一段要貼在小組裡的「${who}」，三到四句、120 字以內，口語、溫暖、不說教，不要標題、不要條列、不要引號。`;
+  const ask = (verse ? L3('經文：', '经文：', 'Verse: ') + verse + '\n' : '')
+            + L3(`請寫一段${who}。`, `请写一段${who}。`, `Please write a short ${kind} note.`)
+            + (ta.value.trim() ? L3('\n我想講的重點：', '\n我想讲的重点：', '\nWhat I want to say: ') + ta.value.trim() : '');
+  try{
+    const r = await fetch(API.chat, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ system: sys, messages:[{ role:'user', content: ask }] }) });
+    if (!r.ok) throw new Error('http ' + r.status);
+    const out = extractReply(await r.json().catch(() => null));
+    if (!out) throw new Error('empty');
+    ta.value = out.replace(/[*#>`]/g, '').replace(/^「|」$/g, '').trim();
+  }catch(e){ toast(t().chatErr, 3500); }
+  btn.disabled = false; btn.textContent = old;
+}
+
+/* ---- 關懷某位隊友 ---- */
+function openCareSheet(tm, target){
+  const L = tl();
+  const nick = memberNick(tm, target);
+  const mask = document.createElement('div'); mask.className = 'hlsheet-mask';
+  mask.innerHTML = `<div class="hlsheet-card">
+    <div class="hlsheet-title">${esc(L.careGo)} → ${esc(nick)}</div>
+    <div class="hl-hint">${esc(idleDays((tm.members || {})[target] || {}) > 900 ? `${nick}　${L.never}` : L.careMsg(nick, idleDays((tm.members || {})[target] || {})))}</div>
+    <textarea class="hlsheet-ta" id="caText" placeholder="${esc(L.caPH)}"></textarea>
+    <div class="hlsheet-acts">
+      <button class="btn primary" id="caSend">${esc(L.send)}</button>
+      <button class="btn gold" id="caAI">✍️ ${esc(L.askXZ)}</button>
+      <button class="btn" id="caClose">${esc(t().close)}</button>
+    </div></div>`;
+  document.body.appendChild(mask);
+  mask.onclick = e => { if (e.target === mask) mask.remove(); };
+  $('#caClose', mask).onclick = () => mask.remove();
+  $('#caAI', mask).onclick = () => teamAIWrite($('#caText', mask), $('#caAI', mask), 'care', '');
+  $('#caSend', mask).onclick = async () => {
+    const text = $('#caText', mask).value.trim();
+    if (!text) return toast(L.caPH);
+    const b = $('#caSend', mask); b.disabled = true; b.textContent = L.sending;
+    try{
+      await teamPull(tm.code, 'post', { kind:'care', text, to:target });
+      bumpAct('care'); await teamPull(tm.code);
+      mask.remove(); toast(L.careSent); TEAM.sub = 'feed'; paintTeam($('#view'));
+    }catch(e){ toast(e.message, 4000); b.disabled = false; b.textContent = L.send; }
+  };
+}
+
+/* ---- 設定共同目標（隊長） ---- */
+function openGoalSheet(tm){
+  const L = tl();
+  const g = tm.goal || { type:'daily', n:3 };
+  let type = g.type, book = g.book || (user.last && user.last.book) || 'John', n = g.n || 3, due = g.due || 0;
+  const mask = document.createElement('div'); mask.className = 'hlsheet-mask';
+  const bookOpts = () => TOC.map(b => `<option value="${esc(b.id)}" ${b.id === book ? 'selected' : ''}>${esc(bname(b))}</option>`).join('');
+  const draw = () => {
+    mask.innerHTML = `<div class="hlsheet-card">
+      <div class="hlsheet-title">${esc(L.setGoal)}</div>
+      <div class="cardchips" id="gType">
+        ${Object.keys(L.gTypes).map(k => `<button data-g="${k}" class="${k === type ? 'on' : ''}">${esc(L.gTypes[k])}</button>`).join('')}
+      </div>
+      <div style="margin-top:14px">
+        ${type === 'daily' ? `<div class="muted" style="font-size:12px;margin-bottom:6px">${esc(L.gDailyN)}</div>
+           <div class="cardchips" id="gN">${[1, 2, 3, 4, 5, 8, 10].map(x =>
+             `<button data-n="${x}" class="${x === n ? 'on' : ''}">${esc(L.chUnit(x))}</button>`).join('')}</div>` : ''}
+        ${type === 'book' ? `<div class="muted" style="font-size:12px;margin-bottom:6px">${esc(L.gBook)}</div>
+           <select class="cardinput" id="gBook">${bookOpts()}</select>
+           <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.gDue)}</div>
+           <input class="cardinput" type="date" id="gDue" value="${due ? new Date(due).toISOString().slice(0, 10) : ''}">` : ''}
+        ${type === 'year' ? `<div class="muted" style="font-size:13px;line-height:1.9">${esc(L.gTypes.year)}　${esc(L.chUnit(1189))}</div>` : ''}
+        ${type === 'passage' ? `<div class="muted" style="font-size:12px;margin-bottom:6px">${esc(L.gBook)}</div>
+           <select class="cardinput" id="gBook">${bookOpts()}</select>
+           <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.gChapter)}</div>
+           <input class="cardinput" type="number" min="1" id="gCh" value="${n}">` : ''}
+      </div>
+      <input class="cardinput" id="gTitle" style="margin-top:12px" placeholder="${esc(L.gTitlePH)}" value="${esc(g.title || '')}">
+      <div class="hlsheet-acts" style="margin-top:14px">
+        <button class="btn primary" id="gSave">${esc(L.gSave)}</button>
+        ${tm.goal ? `<button class="btn danger" id="gClear">${esc(L.clearGoal)}</button>` : ''}
+        <button class="btn" id="gClose">${esc(t().close)}</button>
+      </div></div>`;
+    $$('#gType button', mask).forEach(b => b.onclick = () => { type = b.dataset.g; draw(); });
+    $$('#gN button', mask).forEach(b => b.onclick = () => { n = +b.dataset.n; draw(); });
+    const bs = $('#gBook', mask); if (bs) bs.onchange = () => { book = bs.value; };
+    const ds = $('#gDue', mask);  if (ds) ds.onchange = () => { due = ds.value ? new Date(ds.value).getTime() : 0; };
+    const cs = $('#gCh', mask);   if (cs) cs.onchange = () => { n = Math.max(1, +cs.value || 1); };
+    $('#gClose', mask).onclick = () => mask.remove();
+    const gc = $('#gClear', mask);
+    if (gc) gc.onclick = async () => {
+      try{ await teamPull(tm.code, 'goal', { goal:null }); mask.remove(); paintTeam($('#view')); }catch(e){ toast(e.message); }
+    };
+    $('#gSave', mask).onclick = async () => {
+      const goal = { type, n, book, due, title: $('#gTitle', mask).value.trim() };
+      const b = $('#gSave', mask); b.disabled = true; b.textContent = L.syncing;
+      try{ await teamPull(tm.code, 'goal', { goal }); mask.remove(); paintTeam($('#view')); }
+      catch(e){ toast(e.message, 4000); b.disabled = false; b.textContent = L.gSave; }
+    };
+  };
+  document.body.appendChild(mask);
+  mask.onclick = e => { if (e.target === mask) mask.remove(); };
+  draw();
+}
 
 /* ================================================================ 搜尋 */
 let searchState = { q:'', results:[], busy:false };
@@ -2340,6 +3303,26 @@ function buildQueue(){
   return items.filter(i => ttsPrep(i.text).length > 0);
 }
 function raClear(){ $$('.tts-reading').forEach(e => e.classList.remove('tts-reading')); }
+/* 畫面重畫過（換章以外的情形，例如換字級、切模式）之後，
+   朗讀佇列裡記的還是舊的 DOM。重新接回新的句子，顏色標示才不會不見。 */
+function ttsRebind(){
+  if (!spk.on || !spk.items.length) return;
+  let ok = 0;
+  spk.items.forEach(it => {
+    it.els = it.els.map(old => {
+      const e = $(`#reader .sent[data-c="${old.dataset.c}"][data-p="${old.dataset.p}"][data-s="${old.dataset.s}"]`);
+      if (e) ok++;
+      return e || old;
+    });
+  });
+  if (!ok) return;                       // 已經換到別章了，就不要亂標
+  const cur = spk.items[spk.idx];
+  if (!cur) return;
+  raClear();
+  cur.els.forEach(e => { if (e.isConnected) e.classList.add('tts-reading'); });
+  const first = cur.els.find(e => e.isConnected);
+  if (first) try{ first.scrollIntoView({ block:'center' }); }catch(e){}
+}
 function raShow(item){
   raClear();
   if (!item || !item.els.length) return;
@@ -2519,5 +3502,6 @@ async function boot(){
     try{ navigator.serviceWorker.register('sw.js'); }catch(e){}
   }
   setTimeout(ttsWarmUp, 1200);
+  if ((user.teams || []).length) setTimeout(teamPingNow, 2500);   // 開 App 就把今天的進度同步給隊友
 }
 boot();
