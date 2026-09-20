@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.1.0';
+const VERSION = 'v2.1.1';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -67,6 +67,9 @@ const I18N = {
         cardShare:'分享', cardSave:'存到相簿',
         cardHint:'按「分享」可直接選 LINE／IG／FB 傳出去；也可以長按上面的圖片存起來。',
         cardSaved:'已下載，請從相簿分享',
+        saveIOS:'請在選單裡選「儲存影像」，圖就會進相簿',
+        savedFile:'已下載到「檔案」App 的下載項目',
+        holdT:'長按下面這張圖', holdS:'選「加入照片」或「儲存影像」，就會存進相簿。',
         photo:'加一張相片（選用）', photoPick:'從相簿選相片', photoSwap:'換一張', photoDel:'移除相片',
         photoBg:['作背景','作背景'], photoStk:['貼在卡片上','贴在卡片上'],
         photoHint:'可以當卡片背景，也可以像貼紙貼上去，大小與位置都能調。',
@@ -133,6 +136,9 @@ const I18N = {
         cardShare:'分享', cardSave:'存到相册',
         cardHint:'按“分享”可直接选 LINE／IG／FB 传出去；也可以长按上面的图片存起来。',
         cardSaved:'已下载，请从相册分享',
+        saveIOS:'请在菜单里选“存储图像”，图就会进相册',
+        savedFile:'已下载到“文件”App 的下载项目',
+        holdT:'长按下面这张图', holdS:'选“加入照片”或“存储图像”，就会存进相册。',
         photo:'加一张相片（选用）', photoPick:'从相册选相片', photoSwap:'换一张', photoDel:'移除相片',
         photoBg:['作背景','作背景'], photoStk:['贴在卡片上','贴在卡片上'],
         photoHint:'可以当卡片背景，也可以像贴纸贴上去，大小与位置都能调。',
@@ -201,6 +207,9 @@ const I18N = {
         cardShare:'Share', cardSave:'Save to photos',
         cardHint:'Tap Share to send it straight to LINE, Instagram or Facebook — or press and hold the image to save it.',
         cardSaved:'Downloaded — share it from your photos',
+        saveIOS:'Choose “Save Image” in the menu and it goes to your photos',
+        savedFile:'Downloaded to the Files app',
+        holdT:'Press and hold the image below', holdS:'Choose “Add to Photos” or “Save Image” to keep it.',
         photo:'Add a photo (optional)', photoPick:'Choose a photo', photoSwap:'Change photo', photoDel:'Remove photo',
         photoBg:['As background','As background'], photoStk:['As a sticker','As a sticker'],
         photoHint:'Use it as the card background, or stick it on like a polaroid. Size and position are adjustable.',
@@ -1477,11 +1486,42 @@ function renderCard(h){
   const box = $('#cardPv');
   if (box) box.innerHTML = `<img src="${cardImg}" alt="">`;
 }
-function cardDownload(){
+/* iPhone／iPad 的 Safari 不能把檔案直接寫進「相簿」——<a download> 只會存到
+   「檔案」App 的下載項目，使用者在相簿裡當然找不到。真正會進相簿的只有兩條路：
+   分享面板裡的「儲存影像」，或長按圖片選「加入照片」。 */
+const isIOS = () => /iPad|iPhone|iPod/.test(navigator.userAgent)
+              || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+/* 退路：把圖放大給使用者長按 */
+function openHoldSave(src){
+  const L = t();
+  const mask = document.createElement('div'); mask.className = 'hlsheet-mask';
+  mask.innerHTML = `<div class="hlsheet-card">
+    <div class="hlsheet-title">${esc(L.holdT)}</div>
+    <div class="hl-hint">${esc(L.holdS)}</div>
+    <div class="holdpv"><img src="${src}" alt=""></div>
+    <div class="hlsheet-acts" style="margin-top:12px">
+      <button class="btn" id="hsClose">${esc(L.close)}</button>
+    </div></div>`;
+  document.body.appendChild(mask);
+  mask.onclick = e => { if (e.target === mask) mask.remove(); };
+  $('#hsClose', mask).onclick = () => mask.remove();
+}
+async function cardDownload(){
   if (!cardImg) return;
+  const name = '321bible-' + Date.now() + '.png';
+  if (isIOS()){
+    const f = new File([cardBlob(cardImg)], name, { type:'image/png' });
+    if (navigator.canShare && navigator.canShare({ files:[f] })){
+      toast(t().saveIOS, 5000);
+      try{ await navigator.share({ files:[f], title: t().app }); return; }
+      catch(e){ if (e && e.name === 'AbortError') return; }
+    }
+    openHoldSave(cardImg); return;
+  }
   const a = document.createElement('a');
-  a.href = cardImg; a.download = '321bible-' + Date.now() + '.png'; a.click();
-  toast(t().cardSaved, 3200);
+  a.href = cardImg; a.download = name; a.click();
+  toast(t().savedFile, 3200);
 }
 async function cardShare(){
   if (!cardImg) return;
@@ -2051,9 +2091,20 @@ async function dlRec(id){
   const r = await getRec(id); if (!r) return;
   const blob = await readyBlob(r);
   const mime = (r.kind === 'video' && blob !== r.blob) ? 'video/mp4' : r.mime;
+  const name = '321bible-' + (r.kind === 'video' ? 'video' : 'voice') + extOf(mime);
+  /* 影片也一樣：iPhone 要走分享面板才進得了相簿 */
+  if (isIOS()){
+    const f = new File([blob], name, { type:mime });
+    if (navigator.canShare && navigator.canShare({ files:[f] })){
+      toast(t().saveIOS, 5000);
+      try{ await navigator.share({ files:[f], title: t().app }); return; }
+      catch(e){ if (e && e.name === 'AbortError') return; }
+    }
+  }
   const u = URL.createObjectURL(blob), a = document.createElement('a');
-  a.href = u; a.download = '321bible-' + (r.kind === 'video' ? 'video' : 'voice') + extOf(mime); a.click();
+  a.href = u; a.download = name; a.click();
   setTimeout(() => URL.revokeObjectURL(u), 6000);
+  toast(t().savedFile, 3200);
 }
 async function shareRec(id){
   const r = await getRec(id); if (!r) return;
@@ -2064,7 +2115,7 @@ async function shareRec(id){
     try{ await navigator.share({ files:[f], title:t().app }); return; }
     catch(e){ if (e && e.name === 'AbortError') return; }
   }
-  dlRec(id); toast(t().cardSaved, 3200);
+  dlRec(id);
 }
 async function rmRec(id){
   if (!confirm(t().delAsk)) return;
