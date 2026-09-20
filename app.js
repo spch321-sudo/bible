@@ -11,7 +11,12 @@ const API = {
   team: 'https://bible-team.spch321.workers.dev'       // 235 團隊同步（見 team-worker.js 的部署說明）
 };
 const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
-const VERSION = 'v2.0.0';
+
+/* ── Pexels 免費圖庫的金鑰 ────────────────────────────────────────────
+   到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
+   把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
+const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
+const VERSION = 'v2.1.0';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -961,6 +966,159 @@ function openHlSheet(el){
   });
 }
 
+/* ================================================================ 免費圖庫（Pexels）
+   Pexels 的照片是免費的、可商用、不必註明出處（但我們還是把攝影師的名字寫在挑選畫面上，
+   這是該有的禮貌）。要用它必須有一把免費的 API 金鑰：
+     https://www.pexels.com/api/ → 登入 → Your API Key → 複製
+   把那一串貼到 app.js 最上面 PEXELS_KEY 的引號裡就可以了。 */
+const PX_API = 'https://api.pexels.com/v1/';
+const PX_PER = 24;
+const PIC_L = {
+  zh:{ lib:'免費圖庫', libBtn:'🖼 從免費圖庫選', title:'Pexels 免費圖庫',
+       ph:'想找什麼樣的畫面…', search:'搜尋', more:'再多一些', loading:'載入中…',
+       noKey:'還沒設定 Pexels 金鑰。到 pexels.com/api 免費申請一把，貼進 app.js 最上面的 PEXELS_KEY 就可以用了。',
+       err:'連不上圖庫，請稍後再試', none:'找不到相符的照片，換個字試試',
+       by:'攝影：', picked:'已選好這張照片', loadingPic:'下載照片中…',
+       hint:'照片來自 Pexels，免費可商用。挑一張當卡片背景，字會自動壓上一層遮罩。',
+       presets:[['風景','landscape'],['日出','sunrise'],['天空','sky'],['海','ocean'],
+                ['山','mountain'],['花','flowers'],['光','light rays'],['樹','tree'],
+                ['小路','path'],['麥田','wheat field'],['水','calm water'],['雲','clouds'],
+                ['晨霧','morning mist'],['星空','starry sky'],['教堂','church'],['十字架','cross']] },
+  zs:{ lib:'免费图库', libBtn:'🖼 从免费图库选', title:'Pexels 免费图库',
+       ph:'想找什么样的画面…', search:'搜索', more:'再多一些', loading:'载入中…',
+       noKey:'还没设定 Pexels 密钥。到 pexels.com/api 免费申请一把，贴进 app.js 最上面的 PEXELS_KEY 就可以用了。',
+       err:'连不上图库，请稍后再试', none:'找不到相符的照片，换个字试试',
+       by:'摄影：', picked:'已选好这张照片', loadingPic:'下载照片中…',
+       hint:'照片来自 Pexels，免费可商用。挑一张当卡片背景，字会自动压上一层遮罩。',
+       presets:[['风景','landscape'],['日出','sunrise'],['天空','sky'],['海','ocean'],
+                ['山','mountain'],['花','flowers'],['光','light rays'],['树','tree'],
+                ['小路','path'],['麦田','wheat field'],['水','calm water'],['云','clouds'],
+                ['晨雾','morning mist'],['星空','starry sky'],['教堂','church'],['十字架','cross']] },
+  en:{ lib:'Free photo library', libBtn:'🖼 Pick a free photo', title:'Pexels free photos',
+       ph:'What kind of scene…', search:'Search', more:'Load more', loading:'Loading…',
+       noKey:'No Pexels key yet. Get a free one at pexels.com/api and paste it into PEXELS_KEY at the top of app.js.',
+       err:'Cannot reach the photo library — try again later', none:'Nothing found — try another word',
+       by:'Photo: ', picked:'Photo chosen', loadingPic:'Downloading the photo…',
+       hint:'Photos from Pexels — free to use. Pick one as the card background; the text gets a soft overlay automatically.',
+       presets:[['Landscape','landscape'],['Sunrise','sunrise'],['Sky','sky'],['Ocean','ocean'],
+                ['Mountain','mountain'],['Flowers','flowers'],['Light','light rays'],['Tree','tree'],
+                ['Path','path'],['Wheat','wheat field'],['Water','calm water'],['Clouds','clouds'],
+                ['Mist','morning mist'],['Stars','starry sky'],['Church','church'],['Cross','cross']] }
+};
+const pl = () => PIC_L[state.lang] || PIC_L.zh;
+
+let pxState = { q:'', page:1, items:[], busy:false, end:false };
+let photoBy = '';                      // 這張照片的攝影師，掛在挑選畫面上
+
+/* 卡片是直的就找直的，橫的就找橫的——挑到的圖比較不會被裁掉重點 */
+function pxOrient(){
+  const s = cardSize();
+  return s === 'w' ? 'landscape' : (s === 's' ? 'square' : 'portrait');
+}
+async function pxFetch(reset){
+  if (!PEXELS_KEY){ toast(pl().noKey, 6000); return false; }
+  if (pxState.busy) return false;
+  pxState.busy = true;
+  if (reset){ pxState.page = 1; pxState.items = []; pxState.end = false; }
+  const q = pxState.q.trim();
+  const url = (q ? `${PX_API}search?query=${encodeURIComponent(q)}&orientation=${pxOrient()}&`
+                 : `${PX_API}curated?`)
+            + `per_page=${PX_PER}&page=${pxState.page}`;
+  try{
+    const r = await fetch(url, { headers:{ Authorization: PEXELS_KEY } });
+    if (!r.ok) throw new Error('http ' + r.status);
+    const d = await r.json();
+    const got = (d && d.photos) || [];
+    pxState.items = pxState.items.concat(got);
+    pxState.end = got.length < PX_PER;
+    pxState.page++;
+    return true;
+  }catch(e){
+    toast(pl().err + '（' + (e.message || 'network') + '）', 4000);
+    return false;
+  }finally{ pxState.busy = false; }
+}
+/* 用 fetch 抓成 blob 再給 Image——這樣畫到 canvas 上不會被瀏覽器判定「污染」，
+   之後「存到相簿」「分享」才匯得出來。 */
+async function pxLoad(photo){
+  const url = (photo.src && (photo.src.large2x || photo.src.large || photo.src.original)) || '';
+  if (!url) return false;
+  const r = await fetch(url, { mode:'cors' });
+  if (!r.ok) throw new Error('http ' + r.status);
+  const blob = await r.blob();
+  const obj = URL.createObjectURL(blob);
+  try{
+    const im = await new Promise((res, rej) => {
+      const i = new Image();
+      i.onload = () => res(i);
+      i.onerror = () => rej(new Error('decode'));
+      i.src = obj;
+    });
+    photoImg = im;
+    photoBy = photo.photographer || '';
+    if (!photoMode) photoMode = 'bg';
+    return true;
+  }finally{ setTimeout(() => { try{ URL.revokeObjectURL(obj); }catch(_){} }, 30000); }
+}
+
+function openPexels(){
+  const L = pl();
+  const mask = document.createElement('div'); mask.className = 'hlsheet-mask';
+  mask.innerHTML = `<div class="hlsheet-card pxsheet">
+    <div class="hlsheet-title">${esc(L.title)}</div>
+    <div class="pxbar">
+      <input class="cardinput" id="pxQ" placeholder="${esc(L.ph)}" value="${esc(pxState.q)}">
+      <button class="btn sm primary" id="pxGo">${esc(L.search)}</button>
+    </div>
+    <div class="cardchips pxchips" id="pxPre">
+      ${L.presets.map(([n, q]) => `<button data-q="${esc(q)}">${esc(n)}</button>`).join('')}
+    </div>
+    <div class="pxgrid" id="pxGrid"></div>
+    <div class="hlsheet-acts2" style="margin-top:12px">
+      <button class="btn sm" id="pxMore">${esc(L.more)}</button>
+      <button class="btn sm" id="pxClose">${esc(t().close)}</button>
+    </div>
+    <div class="muted" style="font-size:12px;margin-top:10px">${esc(L.hint)}</div>
+  </div>`;
+  document.body.appendChild(mask);
+  mask.onclick = e => { if (e.target === mask) mask.remove(); };
+  $('#pxClose', mask).onclick = () => mask.remove();
+
+  const grid = $('#pxGrid', mask);
+  const paint = () => {
+    if (!pxState.items.length){
+      grid.innerHTML = `<div class="empty" style="grid-column:1/-1;padding:24px">${esc(pxState.busy ? L.loading : L.none)}</div>`;
+      return;
+    }
+    grid.innerHTML = pxState.items.map((p, i) => `
+      <button class="pxcell" data-i="${i}">
+        <img src="${esc((p.src && (p.src.tiny || p.src.small)) || '')}" alt="" loading="lazy">
+        <span>${esc(p.photographer || '')}</span>
+      </button>`).join('');
+    $$('.pxcell', grid).forEach(b => b.onclick = async () => {
+      const p = pxState.items[+b.dataset.i]; if (!p) return;
+      b.classList.add('on'); toast(L.loadingPic);
+      try{
+        await pxLoad(p);
+        mask.remove(); toast(L.picked);
+        await studioRefresh();
+      }catch(e){ b.classList.remove('on'); toast(t().photoBad, 4000); }
+    });
+  };
+  const run = async reset => {
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1;padding:24px">${esc(L.loading)}</div>`;
+    await pxFetch(reset); paint();
+    const mb = $('#pxMore', mask); if (mb) mb.hidden = pxState.end || !pxState.items.length;
+  };
+  $('#pxGo', mask).onclick = () => { pxState.q = $('#pxQ', mask).value; run(true); };
+  $('#pxQ', mask).onkeydown = e => { if (e.key === 'Enter'){ pxState.q = e.target.value; run(true); } };
+  $$('#pxPre button', mask).forEach(b => b.onclick = () => {
+    pxState.q = b.dataset.q; $('#pxQ', mask).value = b.dataset.q; run(true);
+  });
+  $('#pxMore', mask).onclick = () => run(false);
+  run(true);
+}
+
 /* ================================================================ 經文美圖
    把畫線的經文與領受畫成一張圖，直接分享到 LINE／IG／FB。
    作法與《321愛的關懷》相同：canvas 畫好 → navigator.share 傳檔，
@@ -1015,7 +1173,7 @@ function pickPhoto(inp){
   const rd = new FileReader();
   rd.onload = () => {
     const im = new Image();
-    im.onload = () => { photoImg = im; if (!photoMode) photoMode = 'bg'; studioRefresh(); };
+    im.onload = () => { photoImg = im; photoBy = ''; if (!photoMode) photoMode = 'bg'; studioRefresh(); };
     im.onerror = () => toast(t().photoBad);
     im.src = rd.result;
   };
@@ -1744,30 +1902,54 @@ async function saveWork(blob, type, kind){
     toast('存檔失敗：' + (e && e.message || e), 4000);
   }
 }
+/* 麥克風剛打開的前三、四百毫秒常有一聲爆音或嘶聲——回音消除與自動增益
+   還在調整。所以錄音一律：①先等它穩下來 ②收音從靜音淡入 ③音樂也淡入。
+   這樣開頭就是乾淨的，不會一開始就「噗」一聲。 */
+const REC_WARMUP = 380;      // 等麥克風穩定（毫秒）
+const REC_FADEIN = 0.28;     // 人聲淡入（秒）
+const BGM_FADEIN = 0.9;      // 音樂淡入（秒）
+function fadeIn(g, ac, to, sec){
+  if (!g || !ac) return;
+  try{
+    const t0 = ac.currentTime;
+    g.gain.cancelScheduledValues(t0);
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.linearRampToValueAtTime(to, t0 + sec);
+  }catch(e){ try{ g.gain.value = to; }catch(_){} }
+}
 async function toggleRec(){
   if (mr && mr.state === 'recording'){ mr.stop(); return; }
   if (!studioItem) return;
   let mic;
-  try{ mic = await navigator.mediaDevices.getUserMedia({ audio:true }); }
-  catch(e){ toast(t().micDeny); return; }
+  /* 明確要求回音消除／雜訊抑制／自動增益，收進來的聲音比較乾淨 */
+  try{
+    mic = await navigator.mediaDevices.getUserMedia({
+      audio:{ echoCancellation:true, noiseSuppression:true, autoGainControl:true } });
+  }catch(e){
+    try{ mic = await navigator.mediaDevices.getUserMedia({ audio:true }); }
+    catch(e2){ toast(t().micDeny); return; }
+  }
 
   const svid = $('#selfiePrev');
   const useSelfie = recSelfie && svid && svid.videoWidth;
-  let ac = null, bgmEl = null, bgmURL = null, audioStream = mic;
-  if (bgmBlob){
-    try{
-      ac = new (window.AudioContext || window.webkitAudioContext)();
-      try{ await ac.resume(); }catch(_){}
-      const micSrc = ac.createMediaStreamSource(mic);
+  let ac = null, bgmEl = null, bgmURL = null, audioStream = mic, micGain = null, bgmGain = null;
+  /* 不管有沒有配樂都走 WebAudio，才有地方做淡入 */
+  try{
+    ac = new (window.AudioContext || window.webkitAudioContext)();
+    try{ await ac.resume(); }catch(_){}
+    const dst = ac.createMediaStreamDestination();
+    micGain = ac.createGain(); micGain.gain.value = 0.0001;
+    ac.createMediaStreamSource(mic).connect(micGain).connect(dst);
+    if (bgmBlob){
       bgmURL = URL.createObjectURL(bgmBlob);
       bgmEl = new Audio(); bgmEl.src = bgmURL; bgmEl.loop = true; bgmEl.crossOrigin = 'anonymous';
-      const gain = ac.createGain(); gain.gain.value = bgmVol;
-      const dst = ac.createMediaStreamDestination();
-      micSrc.connect(dst);
-      ac.createMediaElementSource(bgmEl).connect(gain).connect(dst);
-      audioStream = dst.stream;
-      await bgmEl.play().catch(() => {});
-    }catch(e){ ac = null; bgmEl = null; audioStream = mic; }
+      bgmGain = ac.createGain(); bgmGain.gain.value = 0.0001;
+      ac.createMediaElementSource(bgmEl).connect(bgmGain).connect(dst);
+    }
+    audioStream = dst.stream;
+  }catch(e){
+    try{ if (ac) ac.close(); }catch(_){}
+    ac = null; bgmEl = null; bgmGain = null; micGain = null; audioStream = mic;
   }
 
   let stream = audioStream, kind = 'audio', mime = audMime();
@@ -1798,7 +1980,15 @@ async function toggleRec(){
     const type = mr.mimeType || mime || (kind === 'video' ? 'video/webm' : 'audio/webm');
     await saveWork(new Blob(chunks, { type }), type, kind);
   };
+  /* 等麥克風穩下來再按下錄音鍵，開頭那一聲爆音就被留在外面了 */
+  await new Promise(r => setTimeout(r, REC_WARMUP));
+  if (!mr) return;
   mr.start(1000);
+  fadeIn(micGain, ac, 1, REC_FADEIN);
+  if (bgmEl){
+    try{ await bgmEl.play(); }catch(_){}
+    fadeIn(bgmGain, ac, bgmVol, BGM_FADEIN);
+  }
   const bt = $('#recBtn'); if (bt){ bt.textContent = t().recStop; bt.classList.add('danger'); }
   recTick((kind === 'video' ? t().recing : t().recingA) + (bgmBlob ? '　♪' : ''));
 }
@@ -1813,7 +2003,7 @@ async function musicRec(){
     try{ await ac.resume(); }catch(_){}
     bgmURL = URL.createObjectURL(bgmBlob);
     bgmEl = new Audio(); bgmEl.src = bgmURL; bgmEl.loop = false; bgmEl.crossOrigin = 'anonymous';
-    const gain = ac.createGain(); gain.gain.value = 1; __mcGain = gain;
+    const gain = ac.createGain(); gain.gain.value = 0.0001; __mcGain = gain;
     const dst = ac.createMediaStreamDestination();
     ac.createMediaElementSource(bgmEl).connect(gain).connect(dst);
     audioStream = dst.stream;
@@ -1838,6 +2028,7 @@ async function musicRec(){
   };
   mr.start(1000);
   try{ await bgmEl.play(); }catch(e){}
+  fadeIn(__mcGain, ac, 1, 0.6);
   bgmEl.onended = () => { if (mr && mr.state === 'recording') mr.stop(); };
   const lim = mcLen > 0 ? mcLen : 8 * 60;
   if (mcLen > 0){
@@ -2011,11 +2202,14 @@ async function viewStudio(v){
         ${chips('pSize', STK_SIZES, stkSize, 'v')}
         <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.stkPos)}</div>
         ${chips('pPos', STK_POS, stkPos, 'v')}` : ''}
+      ${photoBy ? `<div class="muted" style="font-size:11.5px;margin-top:10px">${esc(pl().by + photoBy)}</div>` : ''}
       <div class="hlsheet-acts2" style="margin-top:12px">
         <label class="btn sm" style="cursor:pointer">${esc(L.photoSwap)}<input type="file" accept="image/*" hidden id="pRe"></label>
+        <button class="btn sm gold" id="pLib">${esc(pl().libBtn)}</button>
         <button class="btn sm danger" id="pDel">${esc(L.photoDel)}</button>
       </div>` : `
-      <label class="btn block" style="cursor:pointer">${esc(L.photoPick)}<input type="file" accept="image/*" hidden id="pNew"></label>
+      <button class="btn block gold" id="pLib">${esc(pl().libBtn)}</button>
+      <label class="btn block" style="cursor:pointer;margin-top:8px">${esc(L.photoPick)}<input type="file" accept="image/*" hidden id="pNew"></label>
       <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.photoHint)}</div>`}
     </div>
 
@@ -2083,7 +2277,8 @@ async function viewStudio(v){
   bind('#bVol button', b => { bgmVol = +b.dataset.v; studioRefresh(); });
   bind('#mLen button', b => { mcLen = +b.dataset.v; studioRefresh(); });
   bind('#rMode button', b => setSelfie(b.dataset.s === '1'));
-  const pd = $('#pDel'); if (pd) pd.onclick = () => { photoImg = null; studioRefresh(); };
+  const pd = $('#pDel'); if (pd) pd.onclick = () => { photoImg = null; photoBy = ''; studioRefresh(); };
+  const pl2 = $('#pLib'); if (pl2) pl2.onclick = openPexels;
   const bd = $('#bDel'); if (bd) bd.onclick = () => { bgmBlob = null; bgmName = ''; studioRefresh(); };
   ['pNew','pRe'].forEach(id => { const e = $('#' + id); if (e) e.onchange = () => pickPhoto(e); });
   ['bNew','bRe'].forEach(id => { const e = $('#' + id); if (e) e.onchange = () => pickBgm(e); });
