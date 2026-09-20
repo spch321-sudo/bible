@@ -10,7 +10,7 @@ const API = {
   tts : 'https://azure-tts.spch321.workers.dev'        // {voice, rate, sil, silc, sile, text}
 };
 const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
-const VERSION = 'v1.6.0';
+const VERSION = 'v1.5.0';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -44,8 +44,6 @@ const I18N = {
         searchPH:'輸入要找的字句…', searchHint:'輸入兩個字以上開始搜尋', noResult:'找不到相符的經文',
         found:n=>`找到 ${n} 節`, loading:'載入中…',
         hlTitle:'這一句', hlColor:'顏色', hlNote:'寫下默想…', save:'儲存', ask:'問小智', del:'刪除畫線', close:'關閉',
-        hlSpan:'範圍', spanUnit:n=>`${n} 句`, spanV:'整節', spanP:'整段',
-        spanHint:'按 ＋ 往下多畫一句，畫線就不只一句，可以連成一整段。',
         myHl:'我的畫線', myFav:'我的收藏', settings:'設定', font:'字級大小', theme:'主題',
         fonts:['標準','大','特大','超大'], themes:['自動','日','夜','羊皮紙'],
         voice:'朗讀聲音', langLabel:'語言', stats:['已讀章數','畫線','書籤'],
@@ -56,7 +54,6 @@ const I18N = {
         blessHint:'可以自己寫，也可以請小智照這節經文寫一段關懷祝福；改完卡片會立刻跟著變。',
         useMine:'用我的領受', clearText:'不要內文',
         cardLines:'卡片上下的署名', cardTopL:'上面（團體名）', cardSignL:'下面（署名）',
-        cardToL:'稱呼（這張圖寫給誰）', cardToPH:'例：親愛的珍姐',
         cardLinesHint:'留空就用預設。例如下面改成「愛你的財哥、珍姐　敬上」。',
         cardShare:'分享', cardSave:'存到相簿',
         cardHint:'按「分享」可直接選 LINE／IG／FB 傳出去；也可以長按上面的圖片存起來。',
@@ -110,8 +107,6 @@ const I18N = {
         searchPH:'输入要找的字句…', searchHint:'输入两个字以上开始搜索', noResult:'找不到相符的经文',
         found:n=>`找到 ${n} 节`, loading:'载入中…',
         hlTitle:'这一句', hlColor:'颜色', hlNote:'写下默想…', save:'保存', ask:'问小智', del:'删除划线', close:'关闭',
-        hlSpan:'范围', spanUnit:n=>`${n} 句`, spanV:'整节', spanP:'整段',
-        spanHint:'按 ＋ 往下多划一句，划线就不只一句，可以连成一整段。',
         myHl:'我的划线', myFav:'我的收藏', settings:'设置', font:'字级大小', theme:'主题',
         fonts:['标准','大','特大','超大'], themes:['自动','日','夜','羊皮纸'],
         voice:'朗读声音', langLabel:'语言', stats:['已读章数','划线','书签'],
@@ -122,7 +117,6 @@ const I18N = {
         blessHint:'可以自己写，也可以请小智照这节经文写一段关怀祝福；改完卡片会立刻跟着变。',
         useMine:'用我的领受', clearText:'不要内文',
         cardLines:'卡片上下的署名', cardTopL:'上面（团体名）', cardSignL:'下面（署名）',
-        cardToL:'称呼（这张图写给谁）', cardToPH:'例：亲爱的珍姐',
         cardLinesHint:'留空就用预设。例如下面改成“爱你的财哥、珍姐　敬上”。',
         cardShare:'分享', cardSave:'存到相册',
         cardHint:'按“分享”可直接选 LINE／IG／FB 传出去；也可以长按上面的图片存起来。',
@@ -178,8 +172,6 @@ const I18N = {
         found:n=>`${n} verse${n === 1 ? '' : 's'} found`, loading:'Loading…',
         hlTitle:'This sentence', hlColor:'Colour', hlNote:'Write your reflection…', save:'Save',
         ask:'Ask Xiaozhi', del:'Remove highlight', close:'Close',
-        hlSpan:'Range', spanUnit:n=>`${n} sentence${n === 1 ? '' : 's'}`, spanV:'Whole verse', spanP:'Whole paragraph',
-        spanHint:'Tap ＋ to take in the next sentence, so a highlight can cover a whole passage.',
         myHl:'My highlights', myFav:'My saved replies', settings:'Settings', font:'Text size', theme:'Theme',
         fonts:['Normal','Large','Larger','Largest'], themes:['Auto','Day','Night','Parchment'],
         voice:'Reading voice', langLabel:'Language', stats:['Chapters read','Highlights','Bookmarks'],
@@ -190,7 +182,6 @@ const I18N = {
         blessHint:'Write it yourself, or let Xiaozhi write a short blessing from this verse. The card updates as you type.',
         useMine:'Use my reflection', clearText:'No body text',
         cardLines:'Lines above and below', cardTopL:'Top (your fellowship)', cardSignL:'Bottom (signature)',
-        cardToL:'To (who this card is for)', cardToPH:'e.g. Dear Joy',
         cardLinesHint:'Leave blank for the default — for example, “With love, Alex & Joy”.',
         cardShare:'Share', cardSave:'Save to photos',
         cardHint:'Tap Share to send it straight to LINE, Instagram or Facebook — or press and hold the image to save it.',
@@ -253,7 +244,7 @@ const VOICES = {
 
 const DEFAULTS = { lang:'zh', font:0, theme:0, flow:false, shCh:true, shV:true, hidenote:false,
                    cardTpl:'navy', cardSize:'t', cardBorder:'classic', cardFs:1,
-                   cardTop:'', cardSign:'', cardTo:'',
+                   cardTop:'', cardSign:'',
                    voice:{zh:0, zs:0, en:0} };
 /* 「淨」鍵依序切換的四種組合：[整卷連讀?, 顯示章號?] */
 /* 「淨」鍵循環的四種常用讀法：[整卷連讀, 顯示章, 顯示節] */
@@ -585,50 +576,22 @@ const BLOCK_CLASS = { p:'prose', q1:'q1', q2:'q2', d:'dline' };
 function chapterHTML(bookId, cno, chap, withHead){
   const bm = new Set(user.marks.filter(m => m.b === bookId && m.c === cno)
                                .map(m => hlKey(m.b, m.c, m.p, m.s)));
-  /* 先把整章的句子攤成一列，畫線才能跨句、跨段落連成一整段 */
-  const flat = [];
-  chap.forEach((bl, bi) => {
-    if (bl[0] === 'b') return;
-    let si = 0, curV = 0;
-    for (let j = 1; j < bl.length; j += 2){
-      const vno = bl[j], txt = bl[j + 1];
-      let first = true;
-      for (const sx of splitSentences(txt)){
-        if (vno && first) curV = vno;
-        flat.push({ bi, si, vn:(vno && first) ? vno : 0, v:curV, tx:sx });
-        si++; first = false;
-      }
-    }
-  });
-  /* 每一句是被哪一條畫線蓋住的（h.sp = 這條畫線含幾句） */
-  const own = {};
-  flat.forEach((f, i) => {
-    const k = hlKey(bookId, cno, f.bi, f.si);
-    const h = user.hl[k];
-    if (!h) return;
-    const n = Math.max(1, +h.sp || 1);
-    for (let d = 0; d < n && i + d < flat.length; d++){
-      const g = flat[i + d];
-      own[g.bi + '|' + g.si] = { k, h, head:d === 0, p0:f.bi, s0:f.si };
-    }
-  });
-  const byBlock = {};
-  flat.forEach(f => { (byBlock[f.bi] = byBlock[f.bi] || []).push(f); });
-
   const body = chap.map((bl, bi) => {
     if (bl[0] === 'b') return '<div class="stanza"></div>';
-    let inner = '', notes = '';
-    (byBlock[bi] || []).forEach(f => {
-      if (f.vn) inner += `<span class="vn">${f.vn}</span>`;
-      const k = hlKey(bookId, cno, bi, f.si);
-      const o = own[bi + '|' + f.si];
-      inner += `<span class="sent" data-c="${cno}" data-p="${bi}" data-s="${f.si}" data-v="${f.v}"`
-             + (o ? ` data-hl="1" data-color="${o.h.c}"${o.head ? '' : ` data-op="${o.p0}" data-os="${o.s0}"`}` : '')
-             + (bm.has(k) ? ' data-bm="1"' : '')
-             + `>${markNotes(esc(f.tx))}</span>`;
-      if (o && o.head && o.h.n)
-        notes += `<div class="hl-note" data-c="${cno}" data-p="${bi}" data-s="${f.si}" data-color="${o.h.c}">${esc(o.h.n)}</div>`;
-    });
+    let inner = '', notes = '', si = 0, curV = 0;
+    for (let j = 1; j < bl.length; j += 2){
+      const vno = bl[j], txt = bl[j + 1];
+      if (vno){ inner += `<span class="vn">${vno}</span>`; curV = vno; }
+      for (const sx of splitSentences(txt)){
+        const k = hlKey(bookId, cno, bi, si);
+        const h = user.hl[k];
+        inner += `<span class="sent" data-c="${cno}" data-p="${bi}" data-s="${si}" data-v="${curV}"`
+               + `${h ? ` data-hl="1" data-color="${h.c}"` : ''}${bm.has(k) ? ' data-bm="1"' : ''}`
+               + `>${markNotes(esc(sx))}</span>`;
+        if (h && h.n) notes += `<div class="hl-note" data-c="${cno}" data-p="${bi}" data-s="${si}" data-color="${h.c}">${esc(h.n)}</div>`;
+        si++;
+      }
+    }
     return `<p class="${BLOCK_CLASS[bl[0]] || 'prose'}" data-c="${cno}" data-p="${bi}">${inner}</p>${notes}`;
   }).join('');
   const head = withHead ? `<h2 class="ch" data-c="${cno}">${esc(chapLabel(bookId, cno))}</h2>` : '';
@@ -722,14 +685,13 @@ async function viewReader(v, bookId, ch){
     ? (readOfBook(bookId) === b.ch ? L.bookDone : '')
     : (user.progress[bookId + '-' + ch] ? L.done : '');
 
-  if (!(spk.on && spk.items.length)) window.scrollTo(0, 0);
+  window.scrollTo(0, 0);
   const want = jumpTo; jumpTo = null;
   if (!(want && scrollToAnchor(want)) && flow && ch > 1){
     const target = $(`#reader p[data-c="${ch}"]`);
     if (target) requestAnimationFrame(() => target.scrollIntoView({ block:'start' }));
   }
   watchProgress(bookId, flow, b.ch);
-  ttsRebind();
 }
 
 /* 讀到哪裡就記到哪裡。分章模式捲到底即算讀完；
@@ -772,9 +734,8 @@ function onSentTap(el){
   const cno = +el.dataset.c || RD.ch;
   if (bmMode){ toggleBm(el, cno); return; }
   const k = hlKey(RD.book, cno, el.dataset.p, el.dataset.s);
-  if (!user.hl[k] && el.dataset.op == null){
-    user.hl[k] = { c:'gold', n:'', sp:1, t:el.textContent, b:RD.book, ch:cno,
-                   v:+el.dataset.v || 0, ts:Date.now() };
+  if (!user.hl[k]){
+    user.hl[k] = { c:'gold', n:'', t:el.textContent, b:RD.book, ch:cno, v:+el.dataset.v || 0, ts:Date.now() };
     el.setAttribute('data-hl', '1'); el.setAttribute('data-color', 'gold');
     saveUser();
   } else {
@@ -796,92 +757,10 @@ function toggleBm(el, cno){
   }
   saveUser();
 }
-/* 同一章的句子，照畫面上的先後排成一列（分章模式與整卷連讀共用） */
-function sentList(cno){
-  return $$('#reader .sent').filter(e => (+e.dataset.c || RD.ch) === cno);
-}
-/* 畫線的顏色與範圍直接改在畫面上，不重畫整章。
-   重畫會把朗讀中那一段的顏色標示洗掉，也會把捲軸彈回最上面，
-   使用者就覺得「一畫線，朗讀就斷了」。 */
-function paintHl(cno){
-  const list = sentList(cno);
-  const cover = new Array(list.length).fill(null);
-  list.forEach((el, i) => {
-    const h = user.hl[hlKey(RD.book, cno, el.dataset.p, el.dataset.s)];
-    if (!h) return;
-    const n = Math.max(1, +h.sp || 1);
-    for (let d = 0; d < n && i + d < list.length; d++)
-      cover[i + d] = { h, head:d === 0, p0:el.dataset.p, s0:el.dataset.s };
-  });
-  list.forEach((el, i) => {
-    const o = cover[i];
-    if (o){
-      el.setAttribute('data-hl', '1'); el.setAttribute('data-color', o.h.c);
-      if (o.head){ el.removeAttribute('data-op'); el.removeAttribute('data-os'); }
-      else { el.setAttribute('data-op', o.p0); el.setAttribute('data-os', o.s0); }
-    } else {
-      ['data-hl','data-color','data-op','data-os'].forEach(a => el.removeAttribute(a));
-    }
-  });
-  paintNotes(cno, list, cover);
-}
-function paintNotes(cno, list, cover){
-  $$('#reader .hl-note').forEach(n => { if ((+n.dataset.c || RD.ch) === cno) n.remove(); });
-  let curP = null, after = null;
-  list.forEach((el, i) => {
-    const o = cover[i];
-    if (!o || !o.head || !o.h.n) return;
-    const p = el.closest('p'); if (!p) return;
-    if (p !== curP){ curP = p; after = p; }
-    const d = document.createElement('div');
-    d.className = 'hl-note';
-    d.dataset.c = cno; d.dataset.p = el.dataset.p; d.dataset.s = el.dataset.s;
-    d.setAttribute('data-color', o.h.c);
-    d.textContent = o.h.n;
-    d.onclick = () => openHlSheet(el);
-    after.after(d); after = d;
-  });
-}
-/* 把畫線含的幾句接回一段完整的經文（卡片、我的畫線、問小智都用這一段） */
-function spanApply(cno, el, h, n){
-  const list = sentList(cno);
-  const i = list.indexOf(el);
-  if (i < 0) return h;
-  n = Math.max(1, Math.min(n, list.length - i));
-  const part = list.slice(i, i + n);
-  h.sp = n;
-  h.t = part.map(e => e.textContent).join(isEN() ? ' ' : '').replace(/\s+/g, ' ').trim();
-  h.v = +part[0].dataset.v || 0;
-  const lastV = +part[part.length - 1].dataset.v || 0;
-  h.v2 = lastV > h.v ? lastV : 0;
-  return h;
-}
-/* 整節：這一節剩下的句子都畫進來；整段：這一段剩下的句子都畫進來 */
-function spanTo(cno, el, mode){
-  const list = sentList(cno);
-  const i = list.indexOf(el);
-  if (i < 0) return 1;
-  const v0 = el.dataset.v, p0 = el.dataset.p;
-  let n = 1;
-  while (i + n < list.length){
-    const e = list[i + n];
-    if (mode === 'v' ? e.dataset.v !== v0 : e.dataset.p !== p0) break;
-    n++;
-  }
-  return n;
-}
-
 function openHlSheet(el){
   const L = t();
-  const cno = +el.dataset.c || RD.ch;
-  /* 點到的是被別條畫線蓋住的句子，就打開那一條 */
-  if (el.dataset.op != null){
-    const own = $(`#reader .sent[data-c="${cno}"][data-p="${el.dataset.op}"][data-s="${el.dataset.os}"]`);
-    if (own && own !== el) return openHlSheet(own);
-  }
-  const k = hlKey(RD.book, cno, el.dataset.p, el.dataset.s);
+  const k = hlKey(RD.book, +el.dataset.c || RD.ch, el.dataset.p, el.dataset.s);
   const h = user.hl[k]; if (!h) return;
-  if (!h.sp) h.sp = 1;
   const mask = document.createElement('div'); mask.className = 'hlsheet-mask';
   mask.innerHTML = `<div class="hlsheet-card">
     <div class="hlsheet-title">${esc(L.hlTitle)}</div>
@@ -889,15 +768,6 @@ function openHlSheet(el){
     <div class="hlsheet-colorrow"><span class="hlsheet-colorlabel">${esc(L.hlColor)}</span>
       <div class="hlsheet-colors">${HL_COLORS.map(c =>
         `<button class="hlswatch ${h.c === c ? 'active' : ''}" data-c="${c}" style="background:${HL_SWATCH[c]}"></button>`).join('')}</div></div>
-    <div class="hlsheet-colorrow"><span class="hlsheet-colorlabel">${esc(L.hlSpan)}</span>
-      <div class="spanrow">
-        <button class="spanbtn" data-sp="-1">－</button>
-        <span class="spannum" id="spanNum">${esc(L.spanUnit(h.sp))}</span>
-        <button class="spanbtn" data-sp="1">＋</button>
-        <button class="spanbtn wide" data-sp="v">${esc(L.spanV)}</button>
-        <button class="spanbtn wide" data-sp="p">${esc(L.spanP)}</button>
-      </div></div>
-    <div class="hl-hint" style="margin:-2px 0 10px">${esc(L.spanHint)}</div>
     <textarea class="hlsheet-ta" placeholder="${esc(L.hlNote)}">${esc(h.n || '')}</textarea>
     <div class="hlsheet-acts">
       <button class="btn primary" data-a="save">${esc(L.save)}</button>
@@ -916,24 +786,14 @@ function openHlSheet(el){
     color = b.dataset.c;
     $$('.hlswatch', mask).forEach(x => x.classList.toggle('active', x === b));
     h.c = color; saveUser();
-    paintHl(cno);
-  });
-  /* 範圍：往下多畫一句、少畫一句，或一次畫整節／整段 */
-  const quote = $('.hlsheet-quote', mask), num = $('#spanNum', mask);
-  const setSpan = n => {
-    spanApply(cno, el, h, n); saveUser();
-    paintHl(cno);
-    if (quote) quote.textContent = h.t;
-    if (num) num.textContent = t().spanUnit(h.sp);
-  };
-  $$('[data-sp]', mask).forEach(b => b.onclick = () => {
-    const v = b.dataset.sp;
-    setSpan(v === 'v' || v === 'p' ? spanTo(cno, el, v) : (h.sp || 1) + (+v));
+    el.setAttribute('data-color', color);
+    const nt = $(`#reader .hl-note[data-c="${el.dataset.c}"][data-p="${el.dataset.p}"][data-s="${el.dataset.s}"]`);
+    if (nt) nt.setAttribute('data-color', color);
   });
   const ta = $('.hlsheet-ta', mask);
   const commit = () => {
     h.c = color; h.n = ta.value.trim(); saveUser();
-    mask.remove(); paintHl(cno);
+    mask.remove(); render();
   };
   $$('[data-a]', mask).forEach(b => b.onclick = () => {
     const a = b.dataset.a;
@@ -943,7 +803,7 @@ function openHlSheet(el){
       mask.remove(); openStudio(h);
     }
     else if (a === 'close') mask.remove();
-    else if (a === 'del'){ delete user.hl[k]; saveUser(); mask.remove(); paintHl(cno); }
+    else if (a === 'del'){ delete user.hl[k]; saveUser(); mask.remove(); render(); }
     else if (a === 'ask'){
       h.c = color; h.n = ta.value.trim(); saveUser(); mask.remove();
       chatPending = isEN() ? `Help me meditate on this verse: “${h.t}”`
@@ -1046,8 +906,7 @@ function chapLabel(bookId, n){
 function cardRef(h){
   const b = BOOK[h.b];
   const nm = b ? bname(b) : h.b;
-  const vv = (h.v2 && h.v2 > h.v) ? `${h.v}-${h.v2}` : h.v;   // 畫線跨節就寫成 3:16-17
-  return h.v ? `${nm} ${h.ch}:${vv}` : (h.b === 'Psalms' ? chapLabel(h.b, h.ch) : `${nm} ${t().chapter(h.ch)}`);
+  return h.v ? `${nm} ${h.ch}:${h.v}` : (h.b === 'Psalms' ? chapLabel(h.b, h.ch) : `${nm} ${t().chapter(h.ch)}`);
 }
 function rr(ctx, x, y, w, h, r){
   ctx.beginPath(); ctx.moveTo(x + r, y);
@@ -1193,25 +1052,11 @@ function drawVerseCard(cv, h, W, H){
     ctx.beginPath(); ctx.moveTo(x0, grpY - 9 * F); ctx.lineTo(x0 + d * 30 * F, grpY - 9 * F); ctx.stroke();
   });
 
-  /* 稱呼（若有）畫在團契名底下、經文上面，像一封信的開頭 */
-  const toName = (state.cardTo || '').trim();
-  if (toName){
-    let ts2 = Math.round(40 * F);
-    ctx.textAlign = 'center'; ctx.fillStyle = T.gold;
-    while (ts2 > Math.round(22 * F)){
-      ctx.font = `600 ${ts2}px ${serif}`;
-      if (ctx.measureText(toName).width <= iw) break;
-      ts2 -= Math.round(2 * F);
-    }
-    ctx.font = `600 ${ts2}px ${serif}`;
-    ctx.fillText(toName, W / 2, pad + Math.round(132 * F));
-  }
-
   /* 版位：經文＋領受垂直置中 */
   const hasSticker = photoImg && photoMode === 'sticker' && !suppressSticker;
   const stkBottom = hasSticker && stkPos !== 'tl' && stkPos !== 'tr';
   const liftRoom = stkBottom ? Math.round(W * stkSize * stkRatio()) + Math.round(30 * F) : 0;
-  const topRoom = pad + Math.round((toName ? 176 : 100) * F), botRoom = pad + Math.round(70 * F) + liftRoom;
+  const topRoom = pad + Math.round(100 * F), botRoom = pad + Math.round(70 * F) + liftRoom;
   const room = H - topRoom - botRoom;
   const FB = cardFs();          /* 領受字級（經文不變，版面才不會被擠掉） */
   /* 經文本身可能已經帶了引號（例如神說的話），不要再包一層 */
@@ -1897,11 +1742,7 @@ async function blessWrite(){
     : state.lang === 'zs'
     ? '你是「小智」，国度321空中团契的属灵同伴。请照使用者给的这节经文，写一段温暖的关怀祝福，送给弟兄姊妹。要求：先用一两句点出这节经文里神的心意，再写一句贴近生活的祝福，最后用一句祝福收尾。总共三到四句、120 字以内，口语、温暖、不说教，不要标题、不要条列、不要引号、不要再抄一次经文。'
     : '你是「小智」，國度321空中團契的屬靈同伴。請照使用者給的這節經文，寫一段溫暖的關懷祝福，送給弟兄姊妹。要求：先用一兩句點出這節經文裡神的心意，再寫一句貼近生活的祝福，最後用一句祝福收尾。總共三到四句、120 字以內，口語、溫暖、不說教，不要標題、不要條列、不要引號、不要再抄一次經文。';
-  const who = (state.cardTo || '').trim();
-  const ask = L3('經文：', '经文：', 'Verse: ') + studioItem.t + ' (' + cardRef(studioItem) + ')'
-            + (who ? L3(`\n這段話是寫給「${who}」的，請直接對他說話，但不要再寫一次稱呼。`,
-                        `\n这段话是写给“${who}”的，请直接对他说话，但不要再写一次称呼。`,
-                        `\nThis is written for "${who}" — speak directly to them, but do not repeat the greeting.`) : '');
+  const ask = L3('經文：', '经文：', 'Verse: ') + studioItem.t + ' (' + cardRef(studioItem) + ')';
   let out = '', why = '';
   for (let a = 0; a <= CHAT_RETRY.length; a++){
     try{
@@ -1971,10 +1812,7 @@ async function viewStudio(v){
 
     <div class="section-title">${esc(L.cardLines)}</div>
     <div class="card">
-      <div class="muted" style="font-size:12px;margin-bottom:6px">${esc(L.cardToL)}</div>
-      <input class="cardinput" id="cardTo" value="${esc(state.cardTo || '')}"
-             placeholder="${esc(L.cardToPH)}">
-      <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.cardTopL)}</div>
+      <div class="muted" style="font-size:12px;margin-bottom:6px">${esc(L.cardTopL)}</div>
       <input class="cardinput" id="cardTop" value="${esc(state.cardTop || '')}"
              placeholder="${esc(DEF_TOP())}">
       <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.cardSignL)}</div>
@@ -2092,7 +1930,6 @@ async function viewStudio(v){
     let tm = null;
     e.oninput = () => { clearTimeout(tm); tm = setTimeout(() => { state[key] = e.value; saveState(); renderCard(studioItem); }, 400); };
   };
-  bindInput('cardTo', 'cardTo');
   bindInput('cardTop', 'cardTop');
   bindInput('cardSign', 'cardSign');
   $('#recBtn').onclick = toggleRec;
@@ -2503,26 +2340,6 @@ function buildQueue(){
   return items.filter(i => ttsPrep(i.text).length > 0);
 }
 function raClear(){ $$('.tts-reading').forEach(e => e.classList.remove('tts-reading')); }
-/* 畫面重畫過（換章以外的情形，例如換字級、切模式）之後，
-   朗讀佇列裡記的還是舊的 DOM。重新接回新的句子，顏色標示才不會不見。 */
-function ttsRebind(){
-  if (!spk.on || !spk.items.length) return;
-  let ok = 0;
-  spk.items.forEach(it => {
-    it.els = it.els.map(old => {
-      const e = $(`#reader .sent[data-c="${old.dataset.c}"][data-p="${old.dataset.p}"][data-s="${old.dataset.s}"]`);
-      if (e) ok++;
-      return e || old;
-    });
-  });
-  if (!ok) return;                       // 已經換到別章了，就不要亂標
-  const cur = spk.items[spk.idx];
-  if (!cur) return;
-  raClear();
-  cur.els.forEach(e => { if (e.isConnected) e.classList.add('tts-reading'); });
-  const first = cur.els.find(e => e.isConnected);
-  if (first) try{ first.scrollIntoView({ block:'center' }); }catch(e){}
-}
 function raShow(item){
   raClear();
   if (!item || !item.els.length) return;
