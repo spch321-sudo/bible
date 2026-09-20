@@ -10,7 +10,7 @@ const API = {
   tts : 'https://azure-tts.spch321.workers.dev'        // {voice, rate, sil, silc, sile, text}
 };
 const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
-const VERSION = 'v1.3.0';
+const VERSION = 'v1.4.0';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -29,9 +29,11 @@ const I18N = {
         ot:'舊約', nt:'新約', ch:'章', chapter:n=>`第 ${n} 章`, verses:'節',
         cont:'繼續閱讀', start:'開始讀經', daily:'今日默想', progress:'讀經進度',
         prev:'上一章', next:'下一章', toc:'目錄', pure:'閱讀方式', note:'註釋',
-        modes:['分章','整卷連讀'], chnum:'章節標示', onoff:['顯示','隱藏'],
+        modes:['分章','整卷連讀'], onoff:['顯示','隱藏'],
+        shCh:'顯示章', shV:'顯示節',
+        shChHint:['每章開頭有淡雅的章題','看不到章題'],
+        shVHint:['每一節前面有金色小節號','看不到節號，純粹的經文'],
         modeHint:['一章一章讀，讀完按下一章','整卷接成一篇，一口氣讀完'],
-        chnumHint:['每章開頭有淡雅的章題','完全看不到章號，純粹的經文'],
         prevBk:'上一卷', nextBk:'下一卷', bookDone:'已讀完這一卷',
         bm:'書籤', bmAdd:'已加書籤', bmDel:'已移除書籤', myBm:'我的書籤',
         emptyBm:'還沒有書籤。在閱讀器按 🔖 進入書籤模式，點一下讀到的那一句就記下來。',
@@ -47,7 +49,12 @@ const I18N = {
         voice:'朗讀聲音', langLabel:'語言', stats:['已讀章數','畫線','書籤'],
         diag:'連線測試', diagRun:'測試小智與朗讀', diagBusy:'測試中…',
         card:'做成美圖', cardTitle:'做成美圖分享', cardStyle:'版型', cardSize:'尺寸',
-        cardBorder:'邊框', cardFsL:'領受字級', cardFsHint:'只放大你寫的領受，經文與落款維持不變。',
+        cardBorder:'邊框', cardFsL:'內文字級', cardFsHint:'只放大卡片上的內文，經文與署名維持不變。',
+        cardText:'卡片內文', bless:'請小智寫祝福', blessing:'小智寫作中…', blessDone:'小智寫好了',
+        blessHint:'可以自己寫，也可以請小智照這節經文寫一段關懷祝福；改完卡片會立刻跟著變。',
+        useMine:'用我的領受', clearText:'不要內文',
+        cardLines:'卡片上下的署名', cardTopL:'上面（團體名）', cardSignL:'下面（署名）',
+        cardLinesHint:'留空就用預設。例如下面改成「愛你的財哥、珍姐　敬上」。',
         cardShare:'分享', cardSave:'存到相簿',
         cardHint:'按「分享」可直接選 LINE／IG／FB 傳出去；也可以長按上面的圖片存起來。',
         cardSaved:'已下載，請從相簿分享',
@@ -85,9 +92,11 @@ const I18N = {
         ot:'旧约', nt:'新约', ch:'章', chapter:n=>`第 ${n} 章`, verses:'节',
         cont:'继续阅读', start:'开始读经', daily:'今日默想', progress:'读经进度',
         prev:'上一章', next:'下一章', toc:'目录', pure:'阅读方式', note:'注释',
-        modes:['分章','整卷连读'], chnum:'章节标示', onoff:['显示','隐藏'],
+        modes:['分章','整卷连读'], onoff:['显示','隐藏'],
+        shCh:'显示章', shV:'显示节',
+        shChHint:['每章开头有淡雅的章题','看不到章题'],
+        shVHint:['每一节前面有金色小节号','看不到节号，纯粹的经文'],
         modeHint:['一章一章读，读完按下一章','整卷接成一篇，一口气读完'],
-        chnumHint:['每章开头有淡雅的章题','完全看不到章号，纯粹的经文'],
         prevBk:'上一卷', nextBk:'下一卷', bookDone:'已读完这一卷',
         bm:'书签', bmAdd:'已加书签', bmDel:'已移除书签', myBm:'我的书签',
         emptyBm:'还没有书签。在阅读器按 🔖 进入书签模式，点一下读到的那一句就记下来。',
@@ -103,7 +112,12 @@ const I18N = {
         voice:'朗读声音', langLabel:'语言', stats:['已读章数','划线','书签'],
         diag:'连线测试', diagRun:'测试小智与朗读', diagBusy:'测试中…',
         card:'做成美图', cardTitle:'做成美图分享', cardStyle:'版型', cardSize:'尺寸',
-        cardBorder:'边框', cardFsL:'领受字级', cardFsHint:'只放大你写的领受，经文与落款维持不变。',
+        cardBorder:'边框', cardFsL:'内文字级', cardFsHint:'只放大卡片上的内文，经文与署名维持不变。',
+        cardText:'卡片内文', bless:'请小智写祝福', blessing:'小智写作中…', blessDone:'小智写好了',
+        blessHint:'可以自己写，也可以请小智照这节经文写一段关怀祝福；改完卡片会立刻跟着变。',
+        useMine:'用我的领受', clearText:'不要内文',
+        cardLines:'卡片上下的署名', cardTopL:'上面（团体名）', cardSignL:'下面（署名）',
+        cardLinesHint:'留空就用预设。例如下面改成“爱你的财哥、珍姐　敬上”。',
         cardShare:'分享', cardSave:'存到相册',
         cardHint:'按“分享”可直接选 LINE／IG／FB 传出去；也可以长按上面的图片存起来。',
         cardSaved:'已下载，请从相册分享',
@@ -156,11 +170,13 @@ const VOICES = {
        {n:'晓辰', v:'zh-CN-Xiaochen:DragonHDLatestNeural'}]
 };
 
-const DEFAULTS = { lang:'zh', font:0, theme:0, flow:false, chnum:true, hidenote:false,
+const DEFAULTS = { lang:'zh', font:0, theme:0, flow:false, shCh:true, shV:true, hidenote:false,
                    cardTpl:'navy', cardSize:'t', cardBorder:'classic', cardFs:1,
+                   cardTop:'', cardSign:'',
                    voice:{zh:0, zs:0} };
 /* 「淨」鍵依序切換的四種組合：[整卷連讀?, 顯示章號?] */
-const VIEW_CYCLE = [[false, true], [false, false], [true, true], [true, false]];
+/* 「淨」鍵循環的四種常用讀法：[整卷連讀, 顯示章, 顯示節] */
+const VIEW_CYCLE = [[false, true, true], [false, true, false], [false, false, false], [true, false, false]];
 let state = Object.assign({}, DEFAULTS);
 let user  = { progress:{}, hl:{}, fav:[], marks:[], last:null };
 let TOC = [], BOOK = {}, SHARD = {};   // SHARD['zh|law'] = {BookId:[chapters]}
@@ -172,11 +188,14 @@ function loadState(){
     state.voice = Object.assign({}, DEFAULTS.voice, s.voice || {});
     // 舊設定轉換：v1.0.4 的 mode(0分章/1純淨/2整卷)、更早的 pure 開關
     if (s.flow === undefined){
-      if (s.mode !== undefined){ state.flow = s.mode === 2; state.chnum = s.mode === 0; }
-      else if (s.pure){ state.flow = false; state.chnum = false; }
+      if (s.mode !== undefined){ state.flow = s.mode === 2; state.shCh = state.shV = s.mode === 0; }
+      else if (s.pure){ state.flow = false; state.shCh = state.shV = false; }
     }
     delete state.pure; delete state.mode;
-    state.flow = !!state.flow; state.chnum = !!state.chnum;
+    /* v1.3.x 之前只有一個「章節標示」開關，拆成「顯示章」「顯示節」 */
+    if (s.chnum !== undefined && s.shCh === undefined){ state.shCh = !!s.chnum; state.shV = !!s.chnum; }
+    delete state.chnum;
+    state.flow = !!state.flow; state.shCh = !!state.shCh; state.shV = !!state.shV;
   }catch(e){ state = Object.assign({}, DEFAULTS); }
 }
 function saveState(){ try{ localStorage.setItem('ib_state', JSON.stringify(state)); }catch(e){} }
@@ -193,7 +212,8 @@ function applyChrome(){
   const h = document.documentElement;
   FONT_CLASS.forEach(c => c && h.classList.remove(c));
   if (FONT_CLASS[state.font]) h.classList.add(FONT_CLASS[state.font]);
-  h.classList.toggle('pure', !state.chnum);      // pure = 不顯示章號
+  h.classList.toggle('nochap', !state.shCh);     // 不顯示章題
+  h.classList.toggle('noverse', !state.shV);     // 不顯示節號
   h.classList.toggle('flow', state.flow);
   h.classList.toggle('hidenote', !!state.hidenote);
   h.classList.toggle('bmmode', bmMode);
@@ -515,7 +535,7 @@ async function viewReader(v, bookId, ch){
       <button class="chtb-btn" id="rdNext">›</button>
       <div class="chtb-spacer"></div>
       <button class="chtb-btn ${bmMode ? 'on' : ''}" id="rdBm" title="${esc(L.bm)}">🔖</button>
-      <button class="chtb-btn ${(state.flow || !state.chnum) ? 'on' : ''}" id="rdMode" title="${esc(L.pure)}">${state.lang === 'zs' ? '净' : '淨'}</button>
+      <button class="chtb-btn ${(state.flow || !state.shCh || !state.shV) ? 'on' : ''}" id="rdMode" title="${esc(L.pure)}">${state.lang === 'zs' ? '净' : '淨'}</button>
       <button class="chtb-btn" id="rdFont">A⁺</button>
       <button class="chtb-btn" id="rdTts">🔊</button>
     </div>
@@ -537,11 +557,11 @@ async function viewReader(v, bookId, ch){
     render().then(() => window.scrollTo(0, y));
   };
   $('#rdMode').onclick = () => {
-    const now = VIEW_CYCLE.findIndex(([f, c]) => f === state.flow && c === state.chnum);
-    const [f, c] = VIEW_CYCLE[(now + 1) % VIEW_CYCLE.length];
-    state.flow = f; state.chnum = c; saveState(); applyChrome();
+    const now = VIEW_CYCLE.findIndex(([f, c, vv]) => f === state.flow && c === state.shCh && vv === state.shV);
+    const [f, c, vv] = VIEW_CYCLE[(now + 1) % VIEW_CYCLE.length];
+    state.flow = f; state.shCh = c; state.shV = vv; saveState(); applyChrome();
     const L2 = t();
-    toast(`${L2.modes[f ? 1 : 0]}・${L2.chnum}${L2.onoff[c ? 0 : 1]}`, 2400);
+    toast(`${L2.modes[f ? 1 : 0]}・${L2.shCh}${L2.onoff[c ? 0 : 1]}・${L2.shV}${L2.onoff[vv ? 0 : 1]}`, 2400);
     render();
   };
   $('#rdFont').onclick = () => { state.font = (state.font + 1) % FONT_CLASS.length; saveState(); applyChrome(); toast(t().fonts[state.font]); };
@@ -672,9 +692,14 @@ function openHlSheet(el){
   document.body.appendChild(mask);
   mask.onclick = e => { if (e.target === mask) mask.remove(); };
   let color = h.c;
+  /* 點色票就立刻換色並存檔——不必再按「儲存」（使用者反映「換顏色沒有作用」） */
   $$('.hlswatch', mask).forEach(b => b.onclick = () => {
     color = b.dataset.c;
     $$('.hlswatch', mask).forEach(x => x.classList.toggle('active', x === b));
+    h.c = color; saveUser();
+    el.setAttribute('data-color', color);
+    const nt = $(`#reader .hl-note[data-c="${el.dataset.c}"][data-p="${el.dataset.p}"][data-s="${el.dataset.s}"]`);
+    if (nt) nt.setAttribute('data-color', color);
   });
   const ta = $('.hlsheet-ta', mask);
   const commit = () => {
@@ -903,7 +928,7 @@ function drawVerseCard(cv, h, W, H){
   drawCardBorder(ctx, W, H, pad, F, T);
 
   /* 團契名 */
-  const grp = state.lang === 'zs' ? '国度321空中团契' : '國度321空中團契';
+  const grp = (state.cardTop || '').trim() || (state.lang === 'zs' ? '国度321空中团契' : '國度321空中團契');
   const grpSz = Math.round(27 * F), grpY = pad + Math.round(42 * F);
   ctx.textAlign = 'center'; ctx.fillStyle = T.sub; ctx.font = `600 ${grpSz}px ${sans}`;
   const gw = ctx.measureText(grp).width;
@@ -924,7 +949,7 @@ function drawVerseCard(cv, h, W, H){
   /* 句子是在逗號處切開的，尾巴留著逗號放進引號裡很怪，去掉 */
   const raw = (h.t || '').trim().replace(/[，、；：,]+$/, '');
   const verse = (/^[「『]/.test(raw) ? '' : '「') + raw + (/[」』]$/.test(raw) ? '' : '」');
-  const note = (h.n || '').trim();
+  const note = (studioNote != null ? studioNote : (h.n || '')).trim();
 
   let vs = Math.round(58 * F), vl;
   while (true){
@@ -971,8 +996,11 @@ function drawVerseCard(cv, h, W, H){
   /* 落款（貼紙或自拍佔住底部時往上讓開） */
   const lift = stkBottom ? Math.round(W * stkSize * stkRatio()) + Math.round(16 * F) : 0;
   ctx.textAlign = 'center'; ctx.fillStyle = T.sub; ctx.font = `600 ${Math.round(25 * F)}px ${sans}`;
-  ctx.fillText(t().app + '　' + (state.lang === 'zs' ? '新标点和合本' : '新標點和合本'),
-               W / 2, H - pad * .72 - Math.round(24 * F) - lift);
+  const sign = (state.cardSign || '').trim()
+            || (t().app + '　' + (state.lang === 'zs' ? '新标点和合本' : '新標點和合本'));
+  let ss = Math.round(25 * F);
+  while (ss > Math.round(15 * F)){ ctx.font = `600 ${ss}px ${sans}`; if (ctx.measureText(sign).width <= iw) break; ss -= 2; }
+  ctx.fillText(sign, W / 2, H - pad * .72 - Math.round(24 * F) - lift);
 
   /* 相片貼紙（拍立得風格） */
   if (hasSticker){
@@ -1581,7 +1609,43 @@ async function playRec(id){
 }
 
 /* ================================================================ 美圖工作室 */
-let studioItem = null;
+let studioItem = null, studioNote = null, blessBusy = false;
+
+/* 請小智照這節經文寫一段關懷祝福，直接放進卡片內文 */
+async function blessWrite(){
+  if (blessBusy || !studioItem) return;
+  blessBusy = true;
+  const btn = $('#blessBtn');
+  if (btn){ btn.disabled = true; btn.textContent = t().blessing; }
+  const sys = state.lang === 'zs'
+    ? '你是「小智」，国度321空中团契的属灵同伴。请照使用者给的这节经文，写一段温暖的关怀祝福，送给弟兄姊妹。要求：先用一两句点出这节经文里神的心意，再写一句贴近生活的祝福，最后用一句祝福收尾。总共三到四句、120 字以内，口语、温暖、不说教，不要标题、不要条列、不要引号、不要再抄一次经文。'
+    : '你是「小智」，國度321空中團契的屬靈同伴。請照使用者給的這節經文，寫一段溫暖的關懷祝福，送給弟兄姊妹。要求：先用一兩句點出這節經文裡神的心意，再寫一句貼近生活的祝福，最後用一句祝福收尾。總共三到四句、120 字以內，口語、溫暖、不說教，不要標題、不要條列、不要引號、不要再抄一次經文。';
+  const ask = (state.lang === 'zs' ? '经文：' : '經文：') + studioItem.t + '（' + cardRef(studioItem) + '）';
+  let out = '', why = '';
+  for (let a = 0; a <= CHAT_RETRY.length; a++){
+    try{
+      const r = await fetch(API.chat, { method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ system: sys, messages:[{ role:'user', content: ask }] }) });
+      if (!r.ok) throw new Error('http ' + r.status);
+      out = extractReply(await r.json().catch(() => null));
+      if (!out) why = '回覆是空的';
+      break;
+    }catch(e){
+      why = (e && e.message) ? String(e.message) : 'network';
+      if (a === CHAT_RETRY.length) break;
+      await new Promise(rs => setTimeout(rs, CHAT_RETRY[a]));
+    }
+  }
+  blessBusy = false;
+  if (out){
+    studioNote = out.replace(/[*#>`]/g, '').replace(/^「|」$/g, '').trim();
+    await studioRefresh();
+    toast(t().blessDone);
+  } else {
+    if (btn){ btn.disabled = false; btn.textContent = '✍️ ' + t().bless; }
+    toast(t().chatErr + (why ? '（' + why + '）' : ''), 4000);
+  }
+}
 const LZ = k => { const v = t()[k]; return Array.isArray(v) ? v[state.lang === 'zs' ? 1 : 0] : v; };
 const pick2 = a => a[state.lang === 'zs' ? 1 : 0];
 function chips(id, items, cur, attr){
@@ -1613,6 +1677,28 @@ async function viewStudio(v){
       <button class="btn" id="btSave">${esc(L.cardSave)}</button>
     </div>
     <div class="hl-hint" style="margin:8px 0 18px">${esc(L.cardHint)}</div>
+
+    <div class="section-title">${esc(L.cardText)}</div>
+    <div class="card">
+      <textarea class="hlsheet-ta" id="cardNote" placeholder="${esc(L.hlNote)}">${esc(studioNote != null ? studioNote : (studioItem.n || ''))}</textarea>
+      <div class="hlsheet-acts2">
+        <button class="btn sm gold" id="blessBtn">✍️ ${esc(L.bless)}</button>
+        <button class="btn sm" id="noteMine">${esc(L.useMine)}</button>
+        <button class="btn sm" id="noteClear">${esc(L.clearText)}</button>
+      </div>
+      <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.blessHint)}</div>
+    </div>
+
+    <div class="section-title">${esc(L.cardLines)}</div>
+    <div class="card">
+      <div class="muted" style="font-size:12px;margin-bottom:6px">${esc(L.cardTopL)}</div>
+      <input class="cardinput" id="cardTop" value="${esc(state.cardTop || '')}"
+             placeholder="${esc(state.lang === 'zs' ? '国度321空中团契' : '國度321空中團契')}">
+      <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.cardSignL)}</div>
+      <input class="cardinput" id="cardSign" value="${esc(state.cardSign || '')}"
+             placeholder="${esc(t().app + '　' + (state.lang === 'zs' ? '新标点和合本' : '新標點和合本'))}">
+      <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.cardLinesHint)}</div>
+    </div>
 
     <div class="section-title">${esc(L.cardStyle)}</div>
     ${chips('cTpl', CARD_ORDER.map(k => [k, CARD_TPL[k].n]), cardTpl(), 't')}
@@ -1710,13 +1796,28 @@ async function viewStudio(v){
   const bd = $('#bDel'); if (bd) bd.onclick = () => { bgmBlob = null; bgmName = ''; studioRefresh(); };
   ['pNew','pRe'].forEach(id => { const e = $('#' + id); if (e) e.onchange = () => pickPhoto(e); });
   ['bNew','bRe'].forEach(id => { const e = $('#' + id); if (e) e.onchange = () => pickBgm(e); });
+  const nt = $('#cardNote');
+  if (nt){
+    let tmr = null;
+    nt.oninput = () => { clearTimeout(tmr); tmr = setTimeout(() => { studioNote = nt.value; renderCard(studioItem); }, 400); };
+  }
+  $('#blessBtn').onclick = blessWrite;
+  $('#noteMine').onclick  = () => { studioNote = studioItem.n || ''; studioRefresh(); };
+  $('#noteClear').onclick = () => { studioNote = ''; studioRefresh(); };
+  const bindInput = (id, key) => {
+    const e = $('#' + id); if (!e) return;
+    let tm = null;
+    e.oninput = () => { clearTimeout(tm); tm = setTimeout(() => { state[key] = e.value; saveState(); renderCard(studioItem); }, 400); };
+  };
+  bindInput('cardTop', 'cardTop');
+  bindInput('cardSign', 'cardSign');
   $('#recBtn').onclick = toggleRec;
   const mb = $('#mcBtn'); if (mb) mb.onclick = musicRec;
   bind('[data-play]', b => playRec(b.dataset.play));
   bind('[data-sh]',   b => shareRec(b.dataset.sh));
   bind('[data-rm]',   b => rmRec(b.dataset.rm));
 }
-function openStudio(h){ studioItem = h; go('#/studio'); }
+function openStudio(h){ studioItem = h; studioNote = h.n || ''; go('#/studio'); }
 
 /* ================================================================ 搜尋 */
 let searchState = { q:'', results:[], busy:false };
@@ -1950,10 +2051,15 @@ async function viewMe(v){
         <div class="segbtns" id="setMode">
         ${L.modes.map((m, i) => `<button class="${(state.flow ? 1 : 0) === i ? 'on' : ''}" data-i="${i}">${esc(m)}</button>`).join('')}
         </div></div>
-      <div class="setrow"><div class="sl">${esc(L.chnum)}
-        <div class="muted" style="font-size:11.5px;line-height:1.6">${esc(L.chnumHint[state.chnum ? 0 : 1])}</div></div>
-        <div class="segbtns" id="setChnum">
-        ${L.onoff.map((m, i) => `<button class="${(state.chnum ? 0 : 1) === i ? 'on' : ''}" data-i="${i}">${esc(m)}</button>`).join('')}
+      <div class="setrow"><div class="sl">${esc(L.shCh)}
+        <div class="muted" style="font-size:11.5px;line-height:1.6">${esc(L.shChHint[state.shCh ? 0 : 1])}</div></div>
+        <div class="segbtns" id="setShCh">
+        ${L.onoff.map((m, i) => `<button class="${(state.shCh ? 0 : 1) === i ? 'on' : ''}" data-i="${i}">${esc(m)}</button>`).join('')}
+        </div></div>
+      <div class="setrow"><div class="sl">${esc(L.shV)}
+        <div class="muted" style="font-size:11.5px;line-height:1.6">${esc(L.shVHint[state.shV ? 0 : 1])}</div></div>
+        <div class="segbtns" id="setShV">
+        ${L.onoff.map((m, i) => `<button class="${(state.shV ? 0 : 1) === i ? 'on' : ''}" data-i="${i}">${esc(m)}</button>`).join('')}
         </div></div>
       <div class="setrow"><div class="sl">${esc(L.note)}〔…〕</div><div class="segbtns" id="setNote">
         <button class="${!state.hidenote ? 'on' : ''}" data-i="0">${state.lang === 'zs' ? '显示' : '顯示'}</button>
@@ -1996,7 +2102,8 @@ async function viewMe(v){
   $$('#setFont button', v).forEach(b => b.onclick = () => { state.font = +b.dataset.i; saveState(); applyChrome(); render(); });
   $$('#setTheme button', v).forEach(b => b.onclick = () => { state.theme = +b.dataset.i; saveState(); applyChrome(); render(); });
   $$('#setMode button', v).forEach(b => b.onclick = () => { state.flow = b.dataset.i === '1'; saveState(); applyChrome(); render(); });
-  $$('#setChnum button', v).forEach(b => b.onclick = () => { state.chnum = b.dataset.i === '0'; saveState(); applyChrome(); render(); });
+  $$('#setShCh button', v).forEach(b => b.onclick = () => { state.shCh = b.dataset.i === '0'; saveState(); applyChrome(); render(); });
+  $$('#setShV  button', v).forEach(b => b.onclick = () => { state.shV  = b.dataset.i === '0'; saveState(); applyChrome(); render(); });
   $$('#setNote button', v).forEach(b => b.onclick = () => { state.hidenote = b.dataset.i === '1'; saveState(); applyChrome(); render(); });
   $$('#setVoice button', v).forEach(b => b.onclick = () => { state.voice[state.lang] = +b.dataset.i; saveState(); render(); });
   const sortedMarks = user.marks.slice().sort((a, b2) => b2.ts - a.ts);
