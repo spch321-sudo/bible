@@ -1,7 +1,7 @@
-/* 沉浸式聖經 — Service Worker
+/* 321互動聖經 — Service Worker
    每次改動內容或程式，務必把 VERSION 往上加，
    否則已安裝的使用者不會看到更新。 */
-const VERSION = 'ib-v1.0.4';
+const VERSION = 'ib-v1.1.3';
 
 const SHELL = [
   './', './index.html', './app.js', './manifest.json', './toc.json', './cover.jpg',

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>沉浸式聖經</title>
-<meta name="description" content="和合本．去章節．只留經文——沉浸式讀經App（繁／简．朗讀．畫線．陪讀）">
+<title>321互動聖經</title>
+<meta name="description" content="和合本．去章節．只留經文——321互動讀經App（繁／简．朗讀．畫線．陪讀）">
 <meta name="theme-color" content="#0D3988">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -21,6 +21,7 @@
   --good:#3E7D4C; --bad:#B4432F;
   --hlbg-green:#E3F0E1; --hlbg-blue:#E1EBF7; --hlbg-pink:#FBE4E9; --hlbg-purple:#ECE3F5;
   --hlbg-maroon:#F3E1E1; --hlbg-brown:#F0E6D6; --hlbg-charcoal:#E7E6E2;
+  --reading:#E7EDF6;
   --shadow: 0 1px 2px rgba(35,33,28,.04), 0 8px 24px -12px rgba(35,33,28,.16);
   --tabbar-h: 62px;
 }
@@ -34,6 +35,7 @@
     --good:#7BC28C; --bad:#E08A72;
     --hlbg-green:#1F2E1E; --hlbg-blue:#1E2A3D; --hlbg-pink:#3A2229; --hlbg-purple:#2C2438;
     --hlbg-maroon:#332020; --hlbg-brown:#332A1C; --hlbg-charcoal:#2C2C29;
+    --reading:#25354F;
   }
 }
 :root[data-theme="dark"]{
@@ -45,6 +47,7 @@
   --good:#7BC28C; --bad:#E08A72;
   --hlbg-green:#1F2E1E; --hlbg-blue:#1E2A3D; --hlbg-pink:#3A2229; --hlbg-purple:#2C2438;
   --hlbg-maroon:#332020; --hlbg-brown:#332A1C; --hlbg-charcoal:#2C2C29;
+  --reading:#25354F;
 }
 /* 羊皮紙（讀經專用暖色） */
 :root[data-theme="sepia"]{
@@ -53,6 +56,7 @@
   --accent:#12447F; --accent-ink:#0D3566; --accent-soft:#E3EAF4;
   --gold:#96682A; --gold-soft:#EFE1C4;
   --border:#DCCEAC; --border-strong:#C6B48C;
+  --reading:#EADFC0;
 }
 
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
@@ -116,10 +120,10 @@ nav.tabbar a svg{width:21px;height:21px;}
 .btn.sm{padding:7px 12px; font-size:12.5px;}
 .hero-cover{position:relative; border-radius:16px; overflow:hidden; margin-bottom:16px; box-shadow:var(--shadow); background:#0D3988; aspect-ratio:1/1; max-height:56vh;}
 .hero-cover img{width:100%; height:100%; object-fit:cover; display:block;}
-.hero-cover .hc-mask{position:absolute; left:0; right:0; bottom:0; padding:44px 16px 16px; text-align:center;
-  background:linear-gradient(to bottom, rgba(6,24,60,0), rgba(6,24,60,.55) 42%, rgba(6,24,60,.9));}
-.hero-cover .hc-title{color:#F7EFDC; font-family:"Noto Serif TC",serif; font-size:21px; font-weight:900; letter-spacing:.08em; text-shadow:0 2px 10px rgba(0,0,0,.5);}
-.hero-cover .hc-sub{color:#D9C08A; font-size:12.5px; margin-top:4px; letter-spacing:.06em;}
+.hero-cover .hc-mask{position:absolute; left:0; right:0; bottom:0; padding:58px 16px 16px; text-align:center;
+  background:linear-gradient(to bottom, rgba(6,24,60,0), rgba(6,24,60,.62) 38%, rgba(6,24,60,.9) 66%, rgba(6,24,60,.97));}
+.hero-cover .hc-title{color:#F7EFDC; font-family:"Noto Serif TC",serif; font-size:21px; font-weight:900; letter-spacing:.08em; text-shadow:0 2px 12px rgba(0,0,0,.85), 0 0 26px rgba(6,24,60,.9);}
+.hero-cover .hc-sub{color:#E0C88F; font-size:12.5px; margin-top:4px; letter-spacing:.06em; text-shadow:0 1px 8px rgba(0,0,0,.8);}
 .section-title{font-size:12px; letter-spacing:.08em; color:var(--gold); font-weight:700; margin:22px 0 8px;}
 .section-title:first-child{margin-top:0;}
 .rowlink{display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); text-decoration:none; color:var(--ink); cursor:pointer;}
@@ -172,13 +176,28 @@ nav.tabbar a svg{width:21px;height:21px;}
 .chhead h1{font-size:26px; margin:6px 0 0; font-weight:900; letter-spacing:.06em;}
 .chhead h1.bktitle{font-size:28px; letter-spacing:.12em;}
 .chhead .rule{width:52px; height:2px; background:var(--gold); margin:12px auto 0; opacity:.55;}
-/* 純淨模式只藏章題；整卷連讀時顯示的是卷名，要留著 */
+/* 「章節標示：隱藏」只藏章題；整卷連讀時顯示的是卷名，要留著 */
 html.pure .chhead h1.chtitle{display:none;}
 html.pure .chhead h1.chtitle+.rule{margin-top:4px;}
+/* 整卷連讀裡的章題：淡雅、置中、寬字距，不打斷閱讀 */
+.reader h2.ch{font-family:"Noto Serif TC","Georgia",serif; font-size:.8em; font-weight:400;
+  color:var(--gold); letter-spacing:.4em; text-align:center; text-indent:0;
+  margin:2.2em 0 1.2em; opacity:.85;}
+.reader h2.ch:first-child{margin-top:.2em;}
+html.pure .reader h2.ch{display:none;}
 .reader{font-family:"Noto Serif TC","Georgia",serif;}
 .reader p{margin:0 0 16px; font-size:17px; line-height:2.05; text-align:justify;}
 .reader p.prose{text-indent:2em;}
-.reader p.verse{text-indent:0; padding-left:1.6em; text-indent:-1.6em; margin-bottom:9px;}
+/* 詩歌體：懸掛縮排，第二層再退一格 */
+.reader p.q1{margin:0 0 4px 1.7em; text-indent:-1.7em; text-align:left;}
+.reader p.q2{margin:0 0 4px 3.1em; text-indent:-1.7em; text-align:left;}
+/* 詩篇題記（大衛的詩…） */
+.reader p.dline{text-indent:0; text-align:center; color:var(--ink-soft); font-size:.92em; margin-bottom:12px;}
+.reader .stanza{height:.85em;}
+/* 節號：跟章題一起由「章節標示」開關控制 */
+.reader .vn{font-family:"Noto Sans TC",sans-serif; font-size:.6em; font-weight:700;
+  color:var(--gold); vertical-align:.5em; margin:0 .18em 0 .1em; letter-spacing:0;}
+html.pure .reader .vn{display:none;}
 .reader .note{color:var(--ink-faint); font-size:.86em;}
 html.hidenote .reader .note{display:none;}
 .chfoot{display:flex; gap:10px; margin:26px 0 8px;}
@@ -199,12 +218,18 @@ html.fs-lg .declitem .d,html.fs-lg .hitem .q{font-size:16px;}
 html.fs-xl .declitem .d,html.fs-xl .hitem .q{font-size:18px;}
 html.fs-xxl .declitem .d,html.fs-xxl .hitem .q{font-size:20px;}
 
-/* ---------- 跟讀高亮 ---------- */
+/* ---------- 跟讀高亮：只用顏色，不畫框 ----------
+   仍舊用 inset box-shadow 而不是 background，這樣使用者自己畫的線（用 background 畫的）
+   與正在朗讀的色塊可以同時看得見，不會互相蓋掉。 */
 .reader .sent.tts-reading{
-  border-radius:5px;
-  box-shadow: inset 0 0 0 999px var(--accent-soft), 0 0 0 2px var(--accent);
+  border-radius:4px;
+  box-shadow: inset 0 0 0 999px var(--reading);
   -webkit-box-decoration-break:clone; box-decoration-break:clone;
-  transition: box-shadow .25s ease;
+  transition: box-shadow .22s ease;
+}
+/* ---------- 書籤 ---------- */
+.reader .sent[data-bm]::after{
+  content:"🔖"; font-size:.62em; vertical-align:.5em; margin-left:.1em; opacity:.85;
 }
 /* ---------- 畫線 ---------- */
 .reader .sent{cursor:pointer;}
@@ -295,7 +320,7 @@ html.fs-xxl .declitem .d,html.fs-xxl .hitem .q{font-size:20px;}
 
 <div id="boot">
   <div class="spin"></div>
-  <div class="bt" id="bootText">沉浸式聖經載入中…</div>
+  <div class="bt" id="bootText">321互動聖經載入中…</div>
   <div id="boot-diag">
     <div id="bootDiagMsg">載入時間較長，可能是網路或快取問題。</div>
     <button id="boot-reload">重新載入</button>
@@ -304,7 +329,7 @@ html.fs-xxl .declitem .d,html.fs-xxl .hitem .q{font-size:20px;}
 </div>
 
 <header class="topbar">
-  <div class="brand"><img src="icon-72.png" alt=""><span id="brandName">沉浸式聖經</span></div>
+  <div class="brand"><img src="icon-72.png" alt=""><span id="brandName">321互動聖經</span></div>
   <div class="spacer"></div>
   <div class="langswitch" id="langswitch">
     <button data-lang="zh">繁</button><button data-lang="zs">简</button>

@@ -1,5 +1,5 @@
 /* ============================================================================
-   沉浸式聖經 — 和合本．去章節．只留經文
+   321互動聖經 — 和合本．去章節．只留經文
    國度321空中團契 ／ 架構沿用《321領導力》App
    ----------------------------------------------------------------------------
    ⚙ 端點與請求格式：與《321領導力》／《晨讀321》共用同一組 Cloudflare Worker，
@@ -10,7 +10,7 @@ const API = {
   tts : 'https://azure-tts.spch321.workers.dev'        // {voice, rate, sil, silc, sile, text}
 };
 const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
-const VERSION = 'v1.0.4';
+const VERSION = 'v1.1.3';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -25,40 +25,48 @@ function toast(msg, ms){
 
 /* ---------------------------------------------------------------- 語言字串 */
 const I18N = {
-  zh: { app:'沉浸式聖經', today:'今日', books:'經卷', search:'搜尋', companion:'陪讀', me:'我的',
+  zh: { app:'321互動聖經', today:'今日', books:'經卷', search:'搜尋', companion:'陪讀', me:'我的',
         ot:'舊約', nt:'新約', ch:'章', chapter:n=>`第 ${n} 章`, verses:'節',
         cont:'繼續閱讀', start:'開始讀經', daily:'今日默想', progress:'讀經進度',
         prev:'上一章', next:'下一章', toc:'目錄', pure:'閱讀方式', note:'註釋',
-        modes:['分章','純淨','整卷連讀'],
-        modeHint:['顯示章題，一章一章讀','隱藏章題，仍然一章一章翻','整卷一氣呵成，沒有任何章節'],
+        modes:['分章','整卷連讀'], chnum:'章節標示', onoff:['顯示','隱藏'],
+        modeHint:['一章一章讀，讀完按下一章','整卷接成一篇，一口氣讀完'],
+        chnumHint:['每章開頭有淡雅的章題','完全看不到章號，純粹的經文'],
         prevBk:'上一卷', nextBk:'下一卷', bookDone:'已讀完這一卷',
+        bm:'書籤', bmAdd:'已加書籤', bmDel:'已移除書籤', myBm:'我的書籤',
+        emptyBm:'還沒有書籤。讀到想記住的地方，按閱讀器上的 🔖 就會把位置記下來。',
+        resume:'從上次的地方繼續',
         read:'讀這一章', done:'已讀完本章', markRead:'標記已讀',
         searchPH:'輸入要找的字句…', searchHint:'輸入兩個字以上開始搜尋', noResult:'找不到相符的經文',
         found:n=>`找到 ${n} 節`, loading:'載入中…',
         hlTitle:'這一句', hlColor:'顏色', hlNote:'寫下默想…', save:'儲存', ask:'問陪讀', del:'刪除畫線', close:'關閉',
         myHl:'我的畫線', myFav:'我的收藏', settings:'設定', font:'字級大小', theme:'主題',
         fonts:['標準','大','特大','超大'], themes:['自動','日','夜','羊皮紙'],
-        voice:'朗讀聲音', langLabel:'語言', stats:['已讀章數','畫線','收藏'],
+        voice:'朗讀聲音', langLabel:'語言', stats:['已讀章數','畫線','書籤'],
         emptyHl:'還沒有畫線。在經文上點一下就能畫線、寫默想。',
         emptyFav:'還沒有收藏陪讀的回答。',
         chatPH:'就這段經文提問…', send:'送出', examples:'範例問題',
         ctx:(b,c)=>`目前經文：${b} 第 ${c} 章`, thinking:'小智思想中…',
         ttsFallback:'改用裝置內建語音朗讀', ttsErr:'朗讀服務連不上',
         chatErr:'陪讀服務連不上，請稍後再試。' },
-  zs: { app:'沉浸式圣经', today:'今日', books:'经卷', search:'搜索', companion:'陪读', me:'我的',
+  zs: { app:'321互动圣经', today:'今日', books:'经卷', search:'搜索', companion:'陪读', me:'我的',
         ot:'旧约', nt:'新约', ch:'章', chapter:n=>`第 ${n} 章`, verses:'节',
         cont:'继续阅读', start:'开始读经', daily:'今日默想', progress:'读经进度',
         prev:'上一章', next:'下一章', toc:'目录', pure:'阅读方式', note:'注释',
-        modes:['分章','纯净','整卷连读'],
-        modeHint:['显示章题，一章一章读','隐藏章题，仍然一章一章翻','整卷一气呵成，没有任何章节'],
+        modes:['分章','整卷连读'], chnum:'章节标示', onoff:['显示','隐藏'],
+        modeHint:['一章一章读，读完按下一章','整卷接成一篇，一口气读完'],
+        chnumHint:['每章开头有淡雅的章题','完全看不到章号，纯粹的经文'],
         prevBk:'上一卷', nextBk:'下一卷', bookDone:'已读完这一卷',
+        bm:'书签', bmAdd:'已加书签', bmDel:'已移除书签', myBm:'我的书签',
+        emptyBm:'还没有书签。读到想记住的地方，按阅读器上的 🔖 就会把位置记下来。',
+        resume:'从上次的地方继续',
         read:'读这一章', done:'已读完本章', markRead:'标记已读',
         searchPH:'输入要找的字句…', searchHint:'输入两个字以上开始搜索', noResult:'找不到相符的经文',
         found:n=>`找到 ${n} 节`, loading:'载入中…',
         hlTitle:'这一句', hlColor:'颜色', hlNote:'写下默想…', save:'保存', ask:'问陪读', del:'删除划线', close:'关闭',
         myHl:'我的划线', myFav:'我的收藏', settings:'设置', font:'字级大小', theme:'主题',
         fonts:['标准','大','特大','超大'], themes:['自动','日','夜','羊皮纸'],
-        voice:'朗读声音', langLabel:'语言', stats:['已读章数','划线','收藏'],
+        voice:'朗读声音', langLabel:'语言', stats:['已读章数','划线','书签'],
         emptyHl:'还没有划线。在经文上点一下就能划线、写默想。',
         emptyFav:'还没有收藏陪读的回答。',
         chatPH:'就这段经文提问…', send:'发送', examples:'范例问题',
@@ -84,10 +92,11 @@ const VOICES = {
        {n:'晓辰', v:'zh-CN-Xiaochen:DragonHDLatestNeural'}]
 };
 
-const DEFAULTS = { lang:'zh', font:0, theme:0, mode:0, hidenote:false, voice:{zh:0, zs:0} };
-const MODE_CHAPTER = 0, MODE_PURE = 1, MODE_FLOW = 2;
+const DEFAULTS = { lang:'zh', font:0, theme:0, flow:false, chnum:true, hidenote:false, voice:{zh:0, zs:0} };
+/* 「淨」鍵依序切換的四種組合：[整卷連讀?, 顯示章號?] */
+const VIEW_CYCLE = [[false, true], [false, false], [true, true], [true, false]];
 let state = Object.assign({}, DEFAULTS);
-let user  = { progress:{}, hl:{}, fav:[], last:null };
+let user  = { progress:{}, hl:{}, fav:[], marks:[], last:null };
 let TOC = [], BOOK = {}, SHARD = {};   // SHARD['zh|law'] = {BookId:[chapters]}
 
 function loadState(){
@@ -95,17 +104,21 @@ function loadState(){
     const s = JSON.parse(localStorage.getItem('ib_state') || '{}');
     state = Object.assign({}, DEFAULTS, s);
     state.voice = Object.assign({}, DEFAULTS.voice, s.voice || {});
-    // v1.0.4 之前只有「純淨模式」開關，沿用舊設定
-    if (s.mode === undefined && s.pure) state.mode = MODE_PURE;
-    delete state.pure;
-    state.mode = Math.min(2, Math.max(0, state.mode | 0));
+    // 舊設定轉換：v1.0.4 的 mode(0分章/1純淨/2整卷)、更早的 pure 開關
+    if (s.flow === undefined){
+      if (s.mode !== undefined){ state.flow = s.mode === 2; state.chnum = s.mode === 0; }
+      else if (s.pure){ state.flow = false; state.chnum = false; }
+    }
+    delete state.pure; delete state.mode;
+    state.flow = !!state.flow; state.chnum = !!state.chnum;
   }catch(e){ state = Object.assign({}, DEFAULTS); }
 }
 function saveState(){ try{ localStorage.setItem('ib_state', JSON.stringify(state)); }catch(e){} }
 function loadUser(){
   try{
     const u = JSON.parse(localStorage.getItem('ib_user') || '{}');
-    user = Object.assign({progress:{}, hl:{}, fav:[], last:null}, u);
+    user = Object.assign({progress:{}, hl:{}, fav:[], marks:[], last:null}, u);
+    if (!Array.isArray(user.marks)) user.marks = [];
   }catch(e){}
 }
 function saveUser(){ try{ localStorage.setItem('ib_user', JSON.stringify(user)); }catch(e){} }
@@ -114,8 +127,8 @@ function applyChrome(){
   const h = document.documentElement;
   FONT_CLASS.forEach(c => c && h.classList.remove(c));
   if (FONT_CLASS[state.font]) h.classList.add(FONT_CLASS[state.font]);
-  h.classList.toggle('pure', state.mode >= MODE_PURE);
-  h.classList.toggle('flow', state.mode === MODE_FLOW);
+  h.classList.toggle('pure', !state.chnum);      // pure = 不顯示章號
+  h.classList.toggle('flow', state.flow);
   h.classList.toggle('hidenote', !!state.hidenote);
   const th = THEMES[state.theme] || 'auto';
   if (th === 'auto') h.removeAttribute('data-theme'); else h.setAttribute('data-theme', th);
@@ -216,6 +229,29 @@ function markNotes(html){
 }
 const hlKey = (b, c, p, s) => `${b}|${c}|${p}|${s}`;
 
+/* 畫面頂端（避開黏在上面的標題列）的第一句，就是「讀到這裡」 */
+function currentAnchor(){
+  for (const el of $$('#reader .sent')){
+    if (el.getBoundingClientRect().bottom > 84)
+      return { c:+el.dataset.c, p:+el.dataset.p, s:+el.dataset.s, t:el.textContent.slice(0, 40) };
+  }
+  return null;
+}
+let jumpTo = null;                       // 換頁前先放好要捲到的位置
+function anchorEl(a){
+  return a ? $(`#reader .sent[data-c="${a.c}"][data-p="${a.p}"][data-s="${a.s}"]`) : null;
+}
+function scrollToAnchor(a){
+  const el = anchorEl(a);
+  if (!el) return false;
+  requestAnimationFrame(() => {
+    const y = el.getBoundingClientRect().top + window.scrollY - 96;
+    window.scrollTo(0, Math.max(0, y));
+  });
+  return true;
+}
+function openAt(m){ jumpTo = { c:m.c, p:m.p, s:m.s }; go(`#/read/${m.b}/${m.c}`); }
+
 /* ---------------------------------------------------------------- 路由 */
 function go(h){ location.hash = h; }
 function currentRoute(){
@@ -251,10 +287,11 @@ async function viewToday(v){
   const chap = await getChapter(db, dc);
   let excerpt = '';
   if (chap){
-    const src = chap.l[0] || '';
+    const first = chap.find(bl => bl.length > 1 && bl[0] !== 'd') || chap.find(bl => bl.length > 1);
+    const src = first ? first[2] : '';
     const ss = splitSentences(src);
     excerpt = ss.slice(0, 2).join('');
-    if (excerpt.length > 110) excerpt = ss[0];
+    if (excerpt.length > 110) excerpt = ss[0] || '';
   }
   const last = user.last;
   const lastBook = last && BOOK[last.book];
@@ -265,7 +302,7 @@ async function viewToday(v){
       <img src="cover.jpg" alt="" loading="eager">
       <div class="hc-mask">
         <div class="hc-title">${esc(L.app)}</div>
-        <div class="hc-sub">${state.lang === 'zs' ? '和合本 · 去章节 · 只留经文' : '和合本 · 去章節 · 只留經文'}</div>
+        <div class="hc-sub">${state.lang === 'zs' ? '新标点和合本 · 去章节 · 只留经文' : '新標點和合本 · 去章節 · 只留經文'}</div>
       </div>
     </div>
 
@@ -283,7 +320,8 @@ async function viewToday(v){
       </div>
       <div style="margin-top:14px">
         ${lastBook
-          ? `<a class="btn primary block" href="#/read/${last.book}/${last.ch}">${esc(L.cont)} · ${esc(bname(lastBook))} ${last.ch}</a>`
+          ? `<button class="btn primary block" id="resumeBtn">${esc(L.cont)} · ${esc(bname(lastBook))} ${last.ch}</button>
+             ${last.a && last.a.t ? `<div class="muted" style="font-size:12px;margin-top:7px;text-align:center">${esc(L.resume)}：${esc(last.a.t)}…</div>` : ''}`
           : `<a class="btn primary block" href="#/read/Genesis/1">${esc(L.start)}</a>`}
       </div>
     </div>
@@ -302,6 +340,12 @@ async function viewToday(v){
       <a class="rowlink" href="#/read/John/1"><div class="meta"><div class="t">${esc(bname(BOOK['John']))}</div><div class="s">${esc(L.chapter(1))}</div></div><div class="chev">›</div></a>
       <a class="rowlink" href="#/books"><div class="meta"><div class="t">${esc(L.books)}</div><div class="s">66 ${state.lang === 'zs' ? '卷' : '卷'}</div></div><div class="chev">›</div></a>
     </div>`;
+
+  const rb = $('#resumeBtn', v);
+  if (rb) rb.onclick = () => {
+    if (last.a) jumpTo = last.a;
+    go(`#/read/${last.book}/${last.ch}`);
+  };
 }
 
 /* ================================================================ 經卷 / 章 */
@@ -345,37 +389,49 @@ async function viewChapters(v, bookId){
 /* ================================================================ 閱讀器 */
 let RD = { book:null, ch:0, data:null, flow:false };
 
-/* 把一章排成 HTML。cno 是這一段文字所屬的章，畫線識別碼要用它，
-   這樣同一句在「分章」與「整卷連讀」兩種模式下都是同一個畫線。 */
-function chapterHTML(bookId, cno, chap){
-  return chap.l.map((para, pi) => {
-    const sents = splitSentences(para);
-    const inner = sents.map((sx, si) => {
-      const h = user.hl[hlKey(bookId, cno, pi, si)];
-      return `<span class="sent" data-c="${cno}" data-p="${pi}" data-s="${si}"`
-           + `${h ? ` data-hl="1" data-color="${h.c}"` : ''}>${markNotes(esc(sx))}</span>`;
-    }).join('');
-    const notes = sents.map((sx, si) => {
-      const h = user.hl[hlKey(bookId, cno, pi, si)];
-      return h && h.n ? `<div class="hl-note" data-c="${cno}" data-p="${pi}" data-s="${si}" data-color="${h.c}">${esc(h.n)}</div>` : '';
-    }).join('');
-    return `<p class="${chap.p ? 'verse' : 'prose'}" data-c="${cno}" data-p="${pi}">${inner}</p>${notes}`;
+/* 一章 = 若干區塊：['p'|'q1'|'q2'|'d'|'b', 節號, 經文, 節號, 經文…]，
+   節號 0 代表這一段是上一節的接續（不另外標號）。
+   畫線識別碼用「區塊序號＋句序號」，分章與整卷連讀兩種模式共用同一把 key。 */
+const BLOCK_CLASS = { p:'prose', q1:'q1', q2:'q2', d:'dline' };
+function chapterHTML(bookId, cno, chap, withHead){
+  const bm = new Set(user.marks.filter(m => m.b === bookId && m.c === cno)
+                               .map(m => hlKey(m.b, m.c, m.p, m.s)));
+  const body = chap.map((bl, bi) => {
+    if (bl[0] === 'b') return '<div class="stanza"></div>';
+    let inner = '', notes = '', si = 0;
+    for (let j = 1; j < bl.length; j += 2){
+      const vno = bl[j], txt = bl[j + 1];
+      if (vno) inner += `<span class="vn">${vno}</span>`;
+      for (const sx of splitSentences(txt)){
+        const k = hlKey(bookId, cno, bi, si);
+        const h = user.hl[k];
+        inner += `<span class="sent" data-c="${cno}" data-p="${bi}" data-s="${si}"`
+               + `${h ? ` data-hl="1" data-color="${h.c}"` : ''}${bm.has(k) ? ' data-bm="1"' : ''}`
+               + `>${markNotes(esc(sx))}</span>`;
+        if (h && h.n) notes += `<div class="hl-note" data-c="${cno}" data-p="${bi}" data-s="${si}" data-color="${h.c}">${esc(h.n)}</div>`;
+        si++;
+      }
+    }
+    return `<p class="${BLOCK_CLASS[bl[0]] || 'prose'}" data-c="${cno}" data-p="${bi}">${inner}</p>${notes}`;
   }).join('');
+  const unit = bookId === 'Psalms' ? '篇' : '章';
+  const head = withHead ? `<h2 class="ch" data-c="${cno}">${'第 ' + cno + ' ' + unit}</h2>` : '';
+  return head + body;
 }
 
 async function viewReader(v, bookId, ch){
   const L = t(), b = BOOK[bookId];
   if (!b) { go('#/books'); return; }
   ch = Math.min(Math.max(1, ch), b.ch);
-  const flow = state.mode === MODE_FLOW;
+  const flow = state.flow;
   const all = await getBook(bookId);
   if (!all) { v.innerHTML = `<div class="empty">讀不到 ${esc(bname(b))}</div>`; return; }
   RD = { book:bookId, ch:ch, data:all[ch - 1], flow:flow };
   user.last = { book:bookId, ch:ch }; saveUser();
 
   const body = flow
-    ? all.map((c, i) => chapterHTML(bookId, i + 1, c)).join('')
-    : chapterHTML(bookId, ch, all[ch - 1]);
+    ? all.map((c, i) => chapterHTML(bookId, i + 1, c, true)).join('')
+    : chapterHTML(bookId, ch, all[ch - 1], false);
 
   const head = flow
     ? `<div class="bk">${esc(L.app)}</div><h1 class="bktitle">${esc(bname(b))}</h1>`
@@ -387,7 +443,8 @@ async function viewReader(v, bookId, ch){
       <button class="chtb-btn" id="rdPrev">‹</button>
       <button class="chtb-btn" id="rdNext">›</button>
       <div class="chtb-spacer"></div>
-      <button class="chtb-btn ${state.mode ? 'on' : ''}" id="rdMode" title="${esc(L.pure)}">${state.lang === 'zs' ? '净' : '淨'}</button>
+      <button class="chtb-btn" id="rdBm" title="${esc(L.bm)}">🔖</button>
+      <button class="chtb-btn ${(state.flow || !state.chnum) ? 'on' : ''}" id="rdMode" title="${esc(L.pure)}">${state.lang === 'zs' ? '净' : '淨'}</button>
       <button class="chtb-btn" id="rdFont">A⁺</button>
       <button class="chtb-btn" id="rdTts">🔊</button>
     </div>
@@ -400,9 +457,21 @@ async function viewReader(v, bookId, ch){
     <div class="readend" id="readEnd"></div>`;
 
   $('#rdToc').onclick  = () => go('#/books/' + bookId);
+  $('#rdBm').onclick   = () => {
+    const a = currentAnchor(); if (!a) return;
+    const i = user.marks.findIndex(m => m.b === bookId && m.c === a.c && m.p === a.p && m.s === a.s);
+    if (i >= 0){ user.marks.splice(i, 1); toast(t().bmDel); }
+    else { user.marks.push({ b:bookId, c:a.c, p:a.p, s:a.s, t:a.t, ts:Date.now() }); toast(t().bmAdd); }
+    saveUser();
+    const el = anchorEl(a);
+    if (el){ i >= 0 ? el.removeAttribute('data-bm') : el.setAttribute('data-bm', '1'); }
+  };
   $('#rdMode').onclick = () => {
-    state.mode = (state.mode + 1) % 3; saveState(); applyChrome();
-    toast(`${t().modes[state.mode]}──${t().modeHint[state.mode]}`, 2600);
+    const now = VIEW_CYCLE.findIndex(([f, c]) => f === state.flow && c === state.chnum);
+    const [f, c] = VIEW_CYCLE[(now + 1) % VIEW_CYCLE.length];
+    state.flow = f; state.chnum = c; saveState(); applyChrome();
+    const L2 = t();
+    toast(`${L2.modes[f ? 1 : 0]}・${L2.chnum}${L2.onoff[c ? 0 : 1]}`, 2400);
     render();
   };
   $('#rdFont').onclick = () => { state.font = (state.font + 1) % FONT_CLASS.length; saveState(); applyChrome(); toast(t().fonts[state.font]); };
@@ -438,7 +507,8 @@ async function viewReader(v, bookId, ch){
     : (user.progress[bookId + '-' + ch] ? L.done : '');
 
   window.scrollTo(0, 0);
-  if (flow && ch > 1){
+  const want = jumpTo; jumpTo = null;
+  if (!(want && scrollToAnchor(want)) && flow && ch > 1){
     const target = $(`#reader p[data-c="${ch}"]`);
     if (target) requestAnimationFrame(() => target.scrollIntoView({ block:'start' }));
   }
@@ -457,6 +527,8 @@ function watchProgress(bookId, flow, total){
     if (Date.now() - tick < 400) return;
     tick = Date.now();
     const atEnd = window.innerHeight + window.scrollY >= document.body.offsetHeight - 160;
+    const a = currentAnchor();
+    if (a){ user.last = { book:bookId, ch:a.c, a:{ c:a.c, p:a.p, s:a.s } }; saveUser(); }
     if (flow){
       for (const c in lastOf){
         if (user.progress[bookId + '-' + c]) continue;
@@ -569,12 +641,14 @@ async function doSearch(q){
     for (const bid in d){
       const b = BOOK[bid]; if (!b) continue;
       d[bid].forEach((chap, ci) => {
-        chap.l.forEach((para, pi) => {
-          if (para.indexOf(q) < 0) return;
-          splitSentences(para).forEach(s => {
-            if (s.indexOf(q) >= 0 && res.length < 400)
-              res.push({ b:bid, c:ci + 1, x:s });
-          });
+        chap.forEach(bl => {
+          for (let j = 2; j < bl.length; j += 2){
+            if (bl[j].indexOf(q) < 0) continue;
+            for (const sx of splitSentences(bl[j])){
+              if (sx.indexOf(q) >= 0 && res.length < 400)
+                res.push({ b:bid, c:ci + 1, x:sx });
+            }
+          }
         });
       });
     }
@@ -729,19 +803,28 @@ async function viewMe(v){
     <div class="card"><div class="statgrid">
       <div><div class="sv">${readCount}</div><div class="sk">${esc(L.stats[0])}</div></div>
       <div><div class="sv">${hls.length}</div><div class="sk">${esc(L.stats[1])}</div></div>
-      <div><div class="sv">${user.fav.length}</div><div class="sk">${esc(L.stats[2])}</div></div>
+      <div><div class="sv">${user.marks.length}</div><div class="sk">${esc(L.stats[2])}</div></div>
     </div></div>
 
     <div class="section-title">${esc(L.settings)}</div>
     <div class="card" style="padding:4px 16px">
+      <div class="setrow"><div class="sl">${esc(L.langLabel)}</div><div class="segbtns" id="setLang">
+        <button class="${state.lang === 'zh' ? 'on' : ''}" data-l="zh">繁體中文</button>
+        <button class="${state.lang === 'zs' ? 'on' : ''}" data-l="zs">简体中文</button>
+        </div></div>
       <div class="setrow"><div class="sl">${esc(L.font)}</div><div class="segbtns" id="setFont">
         ${L.fonts.map((f, i) => `<button class="${state.font === i ? 'on' : ''}" data-i="${i}">${esc(f)}</button>`).join('')}</div></div>
       <div class="setrow"><div class="sl">${esc(L.theme)}</div><div class="segbtns" id="setTheme">
         ${L.themes.map((f, i) => `<button class="${state.theme === i ? 'on' : ''}" data-i="${i}">${esc(f)}</button>`).join('')}</div></div>
       <div class="setrow"><div class="sl">${esc(L.pure)}
-        <div class="muted" style="font-size:11.5px;line-height:1.6">${esc(L.modeHint[state.mode])}</div></div>
+        <div class="muted" style="font-size:11.5px;line-height:1.6">${esc(L.modeHint[state.flow ? 1 : 0])}</div></div>
         <div class="segbtns" id="setMode">
-        ${L.modes.map((m, i) => `<button class="${state.mode === i ? 'on' : ''}" data-i="${i}">${esc(m)}</button>`).join('')}
+        ${L.modes.map((m, i) => `<button class="${(state.flow ? 1 : 0) === i ? 'on' : ''}" data-i="${i}">${esc(m)}</button>`).join('')}
+        </div></div>
+      <div class="setrow"><div class="sl">${esc(L.chnum)}
+        <div class="muted" style="font-size:11.5px;line-height:1.6">${esc(L.chnumHint[state.chnum ? 0 : 1])}</div></div>
+        <div class="segbtns" id="setChnum">
+        ${L.onoff.map((m, i) => `<button class="${(state.chnum ? 0 : 1) === i ? 'on' : ''}" data-i="${i}">${esc(m)}</button>`).join('')}
         </div></div>
       <div class="setrow"><div class="sl">${esc(L.note)}〔…〕</div><div class="segbtns" id="setNote">
         <button class="${!state.hidenote ? 'on' : ''}" data-i="0">${state.lang === 'zs' ? '显示' : '顯示'}</button>
@@ -749,6 +832,16 @@ async function viewMe(v){
       <div class="setrow"><div class="sl">${esc(L.voice)}</div><div class="segbtns" id="setVoice">
         ${VOICES[state.lang].map((v2, i) => `<button class="${state.voice[state.lang] === i ? 'on' : ''}" data-i="${i}">${esc(v2.n)}</button>`).join('')}</div></div>
     </div>
+
+    <div class="section-title">${esc(L.myBm)}</div>
+    <div class="card" style="padding:4px 16px">${user.marks.length
+      ? user.marks.slice().sort((a, b2) => b2.ts - a.ts).map((m, i) => `
+      <div class="hitem">
+        <div class="q">${markNotes(esc(m.t || ''))}…</div>
+        <div class="m"><span>${esc(BOOK[m.b] ? bname(BOOK[m.b]) : m.b)} ${esc(L.chapter(m.c))}</span>
+          <span><button data-bmgo="${i}">↗</button><button data-bmdel="${i}">✕</button></span></div>
+      </div>`).join('')
+      : `<div class="empty">${esc(L.emptyBm)}</div>`}</div>
 
     <div class="section-title">${esc(L.myHl)}</div>
     <div class="card" style="padding:4px 16px">${hls.length ? hls.map(([k, h]) => `
@@ -769,11 +862,21 @@ async function viewMe(v){
     <div class="muted" style="text-align:center;margin:18px 0 8px">
       ${esc(L.app)} ${VERSION}<br>和合本聖經屬公有領域，沒有版權限制</div>`;
 
+  $$('#setLang button', v).forEach(b => b.onclick = () => switchLang(b.dataset.l));
   $$('#setFont button', v).forEach(b => b.onclick = () => { state.font = +b.dataset.i; saveState(); applyChrome(); render(); });
   $$('#setTheme button', v).forEach(b => b.onclick = () => { state.theme = +b.dataset.i; saveState(); applyChrome(); render(); });
-  $$('#setMode button', v).forEach(b => b.onclick = () => { state.mode = +b.dataset.i; saveState(); applyChrome(); render(); });
+  $$('#setMode button', v).forEach(b => b.onclick = () => { state.flow = b.dataset.i === '1'; saveState(); applyChrome(); render(); });
+  $$('#setChnum button', v).forEach(b => b.onclick = () => { state.chnum = b.dataset.i === '0'; saveState(); applyChrome(); render(); });
   $$('#setNote button', v).forEach(b => b.onclick = () => { state.hidenote = b.dataset.i === '1'; saveState(); applyChrome(); render(); });
   $$('#setVoice button', v).forEach(b => b.onclick = () => { state.voice[state.lang] = +b.dataset.i; saveState(); render(); });
+  const sortedMarks = user.marks.slice().sort((a, b2) => b2.ts - a.ts);
+  $$('[data-bmgo]', v).forEach(b => b.onclick = () => openAt(sortedMarks[+b.dataset.bmgo]));
+  $$('[data-bmdel]', v).forEach(b => b.onclick = () => {
+    const m = sortedMarks[+b.dataset.bmdel];
+    const i = user.marks.findIndex(x => x.b === m.b && x.c === m.c && x.p === m.p && x.s === m.s);
+    if (i >= 0) user.marks.splice(i, 1);
+    saveUser(); render();
+  });
   $$('[data-del]', v).forEach(b => b.onclick = () => { delete user.hl[b.dataset.del]; saveUser(); render(); });
   $$('[data-go]', v).forEach(b => b.onclick = () => { const [x, y] = b.dataset.go.split('|'); go(`#/read/${x}/${y}`); });
   $$('[data-favdel]', v).forEach(b => b.onclick = () => { user.fav.splice(+b.dataset.favdel, 1); saveUser(); render(); });
