@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.2.0';
+const VERSION = 'v2.3.0';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -80,13 +80,21 @@ const I18N = {
         bgmHint:'選一首詩歌或輕音樂；若一時找不到，按選擇視窗左下角「瀏覽」，再到 iCloud 雲碟或「我的 iPhone」裡找。',
         bgmBad:'這不是音樂檔，請選 mp3、m4a、wav 等音檔', bgmBig:'音檔太大（超過 25MB），請選短一點的',
         bgmAdded:'已加入背景音樂', bgmNeed:'請先選一首背景音樂',
-        recSec:'錄成影片', recVoice:'只有聲音', recSelfie:'自拍畫面',
-        recIntro:'按下開始，對著手機把這段經文與領受讀出來。可以只錄聲音，也可以加上自拍畫面，合成一支影片直接傳出去。',
+        recSec:'錄成影片', recVoice:'🎙 只有聲音', recCard:'🖼 卡片畫面', recSelfie:'📷 自拍畫面',
+        recVoiceD:'只錄你的聲音，存成語音檔',
+        recCardD:'卡片＋你的聲音，合成一支影片',
+        recSelfieD:'卡片＋你的臉＋聲音，合成一支影片',
+        recIntro:'按下開始，對著手機把這段經文與領受讀出來。可以只錄聲音，也可以把卡片、自拍合成一支影片直接傳出去。',
         recIntroA:'這台裝置不支援合成影片，會先錄成語音；播放時可用手機「螢幕錄影」錄成影片。',
         recReady:'按下開始，把想說的話錄進去', recStartV:'開始錄影片', recStartS:'開始自拍錄影',
         recStartA:'開始錄音', recStop:'停止並完成', recing:'錄影中…', recingA:'錄音中…',
         recTip:'建議 30～60 秒：先讀經文，再說這段話對你的意思。',
         recDoneV:'影片做好了！可以分享出去', recDoneA:'錄好了！可以播放或分享',
+        rvTitleV:'錄好了，先看一下', rvTitleA:'錄好了，先聽一下',
+        rvHint:'滿意就存起來；不滿意可以重錄一次，或直接刪掉不留。',
+        rvSave:'儲存到作品庫', rvShare:'分享出去', rvAgain:'重錄一次', rvDrop:'刪掉不留',
+        rvDropAsk:'這一段就不留了？', rvDropped:'已刪掉，沒有存下來', rvSaving:'存檔中…',
+        rvNote:'這一段還沒存起來', rvLeaveAsk:'還沒存起來，關掉就不見了，確定嗎？',
         recNo:'這台裝置不支援錄音', vidNo:'這台裝置不支援自動合成影片',
         micDeny:'無法使用麥克風，請允許權限', camDeny:'無法使用相機，請允許權限',
         selfieHint:'你的臉會以圓形貼在卡片右下角，錄影時同步合成。',
@@ -149,13 +157,21 @@ const I18N = {
         bgmHint:'选一首诗歌或轻音乐；若一时找不到，按选择窗口左下角“浏览”，再到 iCloud 云碟或“我的 iPhone”里找。',
         bgmBad:'这不是音乐文件，请选 mp3、m4a、wav 等音频', bgmBig:'音频太大（超过 25MB），请选短一点的',
         bgmAdded:'已加入背景音乐', bgmNeed:'请先选一首背景音乐',
-        recSec:'录成视频', recVoice:'只有声音', recSelfie:'自拍画面',
-        recIntro:'按下开始，对着手机把这段经文与领受读出来。可以只录声音，也可以加上自拍画面，合成一支视频直接传出去。',
+        recSec:'录成视频', recVoice:'🎙 只有声音', recCard:'🖼 卡片画面', recSelfie:'📷 自拍画面',
+        recVoiceD:'只录你的声音，存成语音档',
+        recCardD:'卡片＋你的声音，合成一支视频',
+        recSelfieD:'卡片＋你的脸＋声音，合成一支视频',
+        recIntro:'按下开始，对着手机把这段经文与领受读出来。可以只录声音，也可以把卡片、自拍合成一支视频直接传出去。',
         recIntroA:'这台设备不支持合成视频，会先录成语音；播放时可用手机“录屏”录成视频。',
         recReady:'按下开始，把想说的话录进去', recStartV:'开始录视频', recStartS:'开始自拍录像',
         recStartA:'开始录音', recStop:'停止并完成', recing:'录像中…', recingA:'录音中…',
         recTip:'建议 30～60 秒：先读经文，再说这段话对你的意思。',
         recDoneV:'视频做好了！可以分享出去', recDoneA:'录好了！可以播放或分享',
+        rvTitleV:'录好了，先看一下', rvTitleA:'录好了，先听一下',
+        rvHint:'满意就存起来；不满意可以重录一次，或直接删掉不留。',
+        rvSave:'保存到作品库', rvShare:'分享出去', rvAgain:'重录一次', rvDrop:'删掉不留',
+        rvDropAsk:'这一段就不留了？', rvDropped:'已删掉，没有存下来', rvSaving:'保存中…',
+        rvNote:'这一段还没存起来', rvLeaveAsk:'还没存起来，关掉就不见了，确定吗？',
         recNo:'这台设备不支持录音', vidNo:'这台设备不支持自动合成视频',
         micDeny:'无法使用麦克风，请允许权限', camDeny:'无法使用相机，请允许权限',
         selfieHint:'你的脸会以圆形贴在卡片右下角，录像时同步合成。',
@@ -220,13 +236,21 @@ const I18N = {
         bgmHint:'Pick a hymn or something gentle. If you cannot find it, tap Browse at the bottom left and look in iCloud Drive or On My iPhone.',
         bgmBad:'That is not an audio file — choose an mp3, m4a or wav', bgmBig:'That file is too large (over 25MB) — choose a shorter one',
         bgmAdded:'Music added', bgmNeed:'Choose some background music first',
-        recSec:'Record a video', recVoice:'Voice only', recSelfie:'With selfie',
-        recIntro:'Tap start and read the verse aloud. Record your voice alone, or add your face, and it becomes a video you can send straight to anyone.',
+        recSec:'Record a video', recVoice:'🎙 Voice only', recCard:'🖼 Card video', recSelfie:'📷 With selfie',
+        recVoiceD:'Your voice alone, saved as an audio file',
+        recCardD:'The card plus your voice, made into a video',
+        recSelfieD:'The card, your face and your voice, made into a video',
+        recIntro:'Tap start and read the verse aloud. Record your voice alone, or add the card and your face, and it becomes a video you can send straight to anyone.',
         recIntroA:'This device cannot build a video, so it will record audio only. You can use Screen Recording while it plays.',
         recReady:'Tap start and say what is on your heart', recStartV:'Start recording', recStartS:'Start selfie recording',
         recStartA:'Start recording', recStop:'Stop and finish', recing:'Recording…', recingA:'Recording…',
         recTip:'30–60 seconds works well: read the verse, then say what it means to you.',
         recDoneV:'Your video is ready to share', recDoneA:'Recorded — you can play it or share it',
+        rvTitleV:'Here it is — take a look', rvTitleA:'Here it is — have a listen',
+        rvHint:'Keep it if you are happy with it, record it again, or delete it without saving.',
+        rvSave:'Save to my recordings', rvShare:'Share', rvAgain:'Record again', rvDrop:'Delete',
+        rvDropAsk:'Delete this without saving?', rvDropped:'Deleted — nothing was saved', rvSaving:'Saving…',
+        rvNote:'Not saved yet', rvLeaveAsk:'This has not been saved yet — close anyway?',
         recNo:'This device cannot record audio', vidNo:'This device cannot build a video',
         micDeny:'Microphone not available — please allow access', camDeny:'Camera not available — please allow access',
         selfieHint:'Your face appears in a circle at the bottom right, composed in as you record.',
@@ -485,7 +509,7 @@ async function render(){
     console.error(e);
   }
   if (tab !== 'read'){ bmMode = false; document.documentElement.classList.remove('bmmode'); }
-  if (tab !== 'studio'){ stopSelfie(); recSelfie = false; }
+  if (tab !== 'studio'){ stopSelfie(); if (recMode === 's') recMode = 'c'; }
   if (tab !== 'read' && tab !== 'studio') window.scrollTo(0, 0);
 }
 
@@ -2001,7 +2025,11 @@ const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 
 
 /* ================================================================ 錄製 */
 let mr = null, chunks = [], recTimer = null, recSec = 0, recAnim = 0;
-let recSelfie = false, selfieStream = null, __mcGain = null;
+/* 錄製方式：'a' 只有聲音（純語音檔）｜'c' 卡片畫面（卡片＋聲音的影片）｜'s' 自拍畫面
+   本來只有「只有聲音／自拍畫面」兩顆，但按「只有聲音」錄出來的還是影片，
+   名實不符，按了像沒作用。現在分成三種，按哪一個就真的錄哪一種。 */
+let recMode = 'c', selfieStream = null, __mcGain = null;
+const isSelfie = () => recMode === 's';
 const sup = m => { try{ return window.MediaRecorder && MediaRecorder.isTypeSupported(m); }catch(e){ return false; } };
 const vidMime = () => ['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4',
   'video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(sup) || '';
@@ -2026,14 +2054,15 @@ function stopSelfie(){
   if (el){ try{ el.pause(); }catch(e){} el.srcObject = null; }
   selfieStream = null;
 }
-async function setSelfie(on){
-  recSelfie = !!on;
-  if (!on){ stopSelfie(); studioRefresh(); return; }
+async function setRecMode(m){
+  if (mr && mr.state === 'recording'){ toast(L3('錄製中不能換，先按「停止並完成」','录制中不能换，先按“停止并完成”','Stop the recording first'), 2400); return; }
+  recMode = m;
+  if (m !== 's'){ stopSelfie(); await studioRefresh(); toast(t()[m === 'a' ? 'recVoiceD' : 'recCardD'], 2200); return; }
   try{
     selfieStream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'user' }, audio:false });
-  }catch(e){ recSelfie = false; toast(t().camDeny); }
-  studioRefresh();
-  setTimeout(attachSelfie, 60);
+  }catch(e){ recMode = 'c'; toast(t().camDeny); }
+  await studioRefresh();
+  if (recMode === 's'){ setTimeout(attachSelfie, 60); toast(t().recSelfieD, 2200); }
 }
 /* 卡片＋緩慢掃過的光暈；錄影就是把這張動態畫面錄下來 */
 function liveCanvas(W, H, withSelfie){
@@ -2068,7 +2097,14 @@ function liveCanvas(W, H, withSelfie){
   if (lb){
     cv.style.cssText = 'width:100%;max-width:300px;border-radius:14px;display:block;margin:0 auto;box-shadow:0 6px 20px rgba(0,0,0,.14)';
     lb.innerHTML = ''; lb.appendChild(cv); lb.hidden = false;
-    const sw = $('#selfieWrap'); if (sw) sw.style.display = 'none';
+    /* 自拍時千萬不能把這個 <video> 設成 display:none —— iPhone 一旦把影片元素
+       藏起來就停止送畫面，畫布上的臉會凍在那一格。縮到看不見、但還在版面上，
+       它才會繼續跑，錄下來的臉才是動的。 */
+    const sw = $('#selfieWrap');
+    if (sw){
+      if (withSelfie) sw.style.cssText = 'position:absolute;width:2px;height:2px;opacity:.01;overflow:hidden;pointer-events:none;z-index:-1';
+      else sw.style.display = 'none';
+    }
   }
   return cv;
 }
@@ -2080,22 +2116,91 @@ function recTick(label){
     if (e) e.textContent = String(Math.floor(recSec / 60)).padStart(2, '0') + ':' + String(recSec % 60).padStart(2, '0');
   }, 1000);
 }
-async function saveWork(blob, type, kind){
+/* 錄完先不要急著存。整理成可以播的檔，打開預覽面板，讓他自己決定
+   要留、要重錄、還是不留——這是尊重人的作法，也少了一堆「錄壞了還在裡面」的作品。 */
+async function finishRec(blob, type, kind){
+  mr = null;
+  const dur = recSec;
+  try{ if (kind === 'video') blob = await fixVideoBlob(blob, type); }catch(e){ console.error('fix', e); }
+  await studioRefresh();
+  openReview(blob, blob.type || type, kind, dur);
+}
+async function saveWork(blob, type, kind, dur){
   try{
-    if (kind === 'video') blob = await fixVideoBlob(blob, type);
     if (!wdb) await openWDB();
     if (!wdb) throw new Error('IndexedDB 打不開');
-    await putRec({ id:uid(), ts:Date.now(), blob, mime:blob.type || type, kind, dur:recSec,
+    await putRec({ id:uid(), ts:Date.now(), blob, mime:blob.type || type, kind, dur:dur || 0,
                    v:studioItem.t, r:cardRef(studioItem), n:studioItem.n || '' });
-    mr = null;
     await studioRefresh();
     toast(kind === 'video' ? t().recDoneV : t().recDoneA, 3600);
+    return true;
   }catch(e){
-    mr = null;
     console.error('saveWork', e);
-    await studioRefresh();
     toast('存檔失敗：' + (e && e.message || e), 4000);
+    return false;
   }
+}
+/* 直接把還沒存進作品庫的東西分享出去 */
+async function shareBlob(blob, mime, kind){
+  const name = '321bible-' + (kind === 'video' ? 'video' : 'voice') + extOf(mime);
+  const f = new File([blob], name, { type:mime });
+  if (navigator.canShare && navigator.canShare({ files:[f] })){
+    if (isIOS()) toast(t().saveIOS, 5000);
+    try{ await navigator.share({ files:[f], title:t().app }); return; }
+    catch(e){ if (e && e.name === 'AbortError') return; }
+  }
+  const u = URL.createObjectURL(blob), a = document.createElement('a');
+  a.href = u; a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(u), 6000);
+  toast(t().savedFile, 3200);
+}
+/* ---- 錄完的預覽面板：看／聽 → 儲存、分享、重錄、刪掉 ---- */
+let rvURL = null;
+function openReview(blob, mime, kind, dur){
+  const L = t();
+  if (rvURL){ try{ URL.revokeObjectURL(rvURL); }catch(e){} }
+  rvURL = URL.createObjectURL(blob);
+  let kept = false;
+  const mask = document.createElement('div'); mask.className = 'hlsheet-mask';
+  mask.innerHTML = `<div class="hlsheet-card rvsheet">
+    <div class="hlsheet-title">${esc(kind === 'video' ? L.rvTitleV : L.rvTitleA)}</div>
+    <div class="rvbox">${kind === 'video'
+      ? `<video id="rvMedia" src="${rvURL}" controls playsinline webkit-playsinline autoplay
+           style="width:100%;border-radius:14px;display:block;background:#000"></video>`
+      : `<audio id="rvMedia" src="${rvURL}" controls autoplay style="width:100%"></audio>`}</div>
+    <div class="muted" style="font-size:12px;margin:10px 0 0">${esc(L.rvHint)}</div>
+    <div class="rvacts">
+      <button class="btn primary block" id="rvSave">${esc(L.rvSave)}</button>
+      <button class="btn gold block" id="rvShare">↗ ${esc(L.rvShare)}</button>
+      <button class="btn block" id="rvAgain">${esc(L.rvAgain)}</button>
+      <button class="btn danger block" id="rvDrop">${esc(L.rvDrop)}</button>
+    </div>
+  </div>`;
+  document.body.appendChild(mask);
+  const shut = () => {
+    const m = $('#rvMedia', mask); try{ if (m){ m.pause(); m.src = ''; } }catch(e){}
+    mask.remove();
+    if (rvURL){ try{ URL.revokeObjectURL(rvURL); }catch(e){} rvURL = null; }
+  };
+  mask.onclick = e => { if (e.target === mask && (kept || confirm(L.rvLeaveAsk))) shut(); };
+
+  $('#rvSave', mask).onclick = async () => {
+    const b = $('#rvSave', mask);
+    b.disabled = true; b.textContent = L.rvSaving;
+    const ok = await saveWork(blob, mime, kind, dur);
+    if (ok){ kept = true; shut(); }
+    else { b.disabled = false; b.textContent = L.rvSave; }
+  };
+  $('#rvShare', mask).onclick = () => shareBlob(blob, mime, kind);
+  $('#rvAgain', mask).onclick = async () => {
+    shut();
+    if (recMode === 's'){ await setRecMode('s'); await new Promise(r => setTimeout(r, 450)); }
+    toggleRec();
+  };
+  $('#rvDrop', mask).onclick = () => {
+    if (!confirm(L.rvDropAsk)) return;
+    shut(); toast(L.rvDropped, 2600);
+  };
 }
 /* 麥克風剛打開的前三、四百毫秒常有一聲爆音或嘶聲——回音消除與自動增益
    還在調整。所以錄音一律：①先等它穩下來 ②收音從靜音淡入 ③音樂也淡入。
@@ -2115,6 +2220,12 @@ function fadeIn(g, ac, to, sec){
 async function toggleRec(){
   if (mr && mr.state === 'recording'){ mr.stop(); return; }
   if (!studioItem) return;
+  /* 上一次錄完相機就關了，再按一次自拍要重新開，不然只會錄到靜止的臉 */
+  if (recMode === 's' && (!selfieStream || !selfieStream.active)){
+    try{ selfieStream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'user' }, audio:false }); }
+    catch(e){ recMode = 'c'; toast(t().camDeny); await studioRefresh(); }
+    if (recMode === 's'){ attachSelfie(); await new Promise(r => setTimeout(r, 500)); }
+  }
   let mic;
   /* 明確要求回音消除／雜訊抑制／自動增益，收進來的聲音比較乾淨 */
   try{
@@ -2126,7 +2237,7 @@ async function toggleRec(){
   }
 
   const svid = $('#selfiePrev');
-  const useSelfie = recSelfie && svid && svid.videoWidth;
+  const useSelfie = isSelfie() && svid && svid.videoWidth;
   let ac = null, bgmEl = null, bgmURL = null, audioStream = mic, micGain = null, bgmGain = null;
   /* 不管有沒有配樂都走 WebAudio，才有地方做淡入 */
   try{
@@ -2148,7 +2259,8 @@ async function toggleRec(){
   }
 
   let stream = audioStream, kind = 'audio', mime = audMime();
-  if (canVideo()){
+  /* 按「只有聲音」就真的只錄聲音，不做影片 */
+  if (recMode !== 'a' && canVideo()){
     try{
       const [W, H] = CARD_SIZES[cardSize()];
       const cv = liveCanvas(W, H, useSelfie);
@@ -2173,7 +2285,7 @@ async function toggleRec(){
     try{ if (bgmURL) URL.revokeObjectURL(bgmURL); }catch(_){}
     try{ if (ac) ac.close(); }catch(_){}
     const type = mr.mimeType || mime || (kind === 'video' ? 'video/webm' : 'audio/webm');
-    await saveWork(new Blob(chunks, { type }), type, kind);
+    await finishRec(new Blob(chunks, { type }), type, kind);
   };
   /* 等麥克風穩下來再按下錄音鍵，開頭那一聲爆音就被留在外面了 */
   await new Promise(r => setTimeout(r, REC_WARMUP));
@@ -2219,7 +2331,7 @@ async function musicRec(){
     try{ if (bgmURL) URL.revokeObjectURL(bgmURL); }catch(_){}
     try{ if (ac) ac.close(); }catch(_){}
     const type = mr.mimeType || mime || 'video/webm';
-    await saveWork(new Blob(chunks, { type }), type, 'video');
+    await finishRec(new Blob(chunks, { type }), type, 'video');
   };
   mr.start(1000);
   try{ await bgmEl.play(); }catch(e){}
@@ -2439,19 +2551,23 @@ async function viewStudio(v){
     <div class="section-title">${esc(L.recSec)}</div>
     <div class="card" style="text-align:center">
       <div class="muted" style="font-size:12.5px;text-align:left;margin-bottom:10px">${esc(vOK ? L.recIntro : L.recIntroA)}</div>
-      ${vOK ? `<div class="cardchips" id="rMode" style="justify-content:center;margin-bottom:12px">
-        <button class="${!recSelfie ? 'on' : ''}" data-s="0">${esc(L.recVoice)}</button>
-        <button class="${recSelfie ? 'on' : ''}" data-s="1">📷 ${esc(L.recSelfie)}</button></div>` : ''}
+      ${vOK ? `<div class="cardchips" id="rMode" style="justify-content:center;margin-bottom:6px">
+        <button class="${recMode === 'a' ? 'on' : ''}" data-s="a">${esc(L.recVoice)}</button>
+        <button class="${recMode === 'c' ? 'on' : ''}" data-s="c">${esc(L.recCard)}</button>
+        <button class="${recMode === 's' ? 'on' : ''}" data-s="s">${esc(L.recSelfie)}</button></div>
+      <div class="muted" style="font-size:12px;margin-bottom:12px">${esc(
+        recMode === 'a' ? L.recVoiceD : recMode === 's' ? L.recSelfieD : L.recCardD)}</div>` : ''}
       <div id="recSt" class="muted" style="font-size:12.5px">${esc(L.recReady)}</div>
       <div id="recTm" style="font-family:'Noto Serif TC',serif;font-size:30px;margin:6px 0">00:00</div>
-      <button class="btn primary block" id="recBtn">${esc(vOK ? (recSelfie ? '📷 ' + L.recStartS : L.recStartV) : L.recStartA)}</button>
+      <button class="btn primary block" id="recBtn">${esc(!vOK || recMode === 'a' ? L.recStartA
+        : recMode === 's' ? '📷 ' + L.recStartS : L.recStartV)}</button>
       <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.recTip)}</div>
       ${(vOK && bgmBlob) ? `
         <div class="muted" style="font-size:12px;margin:14px 0 6px">${esc(L.mcLen)}</div>
         ${chips('mLen', MC_LENS, mcLen, 'v')}
         <button class="btn gold block" id="mcBtn" style="margin-top:10px">🎵 ${esc(L.mcStart)}</button>
         <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.mcHint)}</div>` : ''}
-      <div id="selfieWrap" style="${recSelfie ? '' : 'display:none'};margin-top:14px">
+      <div id="selfieWrap" style="${isSelfie() ? '' : 'display:none'};margin-top:14px">
         <video id="selfiePrev" playsinline webkit-playsinline muted autoplay
           style="width:150px;height:150px;border-radius:50%;object-fit:cover;transform:scaleX(-1);border:3px solid var(--gold);background:#000"></video>
         <div class="muted" style="font-size:12px;margin-top:6px">${esc(L.selfieHint)}</div>
@@ -2469,7 +2585,7 @@ async function viewStudio(v){
       </div>`).join('') : `<div class="empty">${esc(L.noWorks)}</div>`}</div>`;
 
   renderCard(studioItem);
-  if (recSelfie) setTimeout(attachSelfie, 60);
+  if (isSelfie()) setTimeout(attachSelfie, 60);
 
   $('#stBack').onclick = () => history.back();
   $('#btShare').onclick = cardShare;
@@ -2485,7 +2601,7 @@ async function viewStudio(v){
   bind('#pPos button', b => { stkPos = b.dataset.v; studioRefresh(); });
   bind('#bVol button', b => { bgmVol = +b.dataset.v; studioRefresh(); });
   bind('#mLen button', b => { mcLen = +b.dataset.v; studioRefresh(); });
-  bind('#rMode button', b => setSelfie(b.dataset.s === '1'));
+  bind('#rMode button', b => setRecMode(b.dataset.s));
   const pd = $('#pDel'); if (pd) pd.onclick = () => { photoImg = null; photoBy = ''; studioRefresh(); };
   const pl2 = $('#pLib'); if (pl2) pl2.onclick = openPexels;
   const bd = $('#bDel'); if (bd) bd.onclick = () => { bgmBlob = null; bgmName = ''; bgmCredit = ''; studioRefresh(); };

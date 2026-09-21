@@ -391,6 +391,15 @@ select.cardinput{appearance:none; -webkit-appearance:none;
   background:var(--surface); color:var(--accent); font-size:13px; cursor:pointer; padding:0;}
 .hymnplay:active{background:var(--accent-soft);}
 
+/* ---------- 錄好之後的預覽面板 ---------- */
+.rvsheet{max-height:92vh;}
+.rvbox{background:#000; border-radius:14px; overflow:hidden; margin-top:4px;}
+.rvbox audio{background:var(--surface-2,transparent); display:block;}
+.rvbox:has(audio){background:transparent; padding:6px 0;}
+.rvacts{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px;}
+.rvacts .btn{margin:0; padding:12px 8px; font-size:14px;}
+.rvacts .btn.danger{color:var(--bad); border-color:var(--bad);}
+
 /* ---------- 免費圖庫 ---------- */
 .pxsheet{max-height:90vh;}
 .pxbar{display:flex; gap:8px; margin-bottom:10px;}
