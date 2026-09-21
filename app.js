@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.1.1';
+const VERSION = 'v2.2.0';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -1128,6 +1128,152 @@ function openPexels(){
   run(true);
 }
 
+/* ================================================================ 詩歌庫
+   背景音樂除了從手機選檔案，也可以從「詩歌庫」挑——詩歌放在這個網站自己的
+   music/ 資料夾裡，清單寫在 music.json。同源，所以不會有跨網域取不到音訊的問題
+   （跨網域的音檔若對方沒開 CORS，混音錄出來會是「有畫面、沒聲音」，很難查）。
+
+   怎麼加歌：把 mp3 放進 music/，在 music.json 的 songs 陣列加一筆，就出現在清單裡。
+   詳細說明寫在 music.json 最上面。 */
+const MUSIC_JSON = 'music.json';
+const MUSIC_DIR  = 'music/';
+const HYM_L = {
+  zh:{ lib:'詩歌庫', btn:'🎵 從詩歌庫選', title:'詩歌庫', ph:'找歌名…',
+       loading:'載入中…', close:'關閉', all:'全部', play:'試聽', stop:'停止',
+       none:'找不到這首，換個字試試', picked:'已選好這首詩歌', getting:'載入詩歌中…',
+       noList:'還沒有建立詩歌庫。把 mp3 放進網站的 music/ 資料夾，並在 music.json 加上清單，這裡就會出現。',
+       bad:'這首載入失敗，換一首試試', credit:'詩歌：', srcT:'出處：',
+       hint:'詩歌放在自己的網站上，錄影片時混得進去。下載與使用請遵守各詩歌的授權規定。' },
+  zs:{ lib:'诗歌库', btn:'🎵 从诗歌库选', title:'诗歌库', ph:'找歌名…',
+       loading:'载入中…', close:'关闭', all:'全部', play:'试听', stop:'停止',
+       none:'找不到这首，换个字试试', picked:'已选好这首诗歌', getting:'载入诗歌中…',
+       noList:'还没有建立诗歌库。把 mp3 放进网站的 music/ 文件夹，并在 music.json 加上清单，这里就会出现。',
+       bad:'这首载入失败，换一首试试', credit:'诗歌：', srcT:'出处：',
+       hint:'诗歌放在自己的网站上，录视频时混得进去。下载与使用请遵守各诗歌的授权规定。' },
+  en:{ lib:'Hymn library', btn:'🎵 Pick a hymn', title:'Hymn library', ph:'Find a hymn…',
+       loading:'Loading…', close:'Close', all:'All', play:'Preview', stop:'Stop',
+       none:'Not found — try another word', picked:'Hymn selected', getting:'Loading the hymn…',
+       noList:'No hymn library yet. Put mp3 files in the site’s music/ folder and list them in music.json.',
+       bad:'That hymn could not be loaded — try another', credit:'Hymn: ', srcT:'Source: ',
+       hint:'Hymns are hosted on this site, so they mix into recordings properly. Please respect each hymn’s licence.' }
+};
+const hl_ = () => HYM_L[state.lang] || HYM_L.zh;
+/* 一首歌的顯示名稱（三語，沒填就用中文那個） */
+const songName = s => (isEN() ? (s.ne || s.n) : (isZS() ? (s.ns || s.n) : s.n)) || s.f || '';
+
+let hymnList = null;          // null = 還沒抓過
+let bgmCredit = '';           // 「詩歌：〈歌名〉／出處」，會印在影片下緣
+let hymnPrev = null;          // 試聽用的 audio
+
+async function hymnLoadList(){
+  if (hymnList) return hymnList;
+  const r = await fetch(MUSIC_JSON + '?v=' + VERSION);
+  if (!r.ok) throw new Error('http ' + r.status);
+  const d = await r.json();
+  hymnList = Array.isArray(d) ? d : ((d && d.songs) || []);
+  return hymnList;
+}
+function hymnStopPrev(){
+  if (hymnPrev){ try{ hymnPrev.pause(); }catch(e){} hymnPrev = null; }
+  $$('.hymnrow .hymnplay').forEach(b => b.textContent = '▶');
+}
+/* 選一首：抓成 blob（同源，錄影混得進去），並記下出處 */
+async function hymnPick(s){
+  const r = await fetch(MUSIC_DIR + encodeURIComponent(s.f));
+  if (!r.ok) throw new Error('http ' + r.status);
+  const blob = await r.blob();
+  if (!blob.size) throw new Error('empty');
+  bgmBlob = blob;
+  bgmName = songName(s);
+  bgmCredit = hl_().credit + songName(s) + (s.by ? '／' + s.by : '');
+}
+
+function openHymns(){
+  const L = hl_(), Lb = t();
+  const mask = document.createElement('div'); mask.className = 'hlsheet-mask';
+  mask.innerHTML = `<div class="hlsheet-card hymnsheet">
+    <div class="hlsheet-title">${esc(L.title)}</div>
+    <div class="pxbar">
+      <input class="cardinput" id="hyQ" placeholder="${esc(L.ph)}">
+    </div>
+    <div class="cardchips" id="hyTags"></div>
+    <div id="hyList"></div>
+    <div class="hlsheet-acts" style="margin-top:12px">
+      <button class="btn" id="hyClose">${esc(L.close)}</button>
+    </div>
+    <div class="muted" style="font-size:12px;margin-top:10px">${esc(L.hint)}</div>
+  </div>`;
+  document.body.appendChild(mask);
+  const shut = () => { hymnStopPrev(); mask.remove(); };
+  mask.onclick = e => { if (e.target === mask) shut(); };
+  $('#hyClose', mask).onclick = shut;
+
+  const box = $('#hyList', mask), tagBox = $('#hyTags', mask), inp = $('#hyQ', mask);
+  let tag = '';
+  box.innerHTML = `<div class="empty">${esc(L.loading)}</div>`;
+
+  const paint = () => {
+    const q = (inp.value || '').trim().toLowerCase();
+    const list = (hymnList || []).filter(s => {
+      if (tag && (s.tag || '') !== tag) return false;
+      if (!q) return true;
+      return (songName(s) + ' ' + (s.n || '') + ' ' + (s.ne || '') + ' ' + (s.by || ''))
+             .toLowerCase().indexOf(q) >= 0;
+    });
+    if (!list.length){ box.innerHTML = `<div class="empty">${esc(L.none)}</div>`; return; }
+    box.innerHTML = list.map(function (s){
+      const i = hymnList.indexOf(s);
+      return `<div class="hymnrow" data-i="${i}">
+        <button class="hymnplay" data-p="${i}">▶</button>
+        <div class="meta"><div class="t">${esc(songName(s))}</div>
+        <div class="s">${esc([s.by, s.tag].filter(Boolean).join('　·　'))}</div></div>
+        <div class="chev">›</div></div>`;
+    }).join('');
+    $$('.hymnrow', box).forEach(row => {
+      row.onclick = async e => {
+        if (e.target.closest('.hymnplay')) return;
+        const s = hymnList[+row.dataset.i]; if (!s) return;
+        hymnStopPrev(); toast(L.getting, 8000);
+        try{ await hymnPick(s); shut(); toast(L.picked); await studioRefresh(); }
+        catch(err){ toast(L.bad, 4000); }
+      };
+    });
+    $$('.hymnplay', box).forEach(b => {
+      b.onclick = () => {
+        const s = hymnList[+b.dataset.p]; if (!s) return;
+        const playing = hymnPrev && b.textContent === '⏸';
+        hymnStopPrev();
+        if (playing) return;
+        try{
+          hymnPrev = new Audio(MUSIC_DIR + encodeURIComponent(s.f));
+          hymnPrev.play().catch(() => toast(L.bad));
+          hymnPrev.onended = hymnStopPrev;
+          b.textContent = '⏸';
+        }catch(e){ toast(L.bad); }
+      };
+    });
+  };
+
+  hymnLoadList().then(function (list){
+    if (!list.length){ box.innerHTML = `<div class="empty">${esc(L.noList)}</div>`; return; }
+    const tags = [];
+    list.forEach(s => { if (s.tag && tags.indexOf(s.tag) < 0) tags.push(s.tag); });
+    if (tags.length > 1){
+      tagBox.innerHTML = `<button class="on" data-t="">${esc(L.all)}</button>`
+        + tags.map(x => `<button data-t="${esc(x)}">${esc(x)}</button>`).join('');
+      $$('#hyTags button', mask).forEach(b => b.onclick = () => {
+        tag = b.dataset.t;
+        $$('#hyTags button', mask).forEach(x => x.classList.toggle('on', x === b));
+        paint();
+      });
+    }
+    inp.oninput = paint;
+    paint();
+  }).catch(function (){
+    box.innerHTML = `<div class="empty">${esc(L.noList)}</div>`;
+  });
+}
+
 /* ================================================================ 經文美圖
    把畫線的經文與領受畫成一張圖，直接分享到 LINE／IG／FB。
    作法與《321愛的關懷》相同：canvas 畫好 → navigator.share 傳檔，
@@ -1207,7 +1353,7 @@ function pickBgm(inp){
   const ok = (f.type && (f.type.indexOf('audio') === 0 || f.type.indexOf('video') === 0)) || AUD_EXT.test(f.name || '');
   if (!ok){ toast(t().bgmBad); return; }
   if (f.size > 25 * 1024 * 1024){ toast(t().bgmBig); return; }
-  bgmBlob = f; bgmName = f.name || '背景音樂'; studioRefresh(); toast(t().bgmAdded);
+  bgmBlob = f; bgmName = f.name || '背景音樂'; bgmCredit = ''; studioRefresh(); toast(t().bgmAdded);
 }
 
 const DEF_TOP  = () => L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Fellowship');
@@ -1906,6 +2052,15 @@ function liveCanvas(W, H, withSelfie){
     rg.addColorStop(0, 'rgba(255,255,255,.10)'); rg.addColorStop(1, 'rgba(255,255,255,0)');
     cx.fillStyle = rg; cx.fillRect(0, 0, W, H);
     if (withSelfie) drawSelfieCircle(cx, svid, W, H, F);
+    /* 用了詩歌庫的歌，就在影片最下緣印一行出處——影片會被分享出去，該註明 */
+    if (bgmCredit){
+      cx.textAlign = 'center';
+      cx.font = `${Math.round(19 * F)}px "Noto Sans TC",sans-serif`;
+      cx.fillStyle = 'rgba(255,255,255,.62)';
+      cx.shadowColor = 'rgba(0,0,0,.55)'; cx.shadowBlur = Math.round(6 * F);
+      cx.fillText(bgmCredit, W / 2, H - Math.round(22 * F));
+      cx.shadowColor = 'transparent';
+    }
     recAnim = requestAnimationFrame(loop);
   };
   loop();
@@ -2267,14 +2422,17 @@ async function viewStudio(v){
     <div class="section-title">${esc(L.bgm)}</div>
     <div class="card">${bgmBlob ? `
       <div style="font-weight:700;font-size:14px">♪ ${esc(bgmName)}</div>
+      ${bgmCredit ? `<div class="muted" style="font-size:11.5px;margin-top:3px">${esc(bgmCredit)}</div>` : ''}
       <div class="muted" style="font-size:12px;margin:4px 0 10px">${esc(L.bgmNote)}</div>
       <div class="muted" style="font-size:12px;margin-bottom:6px">${esc(L.bgmVol)}</div>
       ${chips('bVol', BGM_VOLS, bgmVol, 'v')}
       <div class="hlsheet-acts2" style="margin-top:12px">
+        <button class="btn sm gold" id="bLib">${esc(hl_().btn)}</button>
         <label class="btn sm" style="cursor:pointer">${esc(L.bgmSwap)}<input type="file" hidden id="bRe"></label>
         <button class="btn sm danger" id="bDel">${esc(L.bgmDel)}</button>
       </div>` : `
-      <label class="btn block" style="cursor:pointer">${esc(L.bgmPick)}<input type="file" hidden id="bNew"></label>
+      <button class="btn block gold" id="bLib">${esc(hl_().btn)}</button>
+      <label class="btn block" style="cursor:pointer;margin-top:8px">${esc(L.bgmPick)}<input type="file" hidden id="bNew"></label>
       <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.bgmHint)}</div>`}
     </div>
 
@@ -2330,7 +2488,8 @@ async function viewStudio(v){
   bind('#rMode button', b => setSelfie(b.dataset.s === '1'));
   const pd = $('#pDel'); if (pd) pd.onclick = () => { photoImg = null; photoBy = ''; studioRefresh(); };
   const pl2 = $('#pLib'); if (pl2) pl2.onclick = openPexels;
-  const bd = $('#bDel'); if (bd) bd.onclick = () => { bgmBlob = null; bgmName = ''; studioRefresh(); };
+  const bd = $('#bDel'); if (bd) bd.onclick = () => { bgmBlob = null; bgmName = ''; bgmCredit = ''; studioRefresh(); };
+  const blb = $('#bLib'); if (blb) blb.onclick = openHymns;
   ['pNew','pRe'].forEach(id => { const e = $('#' + id); if (e) e.onchange = () => pickPhoto(e); });
   ['bNew','bRe'].forEach(id => { const e = $('#' + id); if (e) e.onchange = () => pickBgm(e); });
   const nt = $('#cardNote');
