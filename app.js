@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.4.5';
+const VERSION = 'v2.5.0';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -1057,6 +1057,8 @@ function openHlSheet(el){
     else if (a === 'del'){ delete user.hl[k]; saveUser(); mask.remove(); paintHl(cno); }
     else if (a === 'ask'){
       h.c = color; h.n = ta.value.trim(); saveUser(); mask.remove();
+      /* 記下這一題是從哪一節來的，答完才分享得出「經文＋答案」 */
+      chatSrc = { t:h.t, b:RD.book, ch:cno, v:h.v || 0, v2:h.v2 || 0 };
       chatPending = isEN() ? `Help me meditate on this verse: “${h.t}”`
                 : `${isZS() ? '请就这句经文帮助我默想：' : '請就這句經文幫助我默想：'}「${h.t}」`;
       go('#/companion');
@@ -3644,6 +3646,8 @@ function paintResults(){
 
 /* ================================================================ 陪讀 */
 let chatLog = [], chatPending = null, chatBusy = false;
+/* 從畫線「問小智」進來時記下來源經文；直接打字提問就沒有，分享時只帶答案 */
+let chatSrc = null;
 const QBANK = {
   zh: ['這段經文讓我看見神是怎樣的一位神？',
        '這段經文照出我裡面什麼樣的舊人有己？',
@@ -3676,6 +3680,18 @@ const QBANK = {
        'How does this connect with “Your Kingdom come” in the Lord\'s Prayer?',
        'Give me one everyday picture that opens up the heart of this passage.']
 };
+/* 把 markdown 記號拿掉，剩下乾淨的文字（分享與美圖都用這個） */
+function mdStrip(x){
+  return String(x || '')
+    .replace(/^#{1,6} /gm, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/(^|[^*])\*([^*\n]+)\*/g, '$1$2')
+    .replace(/^&gt; ?/gm, '').replace(/^> ?/gm, '')
+    .replace(/^---+$/gm, '')
+    .replace(/^[-*] /gm, '・')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
 function mdToHtml(s){
   let h = esc(s);
   h = h.replace(/^###### (.*)$/gm, '<h6>$1</h6>').replace(/^##### (.*)$/gm, '<h5>$1</h5>')
@@ -3718,6 +3734,8 @@ function paintChat(){
     : `<div class="msg ai"><div class="msg-body">${mdToHtml(m.text)}</div>
         <div class="msg-actions">
           <button class="msg-act ${isFav(m.text) ? 'on' : ''}" data-a="fav" data-i="${i}">★ ${esc(L3('收藏', '收藏', 'Save'))}</button>
+          <button class="msg-act" data-a="share" data-i="${i}">↗ ${esc(L3('分享', '分享', 'Share'))}</button>
+          <button class="msg-act" data-a="card" data-i="${i}">🖼 ${esc(L3('做成美圖', '做成美图', 'Make a card'))}</button>
           <button class="msg-act" data-a="tts" data-i="${i}">🔊</button>
           <button class="msg-act" data-a="del" data-i="${i}">✕</button>
         </div></div>`).join('');
@@ -3726,8 +3744,68 @@ function paintChat(){
     if (b.dataset.a === 'fav'){ toggleFav(m.text); paintChat(); }
     else if (b.dataset.a === 'del'){ chatLog.splice(i, 1); paintChat(); }
     else if (b.dataset.a === 'tts'){ ttsSpeakText(m.text); }
+    else if (b.dataset.a === 'share'){ chatShare(m); }
+    else if (b.dataset.a === 'card'){ chatCard(m); }
   });
   log.scrollTop = log.scrollHeight;
+}
+/* 小智的回答要分享出去時，經文與答案一起帶走——單看答案，別人不知道在講哪一節 */
+function chatPack(m){
+  const src = m.src || null;
+  const ans = mdStrip(m.text);
+  const ref = src ? cardRef({ b:src.b, ch:src.ch, v:src.v, v2:src.v2 }) : '';
+  return { src, ans, ref, verse: src ? src.t : '' };
+}
+async function chatShare(m){
+  const L = t(), p = chatPack(m);
+  const head = p.verse ? (isEN() ? `“${p.verse}”` : `「${p.verse}」`) + (p.ref ? '\n—— ' + p.ref : '') + '\n\n' : '';
+  const foot = '\n\n—— ' + L.companionFull + '｜' + L.app
+             + '\n' + (state.cardTop || L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Fellowship'))
+             + '\n' + location.origin + location.pathname;
+  const text = head + p.ans + foot;
+  if (navigator.share){
+    try{ await navigator.share({ title: L.app, text }); return; }
+    catch(e){ if (e && e.name === 'AbortError') return; }
+  }
+  try{ await navigator.clipboard.writeText(text); toast(L.copied || L3('已複製，可以貼到群組裡', '已复制，可以贴到群组里', 'Copied — paste it anywhere'), 3200); }
+  catch(e){ toast(L3('這台裝置不支援分享，請長按訊息複製', '这台设备不支持分享，请长按讯息复制', 'Sharing is not available — long-press the message to copy'), 4000); }
+}
+/* 卡片放得下的長度有限，整篇塞進去會小到看不清楚。
+   小智的回答裡若有「>」引言，那一句通常就是重點，優先拿它；
+   否則從正文取前幾句，到句號為止。完整的一篇仍然可以用「分享」傳文字。 */
+function cardText(md){
+  const LIMIT = isEN() ? 320 : 150;
+  const raw = String(md || '');
+  const quote = (raw.match(/^&gt; ?(.+)$/m) || raw.match(/^> ?(.+)$/m) || [])[1];
+  if (quote){
+    const q = mdStrip(quote);
+    if (q.length >= 16 && q.length <= LIMIT + 60) return q;
+  }
+  const body = mdStrip(raw)
+    .split('\n').filter(l => l.trim() && !/^・/.test(l.trim()))
+    .join(' ');
+  if (body.length <= LIMIT) return body;
+  const parts = isEN() ? body.split(/(?<=[.!?])\s+/) : body.split(/(?<=[。！？])/);
+  let out = '';
+  for (const x of parts){
+    if (out && (out + x).length > LIMIT) break;
+    out += x;
+  }
+  return (out || body.slice(0, LIMIT)).trim() + (out.length < body.length ? '…' : '');
+}
+/* 直接送進美圖工作室：版型、相片、配樂、錄影全部沿用 */
+function chatCard(m){
+  const p = chatPack(m);
+  const src = p.src;
+  openStudio({
+    t : p.verse || (isEN() ? 'A word from the Word' : L3('與小智的默想', '与小智的默想', '')),
+    n : cardText(m.text),
+    b : src ? src.b : RD.book, ch : src ? src.ch : RD.ch,
+    v : src ? src.v : 0, v2 : src ? src.v2 : 0, c:'gold', ts: Date.now()
+  });
+  toast(L3('已取回答的重點放進卡片，可以直接改；整篇請用「分享」傳文字',
+                 '已取回答的重点放进卡片，可以直接改；整篇请用「分享」传文字',
+                 'The key line is on the card — edit it freely; use Share to send the full answer'), 4600);
 }
 const isFav = txt => user.fav.some(f => f.text === txt);
 function toggleFav(txt){
@@ -3751,9 +3829,10 @@ function extractReply(d){
 async function sendChat(text){
   text = (text || '').trim(); if (!text || chatBusy) return;
   const inp = $('#chatIn'); if (inp) inp.value = '';
-  chatLog.push({ role:'user', text }); paintChat();
+  const srcNow = chatSrc;                     // 這一輪的來源經文
+  chatLog.push({ role:'user', text, src:srcNow }); paintChat();
   chatBusy = true;
-  chatLog.push({ role:'ai', text: t().thinking }); paintChat();
+  chatLog.push({ role:'ai', text: t().thinking, src:srcNow }); paintChat();
   const b = RD.book ? BOOK[RD.book] : null;
   const sys = (isEN()
     ? 'You are Xiaozhi, a Bible companion from Kingdom 321 Fellowship. Answer in the spirit of the 321 vision — Jesus is my example, Scripture is my standard, the Holy Spirit is my guide; let Jesus reign, let Jesus receive all the glory; build what belongs to God. Explain plainly, use everyday pictures, quote the World English Bible, and keep answers short.'
@@ -3786,7 +3865,8 @@ async function sendChat(text){
       await new Promise(r => setTimeout(r, CHAT_RETRY[a]));
     }
   }
-  chatLog[chatLog.length - 1] = { role:'ai', text: reply || (t().chatErr + (why ? '（' + why + '）' : '')) };
+  chatLog[chatLog.length - 1] = { role:'ai', src:srcNow,
+    text: reply || (t().chatErr + (why ? '（' + why + '）' : '')) };
   chatBusy = false; paintChat();
 }
 
