@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.3.0';
+const VERSION = 'v2.3.1';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -52,6 +52,8 @@ const I18N = {
         hlTitle:'這一句', hlColor:'顏色', hlNote:'寫下默想…', save:'儲存', ask:'問小智', del:'刪除畫線', close:'關閉',
         hlSpan:'範圍', spanUnit:n=>`${n} 句`, spanV:'整節', spanP:'整段',
         spanHint:'按 ＋ 往下多畫一句，畫線就不只一句，可以連成一整段。',
+        spanIsV:'這一節已經整節畫起來了', spanIsP:'這一段已經整段畫起來了',
+        spanDoneV:n=>`已畫整節，共 ${n} 句`, spanDoneP:n=>`已畫整段，共 ${n} 句`,
         team:'團隊', myHl:'我的畫線', myFav:'我的收藏', settings:'設定', font:'字級大小', theme:'主題',
         fonts:['標準','大','特大','超大'], themes:['自動','日','夜','羊皮紙'],
         voice:'朗讀聲音', langLabel:'語言', stats:['已讀章數','畫線','書籤'],
@@ -129,6 +131,8 @@ const I18N = {
         hlTitle:'这一句', hlColor:'颜色', hlNote:'写下默想…', save:'保存', ask:'问小智', del:'删除划线', close:'关闭',
         hlSpan:'范围', spanUnit:n=>`${n} 句`, spanV:'整节', spanP:'整段',
         spanHint:'按 ＋ 往下多划一句，划线就不只一句，可以连成一整段。',
+        spanIsV:'这一节已经整节划起来了', spanIsP:'这一段已经整段划起来了',
+        spanDoneV:n=>`已划整节，共 ${n} 句`, spanDoneP:n=>`已划整段，共 ${n} 句`,
         team:'团队', myHl:'我的划线', myFav:'我的收藏', settings:'设置', font:'字级大小', theme:'主题',
         fonts:['标准','大','特大','超大'], themes:['自动','日','夜','羊皮纸'],
         voice:'朗读声音', langLabel:'语言', stats:['已读章数','划线','书签'],
@@ -208,6 +212,8 @@ const I18N = {
         ask:'Ask Xiaozhi', del:'Remove highlight', close:'Close',
         hlSpan:'Range', spanUnit:n=>`${n} sentence${n === 1 ? '' : 's'}`, spanV:'Whole verse', spanP:'Whole paragraph',
         spanHint:'Tap ＋ to take in the next sentence, so a highlight can cover a whole passage.',
+        spanIsV:'The whole verse is already highlighted', spanIsP:'The whole paragraph is already highlighted',
+        spanDoneV:n=>`Whole verse — ${n} sentence${n===1?'':'s'}`, spanDoneP:n=>`Whole paragraph — ${n} sentence${n===1?'':'s'}`,
         team:'Team', myHl:'My highlights', myFav:'My saved replies', settings:'Settings', font:'Text size', theme:'Theme',
         fonts:['Normal','Large','Larger','Largest'], themes:['Auto','Day','Night','Parchment'],
         voice:'Reading voice', langLabel:'Language', stats:['Chapters read','Highlights','Bookmarks'],
@@ -633,9 +639,13 @@ function chapterHTML(bookId, cno, chap, withHead){
                                .map(m => hlKey(m.b, m.c, m.p, m.s)));
   /* 先把整章的句子攤成一列，畫線才能跨句、跨段落連成一整段 */
   const flat = [];
+  /* curV 要跨區塊延續。詩歌體每一行都是獨立區塊，續行的 vnum 是 0，
+     若每個區塊都把 curV 歸零，續行的 data-v 就變成 0，
+     「整節」會抓不到下一行，出處也會退回只有章。 */
+  let curV = 0;
   chap.forEach((bl, bi) => {
     if (bl[0] === 'b') return;
-    let si = 0, curV = 0;
+    let si = 0;
     for (let j = 1; j < bl.length; j += 2){
       const vno = bl[j], txt = bl[j + 1];
       let first = true;
@@ -902,17 +912,34 @@ function spanApply(cno, el, h, n){
   h.v2 = lastV > h.v ? lastV : 0;
   return h;
 }
+/* 「這一段」的範圍：散文就是同一個 <p>；詩歌體每一行各自是一個 <p>，
+   所以要往下把連著的詩行一起算進來，遇到空行（.stanza）、章題或換成別種
+   區塊就停——那才是詩的一「段」。 */
+function paraBlocks(el){
+  const p0 = el.closest('p'); if (!p0) return [];
+  const out = [p0];
+  const poet = /\bq1\b|\bq2\b/.test(p0.className);
+  if (!poet) return out;
+  let n = p0.nextElementSibling;
+  while (n){
+    if (n.classList && n.classList.contains('hl-note')){ n = n.nextElementSibling; continue; }
+    if (n.tagName !== 'P' || !/\bq1\b|\bq2\b/.test(n.className)) break;
+    out.push(n); n = n.nextElementSibling;
+  }
+  return out;
+}
 /* 整節：這一節剩下的句子都畫進來；整段：這一段剩下的句子都畫進來 */
 function spanTo(cno, el, mode){
   const list = sentList(cno);
   const i = list.indexOf(el);
   if (i < 0) return 1;
-  const v0 = el.dataset.v, p0 = el.dataset.p;
   let n = 1;
-  while (i + n < list.length){
-    const e = list[i + n];
-    if (mode === 'v' ? e.dataset.v !== v0 : e.dataset.p !== p0) break;
-    n++;
+  if (mode === 'v'){
+    const v0 = el.dataset.v || '';
+    while (i + n < list.length && (list[i + n].dataset.v || '') === v0) n++;
+  } else {
+    const ps = new Set(paraBlocks(el).map(p => p.dataset.p));
+    while (i + n < list.length && ps.has(list[i + n].dataset.p)) n++;
   }
   return n;
 }
@@ -973,8 +1000,16 @@ function openHlSheet(el){
     if (num) num.textContent = t().spanUnit(h.sp);
   };
   $$('[data-sp]', mask).forEach(b => b.onclick = () => {
-    const v = b.dataset.sp;
-    setSpan(v === 'v' || v === 'p' ? spanTo(cno, el, v) : (h.sp || 1) + (+v));
+    const v = b.dataset.sp, L2 = t();
+    if (v === 'v' || v === 'p'){
+      const n = spanTo(cno, el, v), was = h.sp || 1;
+      setSpan(n);
+      /* 按了之後一定要有回應，不然會以為「沒有作用」 */
+      toast(n === was ? (v === 'v' ? L2.spanIsV : L2.spanIsP)
+                      : (v === 'v' ? L2.spanDoneV(n) : L2.spanDoneP(n)), 2400);
+      return;
+    }
+    setSpan((h.sp || 1) + (+v));
   });
   const ta = $('.hlsheet-ta', mask);
   const commit = () => {
@@ -3810,20 +3845,53 @@ function ttsPrep(s){
   TTS_FIX.forEach(([re, to]) => { x = x.replace(re, to); });
   return x.trim();
 }
+/* 一次送出去的語音仍然是好幾句接在一起（少一點請求、語氣才連得順），
+   但畫面上的顏色標示要「一句一句」跟著走，不是整段一起亮。
+   所以每一段都記下裡面每一句各佔多少字，播放時依進度比例算出正在讀哪一句。 */
 function buildQueue(){
   let els = $$('#reader .sent');
   const from = els.findIndex(el => el.getBoundingClientRect().bottom > 0);
   if (from > 0) els = els.slice(from);
-  const items = []; let cur = { text:'', els:[] };
+  const items = []; let cur = { text:'', els:[], lens:[], at:-1 };
+  const push = () => { if (cur.text) items.push(cur); cur = { text:'', els:[], lens:[], at:-1 }; };
   els.forEach(el => {
     const txt = el.textContent;
-    if (cur.text.length + txt.length > TTS_CHUNK() && cur.text){ items.push(cur); cur = { text:'', els:[] }; }
+    if (cur.text.length + txt.length > TTS_CHUNK() && cur.text) push();
     cur.text += txt; cur.els.push(el);
+    cur.lens.push(Math.max(1, ttsPrep(txt).length));
   });
-  if (cur.text) items.push(cur);
+  push();
   return items.filter(i => ttsPrep(i.text).length > 0);
 }
 function raClear(){ $$('.tts-reading').forEach(e => e.classList.remove('tts-reading')); }
+/* 只標亮這一段裡的第 k 句 */
+function raSeg(item, k){
+  if (!item || !item.els.length) return;
+  k = Math.max(0, Math.min(k, item.els.length - 1));
+  if (item.at === k && $('.tts-reading')) return;
+  item.at = k;
+  raClear();
+  const e = item.els[k];
+  if (!e || !e.isConnected) return;
+  e.classList.add('tts-reading');
+  if (Date.now() - raManualAt > RA_COOLDOWN){
+    try{ e.scrollIntoView({ behavior:'smooth', block:'center' }); }catch(_){}
+  }
+}
+/* ratio = 這一段唸到幾成（0～1），換算成第幾句 */
+function raProgress(item, ratio){
+  if (!item || !item.lens || item.lens.length < 2) return;
+  if (!(ratio >= 0)) return;
+  const total = item.lens.reduce((a, b) => a + b, 0);
+  let acc = 0, k = 0;
+  const target = Math.min(ratio, 1) * total;
+  for (let j = 0; j < item.lens.length; j++){
+    acc += item.lens[j];
+    if (target < acc){ k = j; break; }
+    k = j;
+  }
+  raSeg(item, k);
+}
 /* 畫面重畫過（換章以外的情形，例如換字級、切模式）之後，
    朗讀佇列裡記的還是舊的 DOM。重新接回新的句子，顏色標示才不會不見。 */
 function ttsRebind(){
@@ -3839,18 +3907,13 @@ function ttsRebind(){
   if (!ok) return;                       // 已經換到別章了，就不要亂標
   const cur = spk.items[spk.idx];
   if (!cur) return;
-  raClear();
-  cur.els.forEach(e => { if (e.isConnected) e.classList.add('tts-reading'); });
-  const first = cur.els.find(e => e.isConnected);
-  if (first) try{ first.scrollIntoView({ block:'center' }); }catch(e){}
+  const k = cur.at >= 0 ? cur.at : 0;
+  cur.at = -1; raSeg(cur, k);
 }
 function raShow(item){
-  raClear();
-  if (!item || !item.els.length) return;
-  item.els.forEach(e => e.classList.add('tts-reading'));
-  if (Date.now() - raManualAt > RA_COOLDOWN){
-    try{ item.els[0].scrollIntoView({ behavior:'smooth', block:'center' }); }catch(e){}
-  }
+  if (!item || !item.els.length){ raClear(); return; }
+  item.at = -1;
+  raSeg(item, 0);
 }
 ['wheel','touchmove'].forEach(ev => window.addEventListener(ev, () => { raManualAt = Date.now(); }, { passive:true }));
 
@@ -3925,10 +3988,16 @@ async function ttsPlayFrom(i){
   ttsBtn('playing');
   const a = ttsAudio(); spk.audio = a;
   const old = a.src;
-  a.onended = null; a.onerror = null;
+  a.onended = null; a.onerror = null; a.ontimeupdate = null;
   a.src = url;
   if (old && old.startsWith('blob:')){ try{ URL.revokeObjectURL(old); }catch(e){} }
-  a.onended = () => { if (spk.on && !spk.abort) ttsPlayFrom(i + 1); };
+  /* 依播放進度把顏色標示往下一句移——聲音還是整段連著唸，畫面是一句一句 */
+  a.ontimeupdate = () => {
+    if (!spk.on || spk.abort || spk.idx !== i) return;
+    const d = a.duration;
+    if (d && isFinite(d) && d > 0) raProgress(spk.items[i], a.currentTime / d);
+  };
+  a.onended = () => { a.ontimeupdate = null; if (spk.on && !spk.abort) ttsPlayFrom(i + 1); };
   a.onerror = () => { if (i === 0) ttsNativeFrom(i); else if (spk.on && !spk.abort) ttsPlayFrom(i + 1); };
   try{
     const p = a.play();
@@ -3942,8 +4011,14 @@ function ttsNativeFrom(i){
   if (!spk.native){ spk.native = true; toast(t().ttsFallback + (ttsLastErr ? '（' + ttsLastErr + '）' : '')); }
   if (!spk.on || spk.abort || i >= spk.items.length){ ttsStop(); return; }
   spk.idx = i; raShow(spk.items[i]); ttsBtn('playing');
-  const u = new SpeechSynthesisUtterance(ttsPrep(spk.items[i].text));
+  const say = ttsPrep(spk.items[i].text);
+  const u = new SpeechSynthesisUtterance(say);
   u.lang = isEN() ? 'en-US' : (isZS() ? 'zh-CN' : 'zh-TW'); u.rate = .95;
+  /* 裝置語音給得到字元位置，就直接照位置換句子 */
+  u.onboundary = e => {
+    if (!spk.on || spk.abort || spk.idx !== i) return;
+    if (say.length) raProgress(spk.items[i], (e.charIndex || 0) / say.length);
+  };
   u.onend = () => { if (spk.on && !spk.abort) ttsNativeFrom(i + 1); };
   u.onerror = () => { if (spk.on && !spk.abort) ttsNativeFrom(i + 1); };
   try{ speechSynthesis.speak(u); }catch(e){ ttsStop(); }
