@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.4.3';
+const VERSION = 'v2.4.5';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -1234,7 +1234,7 @@ const HYM_L = {
        bad:'這首載入失敗，換一首試試', credit:'詩歌：', srcT:'出處：',
        e404a:'找不到 ', e404b:'（根目錄也找過了）　這個音檔還沒上傳到網站上',
        eNet:'連不到音檔（網路或離線）：', eEmpty:'　這個檔是空的，請重新上傳',
-       eHtml:'　抓回來的不是音檔，是網頁（多半是 404 頁面）',
+       eHtml:'　抓回來的不是音檔，是網頁（多半是 404 頁面）', again:'找到音檔了，請再按一次 ▶',
        hint:'詩歌放在自己的網站上，錄影片時混得進去。下載與使用請遵守各詩歌的授權規定。' },
   zs:{ lib:'诗歌库', btn:'🎵 从诗歌库选', title:'诗歌库', ph:'找歌名…',
        loading:'载入中…', close:'关闭', all:'全部', play:'试听', stop:'停止',
@@ -1243,7 +1243,7 @@ const HYM_L = {
        bad:'这首载入失败，换一首试试', credit:'诗歌：', srcT:'出处：',
        e404a:'找不到 ', e404b:'（根目录也找过了）　这个音档还没上传到网站上',
        eNet:'连不到音档（网络或离线）：', eEmpty:'　这个档是空的，请重新上传',
-       eHtml:'　抓回来的不是音档，是网页（多半是 404 页面）',
+       eHtml:'　抓回来的不是音档，是网页（多半是 404 页面）', again:'找到音档了，请再按一次 ▶',
        hint:'诗歌放在自己的网站上，录视频时混得进去。下载与使用请遵守各诗歌的授权规定。' },
   en:{ lib:'Hymn library', btn:'🎵 Pick a hymn', title:'Hymn library', ph:'Find a hymn…',
        loading:'Loading…', close:'Close', all:'All', play:'Preview', stop:'Stop',
@@ -1252,7 +1252,7 @@ const HYM_L = {
        bad:'That hymn could not be loaded — try another', credit:'Hymn: ', srcT:'Source: ',
        e404a:'Not found: ', e404b:' (the site root was checked too) — this file has not been uploaded yet',
        eNet:'Cannot reach the audio file (offline?): ', eEmpty:' — the file is empty, please re-upload',
-       eHtml:' — what came back is a web page, not audio (usually a 404 page)',
+       eHtml:' — what came back is a web page, not audio (usually a 404 page)', again:'Found it — tap ▶ once more',
        hint:'Hymns are hosted on this site, so they mix into recordings properly. Please respect each hymn’s licence.' }
 };
 const hl_ = () => HYM_L[state.lang] || HYM_L.zh;
@@ -1261,7 +1261,42 @@ const songName = s => (isEN() ? (s.ne || s.n) : (isZS() ? (s.ns || s.n) : s.n)) 
 
 let hymnList = null;          // null = 還沒抓過
 let bgmCredit = '';           // 「詩歌：〈歌名〉／出處」，會印在影片下緣
-let hymnPrev = null;          // 試聽用的 audio
+let hymnPrev = null;          // 目前正在試聽的那顆按鈕對應的元素
+/* iPhone 的規矩（跟朗讀那邊踩過的一模一樣）：
+   ① 整個 App 只能有「一個」<audio>，每次換 src 重用它；
+   ② play() 必須在使用者按下去的「那一瞬間」同步呼叫，
+      只要中間 await 過、或進了 .then()，手勢視窗就過期，Safari 直接擋掉，
+      而且不會報錯——按鈕變成暫停、卻一點聲音也沒有，正是這個。 */
+let hymnEl = null;
+function hymnAudio(){
+  if (hymnEl) return hymnEl;
+  hymnEl = document.createElement('audio');
+  hymnEl.preload = 'auto';
+  hymnEl.playsInline = true;
+  ['playsinline','webkit-playsinline'].forEach(a => hymnEl.setAttribute(a, ''));
+  hymnEl.style.cssText = 'position:absolute;width:1px;height:1px;opacity:0;pointer-events:none';
+  document.body.appendChild(hymnEl);
+  return hymnEl;
+}
+/* 面板一打開就先確定音檔放在 music/ 還是根目錄，
+   等到按下去才查就來不及了（查完手勢已經過期）。 */
+async function musicProbe(list){
+  if (musicBase !== null || !list || !list.length) return;
+  /* 只探第一首是不夠的：萬一那一首剛好還沒上傳，整份清單就都判成「找不到」，
+     連已經傳好的歌也跟著放不出來。所以從頭往下一首一首試，有一首通就算數
+     （HEAD 很輕，最多試十二首就停）。 */
+  const max = Math.min(list.length, 12);
+  for (let i = 0; i < max; i++){
+    const name = encodeURIComponent(list[i].f);
+    for (const b of [MUSIC_DIR, '']){
+      try{
+        const r = await fetch(b + name + '?v=' + VERSION, { method:'HEAD' });
+        if (r.ok){ musicBase = b; return; }
+      }catch(e){}
+    }
+  }
+}
+
 
 async function hymnLoadList(){
   if (hymnList) return hymnList;
@@ -1272,7 +1307,8 @@ async function hymnLoadList(){
   return hymnList;
 }
 function hymnStopPrev(){
-  if (hymnPrev){ try{ hymnPrev.pause(); }catch(e){} hymnPrev = null; }
+  if (hymnEl){ try{ hymnEl.pause(); }catch(e){} }
+  hymnPrev = null;
   $$('.hymnrow .hymnplay').forEach(b => b.textContent = '▶');
 }
 /* GitHub 網頁版上傳有個坑：「Upload files」只會把檔案放進你「目前所在」的資料夾，
@@ -1359,30 +1395,31 @@ function openHymns(){
     $$('.hymnplay', box).forEach(b => {
       b.onclick = () => {
         const s = hymnList[+b.dataset.p]; if (!s) return;
-        const playing = hymnPrev && b.textContent === '⏸';
+        const playing = hymnPrev === b;
         hymnStopPrev();
         if (playing) return;
-        try{
-          hymnPrev = new Audio((musicBase !== null ? musicBase : MUSIC_DIR) + encodeURIComponent(s.f));
-          hymnPrev.play().catch(() => {
-            /* 試聽失敗就照選用那條路重試一次，順便把真正的原因說出來 */
-            hymnFetch(s).then(bl => {
-              hymnStopPrev();
-              hymnPrev = new Audio(URL.createObjectURL(bl));
-              hymnPrev.onended = hymnStopPrev;
-              hymnPrev.play().catch(() => toast(L.bad, 4000));
-              b.textContent = '⏸';
-            }).catch(err => toast((err && err.message) || L.bad, 7000));
-          });
-          hymnPrev.onended = hymnStopPrev;
-          b.textContent = '⏸';
-        }catch(e){ toast(L.bad); }
+        const a = hymnAudio();
+        const src = (musicBase !== null ? musicBase : MUSIC_DIR) + encodeURIComponent(s.f);
+        try{ if (a.src && a.src.indexOf('blob:') === 0) URL.revokeObjectURL(a.src); }catch(e){}
+        a.onended = hymnStopPrev;
+        a.onerror = null;
+        a.src = src;
+        hymnPrev = b; b.textContent = '⏸';
+        /* 同步呼叫，中間不能有 await */
+        const q = a.play();
+        if (q && q.catch) q.catch(function (){
+          hymnStopPrev();
+          /* 放不出來，把真正的原因查清楚再講——順便把位置記起來，下次就對了 */
+          hymnFetch(s).then(function (){ toast(L.again, 5000); })
+                      .catch(function (err){ toast((err && err.message) || L.bad, 7000); });
+        });
       };
     });
   };
 
-  hymnLoadList().then(function (list){
+  hymnLoadList().then(async function (list){
     if (!list.length){ box.innerHTML = `<div class="empty">${esc(L.noList)}</div>`; return; }
+    await musicProbe(list);
     const tags = [];
     list.forEach(s => { if (s.tag && tags.indexOf(s.tag) < 0) tags.push(s.tag); });
     if (tags.length > 1){
