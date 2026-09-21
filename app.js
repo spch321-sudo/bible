@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.4.0';
+const VERSION = 'v2.4.1';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -617,7 +617,7 @@ async function viewChapters(v, bookId){
   const cur = user.last && user.last.book === bookId ? user.last.ch : 0;
   v.innerHTML = `
     <div class="chtoolbar"><button class="chtb-btn" id="backBooks">‹</button>
-      <div style="flex:1"><div style="font-family:'Noto Serif TC',serif;font-weight:900;font-size:19px">${esc(bname(b))}</div>
+      <div style="flex:1"><div style="font-family:var(--f-serif);font-weight:900;font-size:19px">${esc(bname(b))}</div>
       <div class="muted">${b.ch} ${esc(L.ch)} · ${b.v} ${esc(L.verses)}</div></div></div>
     <div class="chgrid">${Array.from({length: b.ch}, (_, i) => {
       const n = i + 1, read = user.progress[bookId + '-' + n];
@@ -1564,12 +1564,23 @@ function drawSelfieCircle(cx, vid, W, H, F){
   cx.lineWidth = Math.max(2, W * .003); cx.strokeStyle = 'rgba(212,166,91,.85)'; cx.stroke();
 }
 
+/* 畫布上的字型也要分語言。Noto Serif TC／Sans TC 裡沒有簡體才有的字
+   （创、虚、灵、运、开、诸、将、这、结、发、类、树…），canvas 會一個字一個字
+   換字型頂替，頂到黑體，卡片上就變成一句話裡粗細不一。 */
+const CARD_SERIF = () => isZS()
+  ? '"Noto Serif SC","Source Han Serif SC","Songti SC","STSong","SimSun",Georgia,serif'
+  : (isEN() ? 'Georgia,"Times New Roman",serif'
+            : '"Noto Serif TC","Songti TC","STSong","PMingLiU",Georgia,serif');
+const CARD_SANS = () => isZS()
+  ? '"Noto Sans SC","PingFang SC","Microsoft YaHei","Heiti SC",sans-serif'
+  : (isEN() ? '-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif'
+            : '"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif');
+
 function drawVerseCard(cv, h, W, H){
   const ctx = cv.getContext('2d'); cv.width = W; cv.height = H;
   const T = CARD_TPL[cardTpl()];
   const F = W / 1080, pad = Math.round(W * .085), iw = W - pad * 2;
-  const sans = '"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif';
-  const serif = '"Noto Serif TC","Songti TC","STSong","PMingLiU",serif';
+  const sans = CARD_SANS(), serif = CARD_SERIF();
 
   /* 背景 */
   const g = ctx.createLinearGradient(0, 0, W * .3, H);
@@ -2149,7 +2160,7 @@ function liveCanvas(W, H, withSelfie){
     /* 用了詩歌庫的歌，就在影片最下緣印一行出處——影片會被分享出去，該註明 */
     if (bgmCredit){
       cx.textAlign = 'center';
-      cx.font = `${Math.round(19 * F)}px "Noto Sans TC",sans-serif`;
+      cx.font = `${Math.round(19 * F)}px ${CARD_SANS()}`;
       cx.fillStyle = 'rgba(255,255,255,.62)';
       cx.shadowColor = 'rgba(0,0,0,.55)'; cx.shadowBlur = Math.round(6 * F);
       cx.fillText(bgmCredit, W / 2, H - Math.round(22 * F));
@@ -2623,7 +2634,7 @@ async function viewStudio(v){
       <div class="muted" style="font-size:12px;margin-bottom:12px">${esc(
         recMode === 'a' ? L.recVoiceD : recMode === 's' ? L.recSelfieD : L.recCardD)}</div>` : ''}
       <div id="recSt" class="muted" style="font-size:12.5px">${esc(L.recReady)}</div>
-      <div id="recTm" style="font-family:'Noto Serif TC',serif;font-size:30px;margin:6px 0">00:00</div>
+      <div id="recTm" style="font-family:var(--f-serif);font-size:30px;margin:6px 0">00:00</div>
       <button class="btn primary block" id="recBtn">${esc(!vOK || recMode === 'a' ? L.recStartA
         : recMode === 's' ? '📷 ' + L.recStartS : L.recStartV)}</button>
       <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.recTip)}</div>

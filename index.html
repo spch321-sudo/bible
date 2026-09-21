@@ -10,9 +10,17 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@400;500;600;700&display=swap');
 
 :root{
+  /* 繁體、簡體、英文各用自己那一套字型。
+     以前整個 App 寫死 Noto Serif TC／Noto Sans TC，那兩套字型裡「沒有」
+     簡體才有的字（创、虚、灵、运、开、诸、将、这、结、发、类、树…），
+     瀏覽器只好一個字一個字去找別的字型頂替，頂到的通常是黑體，
+     於是簡體版一句話裡有的字是明體、有的字是黑體，看起來粗細不一。 */
+  --f-serif:"Noto Serif TC","Songti TC","STSong","PMingLiU",Georgia,serif;
+  --f-sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+
   --bg:#FBF8F2; --surface:#FFFFFF; --surface-alt:#F2EEE3;
   --ink:#23211C; --ink-soft:#6B6255; --ink-faint:#9B9384;
   --accent:#0D3988; --accent-ink:#0A2C68; --accent-soft:#E7EDF6;
@@ -59,15 +67,24 @@
   --reading:#EADFC0;
 }
 
+html[lang="zh-Hans"]{
+  --f-serif:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong","SimSun",Georgia,serif;
+  --f-sans:"Noto Sans SC","PingFang SC","Microsoft YaHei","Heiti SC",sans-serif;
+}
+html[lang="en"]{
+  --f-serif:Georgia,"Times New Roman",serif;
+  --f-sans:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
 html,body{height:100%; max-width:100%; overflow-x:hidden;}
 body{
   margin:0; background:var(--bg); color:var(--ink);
-  font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  font-family:var(--f-sans);
   line-height:1.85; font-size:16px; -webkit-font-smoothing:antialiased;
   padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
 }
-h1,h2,h3,h4{ font-family:"Noto Serif TC","Georgia",serif; font-weight:700; color:var(--ink); line-height:1.4; }
+h1,h2,h3,h4{ font-family:var(--f-serif); font-weight:700; color:var(--ink); line-height:1.4; }
 a{color:var(--accent)}
 button{font-family:inherit;}
 [hidden]{display:none!important;}
@@ -87,7 +104,7 @@ header.topbar{
   padding:10px 14px 10px 14px; padding-top:calc(10px + env(safe-area-inset-top));
   display:flex; align-items:center; gap:10px;
 }
-header.topbar .brand{display:flex; align-items:center; gap:8px; font-family:"Noto Serif TC",serif; font-weight:900; color:var(--accent); font-size:16px;}
+header.topbar .brand{display:flex; align-items:center; gap:8px; font-family:var(--f-serif); font-weight:900; color:var(--accent); font-size:16px;}
 header.topbar .brand img{width:26px;height:26px;border-radius:6px;}
 header.topbar .spacer{flex:1;}
 .langswitch{display:flex; border:1px solid var(--border-strong); border-radius:999px; overflow:hidden; font-size:11.5px;}
@@ -125,7 +142,7 @@ nav.tabbar a svg{width:20px;height:20px;}
 .hero-cover img{width:100%; height:100%; object-fit:cover; display:block;}
 .hero-cover .hc-mask{position:absolute; left:0; right:0; bottom:0; padding:58px 16px 16px; text-align:center;
   background:linear-gradient(to bottom, rgba(6,24,60,0), rgba(6,24,60,.62) 38%, rgba(6,24,60,.9) 66%, rgba(6,24,60,.97));}
-.hero-cover .hc-title{color:#F7EFDC; font-family:"Noto Serif TC",serif; font-size:21px; font-weight:900; letter-spacing:.08em; text-shadow:0 2px 12px rgba(0,0,0,.85), 0 0 26px rgba(6,24,60,.9);}
+.hero-cover .hc-title{color:#F7EFDC; font-family:var(--f-serif); font-size:21px; font-weight:900; letter-spacing:.08em; text-shadow:0 2px 12px rgba(0,0,0,.85), 0 0 26px rgba(6,24,60,.9);}
 .hero-cover .hc-sub{color:#E0C88F; font-size:12.5px; margin-top:4px; letter-spacing:.06em; text-shadow:0 1px 8px rgba(0,0,0,.8);}
 .section-title{font-size:12px; letter-spacing:.08em; color:var(--gold); font-weight:700; margin:22px 0 8px;}
 .section-title:first-child{margin-top:0;}
@@ -144,8 +161,8 @@ nav.tabbar a svg{width:20px;height:20px;}
 .progring circle{fill:none; stroke-width:6;}
 .progring .bgc{stroke:var(--border);}
 .progring .fgc{stroke:var(--accent); stroke-linecap:round; transform:rotate(-90deg); transform-origin:50% 50%;}
-.progring text{font-size:13px; font-weight:700; fill:var(--ink); font-family:"Noto Sans TC",sans-serif;}
-.daily{font-family:"Noto Serif TC",serif; font-size:17px; line-height:2; color:var(--ink);}
+.progring text{font-size:13px; font-weight:700; fill:var(--ink); font-family:var(--f-sans);}
+.daily{font-family:var(--f-serif); font-size:17px; line-height:2; color:var(--ink);}
 .dailyref{margin-top:10px; font-size:12.5px; color:var(--gold); font-weight:700;}
 
 /* ---------- 經卷目錄 ---------- */
@@ -175,7 +192,7 @@ nav.tabbar a svg{width:20px;height:20px;}
 .chtb-btn.on{background:var(--gold); border-color:var(--gold); color:#fff;}
 .chtb-spacer{flex:1;}
 .chhead{margin-bottom:20px; text-align:center;}
-.chhead .bk{font-family:"Noto Serif TC",serif; font-size:13px; color:var(--gold); font-weight:700; letter-spacing:.14em;}
+.chhead .bk{font-family:var(--f-serif); font-size:13px; color:var(--gold); font-weight:700; letter-spacing:.14em;}
 .chhead h1{font-size:26px; margin:6px 0 0; font-weight:900; letter-spacing:.06em;}
 .chhead h1.bktitle{font-size:28px; letter-spacing:.12em;}
 .chhead .rule{width:52px; height:2px; background:var(--gold); margin:12px auto 0; opacity:.55;}
@@ -183,12 +200,12 @@ nav.tabbar a svg{width:20px;height:20px;}
 html.nochap .chhead h1.chtitle{display:none;}
 html.nochap .chhead h1.chtitle+.rule{margin-top:4px;}
 /* 整卷連讀裡的章題：淡雅、置中、寬字距，不打斷閱讀 */
-.reader h2.ch{font-family:"Noto Serif TC","Georgia",serif; font-size:.8em; font-weight:400;
+.reader h2.ch{font-family:var(--f-serif); font-size:.8em; font-weight:400;
   color:var(--gold); letter-spacing:.4em; text-align:center; text-indent:0;
   margin:2.2em 0 1.2em; opacity:.85;}
 .reader h2.ch:first-child{margin-top:.2em;}
 html.nochap .reader h2.ch{display:none;}
-.reader{font-family:"Noto Serif TC","Georgia",serif;}
+.reader{font-family:var(--f-serif);}
 .reader p{margin:0 0 16px; font-size:17px; line-height:2.05; text-align:justify;}
 .reader p.prose{text-indent:2em;}
 /* 詩歌體：懸掛縮排，第二層再退一格 */
@@ -198,7 +215,7 @@ html.nochap .reader h2.ch{display:none;}
 .reader p.dline{text-indent:0; text-align:center; color:var(--ink-soft); font-size:.92em; margin-bottom:12px;}
 .reader .stanza{height:.85em;}
 /* 節號：跟章題一起由「章節標示」開關控制 */
-.reader .vn{font-family:"Noto Sans TC",sans-serif; font-size:.6em; font-weight:700;
+.reader .vn{font-family:var(--f-sans); font-size:.6em; font-weight:700;
   color:var(--gold); vertical-align:.5em; margin:0 .18em 0 .1em; letter-spacing:0;}
 html.noverse .reader .vn{display:none;}
 .reader .note{color:var(--ink-faint); font-size:.86em;}
@@ -209,7 +226,6 @@ html.hidenote .reader .note{display:none;}
 
 /* ---------- 英文版排版 ---------- */
 html[lang="en"] body{font-family:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;}
-html[lang="en"] .reader{font-family:"Noto Serif TC",Georgia,"Times New Roman",serif;}
 html[lang="en"] .reader p{text-align:left; hyphens:auto; -webkit-hyphens:auto;}
 html[lang="en"] .reader p.prose{text-indent:1.6em;}
 html[lang="en"] .reader .vn{margin:0 .22em 0 .06em;}
@@ -260,7 +276,7 @@ html.bmmode .reader .sent:active{background:var(--gold-soft);}
 .reader .sent[data-hl][data-color="maroon"]{background:linear-gradient(transparent 58%, var(--hlbg-maroon) 58%);}
 .reader .sent[data-hl][data-color="brown"]{background:linear-gradient(transparent 58%, var(--hlbg-brown) 58%);}
 .reader .sent[data-hl][data-color="charcoal"]{background:linear-gradient(transparent 58%, var(--hlbg-charcoal) 58%);}
-.hl-note{margin:-8px 0 16px; padding:8px 12px; background:var(--surface-alt); border-left:3px solid var(--gold); border-radius:6px; font-size:13px; color:var(--ink); white-space:pre-wrap; cursor:pointer; line-height:1.6; font-family:"Noto Sans TC",sans-serif;}
+.hl-note{margin:-8px 0 16px; padding:8px 12px; background:var(--surface-alt); border-left:3px solid var(--gold); border-radius:6px; font-size:13px; color:var(--ink); white-space:pre-wrap; cursor:pointer; line-height:1.6; font-family:var(--f-sans);}
 .hl-note[data-color="green"]{border-left-color:#6FAE71;} .hl-note[data-color="blue"]{border-left-color:#6C93D1;}
 .hl-note[data-color="pink"]{border-left-color:#E58FA0;} .hl-note[data-color="purple"]{border-left-color:#A48AC9;}
 .hl-note[data-color="maroon"]{border-left-color:#8C4A4E;} .hl-note[data-color="brown"]{border-left-color:#8A6740;}
@@ -271,7 +287,7 @@ html.bmmode .reader .sent:active{background:var(--gold-soft);}
 .hlsheet-mask{position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:400; display:flex; align-items:flex-end;}
 .hlsheet-card{background:var(--surface); width:100%; max-height:86vh; overflow-y:auto; border-radius:18px 18px 0 0; padding:18px 18px calc(18px + env(safe-area-inset-bottom)); box-shadow:0 -8px 30px rgba(0,0,0,.25);}
 .hlsheet-title{font-size:16px; font-weight:800; color:var(--ink); margin-bottom:10px;}
-.hlsheet-quote{display:block; background:var(--gold-soft); color:var(--ink); border-radius:8px; padding:10px 12px; font-size:14px; line-height:1.8; margin-bottom:12px; font-family:"Noto Serif TC",serif;}
+.hlsheet-quote{display:block; background:var(--gold-soft); color:var(--ink); border-radius:8px; padding:10px 12px; font-size:14px; line-height:1.8; margin-bottom:12px; font-family:var(--f-serif);}
 .hlsheet-colorrow{display:flex; align-items:center; gap:10px; margin-bottom:14px;}
 .hlsheet-colorlabel{font-size:12.5px; color:var(--ink-soft); white-space:nowrap;}
 .hlsheet-colors{display:flex; gap:10px; flex-wrap:wrap;}
@@ -315,10 +331,10 @@ html.bmmode .reader .sent:active{background:var(--gold-soft);}
 .cardchips button.on{background:var(--accent); border-color:var(--accent); color:#fff;}
 
 /* ---------- 235 團隊 ---------- */
-.tmtitle{font-family:"Noto Serif TC",serif; font-weight:800; font-size:16px; line-height:1.25; min-width:0;}
-.tmtitle .tmkind{display:block; font-family:"Noto Sans TC",sans-serif; font-size:11px; font-weight:600; color:var(--gold); letter-spacing:.04em;}
+.tmtitle{font-family:var(--f-serif); font-weight:800; font-size:16px; line-height:1.25; min-width:0;}
+.tmtitle .tmkind{display:block; font-family:var(--f-sans); font-size:11px; font-weight:600; color:var(--gold); letter-spacing:.04em;}
 .tmavatar{width:38px; height:38px; flex:0 0 auto; border-radius:50%; background:var(--accent-soft); color:var(--accent-ink);
-  display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px; font-family:"Noto Serif TC",serif;}
+  display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px; font-family:var(--f-serif);}
 .tmavatar.sm{width:30px; height:30px; font-size:13px;}
 .tmgoal{padding:14px 16px;}
 .tmgoalhead{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
@@ -329,7 +345,7 @@ html.bmmode .reader .sent:active{background:var(--gold-soft);}
 .tmfaces{display:flex; gap:10px; flex-wrap:wrap; margin:14px 0 8px;}
 .tmface{width:46px; text-align:center; cursor:pointer;}
 .tmface span{display:flex; width:40px; height:40px; margin:0 auto 3px; border-radius:50%; align-items:center; justify-content:center;
-  background:var(--surface-alt); color:var(--ink-faint); font-weight:800; font-family:"Noto Serif TC",serif;
+  background:var(--surface-alt); color:var(--ink-faint); font-weight:800; font-family:var(--f-serif);
   border:2px solid var(--border); font-size:15px;}
 .tmface.on span{background:var(--gold-soft); color:var(--gold); border-color:var(--gold);}
 .tmface b{display:block; font-size:10.5px; font-weight:600; color:var(--ink-faint); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
@@ -348,9 +364,9 @@ html.bmmode .reader .sent:active{background:var(--gold-soft);}
 .tmposthead .meta{flex:1; min-width:0;}
 .tmposthead .t{font-weight:700; font-size:14px;}
 .tmposthead .s{font-size:11.5px; color:var(--ink-faint);}
-.tmverse{font-family:"Noto Serif TC",serif; font-size:14px; line-height:1.9; background:var(--gold-soft);
+.tmverse{font-family:var(--f-serif); font-size:14px; line-height:1.9; background:var(--gold-soft);
   border-radius:8px; padding:9px 12px; margin-bottom:10px; color:var(--ink);}
-.tmref{display:block; margin-top:4px; font-family:"Noto Sans TC",sans-serif; font-size:11.5px; color:var(--gold); font-weight:700;}
+.tmref{display:block; margin-top:4px; font-family:var(--f-sans); font-size:11.5px; color:var(--gold); font-weight:700;}
 .tmref.solo{margin-bottom:8px;}
 .tmtext{font-size:14.5px; line-height:1.9; white-space:pre-wrap;}
 .tmacts{display:flex; gap:4px; margin-top:10px; padding-top:8px; border-top:1px solid var(--border);}
@@ -366,7 +382,7 @@ html.bmmode .reader .sent:active{background:var(--gold-soft);}
 .tmmem .meta{flex:1; min-width:0;}
 .tmmem .t{font-weight:700; font-size:14px;}
 .tmmem .s{font-size:12px; color:var(--ink-faint);}
-.tmrank{width:22px; text-align:center; font-family:"Noto Serif TC",serif; font-weight:900; color:var(--gold);}
+.tmrank{width:22px; text-align:center; font-family:var(--f-serif); font-weight:900; color:var(--gold);}
 .tmbadges{margin-top:3px; font-size:14px; letter-spacing:2px;}
 .tmbadgelist{display:flex; gap:10px; flex-wrap:wrap;}
 .tmbadge{width:78px; text-align:center;}
@@ -420,7 +436,7 @@ select.cardinput{appearance:none; -webkit-appearance:none;
 .searchbar input{flex:1; border:1px solid var(--border-strong); border-radius:10px; padding:11px 13px; font-size:16px; background:var(--surface); color:var(--ink); font-family:inherit;}
 .sres{border-bottom:1px solid var(--border); padding:12px 0; cursor:pointer;}
 .sres .sr{font-size:12px; color:var(--gold); font-weight:700; margin-bottom:3px;}
-.sres .sx{font-size:14px; line-height:1.8; font-family:"Noto Serif TC",serif;}
+.sres .sx{font-size:14px; line-height:1.8; font-family:var(--f-serif);}
 .sres em{font-style:normal; background:var(--gold-soft); color:var(--gold); border-radius:3px; padding:0 2px; font-weight:700;}
 .sprog{height:4px; background:var(--surface-alt); border-radius:2px; overflow:hidden; margin-bottom:12px;}
 .sprog i{display:block; height:100%; background:var(--accent); width:0; transition:width .2s;}
@@ -441,7 +457,7 @@ select.cardinput{appearance:none; -webkit-appearance:none;
 .msg.ai .msg-act{border:none; background:transparent; color:var(--ink-faint); font-size:12px; padding:4px 8px; border-radius:999px; cursor:pointer; font-family:inherit;}
 .msg.ai .msg-act.on{color:var(--gold); font-weight:700;}
 .xz-head{display:flex; align-items:center; gap:8px; margin-bottom:8px;
-  font-family:"Noto Serif TC",serif; font-weight:900; font-size:15px; color:var(--accent);}
+  font-family:var(--f-serif); font-weight:900; font-size:15px; color:var(--accent);}
 .xz-head img{width:24px; height:24px; border-radius:6px;}
 .chatctx{font-size:12px; color:var(--ink-faint); background:var(--surface-alt); border-radius:999px; padding:5px 12px; margin-bottom:8px; align-self:flex-start;}
 .chatinput{display:flex; gap:8px; padding:10px 0 calc(10px + env(safe-area-inset-bottom)); border-top:1px solid var(--border); background:var(--bg);}
@@ -460,12 +476,12 @@ select.cardinput{appearance:none; -webkit-appearance:none;
 .segbtns button.on{background:var(--accent); border-color:var(--accent); color:#fff;}
 .hitem{border-bottom:1px solid var(--border); padding:12px 0;}
 .hitem:last-child{border-bottom:none;}
-.hitem .q{font-size:14.5px; line-height:1.85; font-family:"Noto Serif TC",serif; margin-bottom:6px;}
+.hitem .q{font-size:14.5px; line-height:1.85; font-family:var(--f-serif); margin-bottom:6px;}
 .hitem .n{font-size:13px; color:var(--ink); background:var(--surface-alt); border-left:3px solid var(--gold); border-radius:6px; padding:7px 10px; margin-bottom:6px; white-space:pre-wrap;}
 .hitem .m{font-size:11.5px; color:var(--ink-faint); display:flex; align-items:center; justify-content:space-between; gap:8px;}
 .hitem .m button{border:none; background:transparent; color:var(--ink-faint); font-size:12.5px; padding:2px 6px; cursor:pointer;}
 .statgrid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; text-align:center;}
-.statgrid .sv{font-family:"Noto Serif TC",serif; font-size:22px; font-weight:900; color:var(--accent);}
+.statgrid .sv{font-family:var(--f-serif); font-size:22px; font-weight:900; color:var(--accent);}
 .statgrid .sk{font-size:11.5px; color:var(--ink-faint);}
 </style>
 </head>
