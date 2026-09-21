@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.4.1';
+const VERSION = 'v2.4.2';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -1232,18 +1232,27 @@ const HYM_L = {
        none:'找不到這首，換個字試試', picked:'已選好這首詩歌', getting:'載入詩歌中…',
        noList:'還沒有建立詩歌庫。把 mp3 放進網站的 music/ 資料夾，並在 music.json 加上清單，這裡就會出現。',
        bad:'這首載入失敗，換一首試試', credit:'詩歌：', srcT:'出處：',
+       e404a:'找不到 ', e404b:'　這個音檔還沒上傳，或上傳時忘了在檔名前面打 music/',
+       eNet:'連不到音檔（網路或離線）：', eEmpty:'　這個檔是空的，請重新上傳',
+       eHtml:'　抓回來的不是音檔，是網頁（多半是 404 頁面）',
        hint:'詩歌放在自己的網站上，錄影片時混得進去。下載與使用請遵守各詩歌的授權規定。' },
   zs:{ lib:'诗歌库', btn:'🎵 从诗歌库选', title:'诗歌库', ph:'找歌名…',
        loading:'载入中…', close:'关闭', all:'全部', play:'试听', stop:'停止',
        none:'找不到这首，换个字试试', picked:'已选好这首诗歌', getting:'载入诗歌中…',
        noList:'还没有建立诗歌库。把 mp3 放进网站的 music/ 文件夹，并在 music.json 加上清单，这里就会出现。',
        bad:'这首载入失败，换一首试试', credit:'诗歌：', srcT:'出处：',
+       e404a:'找不到 ', e404b:'　这个音档还没上传，或上传时忘了在档名前面打 music/',
+       eNet:'连不到音档（网络或离线）：', eEmpty:'　这个档是空的，请重新上传',
+       eHtml:'　抓回来的不是音档，是网页（多半是 404 页面）',
        hint:'诗歌放在自己的网站上，录视频时混得进去。下载与使用请遵守各诗歌的授权规定。' },
   en:{ lib:'Hymn library', btn:'🎵 Pick a hymn', title:'Hymn library', ph:'Find a hymn…',
        loading:'Loading…', close:'Close', all:'All', play:'Preview', stop:'Stop',
        none:'Not found — try another word', picked:'Hymn selected', getting:'Loading the hymn…',
        noList:'No hymn library yet. Put mp3 files in the site’s music/ folder and list them in music.json.',
        bad:'That hymn could not be loaded — try another', credit:'Hymn: ', srcT:'Source: ',
+       e404a:'Not found: ', e404b:' — this file has not been uploaded, or the music/ prefix was missed',
+       eNet:'Cannot reach the audio file (offline?): ', eEmpty:' — the file is empty, please re-upload',
+       eHtml:' — what came back is a web page, not audio (usually a 404 page)',
        hint:'Hymns are hosted on this site, so they mix into recordings properly. Please respect each hymn’s licence.' }
 };
 const hl_ = () => HYM_L[state.lang] || HYM_L.zh;
@@ -1268,10 +1277,17 @@ function hymnStopPrev(){
 }
 /* 選一首：抓成 blob（同源，錄影混得進去），並記下出處 */
 async function hymnPick(s){
-  const r = await fetch(MUSIC_DIR + encodeURIComponent(s.f));
-  if (!r.ok) throw new Error('http ' + r.status);
+  const path = MUSIC_DIR + encodeURIComponent(s.f);
+  let r;
+  /* 訊息一定要講得出「哪個檔、怎麼了」。只說「載入失敗」等於沒說，
+     使用者只會看到歌名在清單上、按下去卻加不進來，根本不知道要去查什麼。 */
+  try{ r = await fetch(path + '?v=' + VERSION); }
+  catch(e){ throw new Error(hl_().eNet + path); }
+  if (r.status === 404) throw new Error(hl_().e404a + path + hl_().e404b);
+  if (!r.ok) throw new Error(path + '：HTTP ' + r.status);
   const blob = await r.blob();
-  if (!blob.size) throw new Error('empty');
+  if (!blob.size) throw new Error(path + hl_().eEmpty);
+  if (/(^|,)text\/html/.test(blob.type || '')) throw new Error(path + hl_().eHtml);
   bgmBlob = blob;
   bgmName = songName(s);
   bgmCredit = hl_().credit + songName(s) + (s.by ? '／' + s.by : '');
@@ -1324,7 +1340,7 @@ function openHymns(){
         const s = hymnList[+row.dataset.i]; if (!s) return;
         hymnStopPrev(); toast(L.getting, 8000);
         try{ await hymnPick(s); shut(); toast(L.picked); await studioRefresh(); }
-        catch(err){ toast(L.bad, 4000); }
+        catch(err){ toast((err && err.message) ? err.message : L.bad, 7000); }
       };
     });
     $$('.hymnplay', box).forEach(b => {
