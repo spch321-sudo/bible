@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.3.1';
+const VERSION = 'v2.4.0';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -824,15 +824,45 @@ function markRead(bookId, ch){
   if (!user.progress[k]){ user.progress[k] = Date.now(); saveUser(); teamPingSoon(); }
 }
 /* ================================================================ 畫線 / 默想 */
+/* 一「句」的定義：到句號（。！？）為止，不是到逗號。
+   詩歌體每一行都是獨立區塊，一個完整句常常橫跨好幾行——
+   例如詩篇 1:5「因此，當審判的時候，惡人必站立不住；／罪人在義人的會中也是如此。」
+   是一句話兩行。所以畫線與朗讀標示都要以「完整句」為單位，不是以「行」為單位。 */
+const SENT_TAIL = /[」』）〕”’"'\)\]\s]+$/;
+function isSentEnd(el){
+  const x = (el.textContent || '').replace(SENT_TAIL, '');
+  return isEN() ? /[.!?]$/.test(x) : /[。！？]$/.test(x);
+}
+const SENT_MAX = 12;                 // 保險：再長也不要無限併下去
+/* 這一句從 el 開始往下要含幾個 .sent 才算完整 */
+function sentSpan(list, i){
+  let n = 1;
+  while (!isSentEnd(list[i + n - 1]) && i + n < list.length && n < SENT_MAX) n++;
+  return n;
+}
+/* 把一串句子併成「一個完整句」為一組 */
+function sentGroups(els){
+  const gs = []; let cur = [];
+  els.forEach(e => {
+    cur.push(e);
+    if (isSentEnd(e) || cur.length >= SENT_MAX){ gs.push(cur); cur = []; }
+  });
+  if (cur.length) gs.push(cur);
+  return gs;
+}
 function onSentTap(el){
   const cno = +el.dataset.c || RD.ch;
   if (bmMode){ toggleBm(el, cno); return; }
   const k = hlKey(RD.book, cno, el.dataset.p, el.dataset.s);
   if (!user.hl[k] && el.dataset.op == null){
-    user.hl[k] = { c:'gold', n:'', sp:1, t:el.textContent, b:RD.book, ch:cno,
-                   v:+el.dataset.v || 0, ts:Date.now() };
-    el.setAttribute('data-hl', '1'); el.setAttribute('data-color', 'gold');
+    const h = { c:'gold', n:'', sp:1, t:el.textContent, b:RD.book, ch:cno,
+                v:+el.dataset.v || 0, ts:Date.now() };
+    user.hl[k] = h;
+    /* 一畫就畫一個完整句（到句號），不是只畫到逗號那一行 */
+    const list = sentList(cno), i = list.indexOf(el);
+    if (i >= 0) spanApply(cno, el, h, sentSpan(list, i));
     saveUser();
+    paintHl(cno);
   } else {
     openHlSheet(el);
   }
@@ -3852,30 +3882,33 @@ function buildQueue(){
   let els = $$('#reader .sent');
   const from = els.findIndex(el => el.getBoundingClientRect().bottom > 0);
   if (from > 0) els = els.slice(from);
-  const items = []; let cur = { text:'', els:[], lens:[], at:-1 };
-  const push = () => { if (cur.text) items.push(cur); cur = { text:'', els:[], lens:[], at:-1 }; };
-  els.forEach(el => {
-    const txt = el.textContent;
+  const items = []; let cur = { text:'', els:[], segs:[], lens:[], at:-1 };
+  const push = () => { if (cur.text) items.push(cur); cur = { text:'', els:[], segs:[], lens:[], at:-1 }; };
+  /* 先併成「完整句」，再切段送語音——一句話絕不會被切成兩段 */
+  sentGroups(els).forEach(g => {
+    const txt = g.map(e => e.textContent).join('');
     if (cur.text.length + txt.length > TTS_CHUNK() && cur.text) push();
-    cur.text += txt; cur.els.push(el);
+    cur.text += txt;
+    cur.els = cur.els.concat(g);
+    cur.segs.push(g);
     cur.lens.push(Math.max(1, ttsPrep(txt).length));
   });
   push();
   return items.filter(i => ttsPrep(i.text).length > 0);
 }
 function raClear(){ $$('.tts-reading').forEach(e => e.classList.remove('tts-reading')); }
-/* 只標亮這一段裡的第 k 句 */
+/* 只標亮這一段裡的第 k 個「完整句」（詩歌體可能是連著的兩三行） */
 function raSeg(item, k){
-  if (!item || !item.els.length) return;
-  k = Math.max(0, Math.min(k, item.els.length - 1));
+  if (!item || !item.segs || !item.segs.length) return;
+  k = Math.max(0, Math.min(k, item.segs.length - 1));
   if (item.at === k && $('.tts-reading')) return;
   item.at = k;
   raClear();
-  const e = item.els[k];
-  if (!e || !e.isConnected) return;
-  e.classList.add('tts-reading');
+  const g = item.segs[k].filter(e => e && e.isConnected);
+  if (!g.length) return;
+  g.forEach(e => e.classList.add('tts-reading'));
   if (Date.now() - raManualAt > RA_COOLDOWN){
-    try{ e.scrollIntoView({ behavior:'smooth', block:'center' }); }catch(_){}
+    try{ g[0].scrollIntoView({ behavior:'smooth', block:'center' }); }catch(_){}
   }
 }
 /* ratio = 這一段唸到幾成（0～1），換算成第幾句 */
@@ -3897,12 +3930,14 @@ function raProgress(item, ratio){
 function ttsRebind(){
   if (!spk.on || !spk.items.length) return;
   let ok = 0;
+  const again = old => {
+    const e = $(`#reader .sent[data-c="${old.dataset.c}"][data-p="${old.dataset.p}"][data-s="${old.dataset.s}"]`);
+    if (e) ok++;
+    return e || old;
+  };
   spk.items.forEach(it => {
-    it.els = it.els.map(old => {
-      const e = $(`#reader .sent[data-c="${old.dataset.c}"][data-p="${old.dataset.p}"][data-s="${old.dataset.s}"]`);
-      if (e) ok++;
-      return e || old;
-    });
+    it.segs = (it.segs || []).map(g => g.map(again));
+    it.els = it.segs.reduce((a, g) => a.concat(g), []);
   });
   if (!ok) return;                       // 已經換到別章了，就不要亂標
   const cur = spk.items[spk.idx];
