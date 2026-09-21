@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.5.0';
+const VERSION = 'v2.5.2';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -3681,27 +3681,77 @@ const QBANK = {
        'Give me one everyday picture that opens up the heart of this passage.']
 };
 /* 把 markdown 記號拿掉，剩下乾淨的文字（分享與美圖都用這個） */
+/* ---- markdown 表格 ----
+   小智有時會用表格回答，那在畫面上很好讀；可是同一份內容要分享成文字、
+   要唸出來，就不能照抄那些直線與虛線。所以掃出表格之後，三個地方各用各的寫法：
+   畫面→真的表格、分享→「甲 → 乙」一行一項、朗讀→一句一句說成人話。 */
+const tbRow   = x => /^\s*\|.*\|\s*$/.test(x);
+const tbSep   = x => /^\s*\|[\s:|\-]+\|\s*$/.test(x) && x.indexOf('-') >= 0;
+const tbCells = x => x.trim().replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+function mdTableMap(src, fmt){
+  const L = String(src || '').split('\n'), out = [];
+  for (let i = 0; i < L.length; ){
+    if (tbRow(L[i]) && i + 1 < L.length && tbSep(L[i + 1])){
+      const head = tbCells(L[i]); i += 2;
+      const rows = [];
+      while (i < L.length && tbRow(L[i])){ rows.push(tbCells(L[i])); i++; }
+      if (rows.length){ out.push(fmt(head, rows)); continue; }
+      out.push(head.join(' '));
+      continue;
+    }
+    out.push(L[i]); i++;
+  }
+  return out.join('\n');
+}
+/* 朗讀用：把表格說成一句一句的話，不要唸出直線和虛線 */
+function mdSpeak(md){
+  const zh = !isEN();
+  const said = mdTableMap(md, function (head, rows){
+    const lead = L3('下面用表格整理：', '下面用表格整理：', 'Here is a summary:');
+    const body = rows.map(r =>
+      r.map((c, j) => {
+        const h = (head[j] || '').trim();
+        if (!c) return '';
+        return h ? (zh ? h + '是' + c : h + ' is ' + c) : c;
+      }).filter(Boolean).join(zh ? '，' : ', ') + (zh ? '。' : '.')
+    ).join('\n');
+    return lead + '\n' + body;
+  });
+  return mdStrip(said);
+}
 function mdStrip(x){
-  return String(x || '')
+  const arrow = ' → ';
+  return mdTableMap(String(x || ''), function (head, rows){
+    const ls = [];
+    if (head.filter(Boolean).length) ls.push(head.filter(Boolean).join(arrow));
+    rows.forEach(r => ls.push('・' + r.filter(Boolean).join(arrow)));
+    return ls.join('\n');
+  })
     .replace(/^#{1,6} /gm, '')
-    .replace(/\*\*([^*]+)\*\*/g, '$1')
-    .replace(/(^|[^*])\*([^*\n]+)\*/g, '$1$2')
+    .replace(/\*\*([\s\S]+?)\*\*/g, '$1')
+    .replace(/\*([\s\S]+?)\*/g, '$1')
+    .replace(/\*/g, '')
     .replace(/^&gt; ?/gm, '').replace(/^> ?/gm, '')
     .replace(/^---+$/gm, '')
     .replace(/^[-*] /gm, '・')
+    .replace(/`+/g, '')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
 }
 function mdToHtml(s){
   let h = esc(s);
+  h = mdTableMap(h, (head, rows) =>
+    '\n\n<table class="mdtb"><thead><tr>' + head.map(c => `<th>${c}</th>`).join('') + '</tr></thead><tbody>'
+    + rows.map(r => '<tr>' + r.map(c => `<td>${c}</td>`).join('') + '</tr>').join('')
+    + '</tbody></table>\n\n');
   h = h.replace(/^###### (.*)$/gm, '<h6>$1</h6>').replace(/^##### (.*)$/gm, '<h5>$1</h5>')
        .replace(/^#{1,4} (.*)$/gm, '<h4>$1</h4>');
-  h = h.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<i>$2</i>');
+  h = h.replace(/\*\*([\s\S]+?)\*\*/g, '<b>$1</b>').replace(/(^|[^*])\*([\s\S]+?)\*/g, '$1<i>$2</i>');
   h = h.replace(/^&gt; ?(.*)$/gm, '<blockquote>$1</blockquote>');
   h = h.replace(/^---+$/gm, '<hr>');
   h = h.replace(/^[-*] (.*)$/gm, '<li>$1</li>');
   h = h.replace(/(<li>[\s\S]*?<\/li>)(?!\s*<li>)/g, m => '<ul>' + m + '</ul>');
-  return h.split(/\n{2,}/).map(p => /^<(h\d|ul|blockquote|hr)/.test(p.trim()) ? p : '<p>' + p.replace(/\n/g, '<br>') + '</p>').join('');
+  return h.split(/\n{2,}/).map(p => /^<(h\d|ul|blockquote|hr|table)/.test(p.trim()) ? p : '<p>' + p.replace(/\n/g, '<br>') + '</p>').join('');
 }
 async function viewCompanion(v){
   const L = t();
@@ -3759,9 +3809,10 @@ function chatPack(m){
 async function chatShare(m){
   const L = t(), p = chatPack(m);
   const head = p.verse ? (isEN() ? `“${p.verse}”` : `「${p.verse}」`) + (p.ref ? '\n—— ' + p.ref : '') + '\n\n' : '';
-  const foot = '\n\n—— ' + L.companionFull + '｜' + L.app
-             + '\n' + (state.cardTop || L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Fellowship'))
-             + '\n' + location.origin + location.pathname;
+  /* 落款只留團契與網址——這是弟兄姊妹之間的分享，不必掛上是誰寫的 */
+  const home = location.origin + location.pathname.replace(/index\.html$/, '');
+  const foot = '\n\n—— ' + (state.cardTop || L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Fellowship'))
+             + '\n' + home;
   const text = head + p.ans + foot;
   if (navigator.share){
     try{ await navigator.share({ title: L.app, text }); return; }
@@ -4242,7 +4293,7 @@ function ttsStop(){
 }
 async function ttsSpeakText(text){
   ttsUnlock();
-  const clean = ttsPrep(text.replace(/[#*>`_\-]/g, ''));
+  const clean = ttsPrep(mdSpeak(text));   // 表格先說成人話，再送去合成
   if (!clean) return;
   const voice = VOICES[state.lang][state.voice[state.lang]].v;
   try{
