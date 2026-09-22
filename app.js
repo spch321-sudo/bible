@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.5.5';
+const VERSION = 'v2.6.0';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -2556,6 +2556,107 @@ async function playRec(id){
 /* ================================================================ 美圖工作室 */
 let studioItem = null, studioNote = null, blessBusy = false;
 
+/* 問小智一次就好（寫祝福、改內文共用），連不上會回 {out:'', why:'原因'} */
+async function aiOnce(sys, ask){
+  let out = '', why = '';
+  for (let a = 0; a <= CHAT_RETRY.length; a++){
+    try{
+      const r = await fetch(API.chat, { method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ system: sys, messages:[{ role:'user', content: ask }] }) });
+      if (!r.ok) throw new Error('http ' + r.status);
+      out = extractReply(await r.json().catch(() => null));
+      if (!out) why = L3('回覆是空的', '回复是空的', 'empty reply');
+      break;
+    }catch(e){
+      why = (e && e.message) ? String(e.message) : 'network';
+      if (a === CHAT_RETRY.length) break;
+      await new Promise(rs => setTimeout(rs, CHAT_RETRY[a]));
+    }
+  }
+  return { out: out ? out.replace(/[*#>`]/g, '').replace(/^「|」$/g, '').trim() : '', why };
+}
+/* 寫給誰——祝福與改內文都要帶上 */
+function whoLine(){
+  const who = (state.cardTo || '').trim();
+  return who ? L3(`\n這段話是寫給「${who}」的，請直接對他說話，但不要再寫一次稱呼。`,
+                  `\n这段话是写给“${who}”的，请直接对他说话，但不要再写一次称呼。`,
+                  `\nThis is written for "${who}" — speak directly to them, but do not repeat the greeting.`) : '';
+}
+/* ---- 改一改：拿目前的內文，照使用者說的方式請小智重寫 ---- */
+const TWEAK_L = {
+  zh:{ btn:'✨ 改一改', title:'要怎麼改？', ph:'或者自己說，例如：加一句為他的工作禱告',
+       go:'改好給我', close:'關閉', busy:'小智修改中…', done:'改好了',
+       need:'卡片內文還是空的——先自己寫一段，或請小智寫一段再來改。',
+       picks:['短一點','長一點','更溫暖','口語一點','更有力','換個說法'] },
+  zs:{ btn:'✨ 改一改', title:'要怎么改？', ph:'或者自己说，例如：加一句为他的工作祷告',
+       go:'改好给我', close:'关闭', busy:'小智修改中…', done:'改好了',
+       need:'卡片内文还是空的——先自己写一段，或请小智写一段再来改。',
+       picks:['短一点','长一点','更温暖','口语一点','更有力','换个说法'] },
+  en:{ btn:'✨ Revise', title:'How should it change?', ph:'Or say it yourself, e.g. add a line praying for their work',
+       go:'Rewrite it', close:'Close', busy:'Xiaozhi is rewriting…', done:'Rewritten',
+       need:'The card text is still empty — write something first, or ask Xiaozhi to write it.',
+       picks:['Shorter','Longer','Warmer','More everyday','Stronger','Say it another way'] }
+};
+const tw_ = () => TWEAK_L[state.lang] || TWEAK_L.zh;
+function curNote(){
+  return String(studioNote != null ? studioNote : (studioItem && studioItem.n) || '').trim();
+}
+async function noteRewrite(instr, mask){
+  if (blessBusy || !studioItem) return;
+  const cur = curNote();
+  if (!cur){ toast(tw_().need, 4200); return; }
+  blessBusy = true;
+  const go = mask && $('#twGo', mask);
+  if (go){ go.disabled = true; go.textContent = tw_().busy; }
+  const sys = isEN()
+    ? 'You are Xiaozhi from Kingdom 321 Fellowship. Rewrite the short blessing the user gives you, following their instruction. Return ONLY the rewritten text — no explanation, no heading, no bullet points, no quotation marks, and do not quote the verse again. Keep it warm and spoken, never preachy.'
+    : isZS()
+    ? '你是「小智」，国度321空中团契的属灵同伴。请照使用者的要求，修改他给你的这段祝福。只回传改好的内文本身——不要解释、不要标题、不要条列、不要引号、不要再抄一次经文。保持温暖、口语、不说教。'
+    : '你是「小智」，國度321空中團契的屬靈同伴。請照使用者的要求，修改他給你的這段祝福。只回傳改好的內文本身——不要解釋、不要標題、不要條列、不要引號、不要再抄一次經文。保持溫暖、口語、不說教。';
+  const ask = L3('經文：', '经文：', 'Verse: ') + studioItem.t + '（' + cardRef(studioItem) + '）'
+            + whoLine()
+            + L3('\n\n目前的內文：\n', '\n\n目前的内文：\n', '\n\nCurrent text:\n') + cur
+            + L3('\n\n要怎麼改：', '\n\n要怎么改：', '\n\nHow to change it: ') + instr;
+  const r = await aiOnce(sys, ask);
+  blessBusy = false;
+  if (r.out){
+    studioNote = r.out;
+    if (mask) mask.remove();
+    await studioRefresh();
+    toast(tw_().done);
+  } else {
+    if (go){ go.disabled = false; go.textContent = tw_().go; }
+    toast(t().chatErr + (r.why ? '（' + r.why + '）' : ''), 4000);
+  }
+}
+function openTweak(){
+  if (!studioItem) return;
+  if (!curNote()){ toast(tw_().need, 4200); return; }
+  const L = tw_();
+  const mask = document.createElement('div'); mask.className = 'hlsheet-mask';
+  mask.innerHTML = `<div class="hlsheet-card">
+    <div class="hlsheet-title">${esc(L.title)}</div>
+    <div class="cardchips" id="twPick">${L.picks.map(p => `<button data-q="${esc(p)}">${esc(p)}</button>`).join('')}</div>
+    <input class="cardinput" id="twOwn" placeholder="${esc(L.ph)}" style="margin-top:10px">
+    <div class="hlsheet-acts" style="margin-top:12px">
+      <button class="btn primary" id="twGo">${esc(L.go)}</button>
+      <button class="btn" id="twClose">${esc(L.close)}</button>
+    </div></div>`;
+  document.body.appendChild(mask);
+  mask.onclick = e => { if (e.target === mask && !blessBusy) mask.remove(); };
+  $('#twClose', mask).onclick = () => { if (!blessBusy) mask.remove(); };
+  const own = $('#twOwn', mask);
+  $$('#twPick button', mask).forEach(b => b.onclick = () => {
+    $$('#twPick button', mask).forEach(x => x.classList.toggle('on', x === b));
+    own.value = '';
+  });
+  $('#twGo', mask).onclick = () => {
+    const picked = $('#twPick button.on', mask);
+    const instr = (own.value || '').trim() || (picked ? picked.dataset.q : L.picks[0]);
+    noteRewrite(instr, mask);
+  };
+}
+
 /* 請小智照這節經文寫一段關懷祝福，直接放進卡片內文 */
 async function blessWrite(){
   if (blessBusy || !studioItem) return;
@@ -2567,29 +2668,12 @@ async function blessWrite(){
     : state.lang === 'zs'
     ? '你是「小智」，国度321空中团契的属灵同伴。请照使用者给的这节经文，写一段温暖的关怀祝福，送给弟兄姊妹。要求：先用一两句点出这节经文里神的心意，再写一句贴近生活的祝福，最后用一句祝福收尾。总共三到四句、120 字以内，口语、温暖、不说教，不要标题、不要条列、不要引号、不要再抄一次经文。'
     : '你是「小智」，國度321空中團契的屬靈同伴。請照使用者給的這節經文，寫一段溫暖的關懷祝福，送給弟兄姊妹。要求：先用一兩句點出這節經文裡神的心意，再寫一句貼近生活的祝福，最後用一句祝福收尾。總共三到四句、120 字以內，口語、溫暖、不說教，不要標題、不要條列、不要引號、不要再抄一次經文。';
-  const who = (state.cardTo || '').trim();
-  const ask = L3('經文：', '经文：', 'Verse: ') + studioItem.t + ' (' + cardRef(studioItem) + ')'
-            + (who ? L3(`\n這段話是寫給「${who}」的，請直接對他說話，但不要再寫一次稱呼。`,
-                        `\n这段话是写给“${who}”的，请直接对他说话，但不要再写一次称呼。`,
-                        `\nThis is written for "${who}" — speak directly to them, but do not repeat the greeting.`) : '');
-  let out = '', why = '';
-  for (let a = 0; a <= CHAT_RETRY.length; a++){
-    try{
-      const r = await fetch(API.chat, { method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ system: sys, messages:[{ role:'user', content: ask }] }) });
-      if (!r.ok) throw new Error('http ' + r.status);
-      out = extractReply(await r.json().catch(() => null));
-      if (!out) why = '回覆是空的';
-      break;
-    }catch(e){
-      why = (e && e.message) ? String(e.message) : 'network';
-      if (a === CHAT_RETRY.length) break;
-      await new Promise(rs => setTimeout(rs, CHAT_RETRY[a]));
-    }
-  }
+  const ask = L3('經文：', '经文：', 'Verse: ') + studioItem.t + ' (' + cardRef(studioItem) + ')' + whoLine();
+  const rr_ = await aiOnce(sys, ask);
+  const out = rr_.out, why = rr_.why;
   blessBusy = false;
   if (out){
-    studioNote = out.replace(/[*#>`]/g, '').replace(/^「|」$/g, '').trim();
+    studioNote = out;
     await studioRefresh();
     toast(t().blessDone);
   } else {
@@ -2633,6 +2717,7 @@ async function viewStudio(v){
       <textarea class="hlsheet-ta" id="cardNote" placeholder="${esc(L.hlNote)}">${esc(studioNote != null ? studioNote : (studioItem.n || ''))}</textarea>
       <div class="hlsheet-acts2">
         <button class="btn sm gold" id="blessBtn">✍️ ${esc(L.bless)}</button>
+        <button class="btn sm gold" id="tweakBtn">${esc(tw_().btn)}</button>
         <button class="btn sm" id="noteMine">${esc(L.useMine)}</button>
         <button class="btn sm" id="noteClear">${esc(L.clearText)}</button>
       </div>
@@ -2767,6 +2852,7 @@ async function viewStudio(v){
     nt.oninput = () => { clearTimeout(tmr); tmr = setTimeout(() => { studioNote = nt.value; renderCard(studioItem); }, 400); };
   }
   $('#blessBtn').onclick = blessWrite;
+  $('#tweakBtn').onclick = openTweak;
   $('#noteMine').onclick  = () => { studioNote = studioItem.n || ''; studioRefresh(); };
   $('#noteClear').onclick = () => { studioNote = ''; studioRefresh(); };
   const bindInput = (id, key) => {
