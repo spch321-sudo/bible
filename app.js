@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.5.2';
+const VERSION = 'v2.5.5';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -3786,14 +3786,20 @@ function paintChat(){
           <button class="msg-act ${isFav(m.text) ? 'on' : ''}" data-a="fav" data-i="${i}">★ ${esc(L3('收藏', '收藏', 'Save'))}</button>
           <button class="msg-act" data-a="share" data-i="${i}">↗ ${esc(L3('分享', '分享', 'Share'))}</button>
           <button class="msg-act" data-a="card" data-i="${i}">🖼 ${esc(L3('做成美圖', '做成美图', 'Make a card'))}</button>
-          <button class="msg-act" data-a="tts" data-i="${i}">🔊</button>
+          <button class="msg-act ${sayId === i ? 'on' : ''}" data-a="tts" data-i="${i}">${sayId === i ? '⏸' : '🔊'}</button>
           <button class="msg-act" data-a="del" data-i="${i}">✕</button>
         </div></div>`).join('');
   $$('.msg-act', log).forEach(b => b.onclick = () => {
     const i = +b.dataset.i, m = chatLog[i];
     if (b.dataset.a === 'fav'){ toggleFav(m.text); paintChat(); }
     else if (b.dataset.a === 'del'){ chatLog.splice(i, 1); paintChat(); }
-    else if (b.dataset.a === 'tts'){ ttsSpeakText(m.text); }
+    else if (b.dataset.a === 'tts'){
+      /* 再按一次就停；換一則就把上一則停掉。按下去立刻反白，不必等聲音出來 */
+      if (sayId === i){ ttsSayStop(); return; }
+      ttsSayStop(); ttsStop();
+      sayId = i; paintSay();
+      ttsSpeakText(m.text, i);
+    }
     else if (b.dataset.a === 'share'){ chatShare(m); }
     else if (b.dataset.a === 'card'){ chatCard(m); }
   });
@@ -3865,6 +3871,13 @@ function toggleFav(txt){
   else user.fav.push({ text:txt, b:RD.book, ch:RD.ch, ts:Date.now() });
   saveUser();
 }
+/* 小智回答的格式規範（三語）。App 已經會把表格畫成表格、唸成人話、
+   分享成清單，所以這裡明白地鼓勵它用表格，並要求把重點標成一句引言。 */
+const SYS_FMT = () => isEN()
+  ? ' Format: you may use a markdown table when comparing or listing things side by side — it renders as a real table, is read aloud as natural sentences, and becomes a clean list when shared. Mark the single most important sentence as a "> " blockquote; that line is what gets turned into a shareable picture. Use short headings. Do not use ASCII art, code blocks or decorative symbols that cannot be read aloud.'
+  : isZS()
+  ? ' 回答格式：需要並列或對照时可以用 markdown 表格，画面会画成真正的表格、朗读时会说成自然的句子、分享时会变成清单。请把最重要的那一句用「> 」标成引言，那一句会被做成美图。小标题要短。不要用 ASCII 图案、代码区块或念不出来的装饰符号。'
+  : ' 回答格式：需要並列或對照時可以用 markdown 表格，畫面會畫成真正的表格、朗讀時會說成自然的句子、分享時會變成清單。請把最重要的那一句用「> 」標成引言，那一句會被做成美圖。小標題要短。不要用 ASCII 圖案、程式碼區塊或唸不出來的裝飾符號。';
 const CHAT_RETRY = [900, 1800];
 /* 代理可能回傳幾種格式，一律寬鬆解析（與 321領導力 的 extractReplyText 相同） */
 function extractReply(d){
@@ -3890,7 +3903,12 @@ async function sendChat(text){
     : isZS()
     ? '你是「小智」，国度321空中团契的圣经陪读。以321理念（耶稣是我的榜样、圣经是我的准则、圣灵是我的引导；让耶稣作王、让耶稣得着一切的荣耀；建立属神的体系）回应，深入浅出、善用比喻，引用和合本圣经，回答简明。'
     : '你是「小智」，國度321空中團契的聖經陪讀。以321理念（耶穌是我的榜樣、聖經是我的準則、聖靈是我的引導；讓耶穌作王、讓耶穌得著一切的榮耀；建立屬神的體系）回應，深入淺出、善用比喻，引用和合本聖經，回答簡明。')
+    /* 回答的寫法——使用者定下來的規矩，App 這邊一併配合：
+       表格在畫面上畫成真的表格、朗讀時會說成人話、分享時換成清單，
+       所以放心用表格；重點用 > 標一句，那一句會被抓去做成美圖。 */
+    + SYS_FMT()
     + (b ? (isEN() ? ` (The reader is currently in ${bname(b)} ${RD.ch}.)`
+          : isZS() ? `（读者目前在读：${bname(b)} 第 ${RD.ch} 章）`
                    : `（讀者目前在讀：${bname(b)} 第 ${RD.ch} 章）`) : '');
   const payload = JSON.stringify({
     system: sys,
@@ -4085,8 +4103,58 @@ const TTS_FIX = [
   [/應當/g, '英當'], [/應許/g, '英許'], [/相應/g, '相映'],
   [/看守/g, '刊守'], [/種子/g, '腫子'], [/中間/g, '衷間']
 ];
+/* 「創 1:26」唸成「創世記第1章第26節」。
+   縮寫直接唸出來很怪（而且「創」「約」單獨一個字根本聽不懂），
+   所以送去合成之前先還原成完整書名與章節。只處理「書名 章:節」這種明確的寫法，
+   才不會把「大約 3 個」之類的字誤判成經文出處。 */
+let _refRe = null, _refMap = null, _refLang = '';
+function refTable(){
+  if (_refRe && _refLang === state.lang) return { re:_refRe, map:_refMap };
+  const map = {};
+  (TOC || []).forEach(b => {
+    const full = isEN() ? b.en : (isZS() ? b.zs : b.zh);
+    const val = { full, ps: b.id === 'Psalms' };
+    const keys = isEN() ? [b.en, b.aen] : [(isZS() ? b.zs : b.zh), (isZS() ? b.azs : b.azh)];
+    keys.forEach(k => { if (k) map[k] = val; });
+  });
+  const ks = Object.keys(map).sort((a, b) => b.length - a.length)
+                   .map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  _refRe = ks.length
+    ? new RegExp('(' + ks.join('|') + ')\\s*\\.?\\s*(\\d+)\\s*[:：]\\s*(\\d+)(?:\\s*[-–—~～至]\\s*(\\d+))?', 'g')
+    : /(?!)/g;
+  _refMap = map; _refLang = state.lang;
+  return { re:_refRe, map:_refMap };
+}
+/* 唸法照使用者定的：
+     創 1:26   → 創世記1章26節
+     詩 23:1-3 → 詩篇23篇1到3節      ← 詩篇用「篇」不用「章」，而且不加「第」
+   數字保留阿拉伯數字，語音引擎會自己唸成「一章二十六節」。 */
+const CJK_RE = /[\u3400-\u9FFF\uF900-\uFAFF]/;
+function ttsRef(x){
+  const r = refTable();
+  r.re.lastIndex = 0;
+  const src = String(x || '');
+  return src.replace(r.re, function (m, bk, c, v, v2, off){
+    /* 單字縮寫（創、約、詩…）若緊接在另一個中文字後面，多半是別的詞的一部分
+       ——「大約 3:2 個人」不能變成「大約翰福音3章2節」。整個書名寫全的就不必顧慮。 */
+    if (bk.length === 1 && off > 0 && CJK_RE.test(src.charAt(off - 1))) return m;
+    if (isEN() && off > 0 && /[A-Za-z]/.test(src.charAt(off - 1))) return m;
+    const it = r.map[bk] || { full:bk, ps:false };
+    if (isEN()){
+      const head = it.ps ? ('Psalm ' + c) : (it.full + ' chapter ' + c);
+      return head + (v2 ? ' verses ' + v + ' to ' + v2 : ' verse ' + v);
+    }
+    const unit = it.ps ? '篇' : '章';
+    const jie  = isZS() ? '节' : '節';
+    return it.full + c + unit + v + (v2 ? '到' + v2 : '') + jie;
+  });
+}
+/* 表情符號不要唸出來——語音引擎會把它唸成「笑臉」「祈禱的手」，很突兀 */
+const EMOJI_RE = /[\u{1F000}-\u{1FAFF}\u{2190}-\u{21FF}\u{2300}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE00}-\u{FE0F}\u{1F1E6}-\u{1F1FF}\u{200D}\u{20E3}]/gu;
+const noEmoji = x => String(x || '').replace(EMOJI_RE, '').replace(/[ \t]{2,}/g, ' ');
 function ttsPrep(s){
-  let x = s.replace(/〔[^〕]*〕/g, '').replace(/\[[^\]]*\]/g, '');   // 譯者註不朗讀
+  let x = noEmoji(ttsRef(s));
+  x = x.replace(/〔[^〕]*〕/g, '').replace(/\[[^\]]*\]/g, '');   // 譯者註不朗讀
   if (isEN()) return x.replace(/\s+/g, ' ').trim();                  // 英文不做破音字修正
   x = x.replace(/[「」『』（）]/g, '');
   TTS_FIX.forEach(([re, to]) => { x = x.replace(re, to); });
@@ -4285,31 +4353,52 @@ function ttsToggle(){
   ttsPlayFrom(0);
 }
 function ttsStop(){
+  if (sayId !== null){ sayId = null; paintSay(); }
   spk.on = false; spk.abort = true;
   try{ if (ttsEl){ ttsEl.pause(); } }catch(e){}
   spk.audio = null;
   try{ if ('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){}
   raClear(); ttsBtn('');
 }
-async function ttsSpeakText(text){
+/* 目前正在唸第幾則小智的回答（null＝沒有在唸） */
+let sayId = null;
+function paintSay(){
+  $$('.msg-act[data-a="tts"]').forEach(b => {
+    const on = sayId === +b.dataset.i;
+    b.classList.toggle('on', on);
+    b.textContent = on ? '⏸' : '🔊';
+  });
+}
+function ttsSayStop(){
+  if (sayId === null) return;
+  try{ if (ttsEl){ ttsEl.pause(); ttsEl.currentTime = 0; } }catch(e){}
+  try{ if ('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){}
+  sayId = null; paintSay();
+}
+async function ttsSpeakText(text, id){
   ttsUnlock();
   const clean = ttsPrep(mdSpeak(text));   // 表格先說成人話，再送去合成
   if (!clean) return;
   const voice = VOICES[state.lang][state.voice[state.lang]].v;
+  const done = () => { if (id == null || sayId === id) ttsSayStop(); };
   try{
     const url = await ttsFetch(clean.slice(0, 900), voice);
+    if (id != null && sayId !== id) return;          // 等的時候他已經按停了
     const a = ttsAudio();
     const old = a.src;
     a.onended = null; a.onerror = null;
     a.src = url;
     if (old && old.startsWith('blob:')){ try{ URL.revokeObjectURL(old); }catch(e){} }
+    a.onended = done;
+    a.onerror = done;
     const p = a.play(); if (p && p.catch) await p;
   }catch(e){
     if ('speechSynthesis' in window){
       const u = new SpeechSynthesisUtterance(clean);
       u.lang = isEN() ? 'en-US' : (isZS() ? 'zh-CN' : 'zh-TW');
+      u.onend = done; u.onerror = done;
       speechSynthesis.speak(u); toast(t().ttsFallback);
-    } else toast(t().ttsErr);
+    } else { toast(t().ttsErr); done(); }
   }
 }
 
