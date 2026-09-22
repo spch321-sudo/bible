@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.7.2';
+const VERSION = 'v2.7.3';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -62,7 +62,7 @@ const I18N = {
         updFound:'找到新版本，下載中…', updReadyBar:'有新版本，點一下立即更新 ↻', updFail:'檢查失敗，請稍後再試',
         updApplying:'更新中…',
         card:'做成美圖', cardTitle:'做成美圖分享', cardStyle:'版型', cardSize:'尺寸',
-        cardBorder:'邊框', cardFsL:'內文字級', cardFsHint:'只放大卡片上的內文，經文與署名維持不變。',
+        cardBorder:'邊框', cardFsL:'內文字級', cardFsHint:'團體名稱、稱呼、內文與署名都會跟著放大，經文本身維持不變。',
         cardText:'卡片內文', bless:'請小智寫祝福', blessing:'小智寫作中…', blessDone:'小智寫好了',
         blessHint:'可以自己寫，也可以請小智照這節經文寫一段關懷祝福；改完卡片會立刻跟著變。',
         useMine:'用我的領受', clearText:'不要內文',
@@ -144,7 +144,7 @@ const I18N = {
         updFound:'找到新版本，下载中…', updReadyBar:'有新版本，点一下立即更新 ↻', updFail:'检查失败，请稍后再试',
         updApplying:'更新中…',
         card:'做成美图', cardTitle:'做成美图分享', cardStyle:'版型', cardSize:'尺寸',
-        cardBorder:'边框', cardFsL:'内文字级', cardFsHint:'只放大卡片上的内文，经文与署名维持不变。',
+        cardBorder:'边框', cardFsL:'内文字级', cardFsHint:'团体名称、称呼、内文与署名都会跟着放大，经文本身维持不变。',
         cardText:'卡片内文', bless:'请小智写祝福', blessing:'小智写作中…', blessDone:'小智写好了',
         blessHint:'可以自己写，也可以请小智照这节经文写一段关怀祝福；改完卡片会立刻跟着变。',
         useMine:'用我的领受', clearText:'不要内文',
@@ -228,7 +228,7 @@ const I18N = {
         updFound:'Update found, downloading…', updReadyBar:'A new version is ready — tap to update ↻', updFail:'Check failed, please try again later',
         updApplying:'Updating…',
         card:'Make an image', cardTitle:'Make an image to share', cardStyle:'Style', cardSize:'Size',
-        cardBorder:'Border', cardFsL:'Body text size', cardFsHint:'Only the body text on the card changes; the verse and the signature stay as they are.',
+        cardBorder:'Border', cardFsL:'Body text size', cardFsHint:'The group name, greeting, body text and signature all scale together; the verse itself stays as it is.',
         cardText:'Card text', bless:'Ask Xiaozhi to write', blessing:'Xiaozhi is writing…', blessDone:'Xiaozhi has written it',
         blessHint:'Write it yourself, or let Xiaozhi write a short blessing from this verse. The card updates as you type.',
         useMine:'Use my reflection', clearText:'No body text',
@@ -1667,6 +1667,7 @@ function drawVerseCard(cv, h, W, H){
   const T = CARD_TPL[cardTpl()];
   const F = W / 1080, pad = Math.round(W * .085), iw = W - pad * 2;
   const sans = CARD_SANS(), serif = CARD_SERIF();
+  const FB = cardFs();          /* 內文字級——團體名稱、稱呼、署名跟著這個縮放，經文本身維持不變 */
 
   /* 背景 */
   const g = ctx.createLinearGradient(0, 0, W * .3, H);
@@ -1691,7 +1692,7 @@ function drawVerseCard(cv, h, W, H){
 
   /* 團契名 */
   const grp = (state.cardTop || '').trim() || DEF_TOP();
-  const grpSz = Math.round(27 * F), grpY = pad + Math.round(42 * F);
+  const grpSz = Math.round(27 * F * FB), grpY = pad + Math.round(42 * F);
   ctx.textAlign = 'center'; ctx.fillStyle = T.sub; ctx.font = `600 ${grpSz}px ${sans}`;
   const gw = ctx.measureText(grp).width;
   ctx.fillText(grp, W / 2, grpY);
@@ -1703,9 +1704,9 @@ function drawVerseCard(cv, h, W, H){
   /* 稱呼（若有）畫在團契名底下、經文上面，像一封信的開頭——使用者要求改黑色 */
   const toName = (state.cardTo || '').trim();
   if (toName){
-    let ts2 = Math.round(40 * F);
+    let ts2 = Math.round(40 * F * FB);
     ctx.textAlign = 'center'; ctx.fillStyle = T.ink;
-    while (ts2 > Math.round(22 * F)){
+    while (ts2 > Math.round(22 * F * FB)){
       ctx.font = `600 ${ts2}px ${serif}`;
       if (ctx.measureText(toName).width <= iw) break;
       ts2 -= Math.round(2 * F);
@@ -1720,7 +1721,6 @@ function drawVerseCard(cv, h, W, H){
   const liftRoom = stkBottom ? Math.round(W * stkSize * stkRatio()) + Math.round(30 * F) : 0;
   const topRoom = pad + Math.round((toName ? 176 : 100) * F), botRoom = pad + Math.round(70 * F) + liftRoom;
   const room = H - topRoom - botRoom;
-  const FB = cardFs();          /* 領受字級（經文不變，版面才不會被擠掉） */
   /* 經文本身可能已經帶了引號（例如神說的話），不要再包一層 */
   /* 句子是在逗號處切開的，尾巴留著逗號放進引號裡很怪，去掉 */
   /* 譯者註不放進美圖——分享出去的是經文本身 */
@@ -1777,11 +1777,11 @@ function drawVerseCard(cv, h, W, H){
 
   /* 落款（貼紙或自拍佔住底部時往上讓開） */
   const lift = stkBottom ? Math.round(W * stkSize * stkRatio()) + Math.round(16 * F) : 0;
-  ctx.textAlign = 'center'; ctx.fillStyle = T.sub; ctx.font = `600 ${Math.round(25 * F)}px ${sans}`;
+  ctx.textAlign = 'center'; ctx.fillStyle = T.sub; ctx.font = `600 ${Math.round(25 * F * FB)}px ${sans}`;
   const sign = (state.cardSign || '').trim()
             || DEF_SIGN();
-  let ss = Math.round(25 * F);
-  while (ss > Math.round(15 * F)){ ctx.font = `600 ${ss}px ${sans}`; if (ctx.measureText(sign).width <= iw) break; ss -= 2; }
+  let ss = Math.round(25 * F * FB);
+  while (ss > Math.round(15 * F * FB)){ ctx.font = `600 ${ss}px ${sans}`; if (ctx.measureText(sign).width <= iw) break; ss -= 2; }
   ctx.fillText(sign, W / 2, H - pad * .72 - Math.round(24 * F) - lift);
 
   /* 相片貼紙（拍立得風格） */
