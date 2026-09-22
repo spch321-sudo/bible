@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.7.1';
+const VERSION = 'v2.7.2';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -1662,14 +1662,6 @@ const CARD_SANS = () => isZS()
   : (isEN() ? '-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif'
             : '"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif');
 
-/* 背景是相片時，金色字（稱呼、出處）在亮色天空／雲霧上常常糊成一片——
-   加一圈柔和的深色暈染，不管相片深淺都看得清楚；純色背景時暈染很淡，幾乎看不出來。 */
-function haloText(ctx, txt, x, y, F){
-  ctx.save();
-  ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = Math.round(12 * F); ctx.shadowOffsetY = Math.round(1 * F);
-  ctx.fillText(txt, x, y); ctx.fillText(txt, x, y);   /* 疊描一次讓暈染更扎實，字本身位置不變 */
-  ctx.restore();
-}
 function drawVerseCard(cv, h, W, H){
   const ctx = cv.getContext('2d'); cv.width = W; cv.height = H;
   const T = CARD_TPL[cardTpl()];
@@ -1708,18 +1700,18 @@ function drawVerseCard(cv, h, W, H){
     ctx.beginPath(); ctx.moveTo(x0, grpY - 9 * F); ctx.lineTo(x0 + d * 30 * F, grpY - 9 * F); ctx.stroke();
   });
 
-  /* 稱呼（若有）畫在團契名底下、經文上面，像一封信的開頭 */
+  /* 稱呼（若有）畫在團契名底下、經文上面，像一封信的開頭——使用者要求改黑色 */
   const toName = (state.cardTo || '').trim();
   if (toName){
     let ts2 = Math.round(40 * F);
-    ctx.textAlign = 'center'; ctx.fillStyle = T.gold;
+    ctx.textAlign = 'center'; ctx.fillStyle = T.ink;
     while (ts2 > Math.round(22 * F)){
       ctx.font = `600 ${ts2}px ${serif}`;
       if (ctx.measureText(toName).width <= iw) break;
       ts2 -= Math.round(2 * F);
     }
     ctx.font = `600 ${ts2}px ${serif}`;
-    haloText(ctx, toName, W / 2, pad + Math.round(132 * F), F);
+    ctx.fillText(toName, W / 2, pad + Math.round(132 * F));
   }
 
   /* 版位：經文＋領受垂直置中 */
@@ -1766,9 +1758,9 @@ function drawVerseCard(cv, h, W, H){
   y += vs * .9;
   vl.forEach(l => { ctx.fillText(l, W / 2, y); y += vs * 1.52; });
 
-  /* 出處 */
-  ctx.font = `${Math.round(30 * F)}px ${sans}`; ctx.fillStyle = T.gold;
-  haloText(ctx, cardRef(h), W / 2, y, F); y += Math.round(64 * F);
+  /* 出處——使用者要求跟經文同色，不再用金色 */
+  ctx.font = `${Math.round(30 * F)}px ${sans}`; ctx.fillStyle = T.accent;
+  ctx.fillText(cardRef(h), W / 2, y); y += Math.round(64 * F);
 
   /* 領受 */
   if (note){
