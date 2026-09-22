@@ -154,6 +154,8 @@ nav.tabbar a svg{width:20px;height:20px;}
 .rowlink .chev{color:var(--ink-faint);}
 .empty{text-align:center; padding:40px 20px; color:var(--ink-faint); font-size:14px;}
 .uitoast{position:fixed; left:50%; bottom:calc(var(--tabbar-h) + 16px + env(safe-area-inset-bottom)); transform:translateX(-50%); background:var(--ink); color:var(--bg); font-size:13px; padding:9px 16px; border-radius:999px; z-index:200; box-shadow:var(--shadow); max-width:88vw; text-align:center;}
+.updbar{position:fixed; left:0; right:0; top:0; z-index:250; background:var(--gold); color:#fff; font-size:13.5px; font-weight:700; text-align:center; padding:10px 16px calc(10px); padding-top:calc(10px + env(safe-area-inset-top)); box-shadow:var(--shadow); cursor:pointer; animation:updbar-in .25s ease-out;}
+@keyframes updbar-in{from{transform:translateY(-100%)} to{transform:translateY(0)}}
 
 /* ---------- 今日 ---------- */
 .progwrap{display:flex; align-items:center; gap:14px;}

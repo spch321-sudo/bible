@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.6.0';
+const VERSION = 'v2.7.0';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -58,6 +58,9 @@ const I18N = {
         fonts:['標準','大','特大','超大'], themes:['自動','日','夜','羊皮紙'],
         voice:'朗讀聲音', langLabel:'語言', stats:['已讀章數','畫線','書籤'],
         diag:'連線測試', diagRun:'測試小智與朗讀', diagBusy:'測試中…',
+        upd:'版本更新', updCheck:'檢查更新', updChecking:'檢查中…', updLatest:'已經是最新版本',
+        updFound:'找到新版本，下載中…', updReadyBar:'有新版本，點一下立即更新 ↻', updFail:'檢查失敗，請稍後再試',
+        updApplying:'更新中…',
         card:'做成美圖', cardTitle:'做成美圖分享', cardStyle:'版型', cardSize:'尺寸',
         cardBorder:'邊框', cardFsL:'內文字級', cardFsHint:'只放大卡片上的內文，經文與署名維持不變。',
         cardText:'卡片內文', bless:'請小智寫祝福', blessing:'小智寫作中…', blessDone:'小智寫好了',
@@ -137,6 +140,9 @@ const I18N = {
         fonts:['标准','大','特大','超大'], themes:['自动','日','夜','羊皮纸'],
         voice:'朗读声音', langLabel:'语言', stats:['已读章数','划线','书签'],
         diag:'连线测试', diagRun:'测试小智与朗读', diagBusy:'测试中…',
+        upd:'版本更新', updCheck:'检查更新', updChecking:'检查中…', updLatest:'已经是最新版本',
+        updFound:'找到新版本，下载中…', updReadyBar:'有新版本，点一下立即更新 ↻', updFail:'检查失败，请稍后再试',
+        updApplying:'更新中…',
         card:'做成美图', cardTitle:'做成美图分享', cardStyle:'版型', cardSize:'尺寸',
         cardBorder:'边框', cardFsL:'内文字级', cardFsHint:'只放大卡片上的内文，经文与署名维持不变。',
         cardText:'卡片内文', bless:'请小智写祝福', blessing:'小智写作中…', blessDone:'小智写好了',
@@ -218,6 +224,9 @@ const I18N = {
         fonts:['Normal','Large','Larger','Largest'], themes:['Auto','Day','Night','Parchment'],
         voice:'Reading voice', langLabel:'Language', stats:['Chapters read','Highlights','Bookmarks'],
         diag:'Connection test', diagRun:'Test Xiaozhi and read-aloud', diagBusy:'Testing…',
+        upd:'Updates', updCheck:'Check for updates', updChecking:'Checking…', updLatest:'You have the latest version',
+        updFound:'Update found, downloading…', updReadyBar:'A new version is ready — tap to update ↻', updFail:'Check failed, please try again later',
+        updApplying:'Updating…',
         card:'Make an image', cardTitle:'Make an image to share', cardStyle:'Style', cardSize:'Size',
         cardBorder:'Border', cardFsL:'Body text size', cardFsHint:'Only the body text on the card changes; the verse and the signature stay as they are.',
         cardText:'Card text', bless:'Ask Xiaozhi to write', blessing:'Xiaozhi is writing…', blessDone:'Xiaozhi has written it',
@@ -4072,6 +4081,8 @@ async function viewMe(v){
         <button class="${state.hidenote ? 'on' : ''}" data-i="1">${esc(L.onoff[1])}</button></div></div>
       <div class="setrow"><div class="sl">${esc(L.voice)}</div><div class="segbtns" id="setVoice">
         ${VOICES[state.lang].map((v2, i) => `<button class="${state.voice[state.lang] === i ? 'on' : ''}" data-i="${i}">${esc(v2.n)}</button>`).join('')}</div></div>
+      <div class="setrow"><div class="sl">${esc(L.upd)}<div class="muted" style="font-size:11.5px;line-height:1.6" id="updOut"></div></div>
+        <div class="segbtns"><button id="updBtn">${esc(L.updCheck)}</button></div></div>
     </div>
 
     <div class="section-title">${esc(L.myBm)}</div>
@@ -4105,6 +4116,12 @@ async function viewMe(v){
 
   $$('#setLang button', v).forEach(b => b.onclick = () => switchLang(b.dataset.l));
   const dg = $('#diagBtn', v); if (dg) dg.onclick = () => runDiag();
+  const ub = $('#updBtn', v);
+  if (ub){
+    const setReady = () => { ub.textContent = L.updReadyBar; ub.classList.add('on'); ub.onclick = applyUpdate; };
+    if (updReady) setReady();
+    else ub.onclick = async () => { await checkForUpdate(true); if (updReady) setReady(); };
+  }
   $$('#setFont button', v).forEach(b => b.onclick = () => { state.font = +b.dataset.i; saveState(); applyChrome(); render(); });
   $$('#setTheme button', v).forEach(b => b.onclick = () => { state.theme = +b.dataset.i; saveState(); applyChrome(); render(); });
   $$('#setMode button', v).forEach(b => b.onclick = () => { state.flow = b.dataset.i === '1'; saveState(); applyChrome(); render(); });
@@ -4488,6 +4505,57 @@ async function ttsSpeakText(text, id){
   }
 }
 
+/* ================================================================ 自動更新
+   舊版本（已經加到主畫面／之前打開過的）要能自動跟上新版本，靠這裡：
+   每次回到前景、以及背景每隔一段時間，都請瀏覽器去問一次新版本有沒有出來；
+   找到了就先在背景悄悄下載好，準備好了才提醒「點一下更新」──
+   不會沒說一聲就把正在讀經、正在打字的畫面整個重新整理掉。 */
+let swReg = null, updReady = false;
+function updBar(show){
+  let d = $('#updbar');
+  if (show){
+    if (!d){
+      d = document.createElement('div'); d.id = 'updbar'; d.className = 'updbar';
+      d.textContent = t().updReadyBar;
+      d.onclick = applyUpdate;
+      document.body.appendChild(d);
+    } else d.textContent = t().updReadyBar;
+  } else if (d) d.remove();
+}
+function applyUpdate(){
+  updBar(false);
+  toast(t().updApplying);
+  let done = false;
+  const reload = () => { if (!done){ done = true; location.reload(); } };
+  if (navigator.serviceWorker){
+    navigator.serviceWorker.addEventListener('controllerchange', reload);
+    if (swReg && swReg.waiting) try{ swReg.waiting.postMessage('skipWaiting'); }catch(e){}
+  }
+  setTimeout(reload, 1500);   // 保底：萬一等不到 controllerchange 就直接重整
+}
+function watchForUpdate(reg){
+  const track = w => { if (w) w.addEventListener('statechange', () => {
+    if (w.state === 'installed' && navigator.serviceWorker.controller){ updReady = true; updBar(true); }
+  }); };
+  track(reg.installing); track(reg.waiting);
+  reg.addEventListener('updatefound', () => track(reg.installing));
+}
+async function checkForUpdate(manual){
+  if (manual){
+    const out = $('#updOut'); if (out) out.textContent = t().updChecking;
+  }
+  if (!swReg){ if (manual) toast(t().updFail); return; }
+  try{
+    await swReg.update();
+    if (manual){
+      await new Promise(r => setTimeout(r, 400));   // 讓 statechange 有時間跑完，才知道是不是真的有新版本
+      const out = $('#updOut');
+      if (out) out.textContent = updReady ? t().updFound : t().updLatest;
+      if (!updReady) toast(t().updLatest);
+    }
+  }catch(e){ if (manual) toast(t().updFail); }
+}
+
 /* ================================================================ 啟動 */
 async function switchLang(l){
   if (l === state.lang) return;
@@ -4522,7 +4590,12 @@ async function boot(){
   const b = $('#boot'); if (b) b.remove();
   window.addEventListener('hashchange', () => { ttsStop(); render(); });
   if ('serviceWorker' in navigator){
-    try{ navigator.serviceWorker.register('sw.js'); }catch(e){}
+    try{
+      swReg = await navigator.serviceWorker.register('sw.js');
+      watchForUpdate(swReg);
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkForUpdate(false); });
+      setInterval(() => checkForUpdate(false), 30 * 60 * 1000);   // 背景每 30 分鐘問一次
+    }catch(e){}
   }
   setTimeout(ttsWarmUp, 1200);
   if ((user.teams || []).length) setTimeout(teamPingNow, 2500);   // 開 App 就把今天的進度同步給隊友
