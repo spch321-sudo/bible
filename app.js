@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.7.4';
+const VERSION = 'v2.7.5';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -50,6 +50,7 @@ const I18N = {
         searchPH:'輸入要找的字句…', searchHint:'輸入兩個字以上開始搜尋', noResult:'找不到相符的經文',
         found:n=>`找到 ${n} 節`, loading:'載入中…',
         hlTitle:'這一句', hlColor:'顏色', hlNote:'寫下默想…', save:'儲存', ask:'問小智', del:'刪除畫線', close:'關閉',
+        ttsFrom:'🔊 從這裡開始朗讀', ttsPlay:'開始朗讀', ttsPause:'暫停朗讀', ttsStop:'停止朗讀',
         hlSpan:'範圍', spanUnit:n=>`${n} 句`, spanV:'整節', spanP:'整段',
         spanHint:'按 ＋ 往下多畫一句，畫線就不只一句，可以連成一整段。',
         spanIsV:'這一節已經整節畫起來了', spanIsP:'這一段已經整段畫起來了',
@@ -132,6 +133,7 @@ const I18N = {
         searchPH:'输入要找的字句…', searchHint:'输入两个字以上开始搜索', noResult:'找不到相符的经文',
         found:n=>`找到 ${n} 节`, loading:'载入中…',
         hlTitle:'这一句', hlColor:'颜色', hlNote:'写下默想…', save:'保存', ask:'问小智', del:'删除划线', close:'关闭',
+        ttsFrom:'🔊 从这里开始朗读', ttsPlay:'开始朗读', ttsPause:'暂停朗读', ttsStop:'停止朗读',
         hlSpan:'范围', spanUnit:n=>`${n} 句`, spanV:'整节', spanP:'整段',
         spanHint:'按 ＋ 往下多划一句，划线就不只一句，可以连成一整段。',
         spanIsV:'这一节已经整节划起来了', spanIsP:'这一段已经整段划起来了',
@@ -216,6 +218,7 @@ const I18N = {
         found:n=>`${n} verse${n === 1 ? '' : 's'} found`, loading:'Loading…',
         hlTitle:'This sentence', hlColor:'Colour', hlNote:'Write your reflection…', save:'Save',
         ask:'Ask Xiaozhi', del:'Remove highlight', close:'Close',
+        ttsFrom:'🔊 Read from here', ttsPlay:'Play', ttsPause:'Pause', ttsStop:'Stop',
         hlSpan:'Range', spanUnit:n=>`${n} sentence${n === 1 ? '' : 's'}`, spanV:'Whole verse', spanP:'Whole paragraph',
         spanHint:'Tap ＋ to take in the next sentence, so a highlight can cover a whole passage.',
         spanIsV:'The whole verse is already highlighted', spanIsP:'The whole paragraph is already highlighted',
@@ -734,7 +737,11 @@ async function viewReader(v, bookId, ch){
       <button class="chtb-btn ${bmMode ? 'on' : ''}" id="rdBm" title="${esc(L.bm)}">🔖</button>
       <button class="chtb-btn ${(state.flow || !state.shCh || !state.shV) ? 'on' : ''}" id="rdMode" title="${esc(L.pure)}">${esc(L3('淨', '净', '¶'))}</button>
       <button class="chtb-btn" id="rdFont">A⁺</button>
-      <button class="chtb-btn" id="rdTts">🔊</button>
+      <span class="tts-group">
+        <button class="chtb-btn" id="rdPlay" title="${esc(L.ttsPlay)}">▶</button>
+        <button class="chtb-btn" id="rdPause" title="${esc(L.ttsPause)}">⏸</button>
+        <button class="chtb-btn" id="rdStop" title="${esc(L.ttsStop)}">⏹</button>
+      </span>
     </div>
     ${bmMode ? `<div class="bm-hint">${esc(L.bmHint)}</div>` : ''}
     <div class="chhead">${head}<div class="rule"></div></div>
@@ -763,7 +770,9 @@ async function viewReader(v, bookId, ch){
     render();
   };
   $('#rdFont').onclick = () => { state.font = (state.font + 1) % FONT_CLASS.length; saveState(); applyChrome(); toast(t().fonts[state.font]); };
-  $('#rdTts').onclick  = () => ttsToggle();
+  $('#rdPlay').onclick  = () => ttsStart();
+  $('#rdPause').onclick = () => ttsPauseNow();
+  $('#rdStop').onclick  = () => ttsStop();
 
   const navBook = d => {
     ttsStop();
@@ -802,7 +811,7 @@ async function viewReader(v, bookId, ch){
   }
   watchProgress(bookId, flow, b.ch);
   ttsRebind();
-  ttsBtn(spk.on ? 'playing' : '');   // 換頁後工具列重新畫過，朗讀中要保持反白，不能又變回沒在讀的樣子
+  ttsBtn(spk.on ? (spk.paused ? 'paused' : 'playing') : '');   // 換頁後工具列重新畫過，朗讀（或暫停）狀態要保持，不能又變回沒在讀的樣子
 }
 
 /* 讀到哪裡就記到哪裡。分章模式捲到底即算讀完；
@@ -1022,6 +1031,7 @@ function openHlSheet(el){
     <div class="hlsheet-acts">
       <button class="btn primary" data-a="save">${esc(L.save)}</button>
       <button class="btn" data-a="ask">${esc(L.ask)}</button>
+      <button class="btn" data-a="ttsFrom">${esc(L.ttsFrom)}</button>
     </div>
     <div class="hlsheet-acts2">
       <button class="btn gold" data-a="card">🖼 ${esc(L.card)}</button>
@@ -1079,6 +1089,12 @@ function openHlSheet(el){
       chatPending = isEN() ? `Help me meditate on this verse: “${h.t}”`
                 : `${isZS() ? '请就这句经文帮助我默想：' : '請就這句經文幫助我默想：'}「${h.t}」`;
       go('#/companion');
+    }
+    else if (a === 'ttsFrom'){
+      h.c = color; h.n = ta.value.trim(); saveUser(); mask.remove();
+      ttsStartAt = { book:RD.book, ch:cno, flow:RD.flow, c:el.dataset.c, p:el.dataset.p, s:el.dataset.s };
+      ttsStop();     // 不論本來有沒有在讀，先收乾淨再從指定的地方開始
+      ttsStart();
     }
   });
 }
@@ -4209,11 +4225,14 @@ async function runDiag(){
 const TTS_CHUNK_ZH = 130, TTS_CHUNK_EN = 320, TTS_LOOKAHEAD = 2, TTS_RETRY = [800, 1600];
 const TTS_CHUNK = () => isEN() ? TTS_CHUNK_EN : TTS_CHUNK_ZH;
 const RA_COOLDOWN = 4000;
-let spk = { on:false, items:[], idx:0, audio:null, cache:{}, native:false, abort:false };
+let spk = { on:false, paused:false, items:[], idx:0, audio:null, cache:{}, native:false, abort:false };
 let raManualAt = 0;
-/* 手動按停時，記下停在哪一句（書卷／章／段／句），下次再按朗讀從這裡接下去唸，
+/* 手動按停時，記下停在哪一句（書卷／章／段／句），下次再按開始從這裡接下去唸，
    不必從頭或從目前捲動位置重來。換了書卷／章節，或整段唸完，就不算數了。 */
 let ttsResume = null;
+/* 使用者在畫線面板點「從這裡開始朗讀」指定的位置——只用這一次，用過就清掉，
+   優先順序比 ttsResume 高（指定位置 > 上次停下的位置 > 目前捲動位置）。 */
+let ttsStartAt = null;
 
 /* 朗讀發音修正（僅影響語音，不影響畫面文字） */
 const TTS_FIX = [
@@ -4359,7 +4378,25 @@ function raShow(item){
 }
 ['wheel','touchmove'].forEach(ev => window.addEventListener(ev, () => { raManualAt = Date.now(); }, { passive:true }));
 
-function ttsBtn(st){ const b = $('#rdTts'); if (b) b.setAttribute('data-state', st || ''); }
+/* 開始／暫停／停止三顆各自的可按狀態。st：'' 閒置、'loading' 抓語音中、'playing' 播放中、'paused' 暫停中 */
+function ttsBtn(st){
+  const play = $('#rdPlay'), pause = $('#rdPause'), stop = $('#rdStop');
+  if (!play || !pause || !stop) return;
+  [play, pause, stop].forEach(b => b.removeAttribute('data-state'));
+  if (st === 'loading'){
+    play.setAttribute('data-state', 'loading'); play.disabled = true;
+    pause.disabled = true; stop.disabled = false;
+  } else if (st === 'playing'){
+    play.disabled = true;
+    pause.disabled = false; pause.setAttribute('data-state', 'playing');
+    stop.disabled = false;
+  } else if (st === 'paused'){
+    play.disabled = false; play.setAttribute('data-state', 'paused');
+    pause.disabled = true; stop.disabled = false;
+  } else {
+    play.disabled = false; pause.disabled = true; stop.disabled = true;
+  }
+}
 
 /* iOS/Safari 兩個坑，都要照《321領導力》的作法避開：
    ① 整個 App 只能有「一個」<audio> 元素，而且必須在使用者按下按鈕的那一瞬間
@@ -4465,11 +4502,15 @@ function ttsNativeFrom(i){
   u.onerror = () => { if (spk.on && !spk.abort) ttsNativeFrom(i + 1); };
   try{ speechSynthesis.speak(u); }catch(e){ ttsStop(); }
 }
-function ttsToggle(){
-  if (spk.on){ ttsStop(); return; }
-  ttsUnlock();                       // 一定要在這裡（還在使用者的點擊手勢裡）
+/* ▶ 開始／接續：暫停中就直接接續播放；閒置就照優先順序決定從哪裡開始
+   （使用者指定的段落 > 上次按停的位置，兩者都要同一書卷／章節／連讀模式才算數 > 目前捲動位置）。*/
+function ttsStart(){
+  if (spk.on && spk.paused){ ttsResumePlaying(); return; }
+  if (spk.on) return;                 // 正在播放時 ▶ 是 disabled，這裡多一層保險
+  ttsUnlock();                        // 一定要在這裡（還在使用者的點擊手勢裡）
   let items, startIdx = 0;
-  const mark = ttsResume;
+  const mark = ttsStartAt || ttsResume;
+  ttsStartAt = null;
   const sameSpot = mark && mark.book === RD.book && mark.flow === RD.flow && (RD.flow || mark.ch === RD.ch);
   if (sameSpot){
     items = buildQueue(true);          // 接續播放要看得到整段內容，不能只從目前捲動位置切
@@ -4480,11 +4521,28 @@ function ttsToggle(){
     items = buildQueue();
   }
   if (!items.length) return;
-  spk = { on:true, items, idx:startIdx, audio:null, cache:{}, native:false, abort:false };
+  spk = { on:true, paused:false, items, idx:startIdx, audio:null, cache:{}, native:false, abort:false };
   ttsBtn('loading');
   ttsPlayFrom(startIdx);
 }
-/* natural=true 表示唸到整段結尾自然結束，不是使用者按停——這時候沒有「接續點」可言 */
+/* ⏸ 暫停：原地停住聲音（不是重新抓一段），保留精確的播放位置，方便馬上接回去 */
+function ttsPauseNow(){
+  if (!spk.on || spk.paused) return;
+  spk.paused = true;
+  try{ if (spk.audio) spk.audio.pause(); }catch(e){}
+  try{ if (spk.native && 'speechSynthesis' in window) speechSynthesis.pause(); }catch(e){}
+  ttsBtn('paused');
+}
+function ttsResumePlaying(){
+  if (!spk.on || !spk.paused) return;
+  spk.paused = false;
+  ttsBtn('playing');
+  try{
+    if (spk.native){ if ('speechSynthesis' in window) speechSynthesis.resume(); }
+    else if (spk.audio){ const p = spk.audio.play(); if (p && p.catch) p.catch(() => {}); }
+  }catch(e){}
+}
+/* ⏹ 停止：natural=true 表示唸到整段結尾自然結束，不是使用者按停——這時候沒有「接續點」可言 */
 function ttsStop(natural){
   if (sayId !== null){ sayId = null; paintSay(); }
   if (spk.on && !natural){
@@ -4495,7 +4553,7 @@ function ttsStop(natural){
   } else if (natural){
     ttsResume = null;
   }
-  spk.on = false; spk.abort = true;
+  spk.on = false; spk.paused = false; spk.abort = true;
   try{ if (ttsEl){ ttsEl.pause(); } }catch(e){}
   spk.audio = null;
   try{ if ('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){}
