@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.7.3';
+const VERSION = 'v2.7.4';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -34,7 +34,7 @@ const I18N = {
   zh: { app:'321互動聖經', today:'今日', books:'經卷', search:'搜尋', companion:'小智', companionFull:'小智AI屬靈同伴', me:'我的',
         ot:'舊約', nt:'新約', ch:'章', chapter:n=>`第 ${n} 章`, verses:'節', bookUnit:'卷',
         cont:'繼續閱讀', start:'開始讀經', daily:'今日默想', progress:'讀經進度',
-        prev:'上一章', next:'下一章', toc:'目錄', pure:'閱讀方式', note:'註釋',
+        prev:'上一章', next:'下一章', toc:'目錄', pure:'閱讀方式', note:'註釋', back:'返回',
         modes:['分章','整卷連讀'], onoff:['顯示','隱藏'],
         shCh:'顯示章', shV:'顯示節',
         shChHint:['每章開頭有淡雅的章題','看不到章題'],
@@ -116,7 +116,7 @@ const I18N = {
   zs: { app:'321互动圣经', today:'今日', books:'经卷', search:'搜索', companion:'小智', companionFull:'小智AI属灵同伴', me:'我的',
         ot:'旧约', nt:'新约', ch:'章', chapter:n=>`第 ${n} 章`, verses:'节', bookUnit:'卷',
         cont:'继续阅读', start:'开始读经', daily:'今日默想', progress:'读经进度',
-        prev:'上一章', next:'下一章', toc:'目录', pure:'阅读方式', note:'注释',
+        prev:'上一章', next:'下一章', toc:'目录', pure:'阅读方式', note:'注释', back:'返回',
         modes:['分章','整卷连读'], onoff:['显示','隐藏'],
         shCh:'显示章', shV:'显示节',
         shChHint:['每章开头有淡雅的章题','看不到章题'],
@@ -199,7 +199,7 @@ const I18N = {
         companionFull:'Xiaozhi — AI Companion', me:'Me',
         ot:'Old Testament', nt:'New Testament', ch:'ch', chapter:n=>`Chapter ${n}`, verses:'verses', bookUnit:'books',
         cont:'Continue reading', start:'Start reading', daily:"Today's meditation", progress:'Reading progress',
-        prev:'Previous', next:'Next', toc:'Contents', pure:'Reading mode', note:'Notes',
+        prev:'Previous', next:'Next', toc:'Contents', pure:'Reading mode', note:'Notes', back:'Back',
         modes:['By chapter','Whole book'], onoff:['Show','Hide'],
         shCh:'Chapter headings', shV:'Verse numbers',
         shChHint:['A quiet heading at the start of each chapter','No chapter headings'],
@@ -367,6 +367,13 @@ function applyChrome(){
   document.title = t().app;
   ['today','books','search','companion','team','me'].forEach(k => { const e = $('#tab-' + k); if (e) e.textContent = t()[k]; });
   $$('#langswitch button').forEach(b => b.classList.toggle('active', b.dataset.lang === state.lang));
+  syncHeaderH();
+}
+/* 頂欄高度會因安全區域（瀏海／圓角）而不同機型不一樣，量實際高度存成 CSS 變數，
+   讓閱讀器工具列可以貼齊在頂欄下面，捲動時工具列會黏住、隨時按得到朗讀鍵 */
+function syncHeaderH(){
+  const hd = document.querySelector('header.topbar');
+  if (hd) document.documentElement.style.setProperty('--header-h', hd.offsetHeight + 'px');
 }
 
 /* ---------------------------------------------------------------- 資料 */
@@ -795,6 +802,7 @@ async function viewReader(v, bookId, ch){
   }
   watchProgress(bookId, flow, b.ch);
   ttsRebind();
+  ttsBtn(spk.on ? 'playing' : '');   // 換頁後工具列重新畫過，朗讀中要保持反白，不能又變回沒在讀的樣子
 }
 
 /* 讀到哪裡就記到哪裡。分章模式捲到底即算讀完；
@@ -3852,7 +3860,7 @@ async function viewCompanion(v){
   const L = t();
   const b = RD.book ? BOOK[RD.book] : null;
   v.innerHTML = `<div class="chatwrap">
-      <div class="xz-head"><img src="icon-72.png" alt=""><span>${esc(L.companionFull)}</span></div>
+      <div class="xz-head"><button class="xz-back" id="xzBack" title="${esc(L.back || '返回')}">‹</button><img src="icon-72.png" alt=""><span>${esc(L.companionFull)}</span></div>
       ${b ? `<div class="chatctx">${esc(L.ctx(bname(b), RD.ch))}</div>` : ''}
       <button class="qs-toggle" id="qsBtn">💡 ${esc(L.examples)}</button>
       <div class="qs-panel" id="qsPanel" hidden></div>
@@ -3861,6 +3869,12 @@ async function viewCompanion(v){
         <textarea id="chatIn" rows="1" placeholder="${esc(L.chatPH)}"></textarea>
         <button id="chatSend">${esc(L.send)}</button>
       </div></div>`;
+  $('#xzBack', v).onclick = () => {
+    /* 從某節經文按「問小智」進來的，直接回讀經那一節；不然就照瀏覽紀錄退回去 */
+    if (RD.book) go(`#/read/${RD.book}/${RD.ch}`);
+    else if (history.length > 1) history.back();
+    else go('#/today');
+  };
   const panel = $('#qsPanel', v);
   panel.innerHTML = (QBANK[state.lang] || QBANK.zh).map(q => `<button class="qs-chip">${esc(q)}</button>`).join('');
   $('#qsBtn', v).onclick = () => { panel.hidden = !panel.hidden; };
@@ -4197,6 +4211,9 @@ const TTS_CHUNK = () => isEN() ? TTS_CHUNK_EN : TTS_CHUNK_ZH;
 const RA_COOLDOWN = 4000;
 let spk = { on:false, items:[], idx:0, audio:null, cache:{}, native:false, abort:false };
 let raManualAt = 0;
+/* 手動按停時，記下停在哪一句（書卷／章／段／句），下次再按朗讀從這裡接下去唸，
+   不必從頭或從目前捲動位置重來。換了書卷／章節，或整段唸完，就不算數了。 */
+let ttsResume = null;
 
 /* 朗讀發音修正（僅影響語音，不影響畫面文字） */
 const TTS_FIX = [
@@ -4266,10 +4283,12 @@ function ttsPrep(s){
 /* 一次送出去的語音仍然是好幾句接在一起（少一點請求、語氣才連得順），
    但畫面上的顏色標示要「一句一句」跟著走，不是整段一起亮。
    所以每一段都記下裡面每一句各佔多少字，播放時依進度比例算出正在讀哪一句。 */
-function buildQueue(){
+function buildQueue(all){
   let els = $$('#reader .sent');
-  const from = els.findIndex(el => el.getBoundingClientRect().bottom > 0);
-  if (from > 0) els = els.slice(from);
+  if (!all){
+    const from = els.findIndex(el => el.getBoundingClientRect().bottom > 0);
+    if (from > 0) els = els.slice(from);
+  }
   const items = []; let cur = { text:'', els:[], segs:[], lens:[], at:-1 };
   const push = () => { if (cur.text) items.push(cur); cur = { text:'', els:[], segs:[], lens:[], at:-1 }; };
   /* 先併成「完整句」，再切段送語音——一句話絕不會被切成兩段 */
@@ -4400,7 +4419,7 @@ async function ttsPrefetch(i){
 }
 async function ttsPlayFrom(i){
   if (!spk.on || spk.abort) return;
-  if (i >= spk.items.length){ ttsStop(); return; }
+  if (i >= spk.items.length){ ttsStop(true); return; }
   spk.idx = i; raShow(spk.items[i]);
   /* 先排這一段自己的請求，再排後面的預抓——否則第一聲會等在後面兩段的後面 */
   if (spk.cache[i] === undefined) await ttsPrefetch(i);
@@ -4430,9 +4449,9 @@ async function ttsPlayFrom(i){
   }
 }
 function ttsNativeFrom(i){
-  if (!('speechSynthesis' in window)){ toast(t().ttsErr); ttsStop(); return; }
+  if (!('speechSynthesis' in window)){ toast(t().ttsErr); ttsStop(true); return; }
   if (!spk.native){ spk.native = true; toast(t().ttsFallback + (ttsLastErr ? '（' + ttsLastErr + '）' : '')); }
-  if (!spk.on || spk.abort || i >= spk.items.length){ ttsStop(); return; }
+  if (!spk.on || spk.abort || i >= spk.items.length){ ttsStop(i >= spk.items.length); return; }
   spk.idx = i; raShow(spk.items[i]); ttsBtn('playing');
   const say = ttsPrep(spk.items[i].text);
   const u = new SpeechSynthesisUtterance(say);
@@ -4449,14 +4468,33 @@ function ttsNativeFrom(i){
 function ttsToggle(){
   if (spk.on){ ttsStop(); return; }
   ttsUnlock();                       // 一定要在這裡（還在使用者的點擊手勢裡）
-  const items = buildQueue();
+  let items, startIdx = 0;
+  const mark = ttsResume;
+  const sameSpot = mark && mark.book === RD.book && mark.flow === RD.flow && (RD.flow || mark.ch === RD.ch);
+  if (sameSpot){
+    items = buildQueue(true);          // 接續播放要看得到整段內容，不能只從目前捲動位置切
+    const idx = items.findIndex(it => it.segs.some(g => g.some(e =>
+      e.dataset.c === mark.c && e.dataset.p === mark.p && e.dataset.s === mark.s)));
+    if (idx >= 0) startIdx = idx;
+  } else {
+    items = buildQueue();
+  }
   if (!items.length) return;
-  spk = { on:true, items, idx:0, audio:null, cache:{}, native:false, abort:false };
+  spk = { on:true, items, idx:startIdx, audio:null, cache:{}, native:false, abort:false };
   ttsBtn('loading');
-  ttsPlayFrom(0);
+  ttsPlayFrom(startIdx);
 }
-function ttsStop(){
+/* natural=true 表示唸到整段結尾自然結束，不是使用者按停——這時候沒有「接續點」可言 */
+function ttsStop(natural){
   if (sayId !== null){ sayId = null; paintSay(); }
+  if (spk.on && !natural){
+    const it = spk.items[spk.idx];
+    const seg = it && it.segs && it.at >= 0 ? it.segs[it.at] : null;
+    const el = seg && seg.find(e => e && e.isConnected);
+    if (el) ttsResume = { book:RD.book, ch:RD.ch, flow:RD.flow, c:el.dataset.c, p:el.dataset.p, s:el.dataset.s };
+  } else if (natural){
+    ttsResume = null;
+  }
   spk.on = false; spk.abort = true;
   try{ if (ttsEl){ ttsEl.pause(); } }catch(e){}
   spk.audio = null;
@@ -4589,6 +4627,8 @@ async function boot(){
   clearTimeout(diagTimer);
   const b = $('#boot'); if (b) b.remove();
   window.addEventListener('hashchange', () => { ttsStop(); render(); });
+  window.addEventListener('resize', syncHeaderH);
+  window.addEventListener('orientationchange', () => setTimeout(syncHeaderH, 200));
   if ('serviceWorker' in navigator){
     try{
       swReg = await navigator.serviceWorker.register('sw.js');

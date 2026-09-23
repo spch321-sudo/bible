@@ -186,7 +186,9 @@ nav.tabbar a svg{width:20px;height:20px;}
 .chbtn.now{background:var(--accent); border-color:var(--accent); color:#fff;}
 
 /* ---------- 閱讀器 ---------- */
-.chtoolbar{display:flex; align-items:center; gap:7px; margin-bottom:12px; flex-wrap:wrap;}
+/* 貼在頂欄下面、跟著捲動黏住——長章節往下讀也能隨時按到朗讀鍵，不必捲回最上面 */
+.chtoolbar{display:flex; align-items:center; gap:7px; margin-bottom:12px; flex-wrap:wrap;
+  position:sticky; top:var(--header-h, 56px); z-index:15; background:var(--bg); padding:8px 0;}
 .chtb-btn{display:inline-flex; align-items:center; justify-content:center; min-width:36px; height:36px; padding:0 10px; border:1px solid var(--border-strong); background:var(--surface); color:var(--ink); border-radius:9px; font-size:15px; text-decoration:none; cursor:pointer;}
 .chtb-btn:active{opacity:.75;}
 .chtb-btn[data-state="loading"]{opacity:.6;}
@@ -467,6 +469,9 @@ select.cardinput{appearance:none; -webkit-appearance:none;
 .xz-head{display:flex; align-items:center; gap:8px; margin-bottom:8px;
   font-family:var(--f-serif); font-weight:900; font-size:15px; color:var(--accent);}
 .xz-head img{width:24px; height:24px; border-radius:6px;}
+.xz-back{border:none; background:transparent; color:var(--ink); font-size:22px; line-height:1;
+  padding:2px 6px 2px 0; margin:-2px 0; cursor:pointer; font-family:inherit;}
+.xz-back:active{opacity:.6;}
 .chatctx{font-size:12px; color:var(--ink-faint); background:var(--surface-alt); border-radius:999px; padding:5px 12px; margin-bottom:8px; align-self:flex-start;}
 .chatinput{display:flex; gap:8px; padding:10px 0 calc(10px + env(safe-area-inset-bottom)); border-top:1px solid var(--border); background:var(--bg);}
 .chatinput textarea{flex:1; resize:none; border:1px solid var(--border-strong); border-radius:10px; padding:10px 12px; font-size:16px; background:var(--surface); color:var(--ink); font-family:inherit; max-height:100px;}
