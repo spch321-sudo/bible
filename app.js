@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.7.5';
+const VERSION = 'v2.7.6';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -76,7 +76,7 @@ const I18N = {
         saveIOS:'請在選單裡選「儲存影像」，圖就會進相簿',
         savedFile:'已下載到「檔案」App 的下載項目',
         holdT:'長按下面這張圖', holdS:'選「加入照片」或「儲存影像」，就會存進相簿。',
-        photo:'加一張相片（選用）', photoPick:'從相簿選相片', photoSwap:'換一張', photoDel:'移除相片',
+        photo:'加一張相片（選用）', photoPick:'從相簿選相片', photoSwap:'從相簿換一張', photoDel:'移除相片',
         photoBg:['作背景','作背景'], photoStk:['貼在卡片上','贴在卡片上'],
         photoHint:'可以當卡片背景，也可以像貼紙貼上去，大小與位置都能調。',
         photoBad:'這張相片讀不出來，換一張試試',
@@ -159,7 +159,7 @@ const I18N = {
         saveIOS:'请在菜单里选“存储图像”，图就会进相册',
         savedFile:'已下载到“文件”App 的下载项目',
         holdT:'长按下面这张图', holdS:'选“加入照片”或“存储图像”，就会存进相册。',
-        photo:'加一张相片（选用）', photoPick:'从相册选相片', photoSwap:'换一张', photoDel:'移除相片',
+        photo:'加一张相片（选用）', photoPick:'从相册选相片', photoSwap:'从相册换一张', photoDel:'移除相片',
         photoBg:['作背景','作背景'], photoStk:['贴在卡片上','贴在卡片上'],
         photoHint:'可以当卡片背景，也可以像贴纸贴上去，大小与位置都能调。',
         photoBad:'这张相片读不出来，换一张试试',
@@ -244,7 +244,7 @@ const I18N = {
         saveIOS:'Choose “Save Image” in the menu and it goes to your photos',
         savedFile:'Downloaded to the Files app',
         holdT:'Press and hold the image below', holdS:'Choose “Add to Photos” or “Save Image” to keep it.',
-        photo:'Add a photo (optional)', photoPick:'Choose a photo', photoSwap:'Change photo', photoDel:'Remove photo',
+        photo:'Add a photo (optional)', photoPick:'Choose a photo', photoSwap:'Choose from album', photoDel:'Remove photo',
         photoBg:['As background','As background'], photoStk:['As a sticker','As a sticker'],
         photoHint:'Use it as the card background, or stick it on like a polaroid. Size and position are adjustable.',
         photoBad:"That photo could not be read — try another one",
