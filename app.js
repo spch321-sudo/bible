@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.7.9';
+const VERSION = 'v2.7.10';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -408,13 +408,36 @@ function syncHeaderH(){
 /* ---------------------------------------------------------------- 資料 */
 /* 讀資料檔。少一個檔就直接說出檔名——不要讓瀏覽器把 404 頁面當成 JSON 去解析，
    那樣只會冒出「The string did not match the expected pattern」這種看不懂的訊息。 */
+/* 把某個檔案從所有版本的 Service Worker 快取裡清掉。用在讀到「快取存了半份
+   壞掉的資料」時自救——不必等使用者自己去清瀏覽器快取或重裝 App。 */
+async function purgeCached(file){
+  if (typeof caches === 'undefined') return;
+  try{
+    const names = await caches.keys();
+    await Promise.all(names.map(async name => {
+      const c = await caches.open(name);
+      const reqs = await c.keys();
+      await Promise.all(reqs.filter(rq => rq.url.endsWith(file)).map(rq => c.delete(rq)));
+    }));
+  }catch(e){ /* 清不掉就算了，不要因為這個再多噴一個錯誤 */ }
+}
 async function fetchJSON(file){
   let r;
   try{ r = await fetch(file); }
   catch(e){ throw new Error(`讀不到 ${file}（網路問題）`); }
   if (!r.ok) throw new Error(`網站上找不到 ${file}（HTTP ${r.status}）──這個檔還沒上傳`);
   try{ return await r.json(); }
-  catch(e){ throw new Error(`${file} 的內容不是有效的 JSON，請重新上傳這個檔`); }
+  catch(e){
+    /* 部署或網路不穩時，Service Worker 有可能把不完整的內容當成成功存進快取，
+       之後每次都讀到同一份壞掉的資料。先清掉那份快取，換一個網址（避開快取）
+       重抓一次；還是不行才真的放棄，提醒使用者手動重新整理。 */
+    await purgeCached(file);
+    try{
+      const r2 = await fetch(file + (file.indexOf('?') > -1 ? '&' : '?') + '_retry=' + Date.now());
+      if (r2.ok) return await r2.json();
+    }catch(e2){ /* 補救也失敗，往下丟出原本的錯誤 */ }
+    throw new Error(`${file} 的內容不是有效的 JSON，請重新整理頁面再試一次`);
+  }
 }
 async function loadTOC(){
   if (TOC.length) return;

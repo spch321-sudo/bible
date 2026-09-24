@@ -1,7 +1,7 @@
 /* 321互動聖經 — Service Worker
    每次改動內容或程式，務必把 VERSION 往上加，
    否則已安裝的使用者不會看到更新。 */
-const VERSION = 'ib-v2.7.9';
+const VERSION = 'ib-v2.7.10';
 
 const SHELL = [
   './', './index.html', './app.js', './manifest.json', './toc.json', './plans.json', './cover.jpg',
@@ -28,10 +28,17 @@ self.addEventListener('fetch', e => {
   if (url.origin !== location.origin) return;   // TTS / 陪讀 等外部請求不攔截
 
   // 經文資料：cache-first（讀過一次即可離線）
+  // 注意：只有 res.ok（HTTP 200系列）才寫進快取——網路不穩、GitHub Pages
+  // 剛部署完那幾秒偶爾會回傳 404／5xx 或不完整的內容，若不判斷就整包存進去，
+  // 那個壞掉的版本會被「快取命中」永遠鎖住，使用者之後每次都讀到同一份壞檔，
+  // 得等到下次 VERSION 再往上加才會被清掉。
   if (/bible\.[a-z]+\.[a-z0-9]+\.json$/.test(url.pathname) || url.pathname.endsWith('toc.json') || url.pathname.endsWith('plans.json')){
     e.respondWith(
       caches.open(VERSION).then(c =>
-        c.match(req).then(hit => hit || fetch(req).then(res => { c.put(req, res.clone()); return res; }))
+        c.match(req).then(hit => hit || fetch(req).then(res => {
+          if (res.ok) c.put(req, res.clone());
+          return res;
+        }))
       )
     );
     return;
@@ -40,8 +47,10 @@ self.addEventListener('fetch', e => {
   // 其餘：network-first，離線時回落到快取
   e.respondWith(
     fetch(req).then(res => {
-      const copy = res.clone();
-      caches.open(VERSION).then(c => c.put(req, copy)).catch(() => {});
+      if (res.ok){
+        const copy = res.clone();
+        caches.open(VERSION).then(c => c.put(req, copy)).catch(() => {});
+      }
       return res;
     }).catch(() => caches.match(req).then(hit => hit || caches.match('./index.html')))
   );
