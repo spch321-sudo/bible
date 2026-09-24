@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.7.13';
+const VERSION = 'v2.7.14';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -560,12 +560,20 @@ let bmMode = false;                 // 書籤模式（只存在當下，不寫�
 function anchorEl(a){
   return a ? $(`#reader .sent[data-c="${a.c}"][data-p="${a.p}"][data-s="${a.s}"]`) : null;
 }
-function scrollToAnchor(a){
+function scrollToAnchor(a, opts){
   const el = anchorEl(a);
   if (!el) return false;
+  const center = opts && opts.center;
   requestAnimationFrame(() => {
-    const y = el.getBoundingClientRect().top + window.scrollY - 96;
-    window.scrollTo(0, Math.max(0, y));
+    if (center){
+      /* 搜尋結果點進來是「找這一句」而不是「接著往下讀」，置中比較看得清楚上下文。
+         用 scrollIntoView 而不是手算 window.scrollTo：不用猜真正在捲動的是 window
+         還是 body（不同瀏覽器、不同版面高度算法可能不一樣），瀏覽器自己找對容器捲。 */
+      el.scrollIntoView({ block:'center', behavior:'auto' });
+    } else {
+      const y = el.getBoundingClientRect().top + window.scrollY - 96;
+      window.scrollTo(0, Math.max(0, y));
+    }
   });
   return true;
 }
@@ -1047,7 +1055,7 @@ async function viewReader(v, bookId, ch){
             || list.find(e => (+e.dataset.v || 0) === jh.v);
     if (el){
       createHl(el, jh.c);
-      scrollToAnchor({ c:jh.c, p:el.dataset.p, s:el.dataset.s });
+      scrollToAnchor({ c:jh.c, p:el.dataset.p, s:el.dataset.s }, { center:true });
     }
   }
   watchProgress(bookId, flow, b.ch);
