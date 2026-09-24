@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.7.10';
+const VERSION = 'v2.7.11';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -57,7 +57,9 @@ const I18N = {
         spanDoneV:n=>`已畫整節，共 ${n} 句`, spanDoneP:n=>`已畫整段，共 ${n} 句`,
         team:'團隊', myHl:'我的畫線', myFav:'我的收藏', settings:'設定', font:'字級大小', theme:'主題',
         fonts:['標準','大','特大','超大'], themes:['自動','日','夜','羊皮紙'],
-        voice:'朗讀聲音', langLabel:'語言', stats:['已讀章數','畫線','書籤'],
+        voice:'朗讀聲音', ttsAutoNext:'讀完自動接下一章',
+        ttsAutoNextHint:['一章朗讀完會自動翻到下一章繼續唸','讀完這一章就停下來，不會自動翻頁'],
+        langLabel:'語言', stats:['已讀章數','畫線','書籤'],
         diag:'連線測試', diagRun:'測試小智與朗讀', diagBusy:'測試中…',
         upd:'版本更新', updCheck:'檢查更新', updChecking:'檢查中…', updLatest:'已經是最新版本',
         updFound:'找到新版本，下載中…', updReadyBar:'有新版本，點一下立即更新 ↻', updFail:'檢查失敗，請稍後再試',
@@ -147,7 +149,9 @@ const I18N = {
         spanDoneV:n=>`已划整节，共 ${n} 句`, spanDoneP:n=>`已划整段，共 ${n} 句`,
         team:'团队', myHl:'我的划线', myFav:'我的收藏', settings:'设置', font:'字级大小', theme:'主题',
         fonts:['标准','大','特大','超大'], themes:['自动','日','夜','羊皮纸'],
-        voice:'朗读声音', langLabel:'语言', stats:['已读章数','划线','书签'],
+        voice:'朗读声音', ttsAutoNext:'读完自动接下一章',
+        ttsAutoNextHint:['一章朗读完会自动翻到下一章继续念','读完这一章就停下来，不会自动翻页'],
+        langLabel:'语言', stats:['已读章数','划线','书签'],
         diag:'连线测试', diagRun:'测试小智与朗读', diagBusy:'测试中…',
         upd:'版本更新', updCheck:'检查更新', updChecking:'检查中…', updLatest:'已经是最新版本',
         updFound:'找到新版本，下载中…', updReadyBar:'有新版本，点一下立即更新 ↻', updFail:'检查失败，请稍后再试',
@@ -239,7 +243,9 @@ const I18N = {
         spanDoneV:n=>`Whole verse — ${n} sentence${n===1?'':'s'}`, spanDoneP:n=>`Whole paragraph — ${n} sentence${n===1?'':'s'}`,
         team:'Team', myHl:'My highlights', myFav:'My saved replies', settings:'Settings', font:'Text size', theme:'Theme',
         fonts:['Normal','Large','Larger','Largest'], themes:['Auto','Day','Night','Parchment'],
-        voice:'Reading voice', langLabel:'Language', stats:['Chapters read','Highlights','Bookmarks'],
+        voice:'Reading voice', ttsAutoNext:'Auto-continue to next chapter',
+        ttsAutoNextHint:['When a chapter finishes reading aloud, automatically move on to the next one','Stop when this chapter ends — no automatic page turn'],
+        langLabel:'Language', stats:['Chapters read','Highlights','Bookmarks'],
         diag:'Connection test', diagRun:'Test Xiaozhi and read-aloud', diagBusy:'Testing…',
         upd:'Updates', updCheck:'Check for updates', updChecking:'Checking…', updLatest:'You have the latest version',
         updFound:'Update found, downloading…', updReadyBar:'A new version is ready — tap to update ↻', updFail:'Check failed, please try again later',
@@ -332,7 +338,7 @@ const VOICES = {
 const DEFAULTS = { lang:'zh', font:0, theme:0, flow:false, shCh:true, shV:true, hidenote:false,
                    cardTpl:'navy', cardSize:'t', cardBorder:'classic', cardFs:1,
                    cardTop:'', cardSign:'', cardTo:'',
-                   voice:{zh:0, zs:0, en:0} };
+                   voice:{zh:0, zs:0, en:0}, ttsAutoNext:false };
 /* 「淨」鍵依序切換的四種組合：[整卷連讀?, 顯示章號?] */
 /* 「淨」鍵循環的四種常用讀法：[整卷連讀, 顯示章, 顯示節] */
 const VIEW_CYCLE = [[false, true, true], [false, true, false], [false, false, false], [true, false, false]];
@@ -582,6 +588,10 @@ async function render(){
   }catch(e){
     v.innerHTML = `<div class="empty">載入失敗：${esc(e.message || e)}</div>`;
     console.error(e);
+  }
+  if (tab === 'read' && ttsAutoNextPending){
+    ttsAutoNextPending = false;
+    ttsStart();   // 接著唸下一章；ttsUnlock() 裡已經解鎖過，這裡不在點擊手勢裡也還是播得出來
   }
   if (tab !== 'read'){ bmMode = false; document.documentElement.classList.remove('bmmode'); }
   if (tab !== 'studio'){ stopSelfie(); if (recMode === 's') recMode = 'c'; }
@@ -4332,6 +4342,11 @@ async function viewMe(v){
         <button class="${state.hidenote ? 'on' : ''}" data-i="1">${esc(L.onoff[1])}</button></div></div>
       <div class="setrow"><div class="sl">${esc(L.voice)}</div><div class="segbtns" id="setVoice">
         ${VOICES[state.lang].map((v2, i) => `<button class="${state.voice[state.lang] === i ? 'on' : ''}" data-i="${i}">${esc(v2.n)}</button>`).join('')}</div></div>
+      <div class="setrow"><div class="sl">${esc(L.ttsAutoNext)}
+        <div class="muted" style="font-size:11.5px;line-height:1.6">${esc(L.ttsAutoNextHint[state.ttsAutoNext ? 0 : 1])}</div></div>
+        <div class="segbtns" id="setAutoNext">
+        ${L.onoff.map((m, i) => `<button class="${(state.ttsAutoNext ? 0 : 1) === i ? 'on' : ''}" data-i="${i}">${esc(m)}</button>`).join('')}
+        </div></div>
       <div class="setrow"><div class="sl">${esc(L.upd)}<div class="muted" style="font-size:11.5px;line-height:1.6" id="updOut"></div></div>
         <div class="segbtns"><button id="updBtn">${esc(L.updCheck)}</button></div></div>
     </div>
@@ -4380,6 +4395,7 @@ async function viewMe(v){
   $$('#setShV  button', v).forEach(b => b.onclick = () => { state.shV  = b.dataset.i === '0'; saveState(); applyChrome(); render(); });
   $$('#setNote button', v).forEach(b => b.onclick = () => { state.hidenote = b.dataset.i === '1'; saveState(); applyChrome(); render(); });
   $$('#setVoice button', v).forEach(b => b.onclick = () => { state.voice[state.lang] = +b.dataset.i; saveState(); render(); });
+  $$('#setAutoNext button', v).forEach(b => b.onclick = () => { state.ttsAutoNext = b.dataset.i === '0'; saveState(); render(); });
   const sortedMarks = user.marks.slice().sort((a, b2) => b2.ts - a.ts);
   $$('[data-bmgo]', v).forEach(b => b.onclick = () => openAt(sortedMarks[+b.dataset.bmgo]));
   $$('[data-bmdel]', v).forEach(b => b.onclick = () => {
@@ -4458,6 +4474,10 @@ let ttsResume = null;
 /* 使用者在畫線面板點「從這裡開始朗讀」指定的位置——只用這一次，用過就清掉，
    優先順序比 ttsResume 高（指定位置 > 上次停下的位置 > 目前捲動位置）。 */
 let ttsStartAt = null;
+/* 一章唸完、設定裡開了「讀完自動接下一章」時，ttsStop(true) 會先翻頁（go），
+   翻頁是非同步的（要抓下一章資料），等 render() 把新的一章畫出來之後，
+   才看得到這個旗標，決定要不要自動按下 ▶。用完就要清掉，不然一般换頁也會被誤觸發。 */
+let ttsAutoNextPending = false;
 
 /* 朗讀發音修正（僅影響語音，不影響畫面文字） */
 const TTS_FIX = [
@@ -4465,7 +4485,9 @@ const TTS_FIX = [
   [/行為/g, '行圍'], [/為大/g, '圍大'], [/中了/g, '衷了'],
   [/教會/g, '叫會'], [/傳道/g, '船道'], [/朝見/g, '潮見'],
   [/應當/g, '英當'], [/應許/g, '英許'], [/相應/g, '相映'],
-  [/看守/g, '刊守'], [/種子/g, '腫子'], [/中間/g, '衷間']
+  [/看守/g, '刊守'], [/種子/g, '腫子'], [/中間/g, '衷間'],
+  [/分開/g, '芬開'],           // 分：這裡要唸 fēn（分開），不是 fèn
+  [/地發生/g, '第發生']        // 地：這裡是「大地」的地，要唸 dì，不是輕聲的「地」（…地做…）
 ];
 /* 「創 1:26」唸成「創世記第1章第26節」。
    縮寫直接唸出來很怪（而且「創」「約」單獨一個字根本聽不懂），
@@ -4794,6 +4816,19 @@ function ttsStop(natural){
   spk.audio = null;
   try{ if ('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){}
   raClear(); ttsBtn('');
+  if (natural) ttsMaybeAutoNext();
+}
+/* 一章自然唸完時（不是使用者按停），看設定要不要自動接下一章：
+   整卷連讀本來就整卷唸完才會停，不需要再翻頁；分章模式才適用。
+   跨書卷比照 ▶「下一章」按鈕的規則，唸到啟示錄 22 章就自然停下。 */
+function ttsMaybeAutoNext(){
+  if (!state.ttsAutoNext || RD.flow || !RD.book) return;
+  const b = BOOK[RD.book]; if (!b) return;
+  let nb = b.i, nc = RD.ch + 1;
+  if (nc > b.ch){ nb = b.i + 1; nc = 1; }
+  if (nb < 0 || nb > 65) return;
+  ttsAutoNextPending = true;
+  go(`#/read/${TOC[nb].id}/${nc}`);
 }
 /* 目前正在唸第幾則小智的回答（null＝沒有在唸） */
 let sayId = null;
