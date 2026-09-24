@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.7.7';
+const VERSION = 'v2.7.8';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -3732,12 +3732,17 @@ async function doSearch(q){
     for (const bid in d){
       const b = BOOK[bid]; if (!b) continue;
       d[bid].forEach((chap, ci) => {
+        /* curV 要跨區塊延續——詩歌體每一行是獨立區塊，續行的節號是 0，
+           不跟著記就會變成「這節是第 0 節」，出處只剩到章沒有節。做法跟 chapterHTML() 一樣。 */
+        let curV = 0;
         chap.forEach(bl => {
+          if (bl[0] === 'b') return;
           for (let j = 2; j < bl.length; j += 2){
+            const vno = bl[j - 1]; if (vno) curV = vno;
             if (!has(bl[j])) continue;
             for (const sx of splitSentences(bl[j])){
               if (has(sx) && res.length < 400)
-                res.push({ b:bid, c:ci + 1, x:sx });
+                res.push({ b:bid, c:ci + 1, v:curV, x:sx });
             }
           }
         });
@@ -3756,7 +3761,7 @@ function paintResults(){
   const rx = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), isEN() ? 'gi' : 'g');
   out.innerHTML = `<div class="muted" style="margin-bottom:8px">${esc(L.found(res.length))}${res.length >= 400 ? '＋' : ''}</div>` +
     res.map((r, i) => `<div class="sres" data-i="${i}">
-      <div class="sr">${esc(bname(BOOK[r.b]))} ${esc(chapLabel(r.b, r.c))}</div>
+      <div class="sr">${esc(cardRef({ b:r.b, ch:r.c, v:r.v }))}</div>
       <div class="sx">${esc(r.x).replace(rx, m => '<em>' + m + '</em>')}</div></div>`).join('');
   $$('.sres', out).forEach(e => e.onclick = () => {
     const r = res[+e.dataset.i]; go(`#/read/${r.b}/${r.c}`);
