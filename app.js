@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.7.12';
+const VERSION = 'v2.7.13';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -548,6 +548,14 @@ function currentAnchor(){
   return null;
 }
 let jumpTo = null;
+/* 從搜尋結果點進去，要在這一章渲染完之後自動幫命中的那一句加畫線＋捲過去，
+   方便回頭找「剛剛搜到的是哪一句」。只記書卷/章/節號＋命中片段，
+   渲染完之後在畫面上比對哪一句 .sent 元素符合，找不到就算了不強求。 */
+let jumpHl = null;
+function goSearchHit(r){
+  jumpHl = { b:r.b, c:r.c, v:r.v, x:r.x };
+  go(`#/read/${r.b}/${r.c}`);
+}
 let bmMode = false;                 // 書籤模式（只存在當下，不寫進設定）
 function anchorEl(a){
   return a ? $(`#reader .sent[data-c="${a.c}"][data-p="${a.p}"][data-s="${a.s}"]`) : null;
@@ -1030,6 +1038,18 @@ async function viewReader(v, bookId, ch){
     const target = $(`#reader p[data-c="${ch}"]`);
     if (target) requestAnimationFrame(() => target.scrollIntoView({ block:'start' }));
   }
+  /* 從搜尋結果點進來：找出命中的那一句（同一節、文字對得上），自動幫它加畫線再捲過去，
+     一眼就看得出「搜到的是這一句」，不用自己在整章裡再找一次。找不到就算了，不影響正常進頁。 */
+  if (jumpHl && jumpHl.b === bookId){
+    const jh = jumpHl; jumpHl = null;
+    const list = sentList(jh.c);
+    const el = list.find(e => (+e.dataset.v || 0) === jh.v && e.textContent.indexOf(jh.x) >= 0)
+            || list.find(e => (+e.dataset.v || 0) === jh.v);
+    if (el){
+      createHl(el, jh.c);
+      scrollToAnchor({ c:jh.c, p:el.dataset.p, s:el.dataset.s });
+    }
+  }
   watchProgress(bookId, flow, b.ch);
   ttsRebind();
   ttsBtn(spk.on ? (spk.paused ? 'paused' : 'playing') : '');   // 換頁後工具列重新畫過，朗讀（或暫停）狀態要保持，不能又變回沒在讀的樣子
@@ -1102,17 +1122,25 @@ function onSentTap(el){
   if (bmMode){ toggleBm(el, cno); return; }
   const k = hlKey(RD.book, cno, el.dataset.p, el.dataset.s);
   if (!user.hl[k] && el.dataset.op == null){
-    const h = { c:'gold', n:'', sp:1, t:el.textContent, b:RD.book, ch:cno,
-                v:+el.dataset.v || 0, ts:Date.now() };
-    user.hl[k] = h;
-    /* 一畫就畫一個完整句（到句號），不是只畫到逗號那一行 */
-    const list = sentList(cno), i = list.indexOf(el);
-    if (i >= 0) spanApply(cno, el, h, sentSpan(list, i));
-    saveUser();
-    paintHl(cno);
+    createHl(el, cno);
   } else {
     openHlSheet(el);
   }
+}
+/* 幫某一句加上金色畫線——點兩下同一句、或搜尋結果點進去自動畫線，都共用這一段。
+   已經畫過的句子不重複建立，回傳有沒有真的新建。 */
+function createHl(el, cno){
+  const k = hlKey(RD.book, cno, el.dataset.p, el.dataset.s);
+  if (user.hl[k]) return false;
+  const h = { c:'gold', n:'', sp:1, t:el.textContent, b:RD.book, ch:cno,
+              v:+el.dataset.v || 0, ts:Date.now() };
+  user.hl[k] = h;
+  /* 一畫就畫一個完整句（到句號），不是只畫到逗號那一行 */
+  const list = sentList(cno), i = list.indexOf(el);
+  if (i >= 0) spanApply(cno, el, h, sentSpan(list, i));
+  saveUser();
+  paintHl(cno);
+  return true;
 }
 /* 書籤：直接點那一句，再點一下移除 */
 function toggleBm(el, cno){
@@ -3985,7 +4013,7 @@ function paintResults(){
       <div class="sr">${esc(cardRef({ b:r.b, ch:r.c, v:r.v }))}</div>
       <div class="sx">${esc(r.x).replace(rx, m => '<em>' + m + '</em>')}</div></div>`).join('');
   $$('.sres', out).forEach(e => e.onclick = () => {
-    const r = res[+e.dataset.i]; go(`#/read/${r.b}/${r.c}`);
+    goSearchHit(res[+e.dataset.i]);
   });
 }
 
@@ -4351,31 +4379,37 @@ async function viewMe(v){
         <div class="segbtns"><button id="updBtn">${esc(L.updCheck)}</button></div></div>
     </div>
 
-    <div class="section-title">${esc(L.myBm)}</div>
-    <div class="card" style="padding:4px 16px">${user.marks.length
-      ? user.marks.slice().sort((a, b2) => b2.ts - a.ts).map((m, i) => `
-      <div class="hitem">
-        <div class="q">${markNotes(esc(m.t || ''))}…</div>
-        <div class="m"><span>${esc(BOOK[m.b] ? bname(BOOK[m.b]) : m.b)} ${esc(chapLabel(m.b, m.c))}</span>
-          <span><button data-bmgo="${i}">↗</button><button data-bmdel="${i}">✕</button></span></div>
-      </div>`).join('')
-      : `<div class="empty">${esc(L.emptyBm)}</div>`}</div>
+    <details class="grp">
+      <summary><span style="color:var(--gold)">◆</span>${esc(L.myBm)}<span class="cnt">${user.marks.length}</span></summary>
+      <div class="card" style="padding:4px 16px;border:none;border-radius:0;margin-bottom:0">${user.marks.length
+        ? user.marks.slice().sort((a, b2) => b2.ts - a.ts).map((m, i) => `
+        <div class="hitem">
+          <div class="q">${markNotes(esc(m.t || ''))}…</div>
+          <div class="m"><span>${esc(BOOK[m.b] ? bname(BOOK[m.b]) : m.b)} ${esc(chapLabel(m.b, m.c))}</span>
+            <span><button data-bmgo="${i}">↗</button><button data-bmdel="${i}">✕</button></span></div>
+        </div>`).join('')
+        : `<div class="empty">${esc(L.emptyBm)}</div>`}</div>
+    </details>
 
-    <div class="section-title">${esc(L.myHl)}</div>
-    <div class="card" style="padding:4px 16px">${hls.length ? hls.map(([k, h]) => `
-      <div class="hitem">
-        <div class="q">${markNotes(esc(h.t))}</div>
-        ${h.n ? `<div class="n">${esc(h.n)}</div>` : ''}
-        <div class="m"><span>${esc(cardRef(h))}</span>
-          <span><button data-card="${esc(k)}">🖼</button><button data-go="${h.b}|${h.ch}">↗</button><button data-del="${esc(k)}">✕</button></span></div>
-      </div>`).join('') : `<div class="empty">${esc(L.emptyHl)}</div>`}</div>
+    <details class="grp">
+      <summary><span style="color:var(--gold)">◆</span>${esc(L.myHl)}<span class="cnt">${hls.length}</span></summary>
+      <div class="card" style="padding:4px 16px;border:none;border-radius:0;margin-bottom:0">${hls.length ? hls.map(([k, h]) => `
+        <div class="hitem">
+          <div class="q">${markNotes(esc(h.t))}</div>
+          ${h.n ? `<div class="n">${esc(h.n)}</div>` : ''}
+          <div class="m"><span>${esc(cardRef(h))}</span>
+            <span><button data-card="${esc(k)}">🖼</button><button data-go="${h.b}|${h.ch}">↗</button><button data-del="${esc(k)}">✕</button></span></div>
+        </div>`).join('') : `<div class="empty">${esc(L.emptyHl)}</div>`}</div>
+    </details>
 
-    <div class="section-title">${esc(L.myFav)}</div>
-    <div class="card" style="padding:4px 16px">${user.fav.length ? user.fav.slice().reverse().map((f, i) => `
-      <div class="hitem"><div class="q" style="font-family:inherit;font-size:13.5px">${mdToHtml(f.text)}</div>
-        <div class="m"><span>${f.b && BOOK[f.b] ? esc(bname(BOOK[f.b])) + ' ' + esc(chapLabel(f.b, f.ch)) : ''}</span>
-        <button data-favdel="${user.fav.length - 1 - i}">✕</button></div></div>`).join('')
-      : `<div class="empty">${esc(L.emptyFav)}</div>`}</div>
+    <details class="grp">
+      <summary><span style="color:var(--gold)">◆</span>${esc(L.myFav)}<span class="cnt">${user.fav.length}</span></summary>
+      <div class="card" style="padding:4px 16px;border:none;border-radius:0;margin-bottom:0">${user.fav.length ? user.fav.slice().reverse().map((f, i) => `
+        <div class="hitem"><div class="q" style="font-family:inherit;font-size:13.5px">${mdToHtml(f.text)}</div>
+          <div class="m"><span>${f.b && BOOK[f.b] ? esc(bname(BOOK[f.b])) + ' ' + esc(chapLabel(f.b, f.ch)) : ''}</span>
+          <button data-favdel="${user.fav.length - 1 - i}">✕</button></div></div>`).join('')
+        : `<div class="empty">${esc(L.emptyFav)}</div>`}</div>
+    </details>
 
     <div class="muted" style="text-align:center;margin:18px 0 8px">
       ${esc(L.app)} ${VERSION}<br>和合本聖經屬公有領域，沒有版權限制</div>`;
