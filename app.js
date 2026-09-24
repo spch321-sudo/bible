@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.7.6';
+const VERSION = 'v2.7.7';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -4225,7 +4225,11 @@ async function runDiag(){
 const TTS_CHUNK_ZH = 130, TTS_CHUNK_EN = 320, TTS_LOOKAHEAD = 2, TTS_RETRY = [800, 1600];
 const TTS_CHUNK = () => isEN() ? TTS_CHUNK_EN : TTS_CHUNK_ZH;
 const RA_COOLDOWN = 4000;
-let spk = { on:false, paused:false, items:[], idx:0, audio:null, cache:{}, native:false, abort:false };
+let spk = { on:false, paused:false, items:[], idx:0, audio:null, cache:{}, native:false, abort:false, gen:0 };
+/* 每次「重新開始」一輪朗讀（▶ 開始、或畫線面板「從這裡開始朗讀」先 stop 再 start）就加一。
+   舊一輪還在等網路回來的 fetch，回來時只認這個號碼——號碼對不上就直接放手，
+   不然舊的那一輪回來會把畫面／音檔搶回它原本要唸的位置，看起來就像「跳的位置沒有作用」。 */
+let ttsGen = 0;
 let raManualAt = 0;
 /* 手動按停時，記下停在哪一句（書卷／章／段／句），下次再按開始從這裡接下去唸，
    不必從頭或從目前捲動位置重來。換了書卷／章節，或整段唸完，就不算數了。 */
@@ -4449,21 +4453,26 @@ function ttsWarmUp(){
                              rate: TTS_RATE, sil: TTS_SIL, silc: TTS_SILC, sile: TTS_SILE, text:'。' }) }).catch(() => {});
   }catch(e){}
 }
-async function ttsPrefetch(i){
+async function ttsPrefetch(i, gen){
   const it = spk.items[i]; if (!it || spk.cache[i]) return;
+  if (gen !== spk.gen) return;      // 這一輪已經被换掉了，抓回來的東西不要再塞進新的一輪
   const voice = VOICES[state.lang][state.voice[state.lang]].v;
-  try{ spk.cache[i] = await ttsFetch(ttsPrep(it.text), voice); }catch(e){ spk.cache[i] = null; }
+  try{ const url = await ttsFetch(ttsPrep(it.text), voice); if (gen === spk.gen) spk.cache[i] = url; }
+  catch(e){ if (gen === spk.gen) spk.cache[i] = null; }
 }
-async function ttsPlayFrom(i){
-  if (!spk.on || spk.abort) return;
+async function ttsPlayFrom(i, gen){
+  if (!spk.on || spk.abort || gen !== spk.gen) return;
   if (i >= spk.items.length){ ttsStop(true); return; }
   spk.idx = i; raShow(spk.items[i]);
   /* 先排這一段自己的請求，再排後面的預抓——否則第一聲會等在後面兩段的後面 */
-  if (spk.cache[i] === undefined) await ttsPrefetch(i);
-  for (let k = i + 1; k <= i + TTS_LOOKAHEAD; k++) ttsPrefetch(k);
-  if (!spk.on || spk.abort) return;
+  if (spk.cache[i] === undefined) await ttsPrefetch(i, gen);
+  for (let k = i + 1; k <= i + TTS_LOOKAHEAD; k++) ttsPrefetch(k, gen);
+  /* 上面兩次 await 的空檔，使用者可能已經按了「從這裡開始朗讀」或再按一次「開始」
+     開啟了新的一輪——這裡的 i 是舊一輪的位置，gen 對不上就整個放手，
+     不然舊的位置會在新的一輪播到一半時把畫面／音檔搶回去，變成「跳的地方沒有作用」。 */
+  if (!spk.on || spk.abort || gen !== spk.gen) return;
   const url = spk.cache[i];
-  if (!url){ return ttsNativeFrom(i); }
+  if (!url){ return ttsNativeFrom(i, gen); }
   ttsBtn('playing');
   const a = ttsAudio(); spk.audio = a;
   const old = a.src;
@@ -4472,20 +4481,25 @@ async function ttsPlayFrom(i){
   if (old && old.startsWith('blob:')){ try{ URL.revokeObjectURL(old); }catch(e){} }
   /* 依播放進度把顏色標示往下一句移——聲音還是整段連著唸，畫面是一句一句 */
   a.ontimeupdate = () => {
-    if (!spk.on || spk.abort || spk.idx !== i) return;
+    if (!spk.on || spk.abort || spk.idx !== i || gen !== spk.gen) return;
     const d = a.duration;
     if (d && isFinite(d) && d > 0) raProgress(spk.items[i], a.currentTime / d);
   };
-  a.onended = () => { a.ontimeupdate = null; if (spk.on && !spk.abort) ttsPlayFrom(i + 1); };
-  a.onerror = () => { if (i === 0) ttsNativeFrom(i); else if (spk.on && !spk.abort) ttsPlayFrom(i + 1); };
+  a.onended = () => { a.ontimeupdate = null; if (spk.on && !spk.abort && gen === spk.gen) ttsPlayFrom(i + 1, gen); };
+  a.onerror = () => {
+    if (gen !== spk.gen) return;
+    if (i === 0) ttsNativeFrom(i, gen); else if (spk.on && !spk.abort) ttsPlayFrom(i + 1, gen);
+  };
   try{
     const p = a.play();
     if (p && p.catch) await p;
   }catch(e){
-    if (i === 0) ttsNativeFrom(i); else if (spk.on && !spk.abort) ttsPlayFrom(i + 1);
+    if (gen !== spk.gen) return;
+    if (i === 0) ttsNativeFrom(i, gen); else if (spk.on && !spk.abort) ttsPlayFrom(i + 1, gen);
   }
 }
-function ttsNativeFrom(i){
+function ttsNativeFrom(i, gen){
+  if (gen !== spk.gen) return;
   if (!('speechSynthesis' in window)){ toast(t().ttsErr); ttsStop(true); return; }
   if (!spk.native){ spk.native = true; toast(t().ttsFallback + (ttsLastErr ? '（' + ttsLastErr + '）' : '')); }
   if (!spk.on || spk.abort || i >= spk.items.length){ ttsStop(i >= spk.items.length); return; }
@@ -4495,11 +4509,11 @@ function ttsNativeFrom(i){
   u.lang = isEN() ? 'en-US' : (isZS() ? 'zh-CN' : 'zh-TW'); u.rate = .95;
   /* 裝置語音給得到字元位置，就直接照位置換句子 */
   u.onboundary = e => {
-    if (!spk.on || spk.abort || spk.idx !== i) return;
+    if (!spk.on || spk.abort || spk.idx !== i || gen !== spk.gen) return;
     if (say.length) raProgress(spk.items[i], (e.charIndex || 0) / say.length);
   };
-  u.onend = () => { if (spk.on && !spk.abort) ttsNativeFrom(i + 1); };
-  u.onerror = () => { if (spk.on && !spk.abort) ttsNativeFrom(i + 1); };
+  u.onend = () => { if (spk.on && !spk.abort && gen === spk.gen) ttsNativeFrom(i + 1, gen); };
+  u.onerror = () => { if (spk.on && !spk.abort && gen === spk.gen) ttsNativeFrom(i + 1, gen); };
   try{ speechSynthesis.speak(u); }catch(e){ ttsStop(); }
 }
 /* ▶ 開始／接續：暫停中就直接接續播放；閒置就照優先順序決定從哪裡開始
@@ -4521,9 +4535,10 @@ function ttsStart(){
     items = buildQueue();
   }
   if (!items.length) return;
-  spk = { on:true, paused:false, items, idx:startIdx, audio:null, cache:{}, native:false, abort:false };
+  const myGen = ++ttsGen;   // 開新的一輪，舊一輪不管做到哪裡，回來時號碼對不上就自動放手
+  spk = { on:true, paused:false, items, idx:startIdx, audio:null, cache:{}, native:false, abort:false, gen:myGen };
   ttsBtn('loading');
-  ttsPlayFrom(startIdx);
+  ttsPlayFrom(startIdx, myGen);
 }
 /* ⏸ 暫停：原地停住聲音（不是重新抓一段），保留精確的播放位置，方便馬上接回去 */
 function ttsPauseNow(){
