@@ -185,6 +185,17 @@ nav.tabbar a svg{width:20px;height:20px;}
 .chbtn.read{background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink);}
 .chbtn.now{background:var(--accent); border-color:var(--accent); color:#fff;}
 
+/* ---------- 讀經計畫 ---------- */
+.planrow{display:flex; align-items:center; gap:10px; padding:11px 4px; border-bottom:1px solid var(--border); cursor:pointer;}
+.planrow:last-child{border-bottom:none;}
+.planrow.today{background:var(--accent-soft); border-radius:8px;}
+.planrow .pd{flex:0 0 auto; width:52px; font-size:12px; color:var(--ink-faint);}
+.planrow .pm{flex:1; min-width:0; font-size:14px;}
+.planrow.done .pm{color:var(--ink-faint); text-decoration:line-through;}
+.plancheck{width:28px; height:28px; flex:0 0 auto; border-radius:50%; border:1.5px solid var(--border-strong); background:var(--surface); color:transparent; font-size:14px; line-height:1; cursor:pointer;}
+.plancheck.on{background:var(--good); border-color:var(--good); color:#fff;}
+.plancard .pill{margin-bottom:8px;}
+
 /* ---------- 閱讀器 ---------- */
 /* 貼在頂欄下面、跟著捲動黏住——長章節往下讀也能隨時按到朗讀鍵，不必捲回最上面 */
 .chtoolbar{display:flex; align-items:center; gap:7px; margin-bottom:12px; flex-wrap:wrap;

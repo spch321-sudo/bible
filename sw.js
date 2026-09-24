@@ -1,10 +1,10 @@
 /* 321互動聖經 — Service Worker
    每次改動內容或程式，務必把 VERSION 往上加，
    否則已安裝的使用者不會看到更新。 */
-const VERSION = 'ib-v2.7.8';
+const VERSION = 'ib-v2.7.9';
 
 const SHELL = [
-  './', './index.html', './app.js', './manifest.json', './toc.json', './cover.jpg',
+  './', './index.html', './app.js', './manifest.json', './toc.json', './plans.json', './cover.jpg',
   './icon-72.png', './icon-96.png', './icon-128.png', './icon-144.png',
   './icon-152.png', './icon-180.png', './icon-192.png', './icon-384.png', './icon-512.png', './icon-maskable-192.png', './icon-maskable-512.png'
 ];
@@ -28,7 +28,7 @@ self.addEventListener('fetch', e => {
   if (url.origin !== location.origin) return;   // TTS / 陪讀 等外部請求不攔截
 
   // 經文資料：cache-first（讀過一次即可離線）
-  if (/bible\.[a-z]+\.[a-z0-9]+\.json$/.test(url.pathname) || url.pathname.endsWith('toc.json')){
+  if (/bible\.[a-z]+\.[a-z0-9]+\.json$/.test(url.pathname) || url.pathname.endsWith('toc.json') || url.pathname.endsWith('plans.json')){
     e.respondWith(
       caches.open(VERSION).then(c =>
         c.match(req).then(hit => hit || fetch(req).then(res => { c.put(req, res.clone()); return res; }))

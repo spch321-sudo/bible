@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.7.8';
+const VERSION = 'v2.7.9';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -113,7 +113,14 @@ const I18N = {
         chatPH:'就這段經文提問…', send:'送出', examples:'範例問題',
         ctx:(b,c)=>`目前經文：${b} 第 ${c} 章`, thinking:'小智思想中…',
         ttsFallback:'改用裝置內建語音朗讀', ttsErr:'朗讀服務連不上',
-        chatErr:'小智連不上，請稍後再試。' },
+        chatErr:'小智連不上，請稍後再試。',
+        plan:'讀經計畫', planTitle:'選一個讀經計畫', planDaysUnit:'天',
+        planStart:'開始這個計畫', planSwitch:'換一個計畫', planRestart:'重新開始',
+        planRestartAsk:'要重新開始這個計畫嗎？之前打勾的進度都會清空。',
+        planGoRead:'前往閱讀', planDone:'已讀', planMarkDone:'標記今天已讀',
+        planDay:n=>`第 ${n} 天`, planWeek:n=>`第 ${n} 週`,
+        chapterRange:(a,b)=>`第 ${a}–${b} 章`, psalmRange:(a,b)=>`第 ${a}–${b} 篇`,
+        planEmpty:'還沒有開始讀經計畫。選一個計畫，就會從第一天開始為你排好進度。' },
   zs: { app:'321互动圣经', today:'今日', books:'经卷', search:'搜索', companion:'小智', companionFull:'小智AI属灵同伴', me:'我的',
         ot:'旧约', nt:'新约', ch:'章', chapter:n=>`第 ${n} 章`, verses:'节', bookUnit:'卷',
         cont:'继续阅读', start:'开始读经', daily:'今日默想', progress:'读经进度',
@@ -196,7 +203,14 @@ const I18N = {
         chatPH:'就这段经文提问…', send:'发送', examples:'范例问题',
         ctx:(b,c)=>`当前经文：${b} 第 ${c} 章`, thinking:'小智思想中…',
         ttsFallback:'改用设备内置语音朗读', ttsErr:'朗读服务连不上',
-        chatErr:'小智连不上，请稍后再试。' },
+        chatErr:'小智连不上，请稍后再试。',
+        plan:'读经计划', planTitle:'选一个读经计划', planDaysUnit:'天',
+        planStart:'开始这个计划', planSwitch:'换一个计划', planRestart:'重新开始',
+        planRestartAsk:'要重新开始这个计划吗？之前打勾的进度都会清空。',
+        planGoRead:'前往阅读', planDone:'已读', planMarkDone:'标记今天已读',
+        planDay:n=>`第 ${n} 天`, planWeek:n=>`第 ${n} 周`,
+        chapterRange:(a,b)=>`第 ${a}–${b} 章`, psalmRange:(a,b)=>`第 ${a}–${b} 篇`,
+        planEmpty:'还没有开始读经计划。选一个计划，就会从第一天开始为你排好进度。' },
   en: { app:'321 Interactive Bible', today:'Today', books:'Books', search:'Search', companion:'Xiaozhi',
         companionFull:'Xiaozhi — AI Companion', me:'Me',
         ot:'Old Testament', nt:'New Testament', ch:'ch', chapter:n=>`Chapter ${n}`, verses:'verses', bookUnit:'books',
@@ -281,7 +295,14 @@ const I18N = {
         chatPH:'Ask about this passage…', send:'Send', examples:'Example questions',
         ctx:(b,c)=>`Reading: ${b} ${c}`, thinking:'Xiaozhi is thinking…',
         ttsFallback:"Using this device's built-in voice", ttsErr:'Read-aloud service unavailable',
-        chatErr:'Xiaozhi is unreachable. Please try again shortly.' }
+        chatErr:'Xiaozhi is unreachable. Please try again shortly.',
+        plan:'Reading Plan', planTitle:'Choose a reading plan', planDaysUnit:'days',
+        planStart:'Start this plan', planSwitch:'Change plan', planRestart:'Restart',
+        planRestartAsk:'Restart this plan? All progress checked off so far will be cleared.',
+        planGoRead:'Go read', planDone:'Done', planMarkDone:"Mark today's reading done",
+        planDay:n=>`Day ${n}`, planWeek:n=>`Week ${n}`,
+        chapterRange:(a,b)=>`Chapters ${a}-${b}`, psalmRange:(a,b)=>`Psalms ${a}-${b}`,
+        planEmpty:"You haven't started a reading plan yet. Pick one and it will lay out a day-by-day pace for you, starting from day one." }
 };
 const t = () => I18N[state.lang] || I18N.zh;
 const isEN = () => state.lang === 'en';
@@ -317,7 +338,8 @@ const DEFAULTS = { lang:'zh', font:0, theme:0, flow:false, shCh:true, shV:true, 
 const VIEW_CYCLE = [[false, true, true], [false, true, false], [false, false, false], [true, false, false]];
 let state = Object.assign({}, DEFAULTS);
 let user  = { progress:{}, hl:{}, fav:[], marks:[], last:null,
-               uid:'', nick:'', teams:[], pts:0, badges:[], acts:{} };
+               uid:'', nick:'', teams:[], pts:0, badges:[], acts:{},
+               plan:{ active:null, starts:{}, done:{} } };
 let TOC = [], BOOK = {}, SHARD = {};   // SHARD['zh|law'] = {BookId:[chapters]}
 
 function loadState(){
@@ -343,11 +365,15 @@ function loadUser(){
   try{
     const u = JSON.parse(localStorage.getItem('ib_user') || '{}');
     user = Object.assign({progress:{}, hl:{}, fav:[], marks:[], last:null,
-                          uid:'', nick:'', teams:[], pts:0, badges:[], acts:{}}, u);
+                          uid:'', nick:'', teams:[], pts:0, badges:[], acts:{},
+                          plan:{ active:null, starts:{}, done:{} }}, u);
     if (!Array.isArray(user.marks)) user.marks = [];
     if (!Array.isArray(user.teams)) user.teams = [];
     if (!Array.isArray(user.badges)) user.badges = [];
     if (!user.acts || typeof user.acts !== 'object') user.acts = {};
+    if (!user.plan || typeof user.plan !== 'object') user.plan = { active:null, starts:{}, done:{} };
+    if (!user.plan.starts || typeof user.plan.starts !== 'object') user.plan.starts = {};
+    if (!user.plan.done || typeof user.plan.done !== 'object') user.plan.done = {};
     if (!user.uid) user.uid = 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
   }catch(e){}
 }
@@ -517,7 +543,7 @@ function currentRoute(){
 async function render(){
   const r = currentRoute();
   const tab = r[0] || 'today';
-  $$('#tabbar a').forEach(a => a.classList.toggle('active', a.dataset.tab === (tab === 'read' ? 'books' : tab)));
+  $$('#tabbar a').forEach(a => a.classList.toggle('active', a.dataset.tab === (tab === 'read' ? 'books' : (tab === 'plan' ? 'today' : tab))));
   const v = $('#view');
   try{
     if (tab === 'today')          await viewToday(v);
@@ -528,6 +554,7 @@ async function render(){
     else if (tab === 'team')      await viewTeam(v, r[1], r[2]);
     else if (tab === 'me')        await viewMe(v);
     else if (tab === 'studio')    await viewStudio(v);
+    else if (tab === 'plan')      await viewPlan(v);
     else { go('#/today'); return; }
   }catch(e){
     v.innerHTML = `<div class="empty">載入失敗：${esc(e.message || e)}</div>`;
@@ -595,6 +622,8 @@ async function viewToday(v){
 
     <div class="section-title">${esc(L3('快速進入', '快速进入', 'Jump to'))}</div>
     <div class="card" style="padding:4px 16px">
+      <a class="rowlink" href="#/plan"><div class="meta"><div class="t">${esc(L.plan)}</div>
+        <div class="s">${user.plan.active ? esc(L.progress) : esc(L.planTitle)}</div></div><div class="chev">›</div></a>
       <a class="rowlink" href="#/read/Psalms/${(new Date().getDate() % 150) + 1}">
         <div class="meta"><div class="t">${esc(bname(BOOK['Psalms']))}</div><div class="s">${esc(chapLabel('Psalms', (new Date().getDate() % 150) + 1))}</div></div><div class="chev">›</div></a>
       <a class="rowlink" href="#/read/John/1"><div class="meta"><div class="t">${esc(bname(BOOK['John']))}</div><div class="s">${esc(L.chapter(1))}</div></div><div class="chev">›</div></a>
@@ -644,6 +673,165 @@ async function viewChapters(v, bookId){
     }).join('')}</div>`;
   $('#backBooks', v).onclick = () => go('#/books');
   $$('.chbtn', v).forEach(x => x.onclick = () => go(`#/read/${bookId}/${x.dataset.c}`));
+}
+
+/* ================================================================ 讀經計畫
+   三個現成計畫（一年／兩年／沉浸式三年，資料在 plans.json）都是同一套資料形狀：
+   { totalDays, title:{zh,zs,en}, subtitle:{zh,zs,en}, days:[{day,book,start,end,week[,vol,volNo,year]}] }
+   進度存法比照 user.progress 的「鍵存在即代表做過」慣例：
+   user.plan = { active: 'y1'|'y2'|'immerse3'|null, starts:{[planId]:ts}, done:{[planId+'-'+day]:ts} } */
+let PLANS = null;
+const PLAN_IDS = ['y1', 'y2', 'immerse3'];
+async function loadPlans(){
+  if (PLANS) return PLANS;
+  PLANS = await fetchJSON('plans.json');
+  return PLANS;
+}
+const planTitle = p => (p.title[state.lang] || p.title.zh);
+const planSubtitle = p => (p.subtitle[state.lang] || p.subtitle.zh);
+const planDayKey = (pid, day) => pid + '-' + day;
+function planDoneCount(pid){
+  let n = 0; const pfx = pid + '-';
+  for (const k in user.plan.done) if (k.indexOf(pfx) === 0) n++;
+  return n;
+}
+function planTodayIndex(p){
+  const st = user.plan.starts[p.id];
+  if (!st) return 1;
+  const d = Math.floor((Date.now() - st) / 86400000) + 1;
+  return Math.min(Math.max(1, d), p.totalDays);
+}
+/* 詩篇用「篇」／Psalm，其餘用「章」／Chapter；單一章沿用既有的 chapLabel() */
+function planRangeLabel(bookId, start, end){
+  if (start === end) return chapLabel(bookId, start);
+  return bookId === 'Psalms' ? t().psalmRange(start, end) : t().chapterRange(start, end);
+}
+function startPlan(pid){
+  user.plan.active = pid;
+  if (!user.plan.starts[pid]) user.plan.starts[pid] = Date.now();
+  saveUser();
+  render();
+}
+function switchPlan(){
+  user.plan.active = null;
+  saveUser();
+  render();
+}
+function restartPlan(pid){
+  if (!confirm(t().planRestartAsk)) return;
+  user.plan.starts[pid] = Date.now();
+  const pfx = pid + '-';
+  Object.keys(user.plan.done).forEach(k => { if (k.indexOf(pfx) === 0) delete user.plan.done[k]; });
+  saveUser();
+  render();
+}
+function togglePlanDone(pid, day){
+  const k = planDayKey(pid, day);
+  if (user.plan.done[k]) delete user.plan.done[k]; else user.plan.done[k] = Date.now();
+  saveUser();
+  render();
+}
+function planRowHtml(d, pid, todayIdx){
+  const b = BOOK[d.book];
+  const done = !!user.plan.done[planDayKey(pid, d.day)];
+  const isToday = d.day === todayIdx;
+  return `<div class="planrow ${isToday ? 'today' : ''} ${done ? 'done' : ''}" data-book="${d.book}" data-c="${d.start}">
+    <div class="pd">${esc(t().planDay(d.day))}</div>
+    <div class="pm">${esc(bname(b))} ${esc(planRangeLabel(d.book, d.start, d.end))}</div>
+    <button class="plancheck ${done ? 'on' : ''}" data-toggle="${d.day}">✓</button>
+  </div>`;
+}
+function planWeeksHtml(rows, pid, todayIdx){
+  let html = '', i = 0;
+  while (i < rows.length){
+    const wk = rows[i].week;
+    let j = i; while (j < rows.length && rows[j].week === wk) j++;
+    const seg = rows.slice(i, j);
+    const open = seg.some(d => d.day === todayIdx);
+    html += `<details class="grp" ${open ? 'open' : ''}>
+      <summary><span style="color:var(--gold)">◆</span>${esc(t().planWeek(wk))}<span class="cnt">${seg.length} ${esc(t().planDaysUnit)}</span></summary>
+      <div>${seg.map(d => planRowHtml(d, pid, todayIdx)).join('')}</div></details>`;
+    i = j;
+  }
+  return html;
+}
+function planGroupsHtml(p, pid, todayIdx){
+  const rows = p.days;
+  if (!rows[0].vol) return planWeeksHtml(rows, pid, todayIdx);
+  let html = '', i = 0;
+  while (i < rows.length){
+    const { year, vol, volNo } = rows[i];
+    let j = i; while (j < rows.length && rows[j].year === year && rows[j].vol === vol) j++;
+    html += `<div class="section-title">${esc(year)}．${esc(L3(`第${volNo}冊`, `第${volNo}冊`, 'Volume ' + volNo))}：${esc(vol)}</div>`;
+    html += planWeeksHtml(rows.slice(i, j), pid, todayIdx);
+    i = j;
+  }
+  return html;
+}
+async function viewPlan(v){
+  const L = t();
+  const P = await loadPlans();
+  if (!user.plan.active){
+    v.innerHTML = `
+      <div class="section-title">${esc(L.planTitle)}</div>
+      ${PLAN_IDS.map(pid => {
+        const p = P[pid];
+        return `<div class="card plancard">
+          <div class="pill">${p.totalDays} ${esc(L.planDaysUnit)}</div>
+          <h3>${esc(planTitle(p))}</h3>
+          <div class="muted" style="font-size:13px;line-height:1.6;margin-bottom:12px">${esc(planSubtitle(p))}</div>
+          <button class="btn gold block" data-start="${pid}">${esc(L.planStart)}</button>
+        </div>`;
+      }).join('')}`;
+    $$('[data-start]', v).forEach(b => b.onclick = () => startPlan(b.dataset.start));
+    return;
+  }
+  const pid = user.plan.active, p = P[pid];
+  const doneN = planDoneCount(pid);
+  const todayIdx = planTodayIndex(p);
+  const today = p.days[todayIdx - 1];
+  const todayDone = !!user.plan.done[planDayKey(pid, todayIdx)];
+  const pct = Math.round(doneN / p.totalDays * 100);
+  const C = 2 * Math.PI * 25;
+
+  v.innerHTML = `
+    <div class="card">
+      <div class="progwrap">
+        <svg class="progring" viewBox="0 0 58 58">
+          <circle class="bgc" cx="29" cy="29" r="25"></circle>
+          <circle class="fgc" cx="29" cy="29" r="25" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - pct / 100)}"></circle>
+          <text x="29" y="33" text-anchor="middle">${pct}%</text>
+        </svg>
+        <div style="flex:1">
+          <h3 style="margin:0">${esc(planTitle(p))}</h3>
+          <div class="muted">${doneN} / ${p.totalDays} ${esc(L.planDaysUnit)}</div>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <a class="btn primary block" href="#/read/${today.book}/${today.start}">${esc(L.planGoRead)} · ${esc(bname(BOOK[today.book]))} ${esc(planRangeLabel(today.book, today.start, today.end))}</a>
+      </div>
+      <div style="margin-top:10px">
+        <button class="btn block" id="todayToggle">${todayDone ? '✓ ' + esc(L.planDone) : esc(L.planMarkDone)}</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:18px;margin:2px 4px 14px;font-size:12.5px">
+      <button id="planSwitchBtn" style="background:none;border:none;color:var(--accent);font-weight:600;cursor:pointer;padding:0">${esc(L.planSwitch)}</button>
+      <button id="planRestartBtn" style="background:none;border:none;color:var(--ink-faint);font-weight:600;cursor:pointer;padding:0">${esc(L.planRestart)}</button>
+    </div>
+    ${planGroupsHtml(p, pid, todayIdx)}`;
+
+  $('#todayToggle', v).onclick = () => togglePlanDone(pid, todayIdx);
+  $('#planSwitchBtn', v).onclick = () => switchPlan();
+  $('#planRestartBtn', v).onclick = () => restartPlan(pid);
+  $$('.planrow', v).forEach(row => {
+    row.onclick = e => {
+      if (e.target.closest('.plancheck')) return;
+      go(`#/read/${row.dataset.book}/${row.dataset.c}`);
+    };
+  });
+  $$('.plancheck', v).forEach(b => {
+    b.onclick = e => { e.stopPropagation(); togglePlanDone(pid, +b.dataset.toggle); };
+  });
 }
 
 /* ================================================================ 閱讀器 */
@@ -4080,6 +4268,11 @@ async function viewMe(v){
       <div><div class="sv">${hls.length}</div><div class="sk">${esc(L.stats[1])}</div></div>
       <div><div class="sv">${user.marks.length}</div><div class="sk">${esc(L.stats[2])}</div></div>
     </div></div>
+
+    <div class="card" style="padding:4px 16px">
+      <a class="rowlink" href="#/plan"><div class="meta"><div class="t">${esc(L.plan)}</div>
+        <div class="s">${user.plan.active ? esc(L.progress) : esc(L.planEmpty)}</div></div><div class="chev">›</div></a>
+    </div>
 
     <div class="section-title">${esc(L.diag)}</div>
     <div class="card">
