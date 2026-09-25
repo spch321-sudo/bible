@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.7.16';
+const VERSION = 'v2.7.17';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -124,7 +124,14 @@ const I18N = {
         planGoRead:'前往閱讀', planDone:'已讀', planMarkDone:'標記今天已讀',
         planDay:n=>`第 ${n} 天`, planWeek:n=>`第 ${n} 週`,
         chapterRange:(a,b)=>`第 ${a}–${b} 章`, psalmRange:(a,b)=>`第 ${a}–${b} 篇`,
-        planEmpty:'還沒有開始讀經計畫。選一個計畫，就會從第一天開始為你排好進度。' },
+        planEmpty:'還沒有開始讀經計畫。選一個計畫，就會從第一天開始為你排好進度。',
+        planRemind:'每日提醒',
+        planRemindHint:['已開啟：今天的進度還沒讀完的話，晚上8點左右手機會跳通知提醒你。','關閉：不會有提醒通知。'],
+        planRemindDenied:'手機／瀏覽器封鎖了通知權限，請到系統設定裡開啟本App的通知權限',
+        planRemindUnsupported:'這個瀏覽器不支援通知功能（iPhone 請先把App「加入主畫面」後再開啟）',
+        planRemindTitle:'321互動聖經．讀經提醒',
+        planRemindBody:(b,r)=>`今天還沒讀${b}${r}，找個時間讀一下吧！`,
+        planAutoDoneToast:'讀完了！今天的進度已經自動幫你打勾' },
   zs: { app:'321互动圣经', today:'今日', books:'经卷', search:'搜索', companion:'小智', companionFull:'小智AI属灵同伴', me:'我的',
         ot:'旧约', nt:'新约', ch:'章', chapter:n=>`第 ${n} 章`, verses:'节', bookUnit:'卷',
         cont:'继续阅读', start:'开始读经', daily:'今日默想', progress:'读经进度',
@@ -218,7 +225,14 @@ const I18N = {
         planGoRead:'前往阅读', planDone:'已读', planMarkDone:'标记今天已读',
         planDay:n=>`第 ${n} 天`, planWeek:n=>`第 ${n} 周`,
         chapterRange:(a,b)=>`第 ${a}–${b} 章`, psalmRange:(a,b)=>`第 ${a}–${b} 篇`,
-        planEmpty:'还没有开始读经计划。选一个计划，就会从第一天开始为你排好进度。' },
+        planEmpty:'还没有开始读经计划。选一个计划，就会从第一天开始为你排好进度。',
+        planRemind:'每日提醒',
+        planRemindHint:['已开启：今天的进度还没读完的话，晚上8点左右手机会跳通知提醒你。','关闭：不会有提醒通知。'],
+        planRemindDenied:'手机／浏览器封锁了通知权限，请到系统设置里开启本App的通知权限',
+        planRemindUnsupported:'这个浏览器不支持通知功能（iPhone 请先把App「添加到主屏幕」后再开启）',
+        planRemindTitle:'321互动圣经．读经提醒',
+        planRemindBody:(b,r)=>`今天还没读${b}${r}，找个时间读一下吧！`,
+        planAutoDoneToast:'读完了！今天的进度已经自动帮你打勾' },
   en: { app:'321 Interactive Bible', today:'Today', books:'Books', search:'Search', companion:'Xiaozhi',
         companionFull:'Xiaozhi — AI Companion', me:'Me',
         ot:'Old Testament', nt:'New Testament', ch:'ch', chapter:n=>`Chapter ${n}`, verses:'verses', bookUnit:'books',
@@ -314,7 +328,14 @@ const I18N = {
         planGoRead:'Go read', planDone:'Done', planMarkDone:"Mark today's reading done",
         planDay:n=>`Day ${n}`, planWeek:n=>`Week ${n}`,
         chapterRange:(a,b)=>`Chapters ${a}-${b}`, psalmRange:(a,b)=>`Psalms ${a}-${b}`,
-        planEmpty:"You haven't started a reading plan yet. Pick one and it will lay out a day-by-day pace for you, starting from day one." }
+        planEmpty:"You haven't started a reading plan yet. Pick one and it will lay out a day-by-day pace for you, starting from day one.",
+        planRemind:'Daily reminder',
+        planRemindHint:["On: if today's reading isn't finished yet, you'll get a notification around 8 PM.", "Off: no reminder notifications."],
+        planRemindDenied:'Notifications are blocked for this app. Please enable notification permission in your device settings.',
+        planRemindUnsupported:'This browser does not support notifications (on iPhone, add this app to your Home Screen first).',
+        planRemindTitle:'321 Interactive Bible — Reading Reminder',
+        planRemindBody:(b,r)=>`You haven't read ${b} ${r} yet today — take a few minutes when you can!`,
+        planAutoDoneToast:"Nice! Today's reading has been checked off automatically" }
 };
 const t = () => I18N[state.lang] || I18N.zh;
 const isEN = () => state.lang === 'en';
@@ -344,7 +365,7 @@ const VOICES = {
 const DEFAULTS = { lang:'zh', font:0, theme:0, flow:false, shCh:true, shV:true, hidenote:false,
                    cardTpl:'navy', cardSize:'t', cardBorder:'classic', cardFs:1,
                    cardTop:'', cardSign:'', cardTo:'',
-                   voice:{zh:0, zs:0, en:0}, ttsAutoNext:false, beauty:true };
+                   voice:{zh:0, zs:0, en:0}, ttsAutoNext:false, beauty:true, planRemindOn:false };
 /* 「淨」鍵依序切換的四種組合：[整卷連讀?, 顯示章號?] */
 /* 「淨」鍵循環的四種常用讀法：[整卷連讀, 顯示章, 顯示節] */
 const VIEW_CYCLE = [[false, true, true], [false, true, false], [false, false, false], [true, false, false]];
@@ -869,6 +890,13 @@ async function viewPlan(v){
         <button class="btn block" id="todayToggle">${todayDone ? '✓ ' + esc(L.planDone) : esc(L.planMarkDone)}</button>
       </div>
     </div>
+    <div class="card" style="padding:4px 16px">
+      <div class="setrow"><div class="sl">${esc(L.planRemind)}
+        <div class="muted" style="font-size:11.5px;line-height:1.6">${esc(L.planRemindHint[state.planRemindOn ? 0 : 1])}</div></div>
+        <div class="segbtns" id="setPlanRemind">
+        ${L.onoff.map((m, i) => `<button class="${(state.planRemindOn ? 0 : 1) === i ? 'on' : ''}" data-i="${i}">${esc(m)}</button>`).join('')}
+        </div></div>
+    </div>
     <div style="display:flex;gap:18px;margin:2px 4px 14px;font-size:12.5px">
       <button id="planSwitchBtn" style="background:none;border:none;color:var(--accent);font-weight:600;cursor:pointer;padding:0">${esc(L.planSwitch)}</button>
       <button id="planRestartBtn" style="background:none;border:none;color:var(--ink-faint);font-weight:600;cursor:pointer;padding:0">${esc(L.planRestart)}</button>
@@ -876,6 +904,7 @@ async function viewPlan(v){
     ${planGroupsHtml(p, pid, todayIdx)}`;
 
   $('#todayToggle', v).onclick = () => togglePlanDone(pid, todayIdx);
+  $$('#setPlanRemind button', v).forEach(b => b.onclick = () => togglePlanRemind(b.dataset.i === '0'));
   $('#planSwitchBtn', v).onclick = () => switchPlan();
   $('#planRestartBtn', v).onclick = () => restartPlan(pid);
   $$('.planrow', v).forEach(row => {
@@ -1102,7 +1131,82 @@ function watchProgress(bookId, flow, total){
 
 function markRead(bookId, ch){
   const k = bookId + '-' + ch;
-  if (!user.progress[k]){ user.progress[k] = Date.now(); saveUser(); teamPingSoon(); }
+  if (!user.progress[k]){ user.progress[k] = Date.now(); saveUser(); teamPingSoon(); planAutoCheck(bookId, ch); }
+}
+/* 讀經計畫「讀完自行圈選」：不管是使用者自己滑到章節底，還是朗讀（TTS）自動接
+   下一章唸完，最後都會經過這裡的 markRead() 幫這一章打勾——這裡接住同一個動作，
+   只要目前有在走的讀經計畫、這一章剛好落在某一天的範圍內、而且那一天範圍內的
+   章節全部都讀完了，就自動把那一天的進度打勾，不用使用者自己再按「✓已讀」。
+   使用者要求：讀完（捲到底、或聽完朗讀）都要能自動圈選——兩種情況本來就都會
+   呼叫 markRead()，接在這一個點上剛好兩種都涵蓋，不用另外分別偵測。
+   不主動 render()：避免在使用者正在閱讀／朗讀途中被強制重畫畫面，只用 toast
+   提示；讀經計畫頁面下次自己打開時，會照 user.plan.done 的最新狀態重新畫。 */
+async function planAutoCheck(bookId, ch){
+  if (!user.plan.active) return;
+  let P; try{ P = await loadPlans(); }catch(e){ return; }
+  const pid = user.plan.active, p = P[pid];
+  if (!p) return;
+  let changed = false;
+  for (const d of p.days){
+    if (d.book !== bookId || ch < d.start || ch > d.end) continue;
+    const k = planDayKey(pid, d.day);
+    if (user.plan.done[k]) continue;
+    let allRead = true;
+    for (let c = d.start; c <= d.end; c++){ if (!user.progress[bookId + '-' + c]){ allRead = false; break; } }
+    if (allRead){ user.plan.done[k] = Date.now(); changed = true; }
+  }
+  if (changed){ saveUser(); toast(t().planAutoDoneToast, 2600); }
+}
+/* ============ 讀經計畫：每日提醒（本機通知，不是伺服器推播）====================
+   這個App是純前端PWA，沒有一直開著的伺服器可以主動推播；只能靠瀏覽器的
+   Notification API，在使用者把App留在背景、或重新開啟／切回前景時，用本機
+   判斷「現在幾點、今天讀了沒」來決定要不要跳通知——是「盡力而為」的提醒，
+   不保證App完全被系統關掉也會響（那需要另外架一台推播伺服器）。這個取捨
+   已經先跟使用者確認過。提醒時間固定在晚上8點，不開放每個人自訂。 */
+const PLAN_REMIND_H = 20, PLAN_REMIND_M = 0;
+function todayStr(){ const d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+async function planRemindPermission(){
+  if (!('Notification' in window)) return 'unsupported';
+  if (Notification.permission === 'granted') return 'granted';
+  if (Notification.permission === 'denied') return 'denied';
+  try{ return await Notification.requestPermission(); }catch(e){ return 'denied'; }
+}
+async function togglePlanRemind(on){
+  if (!on){ state.planRemindOn = false; saveState(); render(); return; }
+  const perm = await planRemindPermission();
+  if (perm === 'unsupported'){ toast(t().planRemindUnsupported, 3600); return; }
+  if (perm !== 'granted'){ toast(t().planRemindDenied, 3600); return; }
+  state.planRemindOn = true; saveState(); render();
+  checkPlanRemind();
+}
+async function fireLocalNotification(title, body){
+  try{
+    if ('serviceWorker' in navigator){
+      const reg = await navigator.serviceWorker.ready;
+      if (reg && reg.showNotification){ await reg.showNotification(title, { body, icon:'./icon-192.png', badge:'./icon-96.png', tag:'plan-remind' }); return; }
+    }
+  }catch(e){}
+  try{ new Notification(title, { body, icon:'./icon-192.png' }); }catch(e){}
+}
+/* 到了提醒時間、今天還沒讀完，就跳一次通知；一天最多跳一次（記在 user.plan.remindedOn）。
+   在App開啟／回到前景、或每隔一段時間的計時器裡呼叫；App被系統徹底關掉、
+   或背景太久被瀏覽器整個終止時不會被呼叫到，這是本機提醒先天的限制。 */
+async function checkPlanRemind(){
+  if (!state.planRemindOn || !user.plan.active) return;
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  const now = new Date();
+  if (now.getHours() < PLAN_REMIND_H || (now.getHours() === PLAN_REMIND_H && now.getMinutes() < PLAN_REMIND_M)) return;
+  const ds = todayStr();
+  if (user.plan.remindedOn === ds) return;
+  let P; try{ P = await loadPlans(); }catch(e){ return; }
+  const pid = user.plan.active, p = P[pid];
+  if (!p) return;
+  const todayIdx = planTodayIndex(p);
+  if (user.plan.done[planDayKey(pid, todayIdx)]) return;
+  const d = p.days[todayIdx - 1];
+  user.plan.remindedOn = ds; saveUser();
+  const L = t();
+  fireLocalNotification(L.planRemindTitle, L.planRemindBody(bname(BOOK[d.book]), planRangeLabel(d.book, d.start, d.end)));
 }
 /* ================================================================ 畫線 / 默想 */
 /* 一「句」的定義：到句號（。！？）為止，不是到逗號。
@@ -5116,5 +5220,8 @@ async function boot(){
   }
   setTimeout(ttsWarmUp, 1200);
   if ((user.teams || []).length) setTimeout(teamPingNow, 2500);   // 開 App 就把今天的進度同步給隊友
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkPlanRemind(); });
+  setInterval(checkPlanRemind, 15 * 60 * 1000);   // 背景每 15 分鐘看一次，時間到了、今天還沒讀完才會真的跳通知
+  setTimeout(checkPlanRemind, 3000);              // 開 App 當下也順便檢查一次
 }
 boot();
