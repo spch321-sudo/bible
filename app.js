@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.7.17';
+const VERSION = 'v2.7.18';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -771,11 +771,18 @@ function planDoneCount(pid){
   for (const k in user.plan.done) if (k.indexOf(pfx) === 0) n++;
   return n;
 }
+/* 「今天／目前進度」＝目前為止第一個還沒打勾的那一天，不是照日曆天數往前推算。
+   舊寫法是拿「距離開始日期經過幾個日曆天」來算第幾天，跟實際讀了多少天完全脫鉤：
+   使用者反應：明明已經讀完第1–4章（第1、2天都打勾了），「前往閱讀」卻還是停在
+   第1天創世記1–2章，沒有跟著已完成的進度往前走——尤其現在（v2.7.17）讀完會
+   自動打勾，一次連讀好幾天份很正常，卡在日曆天數上完全不合理。
+   改成看實際打勾進度：往後找目前第一個還沒打勾的那一天，讀得比日曆進度快
+   （用朗讀一次聽完好幾章）或慢，都會準確反映「下一個還沒讀的是哪一天」。 */
 function planTodayIndex(p){
-  const st = user.plan.starts[p.id];
-  if (!st) return 1;
-  const d = Math.floor((Date.now() - st) / 86400000) + 1;
-  return Math.min(Math.max(1, d), p.totalDays);
+  for (let day = 1; day <= p.totalDays; day++){
+    if (!user.plan.done[planDayKey(p.id, day)]) return day;
+  }
+  return p.totalDays;
 }
 /* 詩篇用「篇」／Psalm，其餘用「章」／Chapter；單一章沿用既有的 chapLabel() */
 function planRangeLabel(bookId, start, end){
@@ -1188,7 +1195,20 @@ async function fireLocalNotification(title, body){
   }catch(e){}
   try{ new Notification(title, { body, icon:'./icon-192.png' }); }catch(e){}
 }
-/* 到了提醒時間、今天還沒讀完，就跳一次通知；一天最多跳一次（記在 user.plan.remindedOn）。
+/* 提醒用的「今天該讀到哪」跟「前往閱讀」按鈕不是同一件事：
+   planTodayIndex() 是「下一個還沒打勾的是哪一天」，只要計畫沒整個讀完，
+   永遠會指到某一天——如果拿它來決定要不要跳提醒，會變成使用者明明已經超前
+   進度很多天，還是天天被提醒「你還沒讀下一天」，太吵了。
+   提醒真正該問的是「行事曆算下來，到今天為止該讀的份，有沒有跟上」：
+   用「已經打勾的天數」跟「從開始日算起經過的行事曆天數」比，落後才提醒，
+   超前或剛好跟上都不會被打擾。 */
+function planCalendarDue(pid, p){
+  const st = user.plan.starts[pid];
+  if (!st) return 1;
+  const d = Math.floor((Date.now() - st) / 86400000) + 1;
+  return Math.min(Math.max(1, d), p.totalDays);
+}
+/* 到了提醒時間、確定落後進度了，就跳一次通知；一天最多跳一次（記在 user.plan.remindedOn）。
    在App開啟／回到前景、或每隔一段時間的計時器裡呼叫；App被系統徹底關掉、
    或背景太久被瀏覽器整個終止時不會被呼叫到，這是本機提醒先天的限制。 */
 async function checkPlanRemind(){
@@ -1201,9 +1221,10 @@ async function checkPlanRemind(){
   let P; try{ P = await loadPlans(); }catch(e){ return; }
   const pid = user.plan.active, p = P[pid];
   if (!p) return;
-  const todayIdx = planTodayIndex(p);
-  if (user.plan.done[planDayKey(pid, todayIdx)]) return;
-  const d = p.days[todayIdx - 1];
+  if (planDoneCount(pid) >= p.totalDays) return;          // 整個計畫都讀完了
+  if (planDoneCount(pid) >= planCalendarDue(pid, p)) return;   // 沒有落後，不用提醒
+  const nextIdx = Math.min(planTodayIndex(p), p.totalDays);
+  const d = p.days[nextIdx - 1];
   user.plan.remindedOn = ds; saveUser();
   const L = t();
   fireLocalNotification(L.planRemindTitle, L.planRemindBody(bname(BOOK[d.book]), planRangeLabel(d.book, d.start, d.end)));
