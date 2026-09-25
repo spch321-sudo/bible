@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.7.18';
+const VERSION = 'v2.7.19';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -4981,10 +4981,15 @@ async function ttsPlayFrom(i, gen){
     if (d && isFinite(d) && d > 0) raProgress(spk.items[i], a.currentTime / d);
   };
   a.onended = () => { ttsClearWatchdog(); a.ontimeupdate = null; if (spk.on && !spk.abort && gen === spk.gen) ttsPlayFrom(i + 1, gen); };
+  /* 這一段音檔明明抓下來了（ttsFetch 已經檢查過大小、不是空檔），
+     卻在播放這一步出錯（例如解碼失敗、瀏覽器自動播放限制擋下 play()）——
+     以前這裡只有第 0 段會退回裝置語音朗讀，其他段落直接跳到下一段，
+     等於這一段完全沒有被唸出來，使用者反應「前面一段沒有讀出來」就是這個原因。
+     改成不管是第幾段，播放失敗都退回裝置語音朗讀「這一段」，不要整段跳過不讀。 */
   a.onerror = () => {
     ttsClearWatchdog();
     if (gen !== spk.gen) return;
-    if (i === 0) ttsNativeFrom(i, gen); else if (spk.on && !spk.abort) ttsPlayFrom(i + 1, gen);
+    if (spk.on && !spk.abort) ttsNativeFrom(i, gen);
   };
   try{
     const p = a.play();
@@ -4999,7 +5004,7 @@ async function ttsPlayFrom(i, gen){
   }catch(e){
     ttsClearWatchdog();
     if (gen !== spk.gen) return;
-    if (i === 0) ttsNativeFrom(i, gen); else if (spk.on && !spk.abort) ttsPlayFrom(i + 1, gen);
+    if (spk.on && !spk.abort) ttsNativeFrom(i, gen);
   }
 }
 function ttsNativeFrom(i, gen){
