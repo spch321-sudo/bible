@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.7.14';
+const VERSION = 'v2.7.15';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -4556,6 +4556,16 @@ function ttsDiFix(s){
   s = s.replace(/地/g, '第');                                                // 其餘一律強制 dì
   return s.replace(new RegExp(MARK, 'g'), '地');
 }
+/* 「長」在「長＋數字＋肘／尺…度量衡單位」這種描述尺寸的地方（要長三百肘、長二十肘），
+   要唸長度的長（ㄔㄤˊ），不是族長／官長那種頭銜的長（ㄓㄤˇ）——使用者回報「要長三百肘」
+   （創世記6:15方舟的尺寸）唸錯了。
+   跟「地」字同一套方法：先掃過全本聖經驗證，全本「長」後面緊接數字的用法共96次，其中
+   89次後面接著肘／尺／丈／寸／虎口／竿等度量衡單位，全部是描述長度（要唸ㄔㄤˊ）；
+   另外7次（千夫長、百夫長、族長二十二人、祭司長十二人、官長一百五十人、膳長二人、
+   總長三人）後面接的是「人」，是頭銜＋人數不是長度——這條規則要求數字後面要緊接
+   度量衡單位才觸發，天然排除了這7個，不用另外列清單。 */
+const TTS_CHANG_RE = /長(?=[〇一二三四五六七八九十百千萬兩幾]+(?:肘|尺|丈|寸|虎口|竿|掌))/g;
+function ttsChangFix(s){ return s.replace(TTS_CHANG_RE, '常'); }
 /* 「創 1:26」唸成「創世記第1章第26節」。
    縮寫直接唸出來很怪（而且「創」「約」單獨一個字根本聽不懂），
    所以送去合成之前先還原成完整書名與章節。只處理「書名 章:節」這種明確的寫法，
@@ -4612,6 +4622,7 @@ function ttsPrep(s){
   x = x.replace(/[「」『』（）]/g, '');
   TTS_FIX.forEach(([re, to]) => { x = x.replace(re, to); });
   x = ttsDiFix(x);
+  x = ttsChangFix(x);
   return x.trim();
 }
 /* 一次送出去的語音仍然是好幾句接在一起（少一點請求、語氣才連得順），
@@ -4722,6 +4733,22 @@ function ttsBtn(st){
       交給 <audio> 會解不出來。改成自己讀 arrayBuffer 再指定 audio/mpeg。 */
 const SILENT_WAV = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQAAAAA=';
 let ttsEl = null, ttsUnlocked = false, ttsLastErr = '';
+/* 保命看門狗：WKWebView（iOS 上的 PWA）的 speechSynthesis 有個很有名的老毛病——
+   偶爾唸完最後一句卻不觸發 onend／onerror，程式就卡住等一個永遠不會來的事件，
+   使用者感覺「讀完自動接下一章」完全沒反應（其實是連「自然唸完」這一步都沒偵測到，
+   ttsStop(true) 根本沒被呼叫過）。網路語音的 <audio> 理論上比較穩，但背景/鎖屏時
+   同樣可能吃到瀏覽器悄悄丟掉事件，兩條路都掛一個保底計時器：
+   等太久還沒等到 onend／onended，就當作已經唸完，自己往下一段推進。 */
+let ttsWatchdog = null;
+function ttsClearWatchdog(){ if (ttsWatchdog){ clearTimeout(ttsWatchdog); ttsWatchdog = null; } }
+function ttsArmWatchdog(text, gen, cb){
+  ttsClearWatchdog();
+  const ms = Math.min(120000, Math.max(15000, ttsPrep(text).length * 480 + 10000));
+  ttsWatchdog = setTimeout(() => {
+    ttsWatchdog = null;
+    if (gen === spk.gen && spk.on && !spk.abort) cb();
+  }, ms);
+}
 function ttsAudio(){
   if (!ttsEl){
     ttsEl = new Audio();
@@ -4796,15 +4823,24 @@ async function ttsPlayFrom(i, gen){
     const d = a.duration;
     if (d && isFinite(d) && d > 0) raProgress(spk.items[i], a.currentTime / d);
   };
-  a.onended = () => { a.ontimeupdate = null; if (spk.on && !spk.abort && gen === spk.gen) ttsPlayFrom(i + 1, gen); };
+  a.onended = () => { ttsClearWatchdog(); a.ontimeupdate = null; if (spk.on && !spk.abort && gen === spk.gen) ttsPlayFrom(i + 1, gen); };
   a.onerror = () => {
+    ttsClearWatchdog();
     if (gen !== spk.gen) return;
     if (i === 0) ttsNativeFrom(i, gen); else if (spk.on && !spk.abort) ttsPlayFrom(i + 1, gen);
   };
   try{
     const p = a.play();
+    /* 保底：背景／鎖屏時瀏覽器偶爾會悄悄不觸發 onended，等太久就當作唸完自己往下推 */
+    ttsArmWatchdog(spk.items[i].text, gen, () => {
+      if (spk.idx !== i) return;
+      a.onended = null; a.onerror = null;
+      try{ a.pause(); }catch(e){}
+      ttsPlayFrom(i + 1, gen);
+    });
     if (p && p.catch) await p;
   }catch(e){
+    ttsClearWatchdog();
     if (gen !== spk.gen) return;
     if (i === 0) ttsNativeFrom(i, gen); else if (spk.on && !spk.abort) ttsPlayFrom(i + 1, gen);
   }
@@ -4823,9 +4859,19 @@ function ttsNativeFrom(i, gen){
     if (!spk.on || spk.abort || spk.idx !== i || gen !== spk.gen) return;
     if (say.length) raProgress(spk.items[i], (e.charIndex || 0) / say.length);
   };
-  u.onend = () => { if (spk.on && !spk.abort && gen === spk.gen) ttsNativeFrom(i + 1, gen); };
-  u.onerror = () => { if (spk.on && !spk.abort && gen === spk.gen) ttsNativeFrom(i + 1, gen); };
-  try{ speechSynthesis.speak(u); }catch(e){ ttsStop(); }
+  u.onend = () => { ttsClearWatchdog(); if (spk.on && !spk.abort && gen === spk.gen) ttsNativeFrom(i + 1, gen); };
+  u.onerror = () => { ttsClearWatchdog(); if (spk.on && !spk.abort && gen === spk.gen) ttsNativeFrom(i + 1, gen); };
+  try{
+    speechSynthesis.speak(u);
+    /* 保底：WKWebView（iOS PWA）的 speechSynthesis 偶爾唸完不觸發 onend，
+       等太久就當作唸完自己往下推——不然「讀完自動接下一章」永遠等不到自然結束。 */
+    ttsArmWatchdog(say, gen, () => {
+      if (spk.idx !== i) return;
+      u.onend = null; u.onerror = null;
+      try{ speechSynthesis.cancel(); }catch(e){}
+      ttsNativeFrom(i + 1, gen);
+    });
+  }catch(e){ ttsClearWatchdog(); ttsStop(); }
 }
 /* ▶ 開始／接續：暫停中就直接接續播放；閒置就照優先順序決定從哪裡開始
    （使用者指定的段落 > 上次按停的位置，兩者都要同一書卷／章節／連讀模式才算數 > 目前捲動位置）。*/
@@ -4855,6 +4901,7 @@ function ttsStart(){
 function ttsPauseNow(){
   if (!spk.on || spk.paused) return;
   spk.paused = true;
+  ttsClearWatchdog();
   try{ if (spk.audio) spk.audio.pause(); }catch(e){}
   try{ if (spk.native && 'speechSynthesis' in window) speechSynthesis.pause(); }catch(e){}
   ttsBtn('paused');
@@ -4870,6 +4917,7 @@ function ttsResumePlaying(){
 }
 /* ⏹ 停止：natural=true 表示唸到整段結尾自然結束，不是使用者按停——這時候沒有「接續點」可言 */
 function ttsStop(natural){
+  ttsClearWatchdog();
   if (sayId !== null){ sayId = null; paintSay(); }
   if (spk.on && !natural){
     const it = spk.items[spk.idx];

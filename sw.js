@@ -1,7 +1,7 @@
 /* 321互動聖經 — Service Worker
    每次改動內容或程式，務必把 VERSION 往上加，
    否則已安裝的使用者不會看到更新。 */
-const VERSION = 'ib-v2.7.14';
+const VERSION = 'ib-v2.7.15';
 
 const SHELL = [
   './', './index.html', './app.js', './manifest.json', './toc.json', './plans.json', './cover.jpg',
