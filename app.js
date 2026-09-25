@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.7.19';
+const VERSION = 'v2.7.21';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -587,6 +587,22 @@ let bmMode = false;                 // 書籤模式（只存在當下，不寫�
 function anchorEl(a){
   return a ? $(`#reader .sent[data-c="${a.c}"][data-p="${a.p}"][data-s="${a.s}"]`) : null;
 }
+/* 捲回最頂端：跟 scrollToAnchor 同一個毛病——不確定真正在捲動的是 window 還是 body
+   （這個 App 的版面 html,body{height:100%} 加上只設 overflow-x:hidden，瀏覽器會把
+   overflow-y 算成 auto，實測 body 才是真正在捲的那個，window.scrollTo 完全是空跑）。
+   使用者回報：朗讀自動接下一章，沒有從新的一章開頭開始唸，而是從讀到一半的地方
+   接著唸——查出來是因為新章節渲染後想把畫面捲回頂端，用的是 window.scrollTo(0,0)，
+   在 body 才是真正捲動容器的情況下完全沒有效果，畫面（跟捲動位置決定「要從哪裡開始
+   朗讀」的 buildQueue()）都還停在上一章讀到一半的捲動位置，於是新的一章從那個位置
+   往下算，等於漏掉了新章節開頭那一段。
+   「捲回頂端」這種情境沒有一個固定的錨點元素可以 scrollIntoView，所以不是像
+   scrollToAnchor 那樣交給瀏覽器找容器，而是三個容器都直接歸零——不管真正在捲的是
+   哪一個，歸零都有效；歸零另一個沒在捲的容器不會出錯，也不會有任何副作用。 */
+function scrollToTop(){
+  window.scrollTo(0, 0);
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+}
 function scrollToAnchor(a, opts){
   const el = anchorEl(a);
   if (!el) return false;
@@ -638,7 +654,7 @@ async function render(){
   }
   if (tab !== 'read'){ bmMode = false; document.documentElement.classList.remove('bmmode'); }
   if (tab !== 'studio'){ stopSelfie(); if (recMode === 's') recMode = 'c'; }
-  if (tab !== 'read' && tab !== 'studio') window.scrollTo(0, 0);
+  if (tab !== 'read' && tab !== 'studio') scrollToTop();
 }
 
 /* ================================================================ 今日 */
@@ -1082,7 +1098,7 @@ async function viewReader(v, bookId, ch){
     ? (readOfBook(bookId) === b.ch ? L.bookDone : '')
     : (user.progress[bookId + '-' + ch] ? L.done : '');
 
-  if (!(spk.on && spk.items.length)) window.scrollTo(0, 0);
+  if (!(spk.on && spk.items.length)) scrollToTop();
   const want = jumpTo; jumpTo = null;
   if (!(want && scrollToAnchor(want)) && flow && ch > 1){
     const target = $(`#reader p[data-c="${ch}"]`);
@@ -4685,7 +4701,16 @@ const TTS_FIX = [
   [/教會/g, '叫會'], [/傳道/g, '船道'], [/朝見/g, '潮見'],
   [/應當/g, '英當'], [/應許/g, '英許'], [/相應/g, '相映'],
   [/看守/g, '刊守'], [/種子/g, '腫子'], [/中間/g, '衷間'],
-  [/分開/g, '芬開']            // 分：這裡要唸 fēn（分開），不是 fèn
+  [/分開/g, '芬開'],           // 分：這裡要唸 fēn（分開），不是 fèn
+  /* 使用者回報：創世記8章「乾了」「鴿子」都唸錯。逐字掃過全本聖經（繁體5個檔案）核對：
+     「乾」全本共221次，全部都是「乾燥／枯乾／乾淨／乾渴…」這種唸 gān 的用法，沒有一次
+     是「乾坤」那種唸 qián 的用法（零例外，不用另外分情況）——這個字不常用，TTS容易照
+     「乾坤」的音誤讀成 qián，用常見同音字「甘」強制唸對。
+     「鴿」全本共45次，全部都是「鴿子／雛鴿」這種鳥，唸 gē；這個字的聲符是「合」(hé)，
+     TTS容易照聲符誤讀成 hé，用常見同音字「哥」強制唸對。
+     （這兩個字繁簡分屬不同碼位：簡體版對應的是「干」「鸽」，「干」本身就是常用字沒有
+     誤讀風險不用修；「鸽」使用者沒有回報過，先不動，之後真的回報再比照這裡加。） */
+  [/乾/g, '甘'], [/鴿/g, '哥']
 ];
 /* 「地」這個字有兩種讀音：當名詞（大地／土地／地方…）要唸 dì；
    接在疊字形容詞或副詞後面、修飾後面動詞的「地」結構助詞（大大地、漸漸地、不住地…）要唸輕聲 de。
