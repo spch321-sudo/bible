@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.7.15';
+const VERSION = 'v2.7.16';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -106,6 +106,8 @@ const I18N = {
         recNo:'這台裝置不支援錄音', vidNo:'這台裝置不支援自動合成影片',
         micDeny:'無法使用麥克風，請允許權限', camDeny:'無法使用相機，請允許權限',
         selfieHint:'你的臉會以圓形貼在卡片右下角，錄影時同步合成。',
+        beauty:'美顏', beautyOn:'柔膚', beautyOff:'原圖',
+        beautyHint:['已經柔化膚質、稍微提亮，自拍看起來更好看。','使用鏡頭原始畫面，不做任何處理。'],
         mcLen:'音樂卡片長度', mcStart:'不錄音，只配音樂', mcing:'音樂卡片製作中…',
         mcHint:'卡片配上背景音樂做成影片，不必開口。選 15 或 30 秒很快就好，選「整首」要等音樂播完。',
         works:'我的作品', noWorks:'還沒有作品。錄一段話或配一首音樂，就會出現在這裡。',
@@ -198,6 +200,8 @@ const I18N = {
         recNo:'这台设备不支持录音', vidNo:'这台设备不支持自动合成视频',
         micDeny:'无法使用麦克风，请允许权限', camDeny:'无法使用相机，请允许权限',
         selfieHint:'你的脸会以圆形贴在卡片右下角，录像时同步合成。',
+        beauty:'美颜', beautyOn:'柔肤', beautyOff:'原图',
+        beautyHint:['已经柔化肤质、稍微提亮，自拍看起来更好看。','使用镜头原始画面，不做任何处理。'],
         mcLen:'音乐卡片长度', mcStart:'不录音，只配音乐', mcing:'音乐卡片制作中…',
         mcHint:'卡片配上背景音乐做成视频，不必开口。选 15 或 30 秒很快就好，选“整首”要等音乐播完。',
         works:'我的作品', noWorks:'还没有作品。录一段话或配一首音乐，就会出现在这里。',
@@ -292,6 +296,8 @@ const I18N = {
         recNo:'This device cannot record audio', vidNo:'This device cannot build a video',
         micDeny:'Microphone not available — please allow access', camDeny:'Camera not available — please allow access',
         selfieHint:'Your face appears in a circle at the bottom right, composed in as you record.',
+        beauty:'Beauty', beautyOn:'Smooth', beautyOff:'Original',
+        beautyHint:['Skin is softened and slightly brightened for a more flattering selfie.','Uses the raw camera image, unprocessed.'],
         mcLen:'Music card length', mcStart:'No talking — just music', mcing:'Building your music card…',
         mcHint:'The card set to music, no need to speak. 15 or 30 seconds is quick; “Whole track” waits for the music to finish.',
         works:'My recordings', noWorks:'Nothing yet. Record a few words, or set the card to music.',
@@ -338,7 +344,7 @@ const VOICES = {
 const DEFAULTS = { lang:'zh', font:0, theme:0, flow:false, shCh:true, shV:true, hidenote:false,
                    cardTpl:'navy', cardSize:'t', cardBorder:'classic', cardFs:1,
                    cardTop:'', cardSign:'', cardTo:'',
-                   voice:{zh:0, zs:0, en:0}, ttsAutoNext:false };
+                   voice:{zh:0, zs:0, en:0}, ttsAutoNext:false, beauty:true };
 /* 「淨」鍵依序切換的四種組合：[整卷連讀?, 顯示章號?] */
 /* 「淨」鍵循環的四種常用讀法：[整卷連讀, 顯示章, 顯示節] */
 const VIEW_CYCLE = [[false, true, true], [false, true, false], [false, false, false], [true, false, false]];
@@ -1923,12 +1929,34 @@ function drawSelfieCircle(cx, vid, W, H, F){
   cx.save(); cx.beginPath(); cx.arc(cxx, cyy, R, 0, 7); cx.clip();
   const vw = vid.videoWidth, vh = vid.videoHeight, side = Math.min(vw, vh);
   cx.translate(cxx, cyy); cx.scale(-1, 1);
-  cx.drawImage(vid, (vw - side) / 2, (vh - side) / 2, side, side, -R, -R, R * 2, R * 2);
+  const sx = (vw - side) / 2, sy = (vh - side) / 2;
+  if (state.beauty) drawBeautyFace(cx, vid, sx, sy, side, R);
+  else cx.drawImage(vid, sx, sy, side, side, -R, -R, R * 2, R * 2);
   cx.restore();
   cx.beginPath(); cx.arc(cxx, cyy, R, 0, 7);
   cx.lineWidth = Math.max(3, W * .006); cx.strokeStyle = '#F4EFE3'; cx.stroke();
   cx.beginPath(); cx.arc(cxx, cyy, R + 4 * F, 0, 7);
   cx.lineWidth = Math.max(2, W * .003); cx.strokeStyle = 'rgba(212,166,91,.85)'; cx.stroke();
+}
+/* 美顏：純 Canvas 2D 做的簡易柔膚效果，不需要臉部辨識或 WebGL，手機瀏覽器
+   （包含 iOS PWA）都支援。原理是攝影棚常用的「柔焦」手法：
+   1) 底層先正常畫一次，順便把亮度/飽和度/對比稍微調得討喜一點；
+   2) 上面疊一層「模糊＋提亮」的同一張畫面，用 soft-light 疊加模式蓋上去——
+      模糊會抹掉毛孔、細紋這些高頻雜訊，soft-light 疊加不會整個糊掉（保留
+      眼睛、眉毛、髮際線這些輪廓的對比），效果類似手機相機的「柔膚」檔位。
+   圓形自拍區塊本來就不大，模糊半徑抓得小、只在這個小範圍內運算，
+   即時錄影（24fps）也不會卡。 */
+function drawBeautyFace(cx, vid, sx, sy, side, R){
+  cx.filter = 'brightness(1.06) saturate(1.08) contrast(0.97)';
+  cx.drawImage(vid, sx, sy, side, side, -R, -R, R * 2, R * 2);
+  cx.filter = 'none';
+  cx.save();
+  cx.globalAlpha = 0.55;
+  cx.globalCompositeOperation = 'soft-light';
+  cx.filter = `blur(${Math.max(2, Math.round(R * 0.06))}px) brightness(1.08)`;
+  cx.drawImage(vid, sx, sy, side, side, -R, -R, R * 2, R * 2);
+  cx.restore();
+  cx.filter = 'none';
 }
 
 /* 畫布上的字型也要分語言。Noto Serif TC／Sans TC 裡沒有簡體才有的字
@@ -3099,6 +3127,9 @@ async function viewStudio(v){
         <video id="selfiePrev" playsinline webkit-playsinline muted autoplay
           style="width:150px;height:150px;border-radius:50%;object-fit:cover;transform:scaleX(-1);border:3px solid var(--gold);background:#000"></video>
         <div class="muted" style="font-size:12px;margin-top:6px">${esc(L.selfieHint)}</div>
+        <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.beauty)}</div>
+        ${chips('rBeauty', [[1, L.beautyOn], [0, L.beautyOff]], state.beauty ? 1 : 0, 'v')}
+        <div class="muted" style="font-size:11.5px;margin-top:6px">${esc(L.beautyHint[state.beauty ? 0 : 1])}</div>
       </div>
       <div id="liveBox" hidden style="margin-top:14px"></div>
     </div>
@@ -3129,6 +3160,7 @@ async function viewStudio(v){
   bind('#pPos button', b => { stkPos = b.dataset.v; studioRefresh(); });
   bind('#bVol button', b => { bgmVol = +b.dataset.v; studioRefresh(); });
   bind('#mLen button', b => { mcLen = +b.dataset.v; studioRefresh(); });
+  bind('#rBeauty button', b => { state.beauty = b.dataset.v === '1'; saveState(); studioRefresh(); });
   bind('#rMode button', b => setRecMode(b.dataset.s));
   const pd = $('#pDel'); if (pd) pd.onclick = () => { photoImg = null; photoBy = ''; studioRefresh(); };
   const pl2 = $('#pLib'); if (pl2) pl2.onclick = openPexels;
