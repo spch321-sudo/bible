@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.7.21';
+const VERSION = 'v2.10.0';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -365,14 +365,15 @@ const VOICES = {
 const DEFAULTS = { lang:'zh', font:0, theme:0, flow:false, shCh:true, shV:true, hidenote:false,
                    cardTpl:'navy', cardSize:'t', cardBorder:'classic', cardFs:1,
                    cardTop:'', cardSign:'', cardTo:'',
-                   voice:{zh:0, zs:0, en:0}, ttsAutoNext:false, beauty:true, planRemindOn:false };
+                   voice:{zh:0, zs:0, en:0}, ttsAutoNext:false, beauty:true, planRemindOn:false,
+                   audience:'adult' };
 /* 「淨」鍵依序切換的四種組合：[整卷連讀?, 顯示章號?] */
 /* 「淨」鍵循環的四種常用讀法：[整卷連讀, 顯示章, 顯示節] */
 const VIEW_CYCLE = [[false, true, true], [false, true, false], [false, false, false], [true, false, false]];
 let state = Object.assign({}, DEFAULTS);
 let user  = { progress:{}, hl:{}, fav:[], marks:[], last:null,
                uid:'', nick:'', teams:[], pts:0, badges:[], acts:{},
-               plan:{ active:null, starts:{}, done:{} } };
+               plan:{ active:null, starts:{}, done:{} }, play:{ right:0, total:0, best:{} }, quizWrong:[], rewards:{} };
 let TOC = [], BOOK = {}, SHARD = {};   // SHARD['zh|law'] = {BookId:[chapters]}
 
 function loadState(){
@@ -391,6 +392,7 @@ function loadState(){
     if (s.chnum !== undefined && s.shCh === undefined){ state.shCh = !!s.chnum; state.shV = !!s.chnum; }
     delete state.chnum;
     state.flow = !!state.flow; state.shCh = !!state.shCh; state.shV = !!state.shV;
+    if (!['adult','teen','kid'].includes(state.audience)) state.audience = 'adult';
   }catch(e){ state = Object.assign({}, DEFAULTS); }
 }
 function saveState(){ try{ localStorage.setItem('ib_state', JSON.stringify(state)); }catch(e){} }
@@ -407,6 +409,10 @@ function loadUser(){
     if (!user.plan || typeof user.plan !== 'object') user.plan = { active:null, starts:{}, done:{} };
     if (!user.plan.starts || typeof user.plan.starts !== 'object') user.plan.starts = {};
     if (!user.plan.done || typeof user.plan.done !== 'object') user.plan.done = {};
+    if (!user.play || typeof user.play !== 'object') user.play = { right:0, total:0, best:{} };
+    if (!user.play.best || typeof user.play.best !== 'object') user.play.best = {};
+    if (!Array.isArray(user.quizWrong)) user.quizWrong = [];
+    if (!user.rewards || typeof user.rewards !== 'object' || Array.isArray(user.rewards)) user.rewards = {};
     if (!user.uid) user.uid = 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
   }catch(e){}
 }
@@ -631,7 +637,7 @@ function currentRoute(){
 async function render(){
   const r = currentRoute();
   const tab = r[0] || 'today';
-  $$('#tabbar a').forEach(a => a.classList.toggle('active', a.dataset.tab === (tab === 'read' ? 'books' : (tab === 'plan' ? 'today' : tab))));
+  $$('#tabbar a').forEach(a => a.classList.toggle('active', a.dataset.tab === (tab === 'read' ? 'books' : ((tab === 'plan' || tab === 'play') ? 'today' : tab))));
   const v = $('#view');
   try{
     if (tab === 'today')          await viewToday(v);
@@ -643,6 +649,7 @@ async function render(){
     else if (tab === 'me')        await viewMe(v);
     else if (tab === 'studio')    await viewStudio(v);
     else if (tab === 'plan')      await viewPlan(v);
+    else if (tab === 'play')      await viewPlay(v);
     else { go('#/today'); return; }
   }catch(e){
     v.innerHTML = `<div class="empty">載入失敗：${esc(e.message || e)}</div>`;
@@ -714,6 +721,8 @@ async function viewToday(v){
 
     <div class="section-title">${esc(L3('快速進入', '快速进入', 'Jump to'))}</div>
     <div class="card" style="padding:4px 16px">
+      <a class="rowlink" href="#/play"><div class="meta"><div class="t">🎯 ${esc(L3('讀經樂：猜謎與測驗', '读经乐：猜谜与测验', 'Bible Fun: Riddles & Quiz'))}</div>
+        <div class="s">${esc(L3('玩一玩，加深對經文的記憶', '玩一玩，加深对经文的记忆', 'Play to remember what you read'))}</div></div><div class="chev">›</div></a>
       <a class="rowlink" href="#/plan"><div class="meta"><div class="t">${esc(L.plan)}</div>
         <div class="s">${user.plan.active ? esc(L.progress) : esc(L.planTitle)}</div></div><div class="chev">›</div></a>
       <a class="rowlink" href="#/read/Psalms/${(new Date().getDate() % 150) + 1}">
@@ -729,22 +738,176 @@ async function viewToday(v){
   };
 }
 
+/* ================================================================ 讀經獎章（v2.10.0）
+   讀經計畫裡某一卷書的每一天都打勾，就算「這卷書達標」：跳出動畫獎勵圖，
+   並在「經卷」目錄那卷書上留下 🏅。獎章記在 user.rewards{書卷id:時間}，
+   一旦拿到就永久保留——之後重新開始計畫、清掉打勾也不會被收回。
+   只有「剛剛才讀完的那一卷」會播動畫；更新前就已完成的卷，進目錄時悄悄補上標示，
+   不會一次跳出一堆動畫。 */
+const RW_COLORS = [
+  ['#EDB955', '#B8761A'], ['#E58467', '#A8442F'], ['#82BE95', '#3E7D4C'],
+  ['#78A0DA', '#2D5AA8'], ['#AE94D2', '#6A4C9C'], ['#E99AAA', '#B4435F'],
+  ['#58BAC6', '#1F7A86'], ['#A3B0BD', '#5A6B7C'], ['#F6D766', '#C08A14']
+];
+const rwGroupOf = id => { const i = TOC.findIndex(x => x.id === id); const g = GROUPS.findIndex(gr => i >= gr.a && i < gr.b); return g < 0 ? 0 : g; };
+const rwCount = () => Object.keys(user.rewards || {}).length;
+const RW_CSS = `
+.bkbtn{position:relative}
+.bkbtn.rw{border-color:var(--gold);background:linear-gradient(var(--gold-soft),var(--bg))}
+.bkbtn .rw-b{position:absolute;top:-7px;right:-4px;font-size:17px;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,.25))}
+.rw-line{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12.5px;color:var(--gold);font-weight:700;margin:0 2px 10px}
+.rw-mask{position:fixed;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;padding:20px;
+  background:radial-gradient(circle at 50% 38%,rgba(255,226,140,.28),rgba(6,24,60,.82) 62%);backdrop-filter:blur(2px);overflow:hidden;animation:rwfade .35s ease-out}
+@keyframes rwfade{from{opacity:0}to{opacity:1}}
+.rw-card{position:relative;z-index:2;width:min(340px,100%);text-align:center;color:#fff;animation:rwpop .75s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes rwpop{0%{transform:scale(.2) rotate(-14deg);opacity:0}60%{transform:scale(1.08) rotate(3deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+.rw-medal{width:210px;height:230px;margin:0 auto -4px;display:block;overflow:visible}
+.rw-rays{transform-origin:100px 96px;animation:rwspin 14s linear infinite}
+@keyframes rwspin{to{transform:rotate(360deg)}}
+.rw-shine{animation:rwshine 2.6s ease-in-out .9s infinite}
+@keyframes rwshine{0%{transform:translateX(-120px)}55%,100%{transform:translateX(160px)}}
+.rw-tw{animation:rwtw 1.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes rwtw{0%,100%{transform:scale(.4);opacity:.3}50%{transform:scale(1.15);opacity:1}}
+.rw-t1{font-family:var(--f-serif);font-size:15px;letter-spacing:.3em;color:#F5E3A8;font-weight:700;animation:rwup .6s .5s both}
+.rw-t2{font-family:var(--f-serif);font-size:28px;font-weight:900;margin:2px 0 6px;text-shadow:0 2px 14px rgba(0,0,0,.6);animation:rwup .6s .62s both}
+.rw-t3{font-size:14.5px;line-height:1.75;color:#EEF2FA;animation:rwup .6s .75s both}
+.rw-t4{display:inline-block;margin-top:8px;padding:3px 12px;border-radius:99px;background:rgba(255,226,140,.18);border:1px solid rgba(255,226,140,.5);color:#F5E3A8;font-size:12.5px;font-weight:700;animation:rwup .6s .85s both}
+.rw-acts{display:flex;gap:10px;margin-top:16px;animation:rwup .6s 1s both}
+.rw-acts .btn{flex:1}
+.rw-acts .btn.ghost{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.35);color:#fff}
+@keyframes rwup{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
+.rw-conf{position:absolute;top:-12px;width:10px;height:14px;border-radius:2px;opacity:0;z-index:1;animation:rwfall var(--d) linear var(--dl) infinite}
+@keyframes rwfall{0%{transform:translate3d(0,-10px,0) rotate(0);opacity:0}8%{opacity:1}100%{transform:translate3d(var(--dx),105vh,0) rotate(var(--r));opacity:.9}}
+@media (prefers-reduced-motion:reduce){.rw-rays,.rw-shine,.rw-tw,.rw-conf{animation:none}.rw-conf{display:none}.rw-card{animation:none}}
+`;
+function rwCss(){
+  if ($('#rwcss')) return;
+  const el = document.createElement('style'); el.id = 'rwcss'; el.textContent = RW_CSS;
+  document.head.appendChild(el);
+}
+function rwMedalSvg(id){
+  const [c1, c2] = RW_COLORS[rwGroupOf(id) % RW_COLORS.length];
+  const ab = babbr(BOOK[id]);
+  const fs = ab.length > 2 ? 40 : (ab.length === 2 ? 50 : 62);
+  const rays = Array.from({ length: 12 }, (_, i) =>
+    `<path d="M100 96 L92 -14 L108 -14 Z" fill="rgba(255,226,140,.42)" transform="rotate(${i * 30} 100 96)"/>`).join('');
+  return `<svg class="rw-medal" viewBox="0 0 200 230" aria-hidden="true">
+    <defs>
+      <radialGradient id="rwg1" cx="50%" cy="35%" r="70%"><stop offset="0" stop-color="#FFF3C4"/><stop offset=".5" stop-color="#F0C45A"/><stop offset="1" stop-color="#B8761A"/></radialGradient>
+      <linearGradient id="rwg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient>
+      <clipPath id="rwclip"><circle cx="100" cy="96" r="58"/></clipPath>
+    </defs>
+    <g class="rw-rays">${rays}</g>
+    <path d="M64 150 L44 224 L72 210 L86 228 L100 156 Z" fill="#C23B3B"/>
+    <path d="M136 150 L156 224 L128 210 L114 228 L100 156 Z" fill="#9E2B2B"/>
+    <circle cx="100" cy="96" r="72" fill="url(#rwg1)"/>
+    <circle cx="100" cy="96" r="66" fill="none" stroke="#FFF3C4" stroke-width="2" stroke-dasharray="3 5" opacity=".9"/>
+    <circle cx="100" cy="96" r="58" fill="url(#rwg2)"/>
+    <g clip-path="url(#rwclip)"><rect class="rw-shine" x="-20" y="30" width="26" height="140" fill="#fff" opacity=".35" transform="rotate(20 100 96)"/></g>
+    <text x="100" y="${96 + fs * .34}" text-anchor="middle" font-family="'Noto Serif TC','Noto Serif SC',Georgia,serif" font-weight="900" font-size="${fs}" fill="#fff" style="paint-order:stroke;stroke:rgba(0,0,0,.28);stroke-width:2px">${esc(ab)}</text>
+    <g fill="#FFF3C4"><path class="rw-tw" d="M30 40 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3z"/>
+      <path class="rw-tw" style="animation-delay:.5s" d="M172 30 l2.5 6.5 6.5 2.5 -6.5 2.5 -2.5 6.5 -2.5 -6.5 -6.5 -2.5 6.5 -2.5z"/>
+      <path class="rw-tw" style="animation-delay:1s" d="M178 120 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z"/></g>
+  </svg>`;
+}
+let rwQueue = [], rwShowing = false, rwTimer = 0;
+function rwLine(id){
+  const a = state.audience;
+  const b = BOOK[id], nm = bname(b);
+  return {
+    adult:[L3(`你讀完整卷《${nm}》了！`, `你读完整卷《${nm}》了！`, `You finished the whole book of ${nm}!`),
+           L3('一天一天走到這裡，神的話已經在你裡面扎根。', '一天一天走到这里，神的话已经在你里面扎根。', 'Day by day you came this far — the Word is taking root in you.')],
+    teen :[L3(`《${nm}》通關！`, `《${nm}》通关！`, `${nm} — cleared!`),
+           L3('整卷讀完不是人人做得到，這枚獎章你拿得實至名歸。', '整卷读完不是人人做得到，这枚奖章你拿得实至名归。', 'Not everyone finishes a whole book — you earned this one.')],
+    kid  :[L3(`哇！你讀完《${nm}》了！🎉`, `哇！你读完《${nm}》了！🎉`, `Wow! You finished ${nm}! 🎉`),
+           L3('你好棒！神一定很高興，我們一起收下這枚金牌！🏅', '你好棒！神一定很高兴，我们一起收下这枚金牌！🏅', 'You did it! God is so happy. Here is your gold medal! 🏅')]
+  }[a];
+}
+function rwShow(id, replay){
+  rwCss();
+  if (rwShowing){ rwQueue.push([id, replay]); return; }
+  rwShowing = true;
+  const b = BOOK[id], [l1, l2] = rwLine(id), n = rwCount();
+  const mask = document.createElement('div'); mask.className = 'rw-mask';
+  const cols = ['#F5C84B', '#E9695C', '#6FAE71', '#6C93D1', '#E58FA0', '#FFF3C4', '#A48AC9'];
+  const conf = Array.from({ length: 34 }, (_, i) =>
+    `<i class="rw-conf" style="left:${(i * 29 + Math.random() * 20) % 100}%;background:${cols[i % cols.length]};--d:${(2.6 + Math.random() * 2.4).toFixed(2)}s;--dl:${(Math.random() * 2.2).toFixed(2)}s;--dx:${Math.round(Math.random() * 120 - 60)}px;--r:${Math.round(240 + Math.random() * 480)}deg"></i>`).join('');
+  mask.innerHTML = conf + `<div class="rw-card">
+      ${rwMedalSvg(id)}
+      <div class="rw-t1">${esc(L3('達　標', '达　标', 'GOAL REACHED'))}</div>
+      <div class="rw-t2">${esc(bname(b))}</div>
+      <div class="rw-t3">${esc(l1)}<br>${esc(l2)}</div>
+      <div class="rw-t4">🏅 ${esc(L3(`第 ${n} 枚獎章　共 ${b.ch} 章`, `第 ${n} 枚奖章　共 ${b.ch} 章`, `Medal ${n} · ${b.ch} chapters`))}</div>
+      <div class="rw-acts"><button class="btn ghost" id="rwShare">↗ ${esc(L3('分享', '分享', 'Share'))}</button>
+        <button class="btn gold" id="rwOk">${esc(L3('收下獎章', '收下奖章', 'Collect'))}</button></div></div>`;
+  document.body.appendChild(mask);
+  try{ if (!replay && navigator.vibrate) navigator.vibrate([40, 60, 90]); }catch(e){}
+  const close = () => {
+    clearTimeout(rwTimer); mask.remove(); rwShowing = false;
+    const nx = rwQueue.shift(); if (nx) setTimeout(() => rwShow(nx[0], nx[1]), 350);
+  };
+  $('#rwOk', mask).onclick = close;
+  mask.onclick = e => { if (e.target === mask) close(); };
+  $('#rwShare', mask).onclick = async () => {
+    clearTimeout(rwTimer);
+    const home = location.origin + location.pathname.replace(/index\.html$/, '');
+    const text = '🏅 ' + l1 + '\n\n—— ' + (state.cardTop || L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Fellowship')) + '\n' + home;
+    if (navigator.share){ try{ await navigator.share({ title: t().app, text }); return; }catch(e){ if (e && e.name === 'AbortError') return; } }
+    try{ await navigator.clipboard.writeText(text); toast(L3('已複製，可以貼到群組裡', '已复制，可以贴到群组里', 'Copied — paste it anywhere'), 3000); }catch(e){}
+  };
+  rwTimer = setTimeout(close, 14000);
+}
+/* 這一卷在這個計畫裡的每一天都打勾了嗎 */
+function rwBookDone(pid, id){
+  const p = PLANS && PLANS[pid]; if (!p) return false;
+  let any = false;
+  for (const d of p.days){
+    if (d.book !== id) continue;
+    any = true;
+    if (!user.plan.done[planDayKey(pid, d.day)]) return false;
+  }
+  return any;
+}
+/* 剛剛讀完／打勾的那一卷：新達標就發獎章並播動畫 */
+function rwCheckBook(pid, id){
+  if (!id || !BOOK[id] || user.rewards[id]) return;
+  if (!rwBookDone(pid, id)) return;
+  user.rewards[id] = Date.now(); saveUser();
+  rwShow(id, false);
+}
+/* 進目錄時悄悄補上「更新前就已完成」的卷（不播動畫） */
+async function rwBackfill(){
+  let P; try{ P = await loadPlans(); }catch(e){ return; }
+  let ch = false;
+  for (const pid of PLAN_IDS){
+    if (!P[pid]) continue;
+    const seen = {};
+    P[pid].days.forEach(d => { seen[d.book] = 1; });
+    for (const id in seen){ if (!user.rewards[id] && BOOK[id] && rwBookDone(pid, id)){ user.rewards[id] = Date.now(); ch = true; } }
+  }
+  if (ch) saveUser();
+}
+
 /* ================================================================ 經卷 / 章 */
 async function viewBooks(v, bookId){
   const L = t();
   if (bookId && BOOK[bookId]) return viewChapters(v, bookId);
   const tabOT = !(location.hash.indexOf('nt') > -1);
+  rwCss(); await rwBackfill();
   const html = GROUPS.map(g => {
     const bs = TOC.slice(g.a, g.b);
+    const gr = bs.filter(b => user.rewards[b.id]).length;
     return `<details class="grp" ${g.a < 5 || g.a === 39 ? 'open' : ''}>
-      <summary><span style="color:var(--gold)">◆</span>${esc(gname(g))}<span class="cnt">${bs.length} ${esc(t().bookUnit)}</span></summary>
+      <summary><span style="color:var(--gold)">◆</span>${esc(gname(g))}<span class="cnt">${gr ? '🏅' + gr + '/' : ''}${bs.length} ${esc(t().bookUnit)}</span></summary>
       <div class="bklist">${bs.map(b => {
-        const done = readOfBook(b.id);
-        return `<button class="bkbtn ${done === b.ch ? 'done' : ''}" data-b="${b.id}">${esc(bname(b))}
+        const done = readOfBook(b.id), rw = !!user.rewards[b.id];
+        return `<button class="bkbtn ${done === b.ch ? 'done' : ''} ${rw ? 'rw' : ''}" data-b="${b.id}">${rw ? '<span class="rw-b">🏅</span>' : ''}${esc(bname(b))}
           <span class="bs">${done ? done + '/' : ''}${b.ch} ${esc(L.ch)}</span></button>`;
       }).join('')}</div></details>`;
   }).join('');
-  v.innerHTML = `<div class="section-title">${esc(L.ot)} · ${esc(L.nt)}</div>${html}`;
+  v.innerHTML = `<div class="section-title">${esc(L.ot)} · ${esc(L.nt)}</div>
+    <div class="rw-line"><span>🏅 ${esc(L3('讀經計畫獎章', '读经计划奖章', 'Reading-plan medals'))}　${rwCount()} / ${TOC.length}</span>
+      <span class="muted" style="font-weight:400;font-size:11.5px">${esc(L3('讀完計畫中的整卷書就會得到', '读完计划中的整卷书就会得到', 'Finish a whole book in your plan to earn one'))}</span></div>${html}`;
   $$('.bkbtn', v).forEach(b => b.onclick = () => go('#/books/' + b.dataset.b));
 }
 function readOfBook(id){
@@ -758,12 +921,14 @@ async function viewChapters(v, bookId){
   v.innerHTML = `
     <div class="chtoolbar"><button class="chtb-btn" id="backBooks">‹</button>
       <div style="flex:1"><div style="font-family:var(--f-serif);font-weight:900;font-size:19px">${esc(bname(b))}</div>
-      <div class="muted">${b.ch} ${esc(L.ch)} · ${b.v} ${esc(L.verses)}</div></div></div>
+      <div class="muted">${b.ch} ${esc(L.ch)} · ${b.v} ${esc(L.verses)}</div></div>
+      ${user.rewards[bookId] ? `<button class="chtb-btn on" id="rwAgain" title="${esc(L3('重看獎章', '重看奖章', 'Replay medal'))}">🏅</button>` : ''}</div>
     <div class="chgrid">${Array.from({length: b.ch}, (_, i) => {
       const n = i + 1, read = user.progress[bookId + '-' + n];
       return `<button class="chbtn ${n === cur ? 'now' : (read ? 'read' : '')}" data-c="${n}">${n}</button>`;
     }).join('')}</div>`;
   $('#backBooks', v).onclick = () => go('#/books');
+  const ra = $('#rwAgain', v); if (ra) ra.onclick = () => rwShow(bookId, true);
   $$('.chbtn', v).forEach(x => x.onclick = () => go(`#/read/${bookId}/${x.dataset.c}`));
 }
 
@@ -826,9 +991,11 @@ function restartPlan(pid){
 }
 function togglePlanDone(pid, day){
   const k = planDayKey(pid, day);
+  const turnedOn = !user.plan.done[k];
   if (user.plan.done[k]) delete user.plan.done[k]; else user.plan.done[k] = Date.now();
   saveUser();
   render();
+  if (turnedOn){ const dd = PLANS && PLANS[pid] && PLANS[pid].days.find(x => x.day === day); if (dd) rwCheckBook(pid, dd.book); }
 }
 function planRowHtml(d, pid, todayIdx){
   const b = BOOK[d.book];
@@ -1045,7 +1212,9 @@ async function viewReader(v, bookId, ch){
       <button class="btn" id="fPrev">${esc(flow ? L.prevBk : L.prev)}</button>
       <button class="btn primary" id="fNext">${esc(flow ? L.nextBk : L.next)}</button>
     </div>
+    ${flow ? '' : `<button class="btn block" id="fPlay" style="margin-top:10px">🎯 ${esc(L3('考考我這一章：猜謎與測驗', '考考我这一章：猜谜与测验', 'Quiz me on this chapter'))}</button>`}
     <div class="readend" id="readEnd"></div>`;
+  { const fp = $('#fPlay'); if (fp) fp.onclick = () => { plSrc = 'cur'; PL = null; go('#/play'); }; }
 
   $('#rdToc').onclick  = () => go('#/books/' + bookId);
   $('#rdBm').onclick   = () => {
@@ -1178,7 +1347,7 @@ async function planAutoCheck(bookId, ch){
     for (let c = d.start; c <= d.end; c++){ if (!user.progress[bookId + '-' + c]){ allRead = false; break; } }
     if (allRead){ user.plan.done[k] = Date.now(); changed = true; }
   }
-  if (changed){ saveUser(); toast(t().planAutoDoneToast, 2600); }
+  if (changed){ saveUser(); toast(t().planAutoDoneToast, 2600); rwCheckBook(pid, bookId); }
 }
 /* ============ 讀經計畫：每日提醒（本機通知，不是伺服器推播）====================
    這個App是純前端PWA，沒有一直開著的伺服器可以主動推播；只能靠瀏覽器的
@@ -3016,24 +3185,52 @@ async function playRec(id){
 let studioItem = null, studioNote = null, blessBusy = false;
 
 /* 問小智一次就好（寫祝福、改內文共用），連不上會回 {out:'', why:'原因'} */
-async function aiOnce(sys, ask){
+async function aiRaw(sys, ask, ms){
   let out = '', why = '';
   for (let a = 0; a <= CHAT_RETRY.length; a++){
+    const ac = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    const tm = ac ? setTimeout(() => ac.abort(), ms || 60000) : 0;
     try{
       const r = await fetch(API.chat, { method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ system: sys, messages:[{ role:'user', content: ask }] }) });
+        body: JSON.stringify({ system: sys, messages:[{ role:'user', content: ask }] }), signal: ac ? ac.signal : undefined });
       if (!r.ok) throw new Error('http ' + r.status);
       out = extractReply(await r.json().catch(() => null));
       if (!out) why = L3('回覆是空的', '回复是空的', 'empty reply');
+      clearTimeout(tm);
       break;
     }catch(e){
-      why = (e && e.message) ? String(e.message) : 'network';
+      clearTimeout(tm);
+      why = (e && e.name === 'AbortError') ? L3('逾時', '逾时', 'timeout') : ((e && e.message) ? String(e.message) : 'network');
       if (a === CHAT_RETRY.length) break;
       await new Promise(rs => setTimeout(rs, CHAT_RETRY[a]));
     }
   }
-  return { out: out ? out.replace(/[*#>`]/g, '').replace(/^「|」$/g, '').trim() : '', why };
+  return { out, why };
 }
+async function aiOnce(sys, ask){
+  const r = await aiRaw(sys, ask);
+  return { out: r.out ? r.out.replace(/[*#>`]/g, '').replace(/^「|」$/g, '').trim() : '', why: r.why };
+}
+/* 寫短文（祝福、改內文、團隊代寫）時，讀者是誰也要照「回答對象」調整口氣。
+   這幾處的內文會被畫在卡片上，所以一律不要表情符號。 */
+const AUD_WRITE = () => {
+  const a = state.audience;
+  if (isEN()) return {
+    adult:'\nThe reader is an adult: mature, warm and sincere.',
+    teen :'\nThe reader is a teenager: light, witty, like a friend chatting; a little humour is fine, but never preachy, flippant, or joking about God or Scripture. No emoji.',
+    kid  :'\nThe reader is a young child: very simple words and short sentences, like telling a story, one idea per sentence, no hard terms. No emoji.'
+  }[a];
+  if (isZS()) return {
+    adult:'\n读者是成年人：口吻成熟、温暖、真诚。',
+    teen :'\n读者是青少年：口气轻松幽默、像朋友聊天，可以有一点梗，但不说教、不轻浮、不拿神和圣经开玩笑；不要用表情符号。',
+    kid  :'\n读者是小朋友：用非常简单的字词和短句，像说故事，一句只讲一件事，不用艰深名词；不要用表情符号。'
+  }[a];
+  return {
+    adult:'\n讀者是成年人：口吻成熟、溫暖、真誠。',
+    teen :'\n讀者是青少年：口氣輕鬆幽默、像朋友聊天，可以有一點梗，但不說教、不輕浮、不拿神和聖經開玩笑；不要用表情符號。',
+    kid  :'\n讀者是小朋友：用非常簡單的字詞和短句，像說故事，一句只講一件事，不用艱深名詞；不要用表情符號。'
+  }[a];
+};
 /* 寫給誰——祝福與改內文都要帶上 */
 function whoLine(){
   const who = (state.cardTo || '').trim();
@@ -3073,7 +3270,7 @@ async function noteRewrite(instr, mask){
     ? '你是「小智」，国度321空中团契的属灵同伴。请照使用者的要求，修改他给你的这段祝福。只回传改好的内文本身——不要解释、不要标题、不要条列、不要引号、不要再抄一次经文。保持温暖、口语、不说教。若结尾写成祷告，要用「奉主耶稣的名祷告，阿们」，不要用「奉耶稣的名求」。'
     : '你是「小智」，國度321空中團契的屬靈同伴。請照使用者的要求，修改他給你的這段祝福。只回傳改好的內文本身——不要解釋、不要標題、不要條列、不要引號、不要再抄一次經文。保持溫暖、口語、不說教。若結尾寫成禱告，要用「奉主耶穌的名禱告，阿們」，不要用「奉耶穌的名求」。';
   const ask = L3('經文：', '经文：', 'Verse: ') + studioItem.t + '（' + cardRef(studioItem) + '）'
-            + whoLine()
+            + whoLine() + AUD_WRITE()
             + L3('\n\n目前的內文：\n', '\n\n目前的内文：\n', '\n\nCurrent text:\n') + cur
             + L3('\n\n要怎麼改：', '\n\n要怎么改：', '\n\nHow to change it: ') + instr;
   const r = await aiOnce(sys, ask);
@@ -3127,7 +3324,7 @@ async function blessWrite(){
     : state.lang === 'zs'
     ? '你是「小智」，国度321空中团契的属灵同伴。请照使用者给的这节经文，写一段温暖的关怀祝福，送给弟兄姊妹。要求：先用一两句点出这节经文里神的心意，再写一句贴近生活的祝福，最后用一句祝福收尾。总共三到四句、120 字以内，口语、温暖、不说教，不要标题、不要条列、不要引号、不要再抄一次经文。若结尾写成祷告，要用「奉主耶稣的名祷告，阿们」，不要用「奉耶稣的名求」。'
     : '你是「小智」，國度321空中團契的屬靈同伴。請照使用者給的這節經文，寫一段溫暖的關懷祝福，送給弟兄姊妹。要求：先用一兩句點出這節經文裡神的心意，再寫一句貼近生活的祝福，最後用一句祝福收尾。總共三到四句、120 字以內，口語、溫暖、不說教，不要標題、不要條列、不要引號、不要再抄一次經文。若結尾寫成禱告，要用「奉主耶穌的名禱告，阿們」，不要用「奉耶穌的名求」。';
-  const ask = L3('經文：', '经文：', 'Verse: ') + studioItem.t + ' (' + cardRef(studioItem) + ')' + whoLine();
+  const ask = L3('經文：', '经文：', 'Verse: ') + studioItem.t + ' (' + cardRef(studioItem) + ')' + whoLine() + AUD_WRITE();
   const rr_ = await aiOnce(sys, ask);
   const out = rr_.out, why = rr_.why;
   blessBusy = false;
@@ -3181,6 +3378,7 @@ async function viewStudio(v){
         <button class="btn sm" id="noteClear">${esc(L.clearText)}</button>
       </div>
       <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.blessHint)}</div>
+      <div class="muted" style="font-size:12px;margin-top:4px">${esc(L3('寫給：', '写给：', 'Written for: '))}${AUD_ICON[state.audience]} ${esc(AUD_NAME()[state.audience])}${esc(L3('（到「小智」頁或「我的」設定可以更改）', '（到“小智”页或“我的”设置可以更改）', ' (change it on the Xiaozhi page or in Me → Settings)'))}</div>
     </div>
 
     <div class="section-title">${esc(L.cardLines)}</div>
@@ -4029,6 +4227,7 @@ async function teamAIWrite(ta, btn, kind, verse){
     : `你是「小智」，國度321空中團契的屬靈同伴。請幫使用者寫一段要貼在小組裡的「${who}」，三到四句、120 字以內，口語、溫暖、不說教，不要標題、不要條列、不要引號。`;
   const ask = (verse ? L3('經文：', '经文：', 'Verse: ') + verse + '\n' : '')
             + L3(`請寫一段${who}。`, `请写一段${who}。`, `Please write a short ${kind} note.`)
+            + AUD_WRITE()
             + (ta.value.trim() ? L3('\n我想講的重點：', '\n我想讲的重点：', '\nWhat I want to say: ') + ta.value.trim() : '');
   try{
     const r = await fetch(API.chat, { method:'POST', headers:{'Content-Type':'application/json'},
@@ -4313,6 +4512,11 @@ async function viewCompanion(v){
   v.innerHTML = `<div class="chatwrap">
       <div class="xz-head"><button class="xz-back" id="xzBack" title="${esc(L.back || '返回')}">‹</button><img src="icon-72.png" alt=""><span>${esc(L.companionFull)}</span></div>
       ${b ? `<div class="chatctx">${esc(L.ctx(bname(b), RD.ch))}</div>` : ''}
+      <div class="aud-row" style="display:flex;align-items:center;gap:8px;margin:0 0 4px">
+        <span class="muted" style="font-size:12.5px;white-space:nowrap">${esc(L3('對象', '对象', 'For'))}</span>
+        <div class="segbtns" id="audSeg" style="justify-content:flex-start"></div>
+      </div>
+      <div class="muted" id="audHint" style="font-size:11.5px;line-height:1.6;margin:0 0 6px"></div>
       <button class="qs-toggle" id="qsBtn">💡 ${esc(L.examples)}</button>
       <div class="qs-panel" id="qsPanel" hidden></div>
       <div class="chatlog" id="chatlog"></div>
@@ -4327,9 +4531,25 @@ async function viewCompanion(v){
     else go('#/today');
   };
   const panel = $('#qsPanel', v);
-  panel.innerHTML = (QBANK[state.lang] || QBANK.zh).map(q => `<button class="qs-chip">${esc(q)}</button>`).join('');
+  const paintQs = () => {
+    panel.innerHTML = qbankNow().map(q => `<button class="qs-chip">${esc(q)}</button>`).join('');
+    $$('.qs-chip', panel).forEach(c => c.onclick = () => { panel.hidden = true; sendChat(c.textContent); });
+  };
+  /* 對象切換：點了立刻換色、換說明、換範例問題，並 toast 一句——設定類的點選必須當場有回饋 */
+  const paintAud = () => {
+    const nm = AUD_NAME();
+    $('#audSeg', v).innerHTML = AUD_KEYS.map(k =>
+      `<button class="${state.audience === k ? 'on' : ''}" data-k="${k}">${AUD_ICON[k]} ${esc(nm[k])}</button>`).join('');
+    $('#audHint', v).textContent = AUD_HINT()[state.audience];
+    $$('#audSeg button', v).forEach(b => b.onclick = () => {
+      if (state.audience === b.dataset.k) return;
+      state.audience = b.dataset.k; saveState();
+      paintAud(); paintQs();
+      toast(L3('回答對象：', '回答对象：', 'Answering for: ') + AUD_NAME()[state.audience], 2000);
+    });
+  };
+  paintAud(); paintQs();
   $('#qsBtn', v).onclick = () => { panel.hidden = !panel.hidden; };
-  $$('.qs-chip', panel).forEach(c => c.onclick = () => { panel.hidden = true; sendChat(c.textContent); });
   paintChat();
   $('#chatSend', v).onclick = () => sendChat($('#chatIn').value);
   $('#chatIn', v).onkeydown = e => {
@@ -4438,6 +4658,108 @@ const SYS_FMT = () => isEN()
   : isZS()
   ? ' 回答格式：需要並列或對照时可以用 markdown 表格，画面会画成真正的表格、朗读时会说成自然的句子、分享时会变成清单。请把最重要的那一句用「> 」标成引言，那一句会被做成美图。小标题要短。不要用 ASCII 图案、代码区块或念不出来的装饰符号。若寫到禱告，結尾一律用「奉主耶稣的名祷告，阿们」，不要用「奉耶稣的名求」。'
   : ' 回答格式：需要並列或對照時可以用 markdown 表格，畫面會畫成真正的表格、朗讀時會說成自然的句子、分享時會變成清單。請把最重要的那一句用「> 」標成引言，那一句會被做成美圖。小標題要短。不要用 ASCII 圖案、程式碼區塊或唸不出來的裝飾符號。若寫到禱告，結尾一律用「奉主耶穌的名禱告，阿們」，不要用「奉耶穌的名求」。';
+/* ================================================================ 小智回答對象（v2.8.0）
+   成人／青少年／兒童：同一個問題，用不同的口氣、比喻、長度回答。
+   這段話接在 SYS_FMT() 後面，所以格式規矩（引言標重點、禱告結尾）三種對象都照樣有。 */
+const AUD_KEYS = ['adult', 'teen', 'kid'];
+const AUD_ICON = { adult:'🧑', teen:'🧒', kid:'🧸' };
+const AUD_NAME = () => ({
+  adult: L3('成人', '成人', 'Adult'),
+  teen : L3('青少年', '青少年', 'Teen'),
+  kid  : L3('兒童', '儿童', 'Child')
+});
+const AUD_HINT = () => ({
+  adult: L3('有深度，貼近工作、家庭與關係', '有深度，贴近工作、家庭与关系', 'Thoughtful, with depth for work, family and relationships'),
+  teen : L3('幽默風趣、不說教，用你的世界來比喻', '幽默风趣、不说教，用你的世界来比喻', 'Funny and real — no lecturing, pictures from your world'),
+  kid  : L3('非常簡單好懂，像在聽故事', '非常简单好懂，像在听故事', 'Super simple, like a story')
+});
+const AUD_SYS = () => {
+  const a = state.audience;
+  if (isEN()) return {
+    adult:
+      ' Audience: an adult. Speak with a mature, steady and warm voice. You may go a little deeper — note the context and the meaning of key words — and connect the passage to work, marriage, parenting, relationships and spiritual battle. Close with one concrete step the reader can practise this week.',
+    teen:
+      ' Audience: a teenager (about 12–18). Be funny, witty and real — like a cool older brother or sister chatting, never lecturing or talking down. Use pictures from their world: phone at 1% battery, game levels, binge-watching, likes and followers, exams, peer pressure, sports. A light joke or current slang now and then is welcome, but NEVER joke about God, Jesus or Scripture itself, and never be flippant about sin or pain; after the laugh, land firmly on the truth. Keep it short, put the main point first, use short paragraphs, and end with one small challenge they can try today. If they mention being hurt, bullied, or wanting to harm themselves, answer gently and encourage them to tell a trusted adult (parent, teacher, pastor) right away.',
+    kid:
+      ' Audience: a young child (about 5–11). Use VERY simple words, like telling a story to a little one. Short sentences, one idea each. Use concrete everyday pictures (a seed, a teddy bear, holding hands, hide-and-seek, a birthday cake). Avoid theological terms; if one is needed, explain it in one simple sentence. Be warm and lively — you may ask "Did you know?" or "Let\'s think!" and add a few cute emojis. Keep the whole answer to about 5–7 short sentences. Do NOT use tables. Quote only one short verse. For violent or frightening passages, tell it gently without graphic detail. End with a tiny prayer or one simple question the child can answer. If the child says someone hurts them or they are very sad, answer kindly and tell them to talk to a trusted grown-up (mom, dad, teacher, pastor) right away.'
+  }[a];
+  if (isZS()) return {
+    adult:
+      ' 回答对象：成年人。请用成熟、沉稳而温暖的口吻，可以有适度的深度：点出经文脉络与关键字词的意思，连结工作、婚姻、教养、人际与属灵争战，最后带出一个这星期就能操练的具体步骤。',
+    teen:
+      ' 回答对象：青少年（约12–18岁）。请用幽默风趣、轻松有梗的口吻，像一位很酷的大哥哥大姐姐在聊天，不说教、不居高临下。多用他们熟悉的世界来比喻：手机剩1%电量、游戏过关、追剧、社交平台点赞与粉丝、考试、同侪压力、打球。可以适度用一点流行说法和小玩笑，但绝不拿圣经、神或耶稣开玩笑，也不轻看罪与伤痛；笑完一定要回到经文的真理上。答案精简，重点先讲，段落要短，结尾给一个今天就能试的小挑战。若他提到被欺负、受伤害或想伤害自己，要温柔回应，并鼓励他马上告诉信任的大人（爸妈、老师、牧者）。',
+    kid:
+      ' 回答对象：儿童（约5–11岁）。请用非常浅显易懂的话，像说故事给小朋友听。句子要短，一句只讲一件事；用具体的小事当比喻（种子、小熊、手牵手、捉迷藏、生日蛋糕）；不用艰深的神学名词，必须用时马上用一句话解释。语气亲切活泼，可以说「你知道吗？」「一起想一想」，并适度加几个可爱的表情符号。整个回答控制在五到七句短句。不要用表格；只引用一节简短的经文。遇到暴力或可怕的经文，用孩子能承受的方式温柔带过，不渲染细节。最后用一句小祷告或一个孩子答得出来的简单问题作结。若孩子说有人伤害他、或他很难过，要亲切回应，并告诉他马上跟信任的大人（爸爸妈妈、老师、牧者）说。'
+  }[a];
+  return {
+    adult:
+      ' 回答對象：成年人。請用成熟、沉穩而溫暖的口吻，可以有適度的深度：點出經文脈絡與關鍵字詞的意思，連結工作、婚姻、教養、人際與屬靈爭戰，最後帶出一個這星期就能操練的具體步驟。',
+    teen:
+      ' 回答對象：青少年（約12–18歲）。請用幽默風趣、輕鬆有梗的口吻，像一位很酷的大哥哥大姊姊在聊天，不說教、不居高臨下。多用他們熟悉的世界來比喻：手機剩1%電量、遊戲過關、追劇、社群按讚與追蹤數、考試、同儕壓力、打球。可以適度用一點流行說法和小玩笑，但絕不拿聖經、神或耶穌開玩笑，也不輕看罪與傷痛；笑完一定要回到經文的真理上。答案精簡，重點先講，段落要短，結尾給一個今天就能試的小挑戰。若他提到被欺負、受傷害或想傷害自己，要溫柔回應，並鼓勵他馬上告訴信任的大人（爸媽、老師、牧者）。',
+    kid:
+      ' 回答對象：兒童（約5–11歲）。請用非常淺顯易懂的話，像說故事給小朋友聽。句子要短，一句只講一件事；用具體的小事當比喻（種子、小熊、手牽手、捉迷藏、生日蛋糕）；不用艱深的神學名詞，必須用時馬上用一句話解釋。語氣親切活潑，可以說「你知道嗎？」「一起想一想」，並適度加幾個可愛的表情符號。整個回答控制在五到七句短句。不要用表格；只引用一節簡短的經文。遇到暴力或可怕的經文，用孩子能承受的方式溫柔帶過，不渲染細節。最後用一句小禱告或一個孩子答得出來的簡單問題作結。若孩子說有人傷害他、或他很難過，要親切回應，並告訴他馬上跟信任的大人（爸爸媽媽、老師、牧者）說。'
+  }[a];
+};
+/* 範例問題也跟著對象換：青少年問的是他的世界，兒童問的是故事 */
+const QBANK_AUD = {
+  teen: {
+    zh: ['這段經文跟我的日常（學校、朋友、手機）有什麼關係？',
+         '如果這段經文是神傳給我的一則訊息，它想說什麼？',
+         '朋友都那樣做，我不跟會不會很怪？經文怎麼看？',
+         '用遊戲或電影來比喻這段經文，可以嗎？',
+         '這段經文有什麼讓人意外、很少人知道的地方？',
+         '考試壓力好大，這段經文能給我什麼力量？',
+         '我很難原諒一個人，這段經文能幫我什麼？',
+         '神真的看得到我嗎？我哪裡值得被愛？'],
+    zs: ['这段经文跟我的日常（学校、朋友、手机）有什么关系？',
+         '如果这段经文是神传给我的一则信息，它想说什么？',
+         '朋友都那样做，我不跟会不会很怪？经文怎么看？',
+         '用游戏或电影来比喻这段经文，可以吗？',
+         '这段经文有什么让人意外、很少人知道的地方？',
+         '考试压力好大，这段经文能给我什么力量？',
+         '我很难原谅一个人，这段经文能帮我什么？',
+         '神真的看得到我吗？我哪里值得被爱？'],
+    en: ['How does this passage connect to my everyday life — school, friends, my phone?',
+         'If this passage were a message from God to me, what would it say?',
+         'Everyone is doing it — is it weird if I don\'t? What does Scripture say?',
+         'Can you explain this passage with a game or a movie?',
+         'What\'s surprising or little-known about this passage?',
+         'Exam stress is huge — what strength does this passage give me?',
+         'I can\'t forgive someone. How does this passage help?',
+         'Does God really see me? What makes me worth loving?']
+  },
+  kid: {
+    zh: ['這段故事在說什麼？請講給我聽。',
+         '神在這個故事裡做了什麼事？',
+         '耶穌愛我嗎？我怎麼知道？',
+         '這個故事裡誰最勇敢？為什麼？',
+         '我可以怎樣學習故事裡的人？',
+         '請教我一句可以背起來的短經文。',
+         '我跟好朋友吵架了，耶穌會怎麼做？',
+         '可以教我做一個小禱告嗎？'],
+    zs: ['这段故事在说什么？请讲给我听。',
+         '神在这个故事里做了什么事？',
+         '耶稣爱我吗？我怎么知道？',
+         '这个故事里谁最勇敢？为什么？',
+         '我可以怎样学习故事里的人？',
+         '请教我一句可以背起来的短经文。',
+         '我跟好朋友吵架了，耶稣会怎么做？',
+         '可以教我做一个小祷告吗？'],
+    en: ['What is this story about? Tell it to me.',
+         'What did God do in this story?',
+         'Does Jesus love me? How do I know?',
+         'Who is the bravest in this story? Why?',
+         'How can I be like the people in this story?',
+         'Teach me one short verse I can remember.',
+         'I had a fight with my best friend. What would Jesus do?',
+         'Can you teach me a little prayer?']
+  }
+};
+const qbankNow = () => {
+  const lg = state.lang;
+  const a = QBANK_AUD[state.audience];
+  return (a && (a[lg] || a.zh)) || QBANK[lg] || QBANK.zh;
+};
 const CHAT_RETRY = [900, 1800];
 /* 代理可能回傳幾種格式，一律寬鬆解析（與 321領導力 的 extractReplyText 相同） */
 function extractReply(d){
@@ -4467,6 +4789,7 @@ async function sendChat(text){
        表格在畫面上畫成真的表格、朗讀時會說成人話、分享時換成清單，
        所以放心用表格；重點用 > 標一句，那一句會被抓去做成美圖。 */
     + SYS_FMT()
+    + AUD_SYS()
     + (b ? (isEN() ? ` (The reader is currently in ${bname(b)} ${RD.ch}.)`
           : isZS() ? `（读者目前在读：${bname(b)} 第 ${RD.ch} 章）`
                    : `（讀者目前在讀：${bname(b)} 第 ${RD.ch} 章）`) : '');
@@ -4499,6 +4822,465 @@ async function sendChat(text){
   chatBusy = false; paintChat();
 }
 
+/* ================================================================ 讀經樂：聖經猜謎＆讀經測驗（v2.9.0）
+   題目由小智「照著這一章的經文」現場出，所以每次都不一樣，也會跟著「回答對象」
+   （成人／青少年／兒童）調整口氣與難度。答錯的測驗題會收進「錯題本」，之後不用
+   連線就能複習——答對一次就從錯題本拿掉，這是加深記憶的重點。 */
+const PL_QN = 5, PL_RN = 4;
+let PL = null;            // 進行中的一局；null＝在首頁
+let plSrc = 'cur';        // 出題範圍：cur 目前這章／rand 隨機一章
+
+const PLAY_CSS = `
+.pl-big{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--border);border-radius:14px;background:var(--surface);box-shadow:var(--shadow);margin-bottom:10px;cursor:pointer;width:100%;text-align:left;color:var(--ink);font-family:inherit}
+.pl-big:active{background:var(--accent-soft)}
+.pl-big .ic{font-size:30px;flex:0 0 auto}
+.pl-big .t{font-weight:800;font-size:16px}
+.pl-big .s{font-size:12.5px;color:var(--ink-faint);line-height:1.5}
+.pl-bar{height:8px;border-radius:99px;background:var(--surface-alt);overflow:hidden;margin:6px 0 14px}
+.pl-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:99px;transition:width .3s}
+.pl-meta{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-faint)}
+.pl-q{font-family:var(--f-serif);font-size:18px;line-height:1.8;font-weight:700;margin:6px 0 14px}
+.pl-opt{display:block;width:100%;text-align:left;border:1px solid var(--border-strong);background:var(--surface);color:var(--ink);border-radius:12px;padding:12px 14px;margin-bottom:9px;font-size:15px;line-height:1.6;cursor:pointer;font-family:inherit}
+.pl-opt:active{background:var(--accent-soft)}
+.pl-opt[disabled]{cursor:default}
+.pl-opt.ok{border-color:var(--good);box-shadow:inset 0 0 0 1.5px var(--good);font-weight:700}
+.pl-opt.bad{border-color:var(--bad);box-shadow:inset 0 0 0 1.5px var(--bad)}
+.pl-expl{background:var(--gold-soft);border-radius:10px;padding:10px 12px;font-size:14px;line-height:1.8;margin:4px 0 12px}
+.pl-expl b{color:var(--gold)}
+.pl-hint{display:flex;gap:8px;align-items:flex-start;background:var(--surface-alt);border-left:3px solid var(--gold);border-radius:8px;padding:9px 12px;margin-bottom:8px;font-size:14.5px;line-height:1.7}
+.pl-hint b{color:var(--gold);flex:0 0 auto}
+.pl-guess{display:flex;gap:8px;margin:12px 0 8px}
+.pl-guess input{flex:1}
+.pl-ans{text-align:center;font-family:var(--f-serif);font-size:26px;font-weight:900;color:var(--accent);margin:10px 0 4px;letter-spacing:.06em}
+.pl-score{text-align:center;padding:8px 0 2px}
+.pl-score .n{font-family:var(--f-serif);font-size:46px;font-weight:900;color:var(--accent)}
+.pl-stars{font-size:28px;letter-spacing:6px}
+.pl-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.pl-row .btn{flex:1 1 auto}
+.pl-shake{animation:plshake .35s}
+@keyframes plshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.pl-load{text-align:center;padding:46px 10px;color:var(--ink-soft)}
+.pl-load .spin{width:34px;height:34px;margin:0 auto 14px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--accent);animation:spin 1s linear infinite}
+`;
+function plCss(){
+  if ($('#plcss')) return;
+  const el = document.createElement('style'); el.id = 'plcss'; el.textContent = PLAY_CSS;
+  document.head.appendChild(el);
+}
+
+/* ---- 出題範圍 ---- */
+function plCurSrc(){
+  if (RD.book && RD.ch && BOOK[RD.book]) return { b:RD.book, ch:RD.ch, k:L3('正在讀', '正在读', 'Reading') };
+  if (user.last && BOOK[user.last.book]) return { b:user.last.book, ch:user.last.ch, k:L3('上次讀到', '上次读到', 'Last read') };
+  const d = dailyPick();
+  return { b:d[0], ch:d[1], k:L3('今日經文', '今日经文', 'Today') };
+}
+function plResolveSrc(){
+  if (plSrc === 'rand'){
+    const ks = Object.keys(user.progress);
+    if (ks.length){
+      const k = ks[Math.floor(Math.random() * ks.length)], i = k.lastIndexOf('-');
+      const b = k.slice(0, i), ch = parseInt(k.slice(i + 1), 10);
+      if (BOOK[b] && ch >= 1 && ch <= BOOK[b].ch) return { b, ch };
+    }
+    const bk = TOC[Math.floor(Math.random() * TOC.length)];
+    return { b:bk.id, ch: 1 + Math.floor(Math.random() * bk.ch) };
+  }
+  const c = plCurSrc(); return { b:c.b, ch:c.ch };
+}
+/* 把一章攤成帶節號的純文字；太長就隨機取一段連續的，這樣同一章重玩也會考到不同地方 */
+function chapPlain(chap){
+  const parts = [];
+  (chap || []).forEach(bl => {
+    for (let i = 1; i < bl.length; i += 2){
+      const vn = bl[i], tx = bl[i + 1];
+      if (tx) parts.push((vn ? '[' + vn + ']' : '') + tx);
+    }
+  });
+  const max = isEN() ? 6500 : 2600, glue = isEN() ? ' ' : '';
+  let total = 0; parts.forEach(p => total += p.length);
+  if (total <= max) return parts.join(glue);
+  const s0 = Math.floor(Math.random() * parts.length), out = []; let len = 0;
+  for (let j = s0; j < parts.length && len < max; j++){ out.push(parts[j]); len += parts[j].length; }
+  for (let j = s0 - 1; j >= 0 && len < max; j--){ out.unshift(parts[j]); len += parts[j].length; }
+  return out.join(glue);
+}
+
+/* ---- 出題的指示（三語）：只回 JSON；風格跟著「回答對象」走 ---- */
+const PL_STYLE = () => {
+  const a = state.audience;
+  if (isEN()) return {
+    adult:'Style: steady and clear; one or two questions should bring out a life application.',
+    teen :'Style: the questions and explanations are funny and witty, like friendly banter; the options may be playful, but the correct answer must be unambiguous, and never joke about God or Scripture itself.',
+    kid  :'Style: for children aged 5–11 — very simple words, very short sentences, like telling a story; keep options short; one warm sentence of explanation, with at most one cute emoji.'
+  }[a];
+  if (isZS()) return {
+    adult:'风格：沉稳清楚；其中一两题带出生命应用。',
+    teen :'风格：题目与解析的口气幽默风趣、轻松有梗（像在跟朋友斗嘴），选项可以有趣，但正确答案必须明确、不含糊，绝不拿神与圣经开玩笑。',
+    kid  :'风格：给5到11岁的小朋友，字词非常简单、句子很短，像在说故事；选项要短；解析一句话、亲切，最多加一个可爱的表情符号。'
+  }[a];
+  return {
+    adult:'風格：沉穩清楚；其中一兩題帶出生命應用。',
+    teen :'風格：題目與解析的口氣幽默風趣、輕鬆有梗（像在跟朋友鬥嘴），選項可以有趣，但正確答案必須明確、不含糊，絕不拿神與聖經開玩笑。',
+    kid  :'風格：給5到11歲的小朋友，字詞非常簡單、句子很短，像在說故事；選項要短；解析一句話、親切，最多加一個可愛的表情符號。'
+  }[a];
+};
+function plSysQuiz(n, k){
+  if (isEN()) return `You are a Bible teacher writing a quiz for a Bible-reading app. From the passage the user gives you, write ${n} single-answer multiple-choice questions, each with exactly ${k} options and exactly one correct option. Every answer must be found directly in the passage — do not go beyond it, and avoid obscure trivia or guessing games. Order from easy to harder, covering events, people, who God is, and one or two applications. Each explanation is one short sentence (under 25 words) saying why. "v" is the verse number(s) in the passage that hold the answer, e.g. "3" or "3-4". ${PL_STYLE()} Write in English. Reply with JSON ONLY — no explanation, no markdown fence: {"q":[{"q":"question","o":["option","option"],"a":index of the correct option starting at 0,"e":"one-sentence explanation","v":"3"}]}`;
+  const zs = isZS();
+  const t_ = (a, b) => zs ? b : a;
+  return t_(`你是聖經教師，替讀經App出測驗題。依使用者提供的經文，出 ${n} 題單選題，每題剛好 ${k} 個選項、只有一個正確。答案必須能直接從這段經文找到，不可超出經文，不要考冷僻細節或要靠猜的題目；由易到難，涵蓋事件、人物、神是怎樣的神，並有一兩題生命應用。解析用一句話（30字內）說明為什麼。v 是答案所在的節號，例如 "3" 或 "3-4"。${PL_STYLE()}請用繁體中文。只回傳 JSON，不要任何說明、不要 markdown 圍欄：{"q":[{"q":"題目","o":["選項","選項"],"a":正確選項的序號（從0開始）,"e":"一句解析","v":"3"}]}`,
+            `你是圣经教师，替读经App出测验题。依使用者提供的经文，出 ${n} 题单选题，每题刚好 ${k} 个选项、只有一个正确。答案必须能直接从这段经文找到，不可超出经文，不要考冷僻细节或要靠猜的题目；由易到难，涵盖事件、人物、神是怎样的神，并有一两题生命应用。解析用一句话（30字内）说明为什么。v 是答案所在的节号，例如 "3" 或 "3-4"。${PL_STYLE()}请用简体中文。只回传 JSON，不要任何说明、不要 markdown 围栏：{"q":[{"q":"题目","o":["选项","选项"],"a":正确选项的序号（从0开始）,"e":"一句解析","v":"3"}]}`);
+}
+function plSysRiddle(n){
+  if (isEN()) return `You are a Bible teacher designing riddles for a Bible-reading app. From the passage the user gives you, write ${n} riddles. Each answer is one person, place, object or event found in the passage, given as a short name (1–4 words). Give THREE hints per riddle: hint 1 is subtle (it must not contain the answer), hint 2 is medium, hint 3 is the clearest but still does not say the answer. Also give "alt" (other common ways to say the answer, may be empty), "v" (the related verse number, e.g. "3") and "e" (one short sentence of insight to show after it is guessed, under 25 words). ${PL_STYLE()} Write in English. Reply with JSON ONLY — no explanation, no markdown fence: {"r":[{"h":["hint 1","hint 2","hint 3"],"a":"answer","alt":["other name"],"v":"3","e":"insight"}]}`;
+  const zs = isZS();
+  const t_ = (a, b) => zs ? b : a;
+  return t_(`你是聖經教師，替讀經App設計「猜謎」。依使用者提供的經文出 ${n} 個謎題，每題的答案是這段經文中的一個人物、地點、物件或事件，用簡短的名稱（2到6個字）。每題給三個提示：第1個最含蓄（絕不可含有答案）、第2個中等、第3個最明顯但仍不直接說出答案。再給 alt（答案的其他常見說法，陣列，可為空）、v（相關節號，例如 "3"）、e（猜出來之後顯示的一句話亮點，30字內）。${PL_STYLE()}請用繁體中文。只回傳 JSON，不要任何說明、不要 markdown 圍欄：{"r":[{"h":["提示1","提示2","提示3"],"a":"答案","alt":["別名"],"v":"3","e":"亮點"}]}`,
+            `你是圣经教师，替读经App设计“猜谜”。依使用者提供的经文出 ${n} 个谜题，每题的答案是这段经文中的一个人物、地点、物件或事件，用简短的名称（2到6个字）。每题给三个提示：第1个最含蓄（绝不可含有答案）、第2个中等、第3个最明显但仍不直接说出答案。再给 alt（答案的其他常见说法，数组，可为空）、v（相关节号，例如 "3"）、e（猜出来之后显示的一句话亮点，30字内）。${PL_STYLE()}请用简体中文。只回传 JSON，不要任何说明、不要 markdown 围栏：{"r":[{"h":["提示1","提示2","提示3"],"a":"答案","alt":["别名"],"v":"3","e":"亮点"}]}`);
+}
+
+/* ---- 解析小智回的 JSON；被截斷時盡量救回已經完整的題目 ---- */
+function plParse(text){
+  let s = String(text || '').replace(/```(?:json)?/gi, '').trim();
+  const st = s.indexOf('{'); if (st < 0) return null;
+  s = s.slice(st);
+  try{ return JSON.parse(s.slice(0, s.lastIndexOf('}') + 1)); }catch(e){}
+  const m = s.match(/"(q|r)"\s*:\s*\[/); if (!m) return null;
+  let i = m.index + m[0].length; const items = [];
+  while (i < s.length){
+    while (i < s.length && s[i] !== '{') i++;
+    if (i >= s.length) break;
+    let depth = 0, inStr = false, esc_ = false, j = i;
+    for (; j < s.length; j++){
+      const c = s[j];
+      if (inStr){ if (esc_) esc_ = false; else if (c === '\\') esc_ = true; else if (c === '"') inStr = false; }
+      else if (c === '"') inStr = true;
+      else if (c === '{') depth++;
+      else if (c === '}'){ depth--; if (depth === 0) break; }
+    }
+    if (depth !== 0) break;
+    try{ items.push(JSON.parse(s.slice(i, j + 1))); }catch(e){}
+    i = j + 1;
+  }
+  return items.length ? { [m[1]]: items } : null;
+}
+const plShuffle = a => { for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+function plVerse(v){
+  const m = String(v == null ? '' : v).match(/(\d+)(?:\D+(\d+))?/);
+  return m ? { v:+m[1], v2: m[2] ? +m[2] : 0 } : { v:0, v2:0 };
+}
+function plNormQuiz(list, src, k){
+  const out = [];
+  (list || []).forEach(x => {
+    if (!x || typeof x.q !== 'string' || !Array.isArray(x.o)) return;
+    let o = x.o.map(z => String(z).trim()).filter(Boolean);
+    const ai = /^[A-Da-d]$/.test(String(x.a).trim()) ? 'abcd'.indexOf(String(x.a).trim().toLowerCase()) : (String(x.a).trim() === '' ? NaN : +x.a);
+    const right = Number.isInteger(ai) ? o[ai] : null;
+    if (!right) return;
+    o = o.filter((z, i) => o.indexOf(z) === i);
+    if (o.length < 2) return;
+    if (o.length > k){ const keep = o.filter(z => z !== right); plShuffle(keep); o = [right].concat(keep.slice(0, k - 1)); }
+    plShuffle(o);
+    const vv = plVerse(x.v);
+    out.push({ q:String(x.q).trim(), o, a:o.indexOf(right), e:String(x.e || '').trim(), b:src.b, ch:src.ch, v:vv.v, v2:vv.v2 });
+  });
+  return out;
+}
+/* 提示若不小心把答案洩漏了，前兩個提示裡的答案換成○ */
+function plNormRiddle(list, src){
+  const out = [];
+  (list || []).forEach(x => {
+    if (!x || typeof x.a !== 'string' || !x.a.trim() || !Array.isArray(x.h)) return;
+    const a = x.a.trim();
+    const alt = (Array.isArray(x.alt) ? x.alt : []).map(z => String(z).trim()).filter(Boolean);
+    const names = [a].concat(alt).filter(z => z.length >= 2).sort((p, q) => q.length - p.length);
+    let h = x.h.map(z => String(z).trim()).filter(Boolean).slice(0, 3);
+    if (!h.length) return;
+    h = h.map((z, i) => {
+      if (i >= h.length - 1 && h.length > 1) return z;
+      names.forEach(nm => { z = z.split(nm).join('○'.repeat(Math.min(nm.length, 4))); });
+      return z;
+    });
+    const vv = plVerse(x.v);
+    out.push({ h, a, alt, e:String(x.e || '').trim(), b:src.b, ch:src.ch, v:vv.v, v2:vv.v2 });
+  });
+  return out;
+}
+const plNorm = s_ => String(s_ || '').toLowerCase().replace(/^the\s+/, '').replace(/[\s，。！？、：；,.!?'"“”‘’「」『』（）()·．\-]/g, '');
+function plMatch(guess, it){
+  const g = plNorm(guess); if (!g) return false;
+  return [it.a].concat(it.alt || []).some(z => {
+    const n = plNorm(z); if (!n) return false;
+    return g === n || (g.length >= 2 && n.includes(g)) || (n.length >= 2 && g.includes(n));
+  });
+}
+const plRefOf = it => it.v ? cardRef(it) : '';
+
+/* ---- 錯題本 ---- */
+const plWid = it => it.b + '-' + it.ch + '|' + it.q.slice(0, 40);
+function plAddWrong(it){
+  const id = plWid(it);
+  user.quizWrong = user.quizWrong.filter(w => w.id !== id);
+  user.quizWrong.push({ id, b:it.b, ch:it.ch, v:it.v, v2:it.v2, q:it.q, o:it.o, a:it.a, e:it.e, lang:state.lang, ts:Date.now() });
+  if (user.quizWrong.length > 100) user.quizWrong.splice(0, user.quizWrong.length - 100);
+}
+const plDelWrong = it => { const id = plWid(it); user.quizWrong = user.quizWrong.filter(w => w.id !== id); };
+
+/* ---- 開一局 ---- */
+async function plStart(mode, review){
+  if (PL && PL.stage === 'loading') return;
+  if (review){
+    let pool = user.quizWrong.filter(w => w.lang === state.lang);
+    if (!pool.length) pool = user.quizWrong.slice();
+    if (!pool.length){ toast(L3('錯題本是空的，太棒了！', '错题本是空的，太棒了！', 'No missed questions — great!')); return; }
+    const items = plShuffle(pool.slice()).slice(0, PL_QN).map(w => Object.assign({}, w));
+    PL = { mode:'quiz', review:true, src:{ b:items[0].b, ch:items[0].ch }, items, i:0, right:0, score:0, picked:null, stage:'q' };
+    plPaint(); return;
+  }
+  const src = plResolveSrc();
+  PL = { mode, review:false, src, items:[], i:0, right:0, score:0, picked:null, hints:1, revealed:false, auto:false, judged:false, stage:'loading' };
+  plPaint();
+  const gen = PL;
+  try{
+    const chap = await getChapter(src.b, src.ch);
+    const text = chapPlain(chap);
+    if (!text) throw new Error(L3('找不到這一章', '找不到这一章', 'chapter not found'));
+    const b = BOOK[src.b];
+    const k = state.audience === 'kid' ? 3 : 4;
+    const sys = mode === 'quiz' ? plSysQuiz(PL_QN, k) : plSysRiddle(PL_RN);
+    const ask = L3(`經文：${bname(b)} ${src.ch}\n\n`, `经文：${bname(b)} ${src.ch}\n\n`, `Passage: ${bname(b)} ${src.ch}\n\n`) + text;
+    const r = await aiRaw(sys, ask, 75000);
+    if (PL !== gen) return;                         // 使用者中途離開了
+    const data = plParse(r.out);
+    const items = mode === 'quiz' ? plNormQuiz(data && data.q, src, k) : plNormRiddle(data && data.r, src);
+    if (!items.length) throw new Error(r.why || L3('小智這次沒有出成題目', '小智这次没有出成题目', 'no questions this time'));
+    PL.items = items; PL.stage = 'q';
+  }catch(e){
+    if (PL !== gen) return;
+    PL.stage = 'err'; PL.why = (e && e.message) ? String(e.message) : 'error';
+  }
+  if (PL === gen) plPaint();
+}
+function plAfterAnswer(ok, it){
+  user.play.total++; if (ok) user.play.right++;
+  if (PL.mode === 'quiz'){
+    if (ok){ if (PL.review) plDelWrong(it); } else plAddWrong(it);
+  }
+  saveUser();
+}
+function plFinish(){
+  PL.stage = 'end';
+  const key = PL.mode, n = PL.items.length, pct = n ? Math.round(PL.right / n * 100) : 0;
+  if (!PL.review && (user.play.best[key] || 0) < pct){ PL.newBest = true; user.play.best[key] = pct; saveUser(); }
+}
+
+/* ---- 畫面 ---- */
+function plAudPicker(v){
+  const nm = AUD_NAME();
+  const paint = () => {
+    $('#plAud', v).innerHTML = AUD_KEYS.map(k => `<button class="${state.audience === k ? 'on' : ''}" data-k="${k}">${AUD_ICON[k]} ${esc(nm[k])}</button>`).join('');
+    $('#plAudHint', v).textContent = AUD_HINT()[state.audience];
+    $$('#plAud button', v).forEach(b => b.onclick = () => {
+      if (state.audience === b.dataset.k) return;
+      state.audience = b.dataset.k; saveState(); paint();
+      toast(L3('出題對象：', '出题对象：', 'Questions for: ') + AUD_NAME()[state.audience], 1800);
+    });
+  };
+  paint();
+}
+function plResultMsg(tier){
+  const a = state.audience;
+  const M = {
+    adult:[L3('再讀一遍這章，細細品味，下次會更好。', '再读一遍这章，细细品味，下次会更好。', 'Read the chapter once more, slowly — next time will be better.'),
+           L3('不錯！這章的信息已經進到你裡面了。', '不错！这章的信息已经进到你里面了。', 'Well done — this chapter is taking root in you.'),
+           L3('太棒了！經文的話已經住在你心裡。', '太棒了！经文的话已经住在你心里。', 'Excellent — the Word is living in you.')],
+    teen :[L3('哎呀，這章有點滑溜～再讀一次，下一局你就是王者！', '哎呀，这章有点滑溜～再读一次，下一局你就是王者！', 'Slippery one! Read it again and you\'ll own the next round.'),
+           L3('不賴喔！再練幾次就可以去嘲笑你的朋友了（開玩笑的）。', '不赖喔！再练几次就可以去嘲笑你的朋友了（开玩笑的）。', 'Not bad! A few more rounds and you can challenge your friends.'),
+           L3('滿分級的操作！聖經達人就是你！', '满分级的操作！圣经达人就是你！', 'Boss-level run! You\'re a Bible pro.')],
+    kid  :[L3('沒關係！我們再讀一次故事，再玩一次就會了！🌱', '没关系！我们再读一次故事，再玩一次就会了！🌱', 'That\'s okay! Let\'s read the story again and play once more! 🌱'),
+           L3('好棒喔！你記得好多！🌟', '好棒喔！你记得好多！🌟', 'Great job! You remembered so much! 🌟'),
+           L3('哇！太厲害了！神一定很高興！🎉', '哇！太厉害了！神一定很高兴！🎉', 'Wow, amazing! God is so happy! 🎉')]
+  }[a];
+  return M[tier];
+}
+function plPaint(){
+  const body = $('#plBody'); if (!body) return;
+  const L = t();
+  if (!PL){ plHome(body); return; }
+  const mode = PL.mode, n = PL.items.length || (mode === 'quiz' ? PL_QN : PL_RN);
+  const b = BOOK[PL.src.b];
+  const refTxt = b ? `${bname(b)} ${chapLabel(PL.src.b, PL.src.ch)}` : '';
+  if (PL.stage === 'loading'){
+    body.innerHTML = `<div class="pl-load"><div class="spin"></div>${esc(L3('小智正在讀「', '小智正在读“', 'Xiaozhi is reading '))}${esc(refTxt)}${esc(L3('」，幫你出題…', '”，帮你出题…', ' and writing your questions…'))}</div>`;
+    return;
+  }
+  if (PL.stage === 'err'){
+    body.innerHTML = `<div class="card"><h3>${esc(L3('出題沒成功', '出题没成功', 'Could not make questions'))}</h3>
+      <div class="muted">${esc(PL.why || '')}</div>
+      <div class="pl-row"><button class="btn primary" id="plRetry">${esc(L3('再試一次', '再试一次', 'Try again'))}</button>
+      <button class="btn" id="plHomeBtn">${esc(L3('回首頁', '回首页', 'Back'))}</button></div></div>`;
+    $('#plRetry', body).onclick = () => { const m = PL.mode; PL = null; plStart(m); };
+    $('#plHomeBtn', body).onclick = () => { PL = null; plPaint(); };
+    return;
+  }
+  if (PL.stage === 'end'){
+    const pct = Math.round(PL.right / n * 100), tier = pct >= 90 ? 2 : (pct >= 60 ? 1 : 0);
+    const wrongLeft = user.quizWrong.length;
+    body.innerHTML = `<div class="card"><div class="pl-score">
+        <div class="pl-stars">${'⭐'.repeat(tier + 1)}</div>
+        <div class="n">${PL.right} / ${n}</div>
+        <div class="muted">${esc(refTxt)}${PL.mode === 'riddle' ? esc(L3(`　得分 ${PL.score} / ${n * 3}`, `　得分 ${PL.score} / ${n * 3}`, `  Points ${PL.score} / ${n * 3}`)) : ''}</div>
+        ${PL.newBest ? `<div class="pill" style="margin-top:8px">🏆 ${esc(L3('新紀錄！', '新纪录！', 'New best!'))}</div>` : ''}
+      </div>
+      <div style="text-align:center;margin:10px 0 4px;line-height:1.8">${esc(plResultMsg(tier))}</div>
+      <div class="pl-row">
+        <button class="btn primary" id="plAgain">${esc(PL.review ? L3('再複習一輪', '再复习一轮', 'Review more') : L3('再來一局（新題目）', '再来一局（新题目）', 'Play again (new questions)'))}</button>
+        <button class="btn" id="plRead">📖 ${esc(L3('回到經文', '回到经文', 'Back to the text'))}</button>
+        <button class="btn" id="plShare">↗ ${esc(L3('分享成績', '分享成绩', 'Share score'))}</button>
+        ${wrongLeft && !PL.review ? `<button class="btn gold" id="plRev">🔁 ${esc(L3(`複習錯題（${wrongLeft}）`, `复习错题（${wrongLeft}）`, `Review missed (${wrongLeft})`))}</button>` : ''}
+        <button class="btn" id="plHomeBtn">🏠 ${esc(L3('回首頁', '回首页', 'Home'))}</button>
+      </div></div>`;
+    $('#plAgain', body).onclick = () => { const m = PL.mode, rv = PL.review; PL = null; plStart(m, rv); };
+    $('#plRead', body).onclick = () => go(`#/read/${PL.src.b}/${PL.src.ch}`);
+    $('#plShare', body).onclick = plShare;
+    const rv = $('#plRev', body); if (rv) rv.onclick = () => { PL = null; plStart('quiz', true); };
+    $('#plHomeBtn', body).onclick = () => { PL = null; plPaint(); };
+    return;
+  }
+  const it = PL.items[PL.i];
+  const head = `<div class="pl-meta"><span>${mode === 'quiz' ? '📝 ' + esc(L3('讀經測驗', '读经测验', 'Quiz')) : '🧩 ' + esc(L3('聖經猜謎', '圣经猜谜', 'Riddles'))}${PL.review ? ' · ' + esc(L3('錯題複習', '错题复习', 'Review')) : ''}</span><span>${PL.i + 1} / ${n}</span></div>
+    <div class="pl-bar"><i style="width:${Math.round((PL.i + (PL.picked !== null || PL.revealed ? 1 : 0)) / n * 100)}%"></i></div>`;
+  if (mode === 'quiz'){
+    const done = PL.picked !== null;
+    body.innerHTML = head + `<div class="pl-q">${esc(it.q)}</div>`
+      + it.o.map((o, i) => {
+          const cls = done ? (i === it.a ? 'ok' : (i === PL.picked ? 'bad' : '')) : '';
+          const mark = done ? (i === it.a ? '✓ ' : (i === PL.picked ? '✗ ' : '')) : '';
+          return `<button class="pl-opt ${cls}" data-i="${i}" ${done ? 'disabled' : ''}>${mark}${esc(o)}</button>`;
+        }).join('')
+      + (done ? `<div class="pl-expl"><b>${PL.picked === it.a ? esc(L3('答對了！', '答对了！', 'Correct!')) : esc(L3('正確答案是「', '正确答案是“', 'The answer is “')) + esc(it.o[it.a]) + esc(L3('」', '”', '”'))}</b>
+          ${it.e ? '<br>' + esc(it.e) : ''}${plRefOf(it) ? `<br><span class="muted">📖 ${esc(plRefOf(it))}</span>` : ''}</div>
+          <button class="btn primary block" id="plNext">${esc(PL.i + 1 >= n ? L3('看成績', '看成绩', 'See my score') : L3('下一題', '下一题', 'Next'))}</button>` : '')
+      + `<div class="muted" style="font-size:11.5px;margin-top:14px">${esc(L3('題目由小智根據經文出題，若有疑問請以聖經為準。', '题目由小智根据经文出题，若有疑问请以圣经为准。', 'Questions are written by Xiaozhi from the text — when in doubt, trust the Bible.'))}</div>`;
+    $$('.pl-opt', body).forEach(bt => bt.onclick = () => {
+      if (PL.picked !== null) return;
+      const i = +bt.dataset.i; PL.picked = i;
+      const ok = i === it.a; if (ok){ PL.right++; PL.score++; }
+      plAfterAnswer(ok, it); plPaint();
+    });
+    const nx = $('#plNext', body);
+    if (nx) nx.onclick = () => { PL.picked = null; PL.i++; if (PL.i >= n) plFinish(); plPaint(); scrollToTop(); };
+    return;
+  }
+  /* 猜謎 */
+  const shown = PL.hints, canMore = shown < it.h.length;
+  const pts = Math.max(1, 4 - shown);
+  let html = head + `<div class="muted" style="margin-bottom:8px">${esc(L3('猜猜看，答案是這一章裡的什麼？', '猜猜看，答案是这一章里的什么？', 'Guess: what is it, from this chapter?'))}</div>`
+    + it.h.slice(0, shown).map((h, i) => `<div class="pl-hint"><b>💡${i + 1}</b><span>${esc(h)}</span></div>`).join('');
+  if (!PL.revealed){
+    html += `<div class="pl-guess"><input class="cardinput" id="plIn" placeholder="${esc(L3('輸入你的答案…', '输入你的答案…', 'Type your answer…'))}" autocomplete="off"><button class="btn primary" id="plGo">${esc(L3('猜', '猜', 'Guess'))}</button></div>
+      <div class="pl-row">${canMore ? `<button class="btn" id="plMore">💡 ${esc(L3('再給一個提示', '再给一个提示', 'Another hint'))}</button>` : ''}
+      <button class="btn" id="plShow">👀 ${esc(L3('揭曉答案', '揭晓答案', 'Show answer'))}</button></div>
+      <div class="muted" style="font-size:12px;margin-top:8px">${esc(L3(`現在答對可得 ${pts} 分（提示越少分越高）`, `现在答对可得 ${pts} 分（提示越少分越高）`, `Worth ${pts} point${pts > 1 ? 's' : ''} now — fewer hints, more points`))}</div>`;
+  } else {
+    html += `<div class="pl-ans">${esc(it.a)}</div>
+      <div class="pl-expl">${it.e ? esc(it.e) : ''}${plRefOf(it) ? `${it.e ? '<br>' : ''}<span class="muted">📖 ${esc(plRefOf(it))}</span>` : ''}</div>`;
+    if (!PL.auto && !PL.judged){
+      html += `<div class="muted" style="text-align:center;margin-bottom:6px">${esc(L3('你心裡猜到了嗎？', '你心里猜到了吗？', 'Did you have it in mind?'))}</div>
+        <div class="pl-row"><button class="btn primary" id="plYes">🙋 ${esc(L3(`猜到了（+${pts}）`, `猜到了（+${pts}）`, `Yes (+${pts})`))}</button>
+        <button class="btn" id="plNo">😅 ${esc(L3('差一點', '差一点', 'Not quite'))}</button></div>`;
+    } else {
+      html += `<button class="btn primary block" id="plNext">${esc(PL.i + 1 >= n ? L3('看成績', '看成绩', 'See my score') : L3('下一題', '下一题', 'Next'))}</button>`;
+    }
+  }
+  body.innerHTML = html;
+  const inp = $('#plIn', body);
+  const award = (auto) => { PL.auto = auto; PL.judged = true; PL.right++; PL.score += Math.max(1, 4 - PL.hints); PL.revealed = true; plAfterAnswer(true, it); };
+  if (inp){
+    const guess = () => {
+      const g = inp.value.trim(); if (!g) return;
+      if (plMatch(g, it)){ award(true); plPaint(); return; }
+      inp.classList.remove('pl-shake'); void inp.offsetWidth; inp.classList.add('pl-shake');
+      if (canMore){ PL.hints++; toast(L3('不是喔，再給你一個提示～', '不是喔，再给你一个提示～', 'Not quite — here\'s another hint')); plPaint(); }
+      else toast(L3('不是喔，再想想！', '不是喔，再想想！', 'Not quite — think again!'));
+    };
+    $('#plGo', body).onclick = guess;
+    inp.onkeydown = e => { if (e.key === 'Enter'){ e.preventDefault(); guess(); } };
+  }
+  const mo = $('#plMore', body); if (mo) mo.onclick = () => { PL.hints++; plPaint(); };
+  const sh = $('#plShow', body); if (sh) sh.onclick = () => { PL.revealed = true; plPaint(); };
+  const yes = $('#plYes', body); if (yes) yes.onclick = () => { award(false); plPaint(); };
+  const no = $('#plNo', body); if (no) no.onclick = () => { PL.judged = true; plAfterAnswer(false, it); plPaint(); };
+  const nx = $('#plNext', body);
+  if (nx) nx.onclick = () => { PL.i++; PL.hints = 1; PL.revealed = false; PL.auto = false; PL.judged = false; if (PL.i >= n) plFinish(); plPaint(); scrollToTop(); };
+}
+async function plShare(){
+  const b = BOOK[PL.src.b], n = PL.items.length;
+  const home = location.origin + location.pathname.replace(/index\.html$/, '');
+  const text = (PL.mode === 'quiz' ? '📝 ' : '🧩 ')
+    + L3(`我在讀經樂${PL.mode === 'quiz' ? '測驗' : '猜謎'}「${bname(b)} ${chapLabel(PL.src.b, PL.src.ch)}」答對了 ${PL.right} / ${n}！`,
+         `我在读经乐${PL.mode === 'quiz' ? '测验' : '猜谜'}“${bname(b)} ${chapLabel(PL.src.b, PL.src.ch)}”答对了 ${PL.right} / ${n}！`,
+         `I got ${PL.right} / ${n} on the ${PL.mode === 'quiz' ? 'quiz' : 'riddles'} for ${bname(b)} ${chapLabel(PL.src.b, PL.src.ch)}!`)
+    + '\n\n—— ' + (state.cardTop || L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Fellowship')) + '\n' + home;
+  if (navigator.share){
+    try{ await navigator.share({ title: t().app, text }); return; }
+    catch(e){ if (e && e.name === 'AbortError') return; }
+  }
+  try{ await navigator.clipboard.writeText(text); toast(L3('已複製，可以貼到群組裡', '已复制，可以贴到群组里', 'Copied — paste it anywhere'), 3000); }
+  catch(e){ toast(L3('這台裝置不支援分享', '这台设备不支持分享', 'Sharing is not available here'), 3000); }
+}
+function plHome(body){
+  const L = t();
+  const cur = plCurSrc(), cb = BOOK[cur.b];
+  const wrong = user.quizWrong.length, P = user.play;
+  const rate = P.total ? Math.round(P.right / P.total * 100) : 0;
+  body.innerHTML = `
+    <div class="card">
+      <div class="row" style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <span class="muted" style="font-size:12.5px;white-space:nowrap">${esc(L3('出題對象', '出题对象', 'For'))}</span>
+        <div class="segbtns" id="plAud" style="justify-content:flex-start"></div></div>
+      <div class="muted" id="plAudHint" style="font-size:11.5px;margin-bottom:10px"></div>
+      <div class="muted" style="font-size:12.5px;margin-bottom:6px">${esc(L3('從哪裡出題', '从哪里出题', 'Questions from'))}</div>
+      <div class="cardchips" id="plSrc">
+        <button class="${plSrc === 'cur' ? 'on' : ''}" data-s="cur">📖 ${esc(cur.k)}：${esc(bname(cb))} ${esc(chapLabel(cur.b, cur.ch))}</button>
+        <button class="${plSrc === 'rand' ? 'on' : ''}" data-s="rand">🎲 ${esc(L3('讀過的章（隨機）', '读过的章（随机）', 'A random chapter I read'))}</button>
+      </div>
+    </div>
+    <button class="pl-big" id="plRiddle"><span class="ic">🧩</span><span><div class="t">${esc(L3('聖經猜謎', '圣经猜谜', 'Bible Riddles'))}</div>
+      <div class="s">${esc(L3(`${PL_RN} 個謎題，提示一個一個出現，越早猜到分越高`, `${PL_RN} 个谜题，提示一个一个出现，越早猜到分越高`, `${PL_RN} riddles — hints appear one by one; guess early for more points`))}</div></span></button>
+    <button class="pl-big" id="plQuiz"><span class="ic">📝</span><span><div class="t">${esc(L3('讀經測驗', '读经测验', 'Bible Quiz'))}</div>
+      <div class="s">${esc(L3(`${PL_QN} 題選擇題，答完立刻看解析；答錯的會進錯題本`, `${PL_QN} 题选择题，答完立刻看解析；答错的会进错题本`, `${PL_QN} multiple-choice questions with instant explanations; misses go to your notebook`))}</div></span></button>
+    <div class="card">
+      <div class="statgrid">
+        <div><div class="sv">${P.total}</div><div class="sk">${esc(L3('累計答題', '累计答题', 'Answered'))}</div></div>
+        <div><div class="sv">${P.total ? rate + '%' : '—'}</div><div class="sk">${esc(L3('答對率', '答对率', 'Correct'))}</div></div>
+        <div><div class="sv">${wrong}</div><div class="sk">${esc(L3('錯題本', '错题本', 'Missed'))}</div></div>
+      </div>
+      ${wrong ? `<div class="pl-row" style="margin-top:12px"><button class="btn gold" id="plRev">🔁 ${esc(L3('複習錯題（不用連線）', '复习错题（不用联网）', 'Review missed (works offline)'))}</button>
+        <button class="btn" id="plClr">${esc(L3('清空錯題本', '清空错题本', 'Clear notebook'))}</button></div>` : ''}
+    </div>
+    <div class="muted" style="font-size:11.5px;line-height:1.7">${esc(L3('題目由小智「照著這一章的經文」現場出，所以每次都不一樣，需要連線。', '题目由小智“照着这一章的经文”现场出，所以每次都不一样，需要联网。', 'Questions are written live by Xiaozhi from the chapter, so each round is different. Needs a connection.'))}</div>`;
+  plAudPicker(body);
+  $$('#plSrc button', body).forEach(bt => bt.onclick = () => { plSrc = bt.dataset.s; plPaint(); });
+  $('#plRiddle', body).onclick = () => plStart('riddle');
+  $('#plQuiz', body).onclick = () => plStart('quiz');
+  const rv = $('#plRev', body); if (rv) rv.onclick = () => plStart('quiz', true);
+  const cl = $('#plClr', body); if (cl) cl.onclick = () => {
+    if (!confirm(L3('清空錯題本？', '清空错题本？', 'Clear the notebook?'))) return;
+    user.quizWrong = []; saveUser(); plPaint();
+  };
+}
+async function viewPlay(v){
+  plCss();
+  v.innerHTML = `<div class="xz-head"><button class="xz-back" id="plBack">‹</button><span>🎯 ${esc(L3('讀經樂', '读经乐', 'Bible Fun'))}</span></div><div id="plBody"></div>`;
+  $('#plBack', v).onclick = () => {
+    if (PL){ PL = null; plPaint(); return; }
+    if (history.length > 1) history.back(); else go('#/today');
+  };
+  plPaint();
+}
+
 /* ================================================================ 我的 */
 async function viewMe(v){
   const L = t();
@@ -4512,6 +5294,8 @@ async function viewMe(v){
     </div></div>
 
     <div class="card" style="padding:4px 16px">
+      <a class="rowlink" href="#/play"><div class="meta"><div class="t">🎯 ${esc(L3('讀經樂：猜謎與測驗', '读经乐：猜谜与测验', 'Bible Fun: Riddles & Quiz'))}</div>
+        <div class="s">${esc(user.quizWrong.length ? L3(`錯題本 ${user.quizWrong.length} 題，可以複習`, `错题本 ${user.quizWrong.length} 题，可以复习`, `${user.quizWrong.length} missed questions to review`) : L3('玩一玩，加深對經文的記憶', '玩一玩，加深对经文的记忆', 'Play to remember what you read'))}</div></div><div class="chev">›</div></a>
       <a class="rowlink" href="#/plan"><div class="meta"><div class="t">${esc(L.plan)}</div>
         <div class="s">${user.plan.active ? esc(L.progress) : esc(L.planEmpty)}</div></div><div class="chev">›</div></a>
     </div>
@@ -4526,6 +5310,11 @@ async function viewMe(v){
       <div class="setrow"><div class="sl">${esc(L.langLabel)}</div><div class="segbtns" id="setLang">
         <button class="${state.lang === 'zh' ? 'on' : ''}" data-l="zh">繁體中文</button>
         <button class="${state.lang === 'zs' ? 'on' : ''}" data-l="zs">简体中文</button>
+        </div></div>
+      <div class="setrow"><div class="sl">${esc(L3('小智回答對象', '小智回答对象', 'Xiaozhi answers for'))}
+        <div class="muted" style="font-size:11.5px;line-height:1.6">${esc(AUD_HINT()[state.audience])}</div></div>
+        <div class="segbtns" id="setAud">
+        ${AUD_KEYS.map(k => `<button class="${state.audience === k ? 'on' : ''}" data-k="${k}">${AUD_ICON[k]} ${esc(AUD_NAME()[k])}</button>`).join('')}
         </div></div>
       <div class="setrow"><div class="sl">${esc(L.font)}</div><div class="segbtns" id="setFont">
         ${L.fonts.map((f, i) => `<button class="${state.font === i ? 'on' : ''}" data-i="${i}">${esc(f)}</button>`).join('')}</div></div>
@@ -4603,6 +5392,7 @@ async function viewMe(v){
     if (updReady) setReady();
     else ub.onclick = async () => { await checkForUpdate(true); if (updReady) setReady(); };
   }
+  $$('#setAud button', v).forEach(b => b.onclick = () => { state.audience = b.dataset.k; saveState(); render(); });
   $$('#setFont button', v).forEach(b => b.onclick = () => { state.font = +b.dataset.i; saveState(); applyChrome(); render(); });
   $$('#setTheme button', v).forEach(b => b.onclick = () => { state.theme = +b.dataset.i; saveState(); applyChrome(); render(); });
   $$('#setMode button', v).forEach(b => b.onclick = () => { state.flow = b.dataset.i === '1'; saveState(); applyChrome(); render(); });
