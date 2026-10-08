@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.13.2';
+const VERSION = 'v2.15.0';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -432,6 +432,7 @@ function loadUser(){
     if (!user.plan || typeof user.plan !== 'object') user.plan = { active:null, starts:{}, done:{} };
     if (!user.plan.starts || typeof user.plan.starts !== 'object') user.plan.starts = {};
     if (!user.plan.done || typeof user.plan.done !== 'object') user.plan.done = {};
+    if (!user.plan.pair || typeof user.plan.pair !== 'object' || Array.isArray(user.plan.pair)) user.plan.pair = {};   // 陪讀夥伴：{計畫id: 團隊代碼}
     if (!user.play || typeof user.play !== 'object') user.play = { right:0, total:0, best:{} };
     if (!user.play.best || typeof user.play.best !== 'object') user.play.best = {};
     if (!Array.isArray(user.quizWrong)) user.quizWrong = [];
@@ -920,7 +921,7 @@ function rwShow(id, replay){
 }
 /* 這一卷在這個計畫裡的每一天都打勾了嗎 */
 function rwBookDone(pid, id){
-  const p = PLANS && PLANS[pid]; if (!p) return false;
+  const p = PLANS && PLANS[pid]; if (!p || p.kind === 'companion') return false;   // 陪讀計畫只讀部分章節，不算整卷達標
   let any = false;
   for (const d of p.days){
     if (d.book !== id) continue;
@@ -999,7 +1000,7 @@ async function viewChapters(v, bookId){
    進度存法比照 user.progress 的「鍵存在即代表做過」慣例：
    user.plan = { active: 'y1'|'y2'|'immerse3'|null, starts:{[planId]:ts}, done:{[planId+'-'+day]:ts} } */
 let PLANS = null;
-const PLAN_IDS = ['y1', 'y2', 'immerse3'];
+const PLAN_IDS = ['y1', 'y2', 'immerse3', 'seeker', 'disciple'];   // 後兩個是「陪讀計畫」（kind:'companion'，有每週陪讀指引，不發經卷獎章）
 async function loadPlans(){
   if (PLANS) return PLANS;
   PLANS = await fetchJSON('plans.json');
@@ -1035,11 +1036,13 @@ function startPlan(pid){
   user.plan.active = pid;
   if (!user.plan.starts[pid]) user.plan.starts[pid] = Date.now();
   saveUser();
+  loadPlans().then(P => { planSumUpdate(P[pid]); }).catch(() => {});
   render();
 }
 function switchPlan(){
-  user.plan.active = null;
+  user.plan.active = null; user.plan.sum = null;
   saveUser();
+  if ((user.teams || []).length) teamPingSoon();
   render();
 }
 function restartPlan(pid){
@@ -1048,6 +1051,7 @@ function restartPlan(pid){
   const pfx = pid + '-';
   Object.keys(user.plan.done).forEach(k => { if (k.indexOf(pfx) === 0) delete user.plan.done[k]; });
   saveUser();
+  if (PLANS && PLANS[pid]) planSumUpdate(PLANS[pid]);
   render();
 }
 function togglePlanDone(pid, day){
@@ -1055,8 +1059,132 @@ function togglePlanDone(pid, day){
   const turnedOn = !user.plan.done[k];
   if (user.plan.done[k]) delete user.plan.done[k]; else user.plan.done[k] = Date.now();
   saveUser();
+  if (PLANS && PLANS[pid]) planSumUpdate(PLANS[pid]);
   render();
   if (turnedOn){ const dd = PLANS && PLANS[pid] && PLANS[pid].days.find(x => x.day === day); if (dd) rwCheckBook(pid, dd.book); }
+}
+/* ================================================================ 陪讀計畫（v2.14.0）
+   kind:'companion' 的計畫（seeker 陪慕道友、disciple 陪屬靈兒女）多一份 weeks 資料：
+   weeks[週] = { t:本週主題, i:陪讀者的提醒, q:[三個一起聊的問題], p:一句禱告 }，每一欄都是 {zh,zs,en}。
+   進度、打勾、提醒都跟其他計畫共用；差別只有：每週指引卡、請小智幫忙預備、分享本週給對方，
+   而且不發經卷獎章（只讀部分章節）。 */
+const cpL = o => (o && (o[state.lang] || o.zh)) || '';
+function companionPassage(d){ return bname(BOOK[d.book]) + ' ' + planRangeLabel(d.book, d.start, d.end); }
+function companionShareText(p, today){
+  const w = p.weeks[today.week], C = isEN() ? ': ' : '：';
+  const qs = w.q.map((q, i) => (i + 1) + '. ' + cpL(q)).join('\n');
+  return L3('我們這一週一起讀', '我们这一周一起读', 'This week we are reading together') + C + cpL(w.t) + '\n'
+    + L3('今天讀', '今天读', 'Today') + C + companionPassage(today) + '\n\n' + cpL(w.i) + '\n\n'
+    + L3('一起聊聊', '一起聊聊', 'Talk about') + C + '\n' + qs + '\n\n🙏 ' + cpL(w.p)
+    + '\n\n—— ' + (state.cardTop || L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Fellowship'));
+}
+function companionAsk(p, today){
+  const w = p.weeks[today.week], who = p.id === 'seeker'
+    ? L3('一位慕道友', '一位慕道友', 'a seeker')
+    : L3('我的屬靈兒女', '我的属灵儿女', 'my spiritual child');
+  return L3(
+    `我正在陪${who}讀「${cpL(p.title)}」，本週主題是「${cpL(w.t)}」，今天讀${companionPassage(today)}。請用淺顯溫暖的話，幫我預備今天的陪讀：這段經文的重點、可以怎麼開場、再給我三個可以問對方的問題，最後給一句禱告。`,
+    `我正在陪${who}读“${cpL(p.title)}”，本周主题是“${cpL(w.t)}”，今天读${companionPassage(today)}。请用浅显温暖的话，帮我预备今天的陪读：这段经文的重点、可以怎么开场、再给我三个可以问对方的问题，最后给一句祷告。`,
+    `I am walking with ${who} through "${cpL(p.title)}". This week's theme is "${cpL(w.t)}" and today we read ${companionPassage(today)}. In warm, plain words, help me prepare: the key point of the passage, how to open the conversation, three questions to ask, and a short prayer.`);
+}
+function companionGuideHtml(p, today){
+  const w = p.weeks[today.week]; if (!w) return '';
+  return `<div class="card cpguide">
+    <div class="pill">${esc(L3('本週陪讀指引', '本周陪读指引', 'This week’s companion guide'))} · ${esc(t().planWeek(today.week))}</div>
+    <h3 style="margin:6px 0 4px">${esc(cpL(w.t))}</h3>
+    <div class="muted" style="font-size:13px;line-height:1.7">${esc(cpL(w.i))}</div>
+    <div class="cpq-t">${esc(L3('可以一起聊的三個問題', '可以一起聊的三个问题', 'Three questions to talk through'))}</div>
+    <ol class="cpq">${w.q.map(q => `<li>${esc(cpL(q))}</li>`).join('')}</ol>
+    <div class="cppray">🙏 ${esc(cpL(w.p))}</div>
+    <div class="cpbtns">
+      <button class="btn gold" id="cpAsk">${esc(L3('請小智幫我預備今天的陪讀', '请小智帮我预备今天的陪读', 'Ask Xiaozhi to help me prepare'))}</button>
+      <button class="btn" id="cpShare">${esc(L3('分享本週給對方', '分享本周给对方', 'Share this week with them'))}</button>
+    </div>
+  </div>`;
+}
+function bindCompanionGuide(v, p, today){
+  if (!document.getElementById('cpcss')){
+    const st = document.createElement('style'); st.id = 'cpcss';
+    st.textContent = '.pairbox{border-color:var(--accent,#0D3988)}.pairhead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.pairrow{display:flex;gap:10px;align-items:flex-start;margin-top:10px}.pairrow .meta{flex:1;min-width:0}.pairrow .s{font-size:.88em;line-height:1.6;color:var(--muted,#6b6455);overflow-wrap:anywhere}'
+      + '.cpguide{border-color:var(--gold,#C8A24A)}.cpq-t{font-weight:700;margin:12px 0 4px;font-size:.95em}'
+      + '.cpq{margin:0;padding-left:1.4em;font-size:.95em;line-height:1.75}.cpq li{margin:2px 0;overflow-wrap:anywhere}'
+      + '.cppray{margin-top:10px;padding:9px 12px;border-radius:10px;background:var(--accent-soft,rgba(13,57,136,.07));font-size:.93em;line-height:1.7}'
+      + '.cpbtns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.cpbtns .btn{flex:1 1 140px}';
+    document.head.appendChild(st);
+  }
+  const ask = $('#cpAsk', v), sh = $('#cpShare', v);
+  if (ask) ask.onclick = () => { const q = companionAsk(p, today); go('#/companion'); setTimeout(() => sendChat(q), 700); };
+  if (sh) sh.onclick = async () => {
+    const text = companionShareText(p, today);
+    if (navigator.share){ try{ await navigator.share({ title: cpL(p.title), text }); return; }catch(e){ if (e && e.name === 'AbortError') return; } }
+    try{ await navigator.clipboard.writeText(text); toast(L3('已複製，可以貼給對方', '已复制，可以贴给对方', 'Copied — paste it to them'), 3000); }catch(e){}
+  };
+}
+/* ================================================================ 陪讀同步（v2.15.0）
+   不另外架伺服器：每個人目前的計畫進度摘要放進 myStat().plan，跟著原本的 235 團隊同步一起送出去，
+   夥伴在自己的計畫頁就能看到。user.plan.pair[計畫id] = 團隊代碼 記下「這個計畫跟哪個團隊同步」。
+   摘要只有計畫id、已讀天數、第幾天、今天的經文（書卷id＋章範圍）與時間，不含任何個人內容。 */
+function planSumUpdate(p, pushNow){
+  if (!p || !user.plan.active || user.plan.active !== p.id) return;
+  const idx = planTodayIndex(p), d = p.days[idx - 1];
+  user.plan.sum = { id:p.id, done:planDoneCount(p.id), total:p.totalDays, day:idx,
+                    b:d.book, s:d.start, e:d.end, ts:Date.now() };
+  saveUser();
+  if ((user.teams || []).length) teamPingSoon();
+}
+/* 「陪讀夥伴」卡：連結一個團隊，看夥伴在同一個計畫走到哪裡 */
+function pairAgo(ts){
+  if (!ts) return L3('尚未同步', '尚未同步', 'not synced yet');
+  const d = Math.floor((Date.now() - ts) / 86400000);
+  return d <= 0 ? L3('今天', '今天', 'today') : d === 1 ? L3('昨天', '昨天', 'yesterday') : L3(d + ' 天前', d + ' 天前', d + ' days ago');
+}
+function pairLabel(s){ return bname(BOOK[s.b]) + ' ' + planRangeLabel(s.b, s.s, s.e); }
+function paintPair(v, p, today){
+  const box = $('#pairBox', v); if (!box) return;
+  const pid = p.id, code = user.plan.pair[pid];
+  const tmList = (user.teams || []).filter(x => String(x.kind) === '2' || String(x.kind) === '3');
+  const myDone = planDoneCount(pid);
+  const title = L3('陪讀夥伴', '陪读伙伴', 'Reading partner');
+  if (!code || !(user.teams || []).some(x => x.code === code)){
+    box.innerHTML = `<div class="card pairbox"><div class="pill">${esc(title)}</div>
+      <div class="muted" style="font-size:13px;line-height:1.7;margin:6px 0 10px">${esc(L3(
+        '和對方連結後，雙方都能在這裡看到彼此讀到第幾天、今天讀哪一段。連結用的是「團隊」功能：兩個人加入同一個屬靈同伴（2）或屬靈父母兒女（3）團隊就可以。',
+        '和对方连结后，双方都能在这里看到彼此读到第几天、今天读哪一段。连结用的是“团队”功能：两个人加入同一个属灵同伴（2）或属灵父母儿女（3）团队就可以。',
+        'Once linked, you can each see here how far the other has read and today’s passage. Linking uses Teams: both of you join the same Spiritual Partner (2) or Parent & Child (3) team.'))}</div>
+      ${tmList.map(x => `<button class="btn block" style="margin-bottom:8px" data-pair="${esc(x.code)}">${esc(L3('與「', '与“', 'Link with “'))}${esc(x.name)}${esc(L3('」連結', '”连结', '”'))}</button>`).join('')}
+      <button class="btn gold block" id="pairTeam">${esc(tmList.length ? L3('建立或加入另一個團隊', '建立或加入另一个团队', 'Create or join another team') : L3('建立或加入團隊', '建立或加入团队', 'Create or join a team'))}</button></div>`;
+    $$('[data-pair]', box).forEach(b => b.onclick = () => { user.plan.pair[pid] = b.dataset.pair; saveUser(); paintPair(v, p, today); pairPull(v, p, today); });
+    $('#pairTeam', box).onclick = () => go('#/team');
+    return;
+  }
+  const tm = teamCached(code);
+  const others = tm ? memberList(tm).filter(m => m.uid !== user.uid) : [];
+  const mine = user.plan.sum && user.plan.sum.id === pid ? user.plan.sum : null;
+  const rows = others.map(m => {
+    const s = m.stat && m.stat.plan && m.stat.plan.id === pid ? m.stat.plan : null;
+    if (!s) return `<div class="pairrow"><div class="tmavatar">${esc((m.nick || '?').slice(0, 1))}</div><div class="meta"><div class="t">${esc(m.nick || '?')}</div>
+        <div class="s">${esc(L3('還沒開始這個計畫，或尚未同步', '还没开始这个计划，或尚未同步', 'Has not started this plan, or not synced yet'))}</div></div></div>`;
+    const pc = Math.round(s.done / s.total * 100);
+    const diff = mine ? s.done - mine.done : 0;
+    const note = !mine ? '' : diff === 0 ? L3('你們讀到同樣的進度，一起往前！', '你们读到同样的进度，一起往前！', 'You are at the same place. Keep going together!')
+      : diff > 0 ? L3(`對方比你多讀 ${diff} 天，一起追上吧`, `对方比你多读 ${diff} 天，一起追上吧`, `They are ${diff} day(s) ahead; catch up together`)
+      : L3(`你比對方多讀 ${-diff} 天，可以鼓勵他`, `你比对方多读 ${-diff} 天，可以鼓励他`, `You are ${-diff} day(s) ahead; encourage them`);
+    return `<div class="pairrow"><div class="tmavatar">${esc((m.nick || '?').slice(0, 1))}</div><div class="meta"><div class="t">${esc(m.nick || '?')}　<span class="muted" style="font-size:12px">${s.done} / ${s.total} ${esc(t().planDaysUnit)}（${pc}%）</span></div>
+      <div class="tmbar" style="margin:5px 0"><i style="width:${pc}%"></i></div>
+      <div class="s">${esc(L3('今天讀', '今天读', 'Today'))}：${esc(pairLabel(s))}　·　${esc(pairAgo(s.ts))}</div>
+      ${note ? `<div class="s" style="margin-top:3px">${esc(note)}</div>` : ''}</div></div>`;
+  }).join('');
+  box.innerHTML = `<div class="card pairbox"><div class="pairhead"><div class="pill">${esc(title)}　${esc(tm ? tm.name : code)}</div>
+      <div><button class="btn sm" id="pairSync">⟳ ${esc(L3('同步', '同步', 'Sync'))}</button> <button class="btn sm" id="pairOff">${esc(L3('取消連結', '取消连结', 'Unlink'))}</button></div></div>
+    ${rows || `<div class="muted" style="font-size:13px;line-height:1.7;margin-top:8px">${esc(L3('團隊裡還沒有其他人。把團隊代碼傳給對方，請他加入並開始同一個計畫。', '团队里还没有其他人。把团队代码传给对方，请他加入并开始同一个计划。', 'No one else is on the team yet. Send them the team code and ask them to join and start the same plan.'))}</div>`}
+    <div class="muted" style="font-size:12px;margin-top:8px">${esc(L3('你的進度', '你的进度', 'Your progress'))}：${myDone} / ${p.totalDays} ${esc(t().planDaysUnit)}　·　${esc(L3('團隊代碼', '团队代码', 'Team code'))} ${esc(code)}</div></div>`;
+  $('#pairSync', box).onclick = () => pairPull(v, p, today, true);
+  $('#pairOff', box).onclick = () => { delete user.plan.pair[pid]; saveUser(); paintPair(v, p, today); };
+}
+async function pairPull(v, p, today, loud){
+  const code = user.plan.pair[p.id]; if (!code) return;
+  try{ await teamPull(code); }catch(e){ if (loud) toast(L3('同步失敗，稍後再試', '同步失败，稍后再试', 'Sync failed — try again later'), 2600); return; }
+  if (document.body.contains(v) && $('#pairBox', v)) paintPair(v, p, today);
 }
 function planRowHtml(d, pid, todayIdx){
   const b = BOOK[d.book];
@@ -1068,6 +1196,7 @@ function planRowHtml(d, pid, todayIdx){
     <button class="plancheck ${done ? 'on' : ''}" data-toggle="${d.day}">✓</button>
   </div>`;
 }
+let P_WEEKS = null;   // 目前畫的計畫若是陪讀計畫，這裡放它的每週資料
 function planWeeksHtml(rows, pid, todayIdx){
   let html = '', i = 0;
   while (i < rows.length){
@@ -1075,8 +1204,9 @@ function planWeeksHtml(rows, pid, todayIdx){
     let j = i; while (j < rows.length && rows[j].week === wk) j++;
     const seg = rows.slice(i, j);
     const open = seg.some(d => d.day === todayIdx);
+    const wkInfo = P_WEEKS && P_WEEKS[wk];
     html += `<details class="grp" ${open ? 'open' : ''}>
-      <summary><span style="color:var(--gold)">◆</span>${esc(t().planWeek(wk))}<span class="cnt">${seg.length} ${esc(t().planDaysUnit)}</span></summary>
+      <summary><span style="color:var(--gold)">◆</span>${esc(t().planWeek(wk))}${wkInfo ? '　' + esc(cpL(wkInfo.t)) : ''}<span class="cnt">${seg.length} ${esc(t().planDaysUnit)}</span></summary>
       <div>${seg.map(d => planRowHtml(d, pid, todayIdx)).join('')}</div></details>`;
     i = j;
   }
@@ -1084,6 +1214,7 @@ function planWeeksHtml(rows, pid, todayIdx){
 }
 function planGroupsHtml(p, pid, todayIdx){
   const rows = p.days;
+  P_WEEKS = p.weeks || null;
   if (!rows[0].vol) return planWeeksHtml(rows, pid, todayIdx);
   let html = '', i = 0;
   while (i < rows.length){
@@ -1103,8 +1234,12 @@ async function viewPlan(v){
       <div class="section-title">${esc(L.planTitle)}</div>
       ${PLAN_IDS.map(pid => {
         const p = P[pid];
-        return `<div class="card plancard">
-          <div class="pill">${p.totalDays} ${esc(L.planDaysUnit)}</div>
+        const comp = p.kind === 'companion';
+        const head = (comp && pid === 'seeker')
+          ? `<div class="section-title" style="margin-top:18px">${esc(L3('陪讀計畫：陪伴別人一起讀','陪读计划：陪伴别人一起读','Companion plans: read together with someone'))}</div>
+             <div class="muted" style="font-size:12.5px;line-height:1.65;margin:0 4px 10px">${esc(L3('每週附上「陪讀指引」：本週重點、可以一起聊的三個問題、一句禱告，還能請小智幫你預備。','每周附上“陪读指引”：本周重点、可以一起聊的三个问题、一句祷告，还能请小智帮你预备。','Each week comes with a companion guide: a focus, three questions to talk through, a prayer, and Xiaozhi can help you prepare.'))}</div>` : '';
+        return head + `<div class="card plancard">
+          <div class="pill">${comp ? esc(L3('陪讀','陪读','Companion')) + ' · ' : ''}${p.totalDays} ${esc(L.planDaysUnit)}</div>
           <h3>${esc(planTitle(p))}</h3>
           <div class="muted" style="font-size:13px;line-height:1.6;margin-bottom:12px">${esc(planSubtitle(p))}</div>
           <button class="btn gold block" data-start="${pid}">${esc(L.planStart)}</button>
@@ -1120,6 +1255,7 @@ async function viewPlan(v){
   const todayDone = !!user.plan.done[planDayKey(pid, todayIdx)];
   const pct = Math.round(doneN / p.totalDays * 100);
   const C = 2 * Math.PI * 25;
+  if (!user.plan.sum || user.plan.sum.id !== pid || user.plan.sum.done !== doneN || user.plan.sum.day !== todayIdx) planSumUpdate(p);
 
   v.innerHTML = `
     <div class="card">
@@ -1141,6 +1277,7 @@ async function viewPlan(v){
         <button class="btn block" id="todayToggle">${todayDone ? '✓ ' + esc(L.planDone) : esc(L.planMarkDone)}</button>
       </div>
     </div>
+    ${p.weeks ? '<div id="pairBox"></div>' + companionGuideHtml(p, today) : ''}
     <div class="card" style="padding:4px 16px">
       <div class="setrow"><div class="sl">${esc(L.planRemind)}
         <div class="muted" style="font-size:11.5px;line-height:1.6">${esc(L.planRemindHint[state.planRemindOn ? 0 : 1])}</div></div>
@@ -1155,6 +1292,7 @@ async function viewPlan(v){
     ${planGroupsHtml(p, pid, todayIdx)}`;
 
   $('#todayToggle', v).onclick = () => togglePlanDone(pid, todayIdx);
+  if (p.weeks){ bindCompanionGuide(v, p, today); paintPair(v, p, today); pairPull(v, p, today); }
   $$('#setPlanRemind button', v).forEach(b => b.onclick = () => togglePlanRemind(b.dataset.i === '0'));
   $('#planSwitchBtn', v).onclick = () => switchPlan();
   $('#planRestartBtn', v).onclick = () => restartPlan(pid);
@@ -1408,7 +1546,7 @@ async function planAutoCheck(bookId, ch){
     for (let c = d.start; c <= d.end; c++){ if (!user.progress[bookId + '-' + c]){ allRead = false; break; } }
     if (allRead){ user.plan.done[k] = Date.now(); changed = true; }
   }
-  if (changed){ saveUser(); toast(t().planAutoDoneToast, 2600); rwCheckBook(pid, bookId); }
+  if (changed){ saveUser(); planSumUpdate(p); toast(t().planAutoDoneToast, 2600); rwCheckBook(pid, bookId); }
 }
 /* ============ 讀經計畫：每日提醒（本機通知，不是伺服器推播）====================
    這個App是純前端PWA，沒有一直開著的伺服器可以主動推播；只能靠瀏覽器的
@@ -3787,7 +3925,8 @@ function myStat(){
   return {
     days: Object.keys(byDay).length, streak, chs: vals.length, today: byDay[today] || 0,
     last: lb ? `${bname(lb)} ${user.last.ch}` : '', lastTs,
-    acts: user.acts || {}, goalN: 0
+    acts: user.acts || {}, goalN: 0,
+    plan: (user.plan && user.plan.active && user.plan.sum && user.plan.sum.id === user.plan.active) ? user.plan.sum : null   // v2.15.0 陪讀同步
   };
 }
 function myPts(){
@@ -4129,6 +4268,7 @@ function paintTeamBody(tm, owner, mem){
           <div class="meta">
             <div class="t">${esc(m.nick || '?')}${m.uid === tm.owner ? ` <span class="pill">${esc(L.owner)}</span>` : ''}</div>
             <div class="s">${esc(L.pts)} ${m.pts || 0}　·　${esc(idl > 900 ? L.never : L.dAgo(idl))}${m.stat && m.stat.streak ? `　·　🔥${m.stat.streak}` : ''}</div>
+            ${m.stat && m.stat.plan && PLANS && PLANS[m.stat.plan.id] ? `<div class="s">📖 ${esc(planTitle(PLANS[m.stat.plan.id]))}　${m.stat.plan.done}/${m.stat.plan.total}</div>` : ''}
             ${bs.length ? `<div class="tmbadges">${bs.map(b => `<span title="${esc(badgeName(b))}">${b.i}</span>`).join('')}</div>` : ''}
           </div>
           ${owner && m.uid !== user.uid ? `<button class="btn sm" data-kick="${esc(m.uid)}">${esc(L.kick)}</button>` : ''}
