@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.12.0';
+const VERSION = 'v2.13.0';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -415,7 +415,7 @@ function loadState(){
     if (s.chnum !== undefined && s.shCh === undefined){ state.shCh = !!s.chnum; state.shV = !!s.chnum; }
     delete state.chnum;
     state.flow = !!state.flow; state.shCh = !!state.shCh; state.shV = !!state.shV;
-    if (!['adult','teen','kid','seeker'].includes(state.audience)) state.audience = 'adult';
+    if (!['adult','teen','kid','seeker','elder','single_parent','single','parent'].includes(state.audience)) state.audience = 'adult';
   }catch(e){ state = Object.assign({}, DEFAULTS); }
 }
 function saveState(){ try{ localStorage.setItem('ib_state', JSON.stringify(state)); }catch(e){} }
@@ -685,6 +685,8 @@ async function render(){
   if (tab !== 'read'){ bmMode = false; document.documentElement.classList.remove('bmmode'); }
   if (tab !== 'studio'){ stopSelfie(); if (recMode === 's') recMode = 'c'; }
   if (tab !== 'read' && tab !== 'studio') scrollToTop();
+  if (tab === 'studio'){ mjDoneItem = null; mjRestore(); }
+  mjPill();
 }
 
 /* ================================================================ 今日 */
@@ -838,6 +840,7 @@ function rwLine(id){
   const a = state.audience;
   const b = BOOK[id], nm = bname(b);
   if (a === 'seeker') return SK_RW(nm);
+  { const x2 = A2(); if (x2) return x2.rw.map(s => s.split('{nm}').join(nm)); }
   return {
     adult:[L3(`你讀完整卷《${nm}》了！`, `你读完整卷《${nm}》了！`, `You finished the whole book of ${nm}!`),
            L3('一天一天走到這裡，神的話已經在你裡面扎根。', '一天一天走到这里，神的话已经在你里面扎根。', 'Day by day you came this far — the Word is taking root in you.')],
@@ -2878,7 +2881,7 @@ function liveCanvas(W, H, withSelfie){
   const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
   const cx = cv.getContext('2d'), t0 = performance.now(), F = W / 1080;
   const svid = $('#selfiePrev');
-  const loop = () => {
+  const draw = () => {
     const el = (performance.now() - t0) / 1000;
     cx.drawImage(base, 0, 0);
     const gx = W * (0.12 + 0.76 * (((el / 16) % 2 > 1) ? 2 - (el / 16) % 2 : (el / 16) % 2));
@@ -2895,9 +2898,14 @@ function liveCanvas(W, H, withSelfie){
       cx.fillText(bgmCredit, W / 2, H - Math.round(22 * F));
       cx.shadowColor = 'transparent';
     }
-    recAnim = requestAnimationFrame(loop);
   };
+  const loop = () => { draw(); recAnim = requestAnimationFrame(loop); };
   loop();
+  /* 畫面在背景時 requestAnimationFrame 會停，改用計時器補畫，影片才不會凍住 */
+  const bgT = setInterval(() => {
+    if (document.hidden) draw();
+    if (performance.now() - t0 > 4000 && !(mr && mr.state === 'recording')) clearInterval(bgT);
+  }, 500);
   const lb = $('#liveBox');
   if (lb){
     cv.style.cssText = 'width:100%;max-width:300px;border-radius:14px;display:block;margin:0 auto;box-shadow:0 6px 20px rgba(0,0,0,.14)';
@@ -2919,6 +2927,7 @@ function recTick(label){
     recSec++;
     const e = $('#recTm');
     if (e) e.textContent = String(Math.floor(recSec / 60)).padStart(2, '0') + ':' + String(recSec % 60).padStart(2, '0');
+    mjPill();
   }, 1000);
 }
 /* 錄完先不要急著存。整理成可以播的檔，打開預覽面板，讓他自己決定
@@ -2930,12 +2939,13 @@ async function finishRec(blob, type, kind){
   await studioRefresh();
   openReview(blob, blob.type || type, kind, dur);
 }
-async function saveWork(blob, type, kind, dur){
+async function saveWork(blob, type, kind, dur, item){
+  const it = item || studioItem;
   try{
     if (!wdb) await openWDB();
     if (!wdb) throw new Error('IndexedDB 打不開');
     await putRec({ id:uid(), ts:Date.now(), blob, mime:blob.type || type, kind, dur:dur || 0,
-                   v:studioItem.t, r:cardRef(studioItem), n:studioItem.n || '' });
+                   v:it.t, r:cardRef(it), n:it.n || '' });
     await studioRefresh();
     toast(kind === 'video' ? t().recDoneV : t().recDoneA, 3600);
     return true;
@@ -3110,6 +3120,8 @@ async function musicRec(){
   if (mr && mr.state === 'recording'){ recStopNow(); return; }
   if (!studioItem || !bgmBlob){ toast(t().bgmNeed); return; }
   if (!canVideo()){ toast(t().vidNo); return; }
+  const jobItem = studioItem;
+  mjAsk();
   let ac, bgmEl, bgmURL, audioStream;
   try{
     ac = new (window.AudioContext || window.webkitAudioContext)();
@@ -3137,9 +3149,12 @@ async function musicRec(){
     try{ if (bgmURL) URL.revokeObjectURL(bgmURL); }catch(_){}
     try{ if (ac) ac.close(); }catch(_){}
     const type = mr.mimeType || mime || 'video/webm';
-    await finishRec(new Blob(chunks, { type }), type, 'video');
+    if (!(spk && spk.on)) wlRelease();
+    await mjFinish(new Blob(chunks, { type }), type, jobItem);
   };
   mr.start(1000);
+  bgJob = { item:jobItem };
+  wlAcquire();
   try{ await bgmEl.play(); }catch(e){}
   fadeIn(__mcGain, ac, 1, 0.6);
   curFade = () => fadeOutStop(__mcGain, ac, BGM_FADEOUT);
@@ -3157,6 +3172,7 @@ async function musicRec(){
   const bt = $('#mcBtn'); if (bt){ bt.textContent = t().recStop; bt.classList.add('danger'); }
   recTick(t().mcing + '　♪');
 }
+
 /* ---- 作品的播放／分享／下載／刪除 ---- */
 async function getRec(id){ const a = await allRec(); return a.find(x => x.id === id); }
 async function readyBlob(r){
@@ -3246,6 +3262,7 @@ async function aiOnce(sys, ask){
 const AUD_WRITE = () => {
   const a = state.audience;
   if (a === 'seeker') return SK_WRITE();
+  { const x2 = A2(); if (x2) return x2.write; }
   if (isEN()) return {
     adult:'\nThe reader is an adult: mature, warm and sincere.',
     teen :'\nThe reader is a teenager: light, witty, like a friend chatting; a little humour is fine, but never preachy, flippant, or joking about God or Scripture. No emoji.',
@@ -3377,6 +3394,7 @@ async function studioRefresh(){
   if (curTab() !== 'studio') return;
   const y = window.scrollY;
   await viewStudio($('#view'));
+  mjRestore();
   window.scrollTo(0, y);
 }
 function curTab(){ return (location.hash || '').indexOf('#/studio') === 0 ? 'studio' : ''; }
@@ -3492,7 +3510,8 @@ async function viewStudio(v){
         <div class="muted" style="font-size:12px;margin:14px 0 6px">${esc(L.mcLen)}</div>
         ${chips('mLen', MC_LENS, mcLen, 'v')}
         <button class="btn gold block" id="mcBtn" style="margin-top:10px">🎵 ${esc(L.mcStart)}</button>
-        <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.mcHint)}</div>` : ''}
+        <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.mcHint)}</div>
+        <div class="muted" style="font-size:12px;margin-top:6px">${esc(L3('可以先離開這頁去讀經或做別的事（請留在 App 裡、不要鎖屏），做好會通知你，並自動存進「我的作品」。', '可以先离开这页去读经或做别的事（请留在 App 里、不要锁屏），做好会通知你，并自动存进“我的作品”。', 'You can leave this page and keep reading (stay in the app, keep the screen on). You will be notified, and it is saved to My works automatically.'))}</div>` : ''}
       <div id="selfieWrap" style="${isSelfie() ? '' : 'display:none'};margin-top:14px">
         <video id="selfiePrev" playsinline webkit-playsinline muted autoplay
           style="width:150px;height:150px;border-radius:50%;object-fit:cover;transform:scaleX(-1);border:3px solid var(--gold);background:#000"></video>
@@ -4577,7 +4596,7 @@ async function viewCompanion(v){
 /* ---- 小智回答後的「追問」（v2.11.0）：不同方向一鍵追問，把剛才的回答用到婚姻、家庭、職場、生活…
    方向隨「回答對象」換；點下去等於替使用者送出一句完整的追問，不必再打字。 */
 const FU_BANK = {"zh": {"adult": [["💍", "婚姻", "請針對你剛才的回答，說明怎麼把它應用在夫妻關係與婚姻裡，並給我一個這個星期可以做的具體小步驟。"], ["👨‍👩‍👧", "家庭", "請針對你剛才的回答，說明怎麼把它應用在家庭與教養孩子（或與父母相處）上，並給我一個這個星期可以做的具體小步驟。"], ["💼", "職場", "請針對你剛才的回答，說明怎麼把它應用在工作與職場上（同事、主管、壓力、誠信），並給我一個這個星期可以做的具體小步驟。"], ["🏡", "日常", "請針對你剛才的回答，說明怎麼把它應用在日常生活的小事上（時間、金錢、習慣），並給我一個這個星期可以做的具體小步驟。"], ["💭", "內心", "請針對你剛才的回答，說明怎麼把它應用在面對內心的情緒與軟弱上（焦慮、憤怒、驕傲），並給我一個這個星期可以做的具體小步驟。"], ["🙏", "禱告", "請把你剛才說的重點，寫成一段簡短、真誠的禱告，讓我可以拿來禱告。"]], "teen": [["🏫", "學校", "用你剛才講的，幫我想想怎麼用在學校與課業上，給我一個今天就能試的小招。"], ["🤝", "朋友", "用你剛才講的，幫我想想怎麼用在朋友相處上，給我一個今天就能試的小招。"], ["🏠", "家人", "用你剛才講的，幫我想想怎麼用在跟爸媽、家人的相處上，給我一個今天就能試的小招。"], ["📱", "手機網路", "用你剛才講的，幫我想想怎麼用在手機、網路與社群上，給我一個今天就能試的小招。"], ["💭", "壓力", "用你剛才講的，幫我想想怎麼用在壓力和情緒上，給我一個今天就能試的小招。"], ["🌟", "未來", "用你剛才講的，幫我想想怎麼用在未來和夢想上，給我一個今天就能試的小招。"], ["🎯", "今天挑戰", "請給我一個跟剛才有關、今天就能完成的小挑戰，要具體、有點好玩。"]], "kid": [["🏠", "在家", "剛剛講的，我在家裡可以怎麼做呢？請用簡單的話告訴我。"], ["🏫", "在學校", "剛剛講的，我在學校可以怎麼做呢？請用簡單的話告訴我。"], ["🤝", "跟朋友", "剛剛講的，我在跟好朋友相處時可以怎麼做呢？請用簡單的話告訴我。"], ["🙏", "小禱告", "請教我一個很短的小禱告，我可以跟耶穌說。"], ["📖", "小故事", "可以再講一個跟這個有關的小故事給我聽嗎？"]], "seeker": [["🤝", "人際", "剛才說的放在人際關係裡（家人、朋友、同事），對一個還不是基督徒的人有什麼實際的幫助？請舉一個生活的例子。"], ["💍", "婚姻家庭", "剛才說的放在婚姻與家庭裡，對一個還不是基督徒的人有什麼實際的幫助？請舉一個生活的例子。"], ["💼", "工作", "剛才說的放在工作與職場裡，對一個還不是基督徒的人有什麼實際的幫助？請舉一個生活的例子。"], ["😟", "壓力焦慮", "剛才說的放在壓力與焦慮裡，對一個還不是基督徒的人有什麼實際的幫助？請舉一個生活的例子。"], ["🌍", "人生意義", "剛才說的放在尋找人生的意義與方向裡，對一個還不是基督徒的人有什麼實際的幫助？請舉一個生活的例子。"], ["❓", "我的疑問", "我心裡還有疑問，請誠實告訴我：信耶穌對一個人的生活到底有什麼實際的幫助？也請告訴我可以怎麼自己去查證。"], ["🌱", "下一步", "如果我想進一步了解，下一步可以做什麼？請給我一兩個不會有壓力的建議。"]]}, "zs": {"adult": [["💍", "婚姻", "请针对你刚才的回答，说明怎么把他应用在夫妻关系与婚姻里，并给我一个这个星期可以做的具体小步驟。"], ["👨‍👩‍👧", "家庭", "请针对你刚才的回答，说明怎么把他应用在家庭与教养孩子（或与父母相处）上，并给我一个这个星期可以做的具体小步驟。"], ["💼", "职场", "请针对你刚才的回答，说明怎么把他应用在工作与职场上（同事、主管、压力、诚信），并给我一个这个星期可以做的具体小步驟。"], ["🏡", "日常", "请针对你刚才的回答，说明怎么把他应用在日常生活的小事上（时间、金钱、习惯），并给我一个这个星期可以做的具体小步驟。"], ["💭", "内心", "请针对你刚才的回答，说明怎么把他应用在面对内心的情緒与软弱上（焦虑、愤怒、骄傲），并给我一个这个星期可以做的具体小步驟。"], ["🙏", "祷告", "请把你刚才说的重点，写成一段簡短、真诚的祷告，让我可以拿来祷告。"]], "teen": [["🏫", "学校", "用你刚才讲的，帮我想想怎么用在学校与课业上，给我一个今天就能试的小招。"], ["🤝", "朋友", "用你刚才讲的，帮我想想怎么用在朋友相处上，给我一个今天就能试的小招。"], ["🏠", "家人", "用你刚才讲的，帮我想想怎么用在跟爸妈、家人的相处上，给我一个今天就能试的小招。"], ["📱", "手机网路", "用你刚才讲的，帮我想想怎么用在手机、网路与社群上，给我一个今天就能试的小招。"], ["💭", "压力", "用你刚才讲的，帮我想想怎么用在压力和情緒上，给我一个今天就能试的小招。"], ["🌟", "未来", "用你刚才讲的，帮我想想怎么用在未来和梦想上，给我一个今天就能试的小招。"], ["🎯", "今天挑战", "请给我一个跟刚才有关、今天就能完成的小挑战，要具体、有点好玩。"]], "kid": [["🏠", "在家", "刚刚讲的，我在家里可以怎么做呢？请用簡单的话告诉我。"], ["🏫", "在学校", "刚刚讲的，我在学校可以怎么做呢？请用簡单的话告诉我。"], ["🤝", "跟朋友", "刚刚讲的，我在跟好朋友相处时可以怎么做呢？请用簡单的话告诉我。"], ["🙏", "小祷告", "请教我一个很短的小祷告，我可以跟耶稣说。"], ["📖", "小故事", "可以再讲一个跟这个有关的小故事给我听吗？"]], "seeker": [["🤝", "人際", "刚才说的放在人際关系里（家人、朋友、同事），对一个还不是基督徒的人有什么实際的帮助？请举一个生活的例子。"], ["💍", "婚姻家庭", "刚才说的放在婚姻与家庭里，对一个还不是基督徒的人有什么实際的帮助？请举一个生活的例子。"], ["💼", "工作", "刚才说的放在工作与职场里，对一个还不是基督徒的人有什么实際的帮助？请举一个生活的例子。"], ["😟", "压力焦虑", "刚才说的放在压力与焦虑里，对一个还不是基督徒的人有什么实際的帮助？请举一个生活的例子。"], ["🌍", "人生意义", "刚才说的放在寻找人生的意义与方向里，对一个还不是基督徒的人有什么实際的帮助？请举一个生活的例子。"], ["❓", "我的疑问", "我心里还有疑问，请诚实告诉我：信耶稣对一个人的生活到底有什么实際的帮助？也请告诉我可以怎么自己去查证。"], ["🌱", "下一步", "如果我想进一步了解，下一步可以做什么？请给我一两个不会有压力的建议。"]]}, "en": {"adult": [["💍", "Marriage", "Based on your answer, explain how to apply it in my marriage, and give me one concrete step I can take this week."], ["👨‍👩‍👧", "Family", "Based on your answer, explain how to apply it in my family and parenting (or with my parents), and give me one concrete step I can take this week."], ["💼", "Work", "Based on your answer, explain how to apply it at work (colleagues, boss, pressure, integrity), and give me one concrete step I can take this week."], ["🏡", "Daily life", "Based on your answer, explain how to apply it in everyday life (time, money, habits), and give me one concrete step I can take this week."], ["💭", "Inner life", "Based on your answer, explain how to apply it in facing my inner struggles (anxiety, anger, pride), and give me one concrete step I can take this week."], ["🙏", "Prayer", "Please turn the key point of your answer into a short, sincere prayer I can pray."]], "teen": [["🏫", "School", "Using what you just said, help me think through how to use it at school and with my studies — give me one small move I can try today."], ["🤝", "Friends", "Using what you just said, help me think through how to use it with my friends — give me one small move I can try today."], ["🏠", "Family", "Using what you just said, help me think through how to use it with my parents and family — give me one small move I can try today."], ["📱", "Phone & online", "Using what you just said, help me think through how to use it on my phone, online and on social media — give me one small move I can try today."], ["💭", "Stress", "Using what you just said, help me think through how to use it with stress and emotions — give me one small move I can try today."], ["🌟", "Future", "Using what you just said, help me think through how to use it for my future and dreams — give me one small move I can try today."], ["🎯", "Challenge", "Give me one small, specific, slightly fun challenge related to this that I can finish today."]], "kid": [["🏠", "At home", "About what you just said — what can I do at home? Please tell me in simple words."], ["🏫", "At school", "About what you just said — what can I do at school? Please tell me in simple words."], ["🤝", "With friends", "About what you just said — what can I do with my friends? Please tell me in simple words."], ["🙏", "Little prayer", "Please teach me a very short little prayer I can say to Jesus."], ["📖", "Story", "Can you tell me another little story about this?"]], "seeker": [["🤝", "Relationships", "Applying what you just said in relationships (family, friends, colleagues), what practical help would it be for someone who is not yet a Christian? Please give an everyday example."], ["💍", "Marriage & family", "Applying what you just said in marriage and family, what practical help would it be for someone who is not yet a Christian? Please give an everyday example."], ["💼", "Work", "Applying what you just said at work, what practical help would it be for someone who is not yet a Christian? Please give an everyday example."], ["😟", "Stress", "Applying what you just said in stress and anxiety, what practical help would it be for someone who is not yet a Christian? Please give an everyday example."], ["🌍", "Meaning", "Applying what you just said in searching for meaning and direction in life, what practical help would it be for someone who is not yet a Christian? Please give an everyday example."], ["❓", "My doubts", "I still have doubts. Please tell me honestly: what practical difference does faith in Jesus make to a person's life? And how could I check it out for myself?"], ["🌱", "Next step", "If I want to learn more, what could my next step be? Please give one or two no-pressure suggestions."]]}};
-const FU_LIST = () => (FU_BANK[state.lang] || FU_BANK.zh)[state.audience] || [];
+const FU_LIST = () => { const x2 = A2(); if (x2) return x2.fu; return (FU_BANK[state.lang] || FU_BANK.zh)[state.audience] || []; };
 function fuCss(){
   if ($('#fucss')) return;
   const el = document.createElement('style'); el.id = 'fucss';
@@ -4702,23 +4721,35 @@ const SYS_FMT = () => isEN()
 /* ================================================================ 小智回答對象（v2.8.0）
    成人／青少年／兒童：同一個問題，用不同的口氣、比喻、長度回答。
    這段話接在 SYS_FMT() 後面，所以格式規矩（引言標重點、禱告結尾）三種對象都照樣有。 */
-const AUD_KEYS = ['adult', 'teen', 'kid', 'seeker'];
-const AUD_ICON = { adult:'🧑', teen:'🧒', kid:'🧸', seeker:'🌱' };
+const AUD_KEYS = ['adult', 'teen', 'kid', 'seeker', 'elder', 'single_parent', 'single', 'parent'];
+const AUD_ICON = { adult:'🧑', teen:'🧒', kid:'🧸', seeker:'🌱', elder:'👴', single_parent:'👩‍👧', single:'🙋', parent:'👨‍👩‍👧' };
+/* v2.13.0 新增：長輩、單親、單身、父母——口氣、範例問題、追問、猜謎風格、獎章語都放在這一包（三語）。 */
+const AUD2 = {"elder": {"zh": {"sys": " 回答對象：長輩（約65歲以上）。請用尊敬、溫和、慢慢說的口吻，像晚輩敬重地陪長輩讀經；句子清楚、不拐彎，不用網路用語和英文縮寫；比喻取自一生的閱歷（田地、家人、歲月、病痛、孫子、老街坊）。重點先講，分成短段落，不要太長。肯定他們一生走過的路與在主裡的忠心，不說教、不指責、不用「你應該」。可以談健康與軟弱、孤單、放下與交託、把信仰傳給下一代、永恆的盼望與感恩。結尾給一件簡單、容易做到的小事（一句禱告、打電話問候家人、數算一件感謝）。若提到身體不適、孤單或失去親人，要先溫柔安慰，並鼓勵他和家人、教會關懷同工聯絡。", "write": "\n讀者是長輩：用語尊敬、溫和、清楚好懂，不用網路用語；不要用表情符號。", "style": "風格：給長輩，字詞平實、句子清楚，題目不要繞、不要太冷僻，選項簡短；解析用一句溫和的話。", "rw": ["您讀完整卷《{nm}》了！", "一天一天走到這裡，這份忠心神都記念，也是我們晚輩的榜樣。"], "res": ["沒關係，慢慢來，再讀一遍會更清楚。", "很好！這一章的話您記得不少。", "太好了！神的話已經住在您心裡。"], "q": ["這段經文用最簡單的話，是在說什麼？", "這段經文對年紀大的人有什麼安慰？", "身體漸漸衰弱了，神怎麼看顧我？", "我常常覺得孤單，這段經文能給我什麼？", "我該怎麼把信仰傳給兒孫？", "有些事放不下，這段經文怎麼教我交託？", "我老了，還能為神做什麼？", "請幫我寫一段簡短的禱告，我想念給主聽。"], "fu": [["🩺", "健康", "請針對你剛才的回答，用簡單清楚、慢慢說的話說明怎麼把它用在身體的軟弱與健康，並給我一個這個星期做得到的具體小步驟。"], ["🤍", "孤單", "請針對你剛才的回答，用簡單清楚、慢慢說的話說明怎麼把它用在孤單與思念，並給我一個這個星期做得到的具體小步驟。"], ["👨‍👩‍👧‍👦", "兒孫", "請針對你剛才的回答，用簡單清楚、慢慢說的話說明怎麼把它用在和兒孫、家人的關係，並給我一個這個星期做得到的具體小步驟。"], ["🕊️", "交託", "請針對你剛才的回答，用簡單清楚、慢慢說的話說明怎麼把它用在放下心中的牽掛、交託給主，並給我一個這個星期做得到的具體小步驟。"], ["🌅", "盼望", "請針對你剛才的回答，用簡單清楚、慢慢說的話說明怎麼把它用在永恆的盼望與感恩，並給我一個這個星期做得到的具體小步驟。"], ["🙏", "禱告", "請把你剛才說的重點，用簡單的話寫成一段短短的禱告，讓我可以慢慢念給主聽。"]]}, "zs": {"sys": " 回答对象：长辈（约65岁以上）。请用尊敬、温和、慢慢说的口吻，像晚辈敬重地陪长辈读经；句子清楚、不拐弯，不用网路用语和英文缩写；比喻取自一生的阅历（田地、家人、岁月、病痛、孙子、老街坊）。重点先讲，分成短段落，不要太长。肯定他们一生走过的路与在主里的忠心，不说教、不指责、不用「你应该」。可以谈健康与软弱、孤单、放下与交托、把信仰传给下一代、永恒的盼望与感恩。结尾给一件简单、容易做到的小事（一句祷告、打电话问候家人、数算一件感谢）。若提到身体不适、孤单或失去亲人，要先温柔安慰，并鼓励他和家人、教会关怀同工联络。", "write": "\n读者是长辈：用语尊敬、温和、清楚好懂，不用网路用语；不要用表情符号。", "style": "风格：给长辈，字词平实、句子清楚，题目不要绕、不要太冷僻，选项简短；解析用一句温和的话。", "rw": ["您读完整卷《{nm}》了！", "一天一天走到这里，这份忠心神都记念，也是我们晚辈的榜样。"], "res": ["没关系，慢慢来，再读一遍会更清楚。", "很好！这一章的话您记得不少。", "太好了！神的话已经住在您心里。"], "q": ["这段经文用最简单的话，是在说什么？", "这段经文对年纪大的人有什么安慰？", "身体渐渐衰弱了，神怎么看顾我？", "我常常觉得孤单，这段经文能给我什么？", "我该怎么把信仰传给儿孙？", "有些事放不下，这段经文怎么教我交托？", "我老了，还能为神做什么？", "请帮我写一段简短的祷告，我想念给主听。"], "fu": [["🩺", "健康", "请针对你刚才的回答，用简单清楚、慢慢说的话说明怎么把它用在身体的软弱与健康，并给我一个这个星期做得到的具体小步骤。"], ["🤍", "孤单", "请针对你刚才的回答，用简单清楚、慢慢说的话说明怎么把它用在孤单与思念，并给我一个这个星期做得到的具体小步骤。"], ["👨‍👩‍👧‍👦", "儿孙", "请针对你刚才的回答，用简单清楚、慢慢说的话说明怎么把它用在和儿孙、家人的关系，并给我一个这个星期做得到的具体小步骤。"], ["🕊️", "交托", "请针对你刚才的回答，用简单清楚、慢慢说的话说明怎么把它用在放下心中的牵挂、交托给主，并给我一个这个星期做得到的具体小步骤。"], ["🌅", "盼望", "请针对你刚才的回答，用简单清楚、慢慢说的话说明怎么把它用在永恒的盼望与感恩，并给我一个这个星期做得到的具体小步骤。"], ["🙏", "祷告", "请把你刚才说的重点，用简单的话写成一段短短的祷告，让我可以慢慢念给主听。"]]}, "en": {"sys": " Audience: an elder (about 65 and older). Speak respectfully, gently and unhurriedly, like a younger person reading Scripture with an older one they honour. Short, clear sentences; no internet slang or abbreviations; pictures from a long life (fields, family, the years, illness, grandchildren, old neighbours). Main point first, in short paragraphs. Honour the road they have walked and their faithfulness in the Lord; never preach, scold, or say \"you should\". You may speak of health and frailty, loneliness, letting go and entrusting, passing faith to the next generation, eternal hope and gratitude. End with one simple thing that is easy to do (a short prayer, a phone call to family, counting one blessing). If they mention illness, loneliness or loss, comfort them first and encourage them to reach out to family or the church care team.", "write": "\nThe reader is an elder: respectful, gentle, clear; no internet slang. No emoji.", "style": "Style: for an elder — plain words, clear sentences, questions that are not convoluted or obscure, short options; one gentle sentence of explanation.", "rw": ["You finished the whole book of {nm}!", "Day by day you came this far. God remembers this faithfulness, and it is an example to us who are younger."], "res": ["That is all right — take it slowly; another read will make it clearer.", "Very good! You remember a lot of this chapter.", "Wonderful! The Word is living in your heart."], "q": ["In the simplest words, what is this passage saying?", "What comfort does this passage give to those who are older?", "My body is growing weaker — how does God watch over me?", "I often feel lonely — what does this passage give me?", "How can I pass my faith on to my children and grandchildren?", "There are things I cannot let go of — how does this passage teach me to entrust them?", "I am old — what can I still do for God?", "Please write me a short prayer I can read to the Lord."], "fu": [["🩺", "Health", "Based on your answer, explain how to apply it to physical frailty and health, and give me one concrete step I can take this week."], ["🤍", "Loneliness", "Based on your answer, explain how to apply it to loneliness and missing loved ones, and give me one concrete step I can take this week."], ["👨‍👩‍👧‍👦", "Family", "Based on your answer, explain how to apply it to my relationship with my children and grandchildren, and give me one concrete step I can take this week."], ["🕊️", "Entrusting", "Based on your answer, explain how to apply it to letting go of my worries and entrusting them to the Lord, and give me one concrete step I can take this week."], ["🌅", "Hope", "Based on your answer, explain how to apply it to eternal hope and gratitude, and give me one concrete step I can take this week."], ["🙏", "Prayer", "Please turn the key point of your answer into a short, simple prayer I can read slowly to the Lord."]]}}, "single_parent": {"zh": {"sys": " 回答對象：單親爸爸或媽媽（一個人撐起一個家）。請先接住他的辛苦：他常常很累、有愧疚、有孤單，也有經濟、時間與教養的壓力。口吻溫暖、接納、不評斷，不追問過去的原因，不說「你應該再找個伴」，也不把單親說成缺憾。引用神的心意：神是孤兒的父、寡婦的伸冤者（詩篇68:5），祂與我們同在。再給盼望與實際：每一個小步驟都要在忙碌中做得到（五分鐘禱告、跟孩子的一個小儀式、開口向弟兄姊妹求助）。內容簡短、段落要短。結尾給一個這個星期做得到的小步驟。若他提到被暴力對待、疲憊到撐不下去或想傷害自己，要溫柔回應，並鼓勵他立刻聯絡信任的人、教會同工或專業協助。", "write": "\n讀者是單親爸媽：口吻溫暖、接納、不評斷，肯定他的辛苦；不要用表情符號。", "style": "風格：給單親爸媽，題目貼近日常的忙碌、教養與盼望；口氣溫暖，解析一句話帶出安慰。", "rw": ["您讀完整卷《{nm}》了！", "一個人撐一個家還能堅持讀經，真的不容易。神看見您的每一步，祂與您同在。"], "res": ["沒關係，您已經很努力了，有空再讀一遍就好。", "不錯！在這麼忙的日子裡還記得這麼多。", "太棒了！神的話正在托住您。"], "q": ["這段經文對一個人撐起一個家的我，有什麼安慰？", "我常常覺得累，也覺得對孩子有虧欠，神怎麼看？", "神怎麼看顧孤兒和寡婦？這跟我有什麼關係？", "經濟壓力很大，這段經文能給我什麼？", "孩子在頂嘴、情緒很大，我該怎麼辦？", "我不知道怎麼跟孩子說爸爸（或媽媽）不在身邊的事。", "我真的很孤單，可以怎麼向教會或弟兄姊妹開口求助？", "請幫我寫一段五分鐘內能禱告完的短禱告。"], "fu": [["😮‍💨", "疲累", "請針對你剛才的回答，說明怎麼把它用在一個人撐家的疲累與內疚，並給我一個這個星期做得到的具體小步驟。"], ["👧", "孩子", "請針對你剛才的回答，說明怎麼把它用在陪伴孩子與教養，並給我一個這個星期做得到的具體小步驟。"], ["💰", "經濟", "請針對你剛才的回答，說明怎麼把它用在經濟與時間的壓力，並給我一個這個星期做得到的具體小步驟。"], ["🤝", "求助", "請針對你剛才的回答，說明怎麼把它用在向弟兄姊妹或教會開口求助，並給我一個這個星期做得到的具體小步驟。"], ["🌤️", "盼望", "請針對你剛才的回答，說明怎麼把它用在在這個階段看見神的同在與盼望，並給我一個這個星期做得到的具體小步驟。"], ["🙏", "禱告", "請把你剛才說的重點，寫成一段我在忙碌中五分鐘內就能禱告完的短禱告。"]]}, "zs": {"sys": " 回答对象：单亲爸爸或妈妈（一个人撑起一个家）。请先接住他的辛苦：他常常很累、有愧疚、有孤单，也有经济、时间与教养的压力。口吻温暖、接纳、不评断，不追问过去的原因，不说「你应该再找个伴」，也不把单亲说成缺憾。引用神的心意：神是孤儿的父、寡妇的伸冤者（诗篇68:5），祂与我们同在。再给盼望与实际：每一个小步骤都要在忙碌中做得到（五分钟祷告、跟孩子的一个小仪式、开口向弟兄姐妹求助）。内容简短、段落要短。结尾给一个这个星期做得到的小步骤。若他提到被暴力对待、疲惫到撑不下去或想伤害自己，要温柔回应，并鼓励他立刻联络信任的人、教会同工或专业协助。", "write": "\n读者是单亲爸妈：口吻温暖、接纳、不评断，肯定他的辛苦；不要用表情符号。", "style": "风格：给单亲爸妈，题目贴近日常的忙碌、教养与盼望；口气温暖，解析一句话带出安慰。", "rw": ["您读完整卷《{nm}》了！", "一个人撑一个家还能坚持读经，真的不容易。神看见您的每一步，祂与您同在。"], "res": ["没关系，您已经很努力了，有空再读一遍就好。", "不错！在这么忙的日子里还记得这么多。", "太棒了！神的话正在托住您。"], "q": ["这段经文对一个人撑起一个家的我，有什么安慰？", "我常常觉得累，也觉得对孩子有亏欠，神怎么看？", "神怎么看顾孤儿和寡妇？这跟我有什么关系？", "经济压力很大，这段经文能给我什么？", "孩子在顶嘴、情绪很大，我该怎么办？", "我不知道怎么跟孩子说爸爸（或妈妈）不在身边的事。", "我真的很孤单，可以怎么向教会或弟兄姐妹开口求助？", "请帮我写一段五分钟内能祷告完的短祷告。"], "fu": [["😮‍💨", "疲累", "请针对你刚才的回答，说明怎么把它用在一个人撑家的疲累与内疚，并给我一个这个星期做得到的具体小步骤。"], ["👧", "孩子", "请针对你刚才的回答，说明怎么把它用在陪伴孩子与教养，并给我一个这个星期做得到的具体小步骤。"], ["💰", "经济", "请针对你刚才的回答，说明怎么把它用在经济与时间的压力，并给我一个这个星期做得到的具体小步骤。"], ["🤝", "求助", "请针对你刚才的回答，说明怎么把它用在向弟兄姐妹或教会开口求助，并给我一个这个星期做得到的具体小步骤。"], ["🌤️", "盼望", "请针对你刚才的回答，说明怎么把它用在在这个阶段看见神的同在与盼望，并给我一个这个星期做得到的具体小步骤。"], ["🙏", "祷告", "请把你刚才说的重点，写成一段我在忙碌中五分钟内就能祷告完的短祷告。"]]}, "en": {"sys": " Audience: a single parent (carrying a household alone). First receive their weariness: they are often exhausted, carry guilt and loneliness, and face pressure over money, time and raising children. Be warm, accepting and non-judging; do not ask why they are single, never say \"you should find a partner\", and never describe single parenting as a lack. Bring in God's heart: he is a father to the fatherless and a defender of widows (Psalm 68:5), and he is with us. Then give hope and practicality — every small step must be doable in a busy life (a five-minute prayer, one small ritual with the child, asking brothers and sisters for help). Keep it short, in short paragraphs. End with one step they can take this week. If they mention being abused, being too exhausted to go on, or wanting to harm themselves, answer gently and encourage them to contact someone they trust, a church worker or professional help right away.", "write": "\nThe reader is a single parent: warm, accepting, never judging; honour their effort. No emoji.", "style": "Style: for a single parent — questions close to everyday busyness, parenting and hope; a warm tone, with one sentence of comfort in the explanation.", "rw": ["You finished the whole book of {nm}!", "Keeping up Bible reading while carrying a family alone is not easy. God sees every step you take, and he is with you."], "res": ["That is all right — you have worked so hard. Read it again when you have time.", "Nice! You remember so much in such busy days.", "Wonderful! The Word is holding you up."], "q": ["What comfort does this passage give me as I carry a family alone?", "I am so tired and feel I owe my children more — how does God see me?", "How does God care for orphans and widows, and what does that mean for me?", "Money is very tight — what does this passage give me?", "My child talks back and has big emotions — what should I do?", "I do not know how to talk to my child about Dad (or Mom) not being around.", "I am really lonely — how can I ask the church or brothers and sisters for help?", "Please write me a short prayer I can pray in five minutes."], "fu": [["😮‍💨", "Weary", "Based on your answer, explain how to apply it to the weariness and guilt of carrying a family alone, and give me one concrete step I can take this week."], ["👧", "Child", "Based on your answer, explain how to apply it to being with my child and parenting, and give me one concrete step I can take this week."], ["💰", "Money", "Based on your answer, explain how to apply it to pressure over money and time, and give me one concrete step I can take this week."], ["🤝", "Help", "Based on your answer, explain how to apply it to asking brothers, sisters or the church for help, and give me one concrete step I can take this week."], ["🌤️", "Hope", "Based on your answer, explain how to apply it to seeing God's presence and hope in this season, and give me one concrete step I can take this week."], ["🙏", "Prayer", "Please turn the key point of your answer into a short prayer I can finish in five minutes in the middle of a busy day."]]}}, "single": {"zh": {"sys": " 回答對象：單身的人（可能未婚、離婚、喪偶，或正在等候；不要預設他想結婚或不想結婚）。請不要把單身說成缺憾、「預備期」或「還沒到的人生」，也不要用催婚的口氣。談在基督裡的身分已經完整、被愛；談孤單時怎麼與神、與朋友、與團契連結；談時間、金錢與恩賜的運用與使命；談等待中的信靠；談感情與婚姻的智慧，以及在情感與身體上的聖潔，態度要尊重、不論斷。口吻真誠、平等、輕鬆。結尾給一個這個星期可以做的小步驟。若他提到孤單到想傷害自己，要溫柔回應並鼓勵他立刻聯絡信任的人或專業協助。", "write": "\n讀者是單身朋友：口吻真誠、平等、輕鬆，不催婚、不把單身說成缺憾；不要用表情符號。", "style": "風格：給單身的朋友，題目貼近孤單、身分、等待、友誼與使命；口氣真誠平等，不催婚。", "rw": ["你讀完整卷《{nm}》了！", "一個人也能這樣堅持，在神面前，你的日子是完整而被愛的。"], "res": ["沒關係，慢慢來，再讀一遍就會更清楚。", "不錯喔！你把這一章的重點抓到了。", "太棒了！你很認真，神的話正在你裡面扎根。"], "q": ["單身的我，這段經文想對我說什麼？", "我覺得孤單，這段經文能給我什麼？", "在基督裡，我的身分和價值是什麼？", "等待的時候，要怎麼信靠神？", "感情的事，聖經給我什麼智慧？", "單身的時間和精力，可以怎麼為神所用？", "怎樣在教會和朋友中建立好的關係？", "請幫我寫一段單身者的簡短禱告。"], "fu": [["🫶", "孤單", "請針對你剛才的回答，說明怎麼把它用在孤單時怎麼與神、與朋友連結，並給我一個這個星期做得到的具體小步驟。"], ["💝", "身分", "請針對你剛才的回答，說明怎麼把它用在我在基督裡的身分與價值，並給我一個這個星期做得到的具體小步驟。"], ["⏳", "等待", "請針對你剛才的回答，說明怎麼把它用在等待中的信靠，並給我一個這個星期做得到的具體小步驟。"], ["💞", "感情", "請針對你剛才的回答，說明怎麼把它用在感情與交友的智慧，並給我一個這個星期做得到的具體小步驟。"], ["🎯", "使命", "請針對你剛才的回答，說明怎麼把它用在把時間與恩賜用在神的使命上，並給我一個這個星期做得到的具體小步驟。"], ["🙏", "禱告", "請把你剛才說的重點，寫成一段簡短、真誠的禱告，讓我可以拿來禱告。"]]}, "zs": {"sys": " 回答对象：单身的人（可能未婚、离婚、丧偶，或正在等候；不要预设他想结婚或不想结婚）。请不要把单身说成缺憾、「预备期」或「还没到的人生」，也不要用催婚的口气。谈在基督里的身分已经完整、被爱；谈孤单时怎么与神、与朋友、与团契连结；谈时间、金钱与恩赐的运用与使命；谈等待中的信靠；谈感情与婚姻的智慧，以及在情感与身体上的圣洁，态度要尊重、不论断。口吻真诚、平等、轻松。结尾给一个这个星期可以做的小步骤。若他提到孤单到想伤害自己，要温柔回应并鼓励他立刻联络信任的人或专业协助。", "write": "\n读者是单身朋友：口吻真诚、平等、轻松，不催婚、不把单身说成缺憾；不要用表情符号。", "style": "风格：给单身的朋友，题目贴近孤单、身分、等待、友谊与使命；口气真诚平等，不催婚。", "rw": ["你读完整卷《{nm}》了！", "一个人也能这样坚持，在神面前，你的日子是完整而被爱的。"], "res": ["没关系，慢慢来，再读一遍就会更清楚。", "不错喔！你把这一章的重点抓到了。", "太棒了！你很认真，神的话正在你里面扎根。"], "q": ["单身的我，这段经文想对我说什么？", "我觉得孤单，这段经文能给我什么？", "在基督里，我的身分和价值是什么？", "等待的时候，要怎么信靠神？", "感情的事，圣经给我什么智慧？", "单身的时间和精力，可以怎么为神所用？", "怎样在教会和朋友中建立好的关系？", "请帮我写一段单身者的简短祷告。"], "fu": [["🫶", "孤单", "请针对你刚才的回答，说明怎么把它用在孤单时怎么与神、与朋友连结，并给我一个这个星期做得到的具体小步骤。"], ["💝", "身分", "请针对你刚才的回答，说明怎么把它用在我在基督里的身分与价值，并给我一个这个星期做得到的具体小步骤。"], ["⏳", "等待", "请针对你刚才的回答，说明怎么把它用在等待中的信靠，并给我一个这个星期做得到的具体小步骤。"], ["💞", "感情", "请针对你刚才的回答，说明怎么把它用在感情与交友的智慧，并给我一个这个星期做得到的具体小步骤。"], ["🎯", "使命", "请针对你刚才的回答，说明怎么把它用在把时间与恩赐用在神的使命上，并给我一个这个星期做得到的具体小步骤。"], ["🙏", "祷告", "请把你刚才说的重点，写成一段简短、真诚的祷告，让我可以拿来祷告。"]]}, "en": {"sys": " Audience: a single person (never married, divorced, widowed, or still waiting — do not assume they want or do not want to marry). Never describe being single as a lack, a \"preparation stage\" or \"life not yet begun\", and never use a pushy-about-marriage tone. Speak of an identity in Christ that is already whole and loved; of connecting with God, friends and fellowship in loneliness; of using time, money and gifts for a purpose; of trusting while waiting; of wisdom in dating and marriage and of purity in heart and body, respectfully and without judging. Be sincere, equal and light. End with one step they can take this week. If they mention loneliness so deep they want to harm themselves, answer gently and encourage them to contact someone they trust or professional help right away.", "write": "\nThe reader is single: sincere, equal and relaxed; never pushing marriage or treating singleness as a lack. No emoji.", "style": "Style: for single friends — questions about loneliness, identity, waiting, friendship and purpose; a sincere, equal tone, never pushing marriage.", "rw": ["You finished the whole book of {nm}!", "You kept going on your own — and before God your days are whole and loved."], "res": ["That is okay — take your time; another read will make it clearer.", "Nice! You have caught the main points of this chapter.", "Excellent! You are diligent, and the Word is taking root in you."], "q": ["As a single person, what does this passage say to me?", "I feel lonely — what does this passage give me?", "Who am I in Christ, and what am I worth?", "How do I trust God while I wait?", "What wisdom does the Bible give about relationships?", "How can my time and energy as a single person be used for God?", "How do I build good relationships in church and with friends?", "Please write me a short prayer for a single person."], "fu": [["🫶", "Loneliness", "Based on your answer, explain how to apply it to connecting with God and friends when I feel lonely, and give me one concrete step I can take this week."], ["💝", "Identity", "Based on your answer, explain how to apply it to my identity and worth in Christ, and give me one concrete step I can take this week."], ["⏳", "Waiting", "Based on your answer, explain how to apply it to trusting God while I wait, and give me one concrete step I can take this week."], ["💞", "Relationships", "Based on your answer, explain how to apply it to wisdom in dating and friendship, and give me one concrete step I can take this week."], ["🎯", "Purpose", "Based on your answer, explain how to apply it to using my time and gifts for God's purposes, and give me one concrete step I can take this week."], ["🙏", "Prayer", "Please turn the key point of your answer into a short, sincere prayer I can pray."]]}}, "parent": {"zh": {"sys": " 回答對象：正在養育孩子的父母（孩子可能從嬰幼兒到成年）。請站在父母的位置：他們常常疲累、擔心孩子、也常常內疚。口吻溫暖、貼近生活、不評斷；承認每個孩子與每個家庭都不同。談陪伴與榜樣、管教與恩典的平衡、親子溝通（怎麼聽、怎麼說）、為孩子禱告、夫妻同心、面對自己的軟弱與失敗；可用日常場景當比喻（吃飯、功課、手機、睡前）。結尾給一個這個星期可以做的具體小步驟（一句話、一個擁抱、一段睡前禱告）。若提到孩子遭受傷害、家庭暴力或孩子有自傷的念頭，要溫柔回應並鼓勵立刻尋求專業協助與信任的人。", "write": "\n讀者是正在養育孩子的父母：口吻溫暖、貼近生活、不評斷；不要用表情符號。", "style": "風格：給養育孩子的父母，題目貼近親子溝通、管教、陪伴與為孩子禱告；口氣溫暖，解析一句話帶出提醒。", "rw": ["您讀完整卷《{nm}》了！", "在養育孩子的忙碌中還能一天一天讀經，這就是給孩子最好的榜樣。"], "res": ["沒關係，慢慢來，有空再讀一遍就會更清楚。", "不錯！這一章的重點您已經抓到了。", "太棒了！神的話正在您的家裡扎根。"], "q": ["這段經文對養育孩子的我有什麼提醒？", "孩子不聽話、情緒很大，我該怎麼回應？", "管教和恩典要怎麼拿捏？", "怎麼跟青春期的孩子好好說話？", "我常常對孩子發脾氣，事後很內疚怎麼辦？", "怎麼帶孩子認識神，而不只是去教會？", "夫妻在教養上意見不同，這段經文怎麼說？", "請幫我寫一段為孩子祝福的短禱告。"], "fu": [["🗣️", "溝通", "請針對你剛才的回答，說明怎麼把它用在跟孩子好好溝通（怎麼聽、怎麼說），並給我一個這個星期做得到的具體小步驟。"], ["⚖️", "管教", "請針對你剛才的回答，說明怎麼把它用在管教與恩典的平衡，並給我一個這個星期做得到的具體小步驟。"], ["😔", "內疚", "請針對你剛才的回答，說明怎麼把它用在對孩子發脾氣或覺得虧欠的內疚，並給我一個這個星期做得到的具體小步驟。"], ["💑", "夫妻", "請針對你剛才的回答，說明怎麼把它用在夫妻在教養上同心，並給我一個這個星期做得到的具體小步驟。"], ["📖", "信仰", "請針對你剛才的回答，說明怎麼把它用在帶孩子認識神、一起親近神，並給我一個這個星期做得到的具體小步驟。"], ["🙏", "禱告", "請把你剛才說的重點，寫成一段我可以為孩子祝福的短禱告。"]]}, "zs": {"sys": " 回答对象：正在养育孩子的父母（孩子可能从婴幼儿到成年）。请站在父母的位置：他们常常疲累、担心孩子、也常常内疚。口吻温暖、贴近生活、不评断；承认每个孩子与每个家庭都不同。谈陪伴与榜样、管教与恩典的平衡、亲子沟通（怎么听、怎么说）、为孩子祷告、夫妻同心、面对自己的软弱与失败；可用日常场景当比喻（吃饭、功课、手机、睡前）。结尾给一个这个星期可以做的具体小步骤（一句话、一个拥抱、一段睡前祷告）。若提到孩子遭受伤害、家庭暴力或孩子有自伤的念头，要温柔回应并鼓励立刻寻求专业协助与信任的人。", "write": "\n读者是正在养育孩子的父母：口吻温暖、贴近生活、不评断；不要用表情符号。", "style": "风格：给养育孩子的父母，题目贴近亲子沟通、管教、陪伴与为孩子祷告；口气温暖，解析一句话带出提醒。", "rw": ["您读完整卷《{nm}》了！", "在养育孩子的忙碌中还能一天一天读经，这就是给孩子最好的榜样。"], "res": ["没关系，慢慢来，有空再读一遍就会更清楚。", "不错！这一章的重点您已经抓到了。", "太棒了！神的话正在您的家里扎根。"], "q": ["这段经文对养育孩子的我有什么提醒？", "孩子不听话、情绪很大，我该怎么回应？", "管教和恩典要怎么拿捏？", "怎么跟青春期的孩子好好说话？", "我常常对孩子发脾气，事后很内疚怎么办？", "怎么带孩子认识神，而不只是去教会？", "夫妻在教养上意见不同，这段经文怎么说？", "请帮我写一段为孩子祝福的短祷告。"], "fu": [["🗣️", "沟通", "请针对你刚才的回答，说明怎么把它用在跟孩子好好沟通（怎么听、怎么说），并给我一个这个星期做得到的具体小步骤。"], ["⚖️", "管教", "请针对你刚才的回答，说明怎么把它用在管教与恩典的平衡，并给我一个这个星期做得到的具体小步骤。"], ["😔", "内疚", "请针对你刚才的回答，说明怎么把它用在对孩子发脾气或觉得亏欠的内疚，并给我一个这个星期做得到的具体小步骤。"], ["💑", "夫妻", "请针对你刚才的回答，说明怎么把它用在夫妻在教养上同心，并给我一个这个星期做得到的具体小步骤。"], ["📖", "信仰", "请针对你刚才的回答，说明怎么把它用在带孩子认识神、一起亲近神，并给我一个这个星期做得到的具体小步骤。"], ["🙏", "祷告", "请把你刚才说的重点，写成一段我可以为孩子祝福的短祷告。"]]}, "en": {"sys": " Audience: a parent raising children (from babies to adult children). Stand in the parent's shoes: they are often tired, worried about their children, and often feel guilty. Be warm, down-to-earth and non-judging; acknowledge that every child and every family is different. Speak of presence and example, balancing discipline and grace, parent–child communication (how to listen, how to speak), praying for children, husband and wife standing together, and facing one's own weakness and failure; use everyday scenes as pictures (mealtime, homework, phones, bedtime). End with one concrete step for this week (one sentence, a hug, a bedtime prayer). If a child is being harmed, there is domestic violence, or the child has thoughts of self-harm, answer gently and encourage seeking professional help and a trusted person right away.", "write": "\nThe reader is a parent raising children: warm, down-to-earth, never judging. No emoji.", "style": "Style: for parents — questions about communicating with children, discipline, presence and praying for them; a warm tone, with one sentence of reminder in the explanation.", "rw": ["You finished the whole book of {nm}!", "Reading Scripture day by day in the busyness of raising children — that is the best example you can give them."], "res": ["That is okay — take it slowly; read it again when you can.", "Nice! You have caught the main points of this chapter.", "Wonderful! The Word is taking root in your home."], "q": ["What does this passage remind me of as a parent?", "My child will not listen and has big emotions — how should I respond?", "How do I balance discipline and grace?", "How do I talk well with a teenager?", "I often lose my temper with my child and feel guilty afterwards — what now?", "How do I lead my child to know God, not just go to church?", "My spouse and I disagree on parenting — what does this passage say?", "Please write me a short prayer of blessing for my child."], "fu": [["🗣️", "Talking", "Based on your answer, explain how to apply it to communicating well with my child (how to listen, how to speak), and give me one concrete step I can take this week."], ["⚖️", "Discipline", "Based on your answer, explain how to apply it to balancing discipline and grace, and give me one concrete step I can take this week."], ["😔", "Guilt", "Based on your answer, explain how to apply it to the guilt of losing my temper or feeling I owe my child more, and give me one concrete step I can take this week."], ["💑", "Spouse", "Based on your answer, explain how to apply it to husband and wife being united in parenting, and give me one concrete step I can take this week."], ["📖", "Faith", "Based on your answer, explain how to apply it to leading my child to know God and drawing near to him together, and give me one concrete step I can take this week."], ["🙏", "Prayer", "Please turn the key point of your answer into a short prayer of blessing I can pray over my child."]]}}};
+const A2 = () => { const o = AUD2[state.audience]; return o ? (o[state.lang] || o.zh) : null; };
 const AUD_NAME = () => ({
   adult: L3('成人', '成人', 'Adult'),
   teen : L3('青少年', '青少年', 'Teen'),
   kid  : L3('兒童', '儿童', 'Child'),
-  seeker: L3('慕道友', '慕道友', 'Seeker')
+  seeker: L3('慕道友', '慕道友', 'Seeker'),
+  elder: L3('長輩', '长辈', 'Elder'),
+  single_parent: L3('單親', '单亲', 'Single parent'),
+  single: L3('單身', '单身', 'Single'),
+  parent: L3('父母', '父母', 'Parent')
 });
 const AUD_HINT = () => ({
   adult: L3('有深度，貼近工作、家庭與關係', '有深度，贴近工作、家庭与关系', 'Thoughtful, with depth for work, family and relationships'),
   teen : L3('幽默風趣、不說教，用你的世界來比喻', '幽默风趣、不说教，用你的世界来比喻', 'Funny and real — no lecturing, pictures from your world'),
   kid  : L3('非常簡單好懂，像在聽故事', '非常简单好懂，像在听故事', 'Super simple, like a story'),
-  seeker: L3('還沒信主也聽得懂，不說教，給實際的幫助', '还没信主也听得懂，不说教，给实际的帮助', 'Plain words for someone exploring faith — no pressure, practical help')
+  seeker: L3('還沒信主也聽得懂，不說教，給實際的幫助', '还没信主也听得懂，不说教，给实际的帮助', 'Plain words for someone exploring faith — no pressure, practical help'),
+  elder: L3('尊敬溫和、慢慢說，句子清楚好懂', '尊敬温和、慢慢说，句子清楚好懂', 'Respectful, gentle and unhurried, in clear words'),
+  single_parent: L3('先接住你的辛苦，給做得到的小步驟與盼望', '先接住你的辛苦，给做得到的小步骤与盼望', 'Hear your weariness first — small doable steps and hope'),
+  single: L3('真誠平等，不催婚，談身分、等待與使命', '真诚平等，不催婚，谈身分、等待与使命', 'Sincere and equal — no pressure about marriage; identity, waiting and purpose'),
+  parent: L3('貼近養兒育女的日常：溝通、管教、陪伴與禱告', '贴近养儿育女的日常：沟通、管教、陪伴与祷告', 'Close to raising children: talking, discipline, presence and prayer')
 });
 const AUD_SYS = () => {
   const a = state.audience;
   if (a === 'seeker') return SK_SYS();
+  { const x2 = A2(); if (x2) return x2.sys; }
   if (isEN()) return {
     adult:
       ' Audience: an adult. Speak with a mature, steady and warm voice. You may go a little deeper — note the context and the meaning of key words — and connect the passage to work, marriage, parenting, relationships and spiritual battle. Close with one concrete step the reader can practise this week.',
@@ -4806,6 +4837,7 @@ const QBANK_AUD = {
 };
 const qbankNow = () => {
   const lg = state.lang;
+  { const x2 = A2(); if (x2) return x2.q; }
   const a = QBANK_AUD[state.audience];
   return (a && (a[lg] || a.zh)) || QBANK[lg] || QBANK.zh;
 };
@@ -4964,6 +4996,7 @@ function chapPlain(chap){
 const PL_STYLE = () => {
   const a = state.audience;
   if (a === 'seeker') return SK_STYLE();
+  { const x2 = A2(); if (x2) return x2.style; }
   if (isEN()) return {
     adult:'Style: steady and clear; one or two questions should bring out a life application.',
     teen :'Style: the questions and explanations are funny and witty, like friendly banter; the options may be playful, but the correct answer must be unambiguous, and never joke about God or Scripture itself.',
@@ -5191,6 +5224,7 @@ function plAudPicker(v){
 function plResultMsg(tier){
   const a = state.audience;
   if (a === 'seeker') return SK_RES()[tier];
+  { const x2 = A2(); if (x2) return x2.res[tier]; }
   const M = {
     adult:[L3('再讀一遍這章，細細品味，下次會更好。', '再读一遍这章，细细品味，下次会更好。', 'Read the chapter once more, slowly — next time will be better.'),
            L3('不錯！這章的信息已經進到你裡面了。', '不错！这章的信息已经进到你里面了。', 'Well done — this chapter is taking root in you.'),
@@ -6374,6 +6408,78 @@ function fadeOutStop(g, ac, sec){
 function recStopNow(){
   if (!(mr && mr.state === 'recording')) return;
   if (recFading || !curFade) mr.stop(); else curFade();
+}
+
+/* ================================================================ v2.13.0 音樂卡片背景製作
+   配上音樂做卡片影片要等好幾分鐘（整首更久），不必盯著畫面：
+   ・錄製是全域的，離開美圖頁（去讀經、問小智…）不會中斷，畫面下方有一條進度列，點一下回到美圖頁。
+   ・做好時：人還在美圖頁 → 照舊跳預覽；人已離開（或 App 在背景）→ 自動存進「我的作品」，
+     跳出提示、震動，有允許通知的話再發系統通知。
+   ・畫面在背景時用計時器補畫，並要求螢幕不休眠；iPhone 離開 App 或鎖屏可能被系統暫停，所以提示「請留在 App 裡」。 */
+let bgJob = null, mjDoneItem = null;
+function mjAsk(){ try{ if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission(); }catch(e){} }
+function mjCss(){
+  if ($('#mjcss')) return;
+  const s = document.createElement('style'); s.id = 'mjcss';
+  s.textContent = '.mjpill{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(128px + env(safe-area-inset-bottom));z-index:88;'
+    + 'background:var(--accent,#123F92);color:#fff;padding:9px 16px;border-radius:999px;font-weight:600;font-size:13.5px;'
+    + 'box-shadow:0 6px 20px rgba(0,0,0,.25);white-space:nowrap;max-width:94vw;overflow:hidden;text-overflow:ellipsis;cursor:pointer}'
+    + '.mjpill.done{background:#2E7D4F}';
+  document.head.appendChild(s);
+}
+const mmss = n => String(Math.floor(n / 60)).padStart(2, '0') + ':' + String(n % 60).padStart(2, '0');
+const MJ_FADE = () => L3('音樂淡出中…（再按一次立即停止）', '音乐淡出中…（再按一次立即停止）', 'Music fading out… (tap again to stop now)');
+function mjPill(){
+  let d = $('#mjpill');
+  const running = !!(bgJob && mr && mr.state === 'recording' && curTab() !== 'studio');
+  const done = !running && !!mjDoneItem;
+  if (!running && !done){ if (d) d.remove(); return; }
+  mjCss();
+  if (!d){ d = document.createElement('div'); d.id = 'mjpill'; d.onclick = mjPillGo; document.body.appendChild(d); }
+  if (running){
+    d.className = 'mjpill';
+    d.textContent = '🎵 ' + (recFading ? L3('音樂淡出中…', '音乐淡出中…', 'Fading out…') : t().mcing) + ' ' + mmss(recSec) + '　›';
+  } else {
+    d.className = 'mjpill done';
+    d.textContent = '✓ ' + L3('音樂卡片完成了，已存入「我的作品」，點此查看', '音乐卡片完成了，已存入“我的作品”，点此查看', 'Your music card is ready and saved to My works — tap to view');
+  }
+}
+function mjPillGo(){
+  const it = (bgJob && bgJob.item) || mjDoneItem;
+  if (it) studioItem = it;
+  mjDoneItem = null; mjPill(); go('#/studio');
+}
+/* 回到美圖頁時，把「製作中」的狀態與按鈕接回來 */
+function mjRestore(){
+  if (!(bgJob && mr && mr.state === 'recording')) return;
+  const st = $('#recSt');
+  if (st) st.innerHTML = '<span class="recdot"></span>' + (recFading ? MJ_FADE() : t().mcing + '　♪');
+  const tm = $('#recTm'); if (tm) tm.textContent = mmss(recSec);
+  const bt = $('#mcBtn'); if (bt){ bt.textContent = t().recStop; bt.classList.add('danger'); }
+}
+function mjNotify(ok){
+  const title = L3('音樂卡片完成了 🎵', '音乐卡片完成了 🎵', 'Your music card is ready 🎵');
+  const body = ok ? L3('已存進「我的作品」，點一下回來看看。', '已存进“我的作品”，点一下回来看看。', 'Saved to My works — tap to take a look.')
+                  : L3('存檔失敗，請回到 App 看一下。', '存档失败，请回到 App 看一下。', 'Saving failed — please open the app.');
+  try{ if (navigator.vibrate) navigator.vibrate([120, 80, 120]); }catch(e){}
+  if (document.hidden && 'Notification' in window && Notification.permission === 'granted'){
+    try{
+      if (swReg && swReg.showNotification) swReg.showNotification(title, { body, icon:'icon-192.png', badge:'icon-96.png', tag:'mjob' });
+      else new Notification(title, { body, icon:'icon-192.png' });
+    }catch(e){}
+  }
+}
+async function mjFinish(blob, type, item){
+  const away = curTab() !== 'studio' || document.hidden;
+  bgJob = null;
+  if (!away){ mjPill(); await finishRec(blob, type, 'video'); return; }
+  mr = null;
+  const dur = recSec;
+  try{ blob = await fixVideoBlob(blob, type); }catch(e){ console.error('fix', e); }
+  const ok = await saveWork(blob, blob.type || type, 'video', dur, item);
+  mjDoneItem = ok ? item : null;
+  mjPill();
+  mjNotify(ok);
 }
 
 /* ================================================================ 自動更新

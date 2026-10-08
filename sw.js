@@ -1,8 +1,8 @@
 /* 321互動聖經 — Service Worker
    每次改動內容或程式，務必把 VERSION 往上加（也要同步 app.js 的 VERSION 與 version.json），
    否則已安裝的使用者不會看到更新。 */
-const VERSION = 'ib-v2.12.0';
-const VER = 'v2.12.0';
+const VERSION = 'ib-v2.13.0';
+const VER = 'v2.13.0';
 
 const SHELL = [
   './', './index.html', './app.js', './manifest.json', './toc.json', './plans.json', './cover.jpg',
@@ -77,4 +77,13 @@ self.addEventListener('fetch', e => {
       return res;
     }).catch(() => caches.match(key).then(hit => hit || caches.match('./index.html')))
   );
+});
+
+/* 音樂卡片做好的通知：點一下回到 App */
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  e.waitUntil(self.clients.matchAll({ type:'window', includeUncontrolled:true }).then(cs => {
+    for (const c of cs){ if ('focus' in c) return c.focus(); }
+    return self.clients.openWindow('./');
+  }));
 });
