@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.16.2';
+const VERSION = 'v2.17.0';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -2321,6 +2321,58 @@ const STK_POS    = [['bl',['左下','左下','Bottom left']],['bc',['正下','�
                     ['tl',['左上','左上','Top left']],['tr',['右上','右上','Top right']]];
 const STK_SHAPES = [['p',['直式','直式','Portrait']],['w',['橫式 16:9','横式 16:9','Landscape 16:9']],['s',['方形','方形','Square']]];
 const stkRatio = () => stkShape === 'w' ? 0.72 : (stkShape === 's' ? 1.06 : 1.12);
+/* ---- v2.17.0 內建風景背景：清單在 bg.json，圖檔放根目錄或 bg/ 都可以 ---- */
+let bgList = null;
+async function bgLoadList(){
+  if (bgList) return bgList;
+  try{
+    const r = await fetch('bg.json?v=' + VERSION);
+    const d = r.ok ? await r.json() : {};
+    bgList = (d && Array.isArray(d.list)) ? d.list : [];
+  }catch(e){ bgList = []; }
+  return bgList;
+}
+const bgName = b => (isEN() ? (b.ne || b.n) : (isZS() ? (b.ns || b.n) : b.n)) || '';
+function bgImgLoad(file){
+  return new Promise((res, rej) => {
+    const tryAt = (bases) => {
+      if (!bases.length) return rej(new Error('missing'));
+      const im = new Image();
+      im.onload = () => res(im);
+      im.onerror = () => tryAt(bases.slice(1));
+      im.src = bases[0] + encodeURIComponent(file) + '?v=' + VERSION;
+    };
+    tryAt(['', 'bg/']);
+  });
+}
+async function fillBuiltins(){
+  const box = $('#pBuilt'); if (!box) return;
+  const list = await bgLoadList();
+  if (!list.length){ box.parentNode && (box.previousElementSibling.hidden = true); box.remove(); return; }
+  box.innerHTML = list.map((b, i) => `<button class="bgcell" data-i="${i}" title="${esc(bgName(b))}">
+      <img alt="" loading="lazy" src="${esc(b.t || b.f)}?v=${VERSION}" onerror="if(!this.dataset.r){this.dataset.r=1;this.src='bg/'+this.getAttribute('src')}else{this.closest('.bgcell').remove()}">
+      <span>${esc(bgName(b))}</span></button>`).join('');
+  $$('.bgcell', box).forEach(btn => btn.onclick = async () => {
+    const b = list[+btn.dataset.i]; if (!b) return;
+    btn.classList.add('on'); toast(L3('載入背景中…','载入背景中…','Loading…'), 4000);
+    try{
+      const im = await bgImgLoad(b.f);
+      if (!photoMode) photoMode = 'bg';
+      setPhoto(im, '');
+      await studioRefresh();
+    }catch(e){ btn.classList.remove('on'); toast(L3('這張背景還沒上傳到網站：','这张背景还没上传到网站：','This background is not uploaded yet: ') + b.f, 6000); }
+  });
+}
+function bgCss(){
+  if ($('#bgcss')) return;
+  const st = document.createElement('style'); st.id = 'bgcss';
+  st.textContent = '.bgstrip{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 8px;-webkit-overflow-scrolling:touch}'
+    + '.bgcell{flex:0 0 auto;width:64px;border:2px solid transparent;border-radius:10px;padding:0;background:none;cursor:pointer;text-align:center}'
+    + '.bgcell img{display:block;width:60px;height:96px;object-fit:cover;border-radius:8px}'
+    + '.bgcell span{display:block;font-size:10.5px;line-height:1.3;margin-top:3px;color:var(--muted,#6b6455);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
+    + '.bgcell.on{border-color:#A9762F}';
+  document.head.appendChild(st);
+}
 function pickPhoto(inp){
   const f = inp && inp.files && inp.files[0]; if (!f) return;
   const rd = new FileReader();
@@ -3679,6 +3731,8 @@ async function viewStudio(v){
       const cur = isStk ? stkImg : photoImg, by = isStk ? stkBy : photoBy;
       const mark = (n, on) => on ? n.map(x => x + ' ✓') : n;
       return `${chips('pMode', [['bg', mark(L.photoBg, !!photoImg)], ['sticker', mark(L.photoStk, !!stkImg)]], isStk ? 'sticker' : 'bg', 'm')}
+      <div class="muted" style="font-size:12px;margin:12px 0 4px">${esc(L3('內建風景（點一下就套用）','内建风景（点一下就套用）','Built-in scenery (tap to use)'))}</div>
+      <div class="bgstrip" id="pBuilt"></div>
       ${cur ? `
       ${isStk ? `
         <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.stkShape)}</div>
@@ -3781,6 +3835,7 @@ async function viewStudio(v){
     studioRefresh(); };
   const pub = $('#pUseBg'); if (pub) pub.onclick = () => { stkImg = photoImg; stkBy = photoBy; photoImg = null; photoBy = ''; studioRefresh(); };
   const pl2 = $('#pLib'); if (pl2) pl2.onclick = openPexels;
+  bgCss(); fillBuiltins();
   const bd = $('#bDel'); if (bd) bd.onclick = () => { bgmBlob = null; bgmName = ''; bgmCredit = ''; studioRefresh(); };
   const blb = $('#bLib'); if (blb) blb.onclick = openHymns;
   ['pNew','pRe'].forEach(id => { const e = $('#' + id); if (e) e.onchange = () => pickPhoto(e); });

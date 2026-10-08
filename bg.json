@@ -1,0 +1,219 @@
+{
+ "_說明": [
+  "美圖「內建風景」背景清單。f＝大圖檔名，t＝縮圖檔名，n／ns／ne＝繁／簡／英名稱。",
+  "圖檔放在網站根目錄或 bg/ 資料夾都可以，App 兩邊都會找。",
+  "要加新背景：上傳 bgNN.jpg 與 bgNNs.jpg，再在這裡加一筆，不用改程式。"
+ ],
+ "list": [
+  {
+   "f": "bg01.jpg",
+   "t": "bg01s.jpg",
+   "n": "雪山瀑布",
+   "ns": "雪山瀑布",
+   "ne": "Mountain Falls"
+  },
+  {
+   "f": "bg02.jpg",
+   "t": "bg02s.jpg",
+   "n": "海灣夕照",
+   "ns": "海湾夕照",
+   "ne": "Sunset Bay"
+  },
+  {
+   "f": "bg03.jpg",
+   "t": "bg03s.jpg",
+   "n": "秋楓溪流",
+   "ns": "秋枫溪流",
+   "ne": "Autumn Stream"
+  },
+  {
+   "f": "bg04.jpg",
+   "t": "bg04s.jpg",
+   "n": "森林晨光",
+   "ns": "森林晨光",
+   "ne": "Forest Light"
+  },
+  {
+   "f": "bg05.jpg",
+   "t": "bg05s.jpg",
+   "n": "雪山湖影",
+   "ns": "雪山湖影",
+   "ne": "Alpine Lake"
+  },
+  {
+   "f": "bg06.jpg",
+   "t": "bg06s.jpg",
+   "n": "櫻花溪畔",
+   "ns": "樱花溪畔",
+   "ne": "Cherry Blossom Brook"
+  },
+  {
+   "f": "bg07.jpg",
+   "t": "bg07s.jpg",
+   "n": "薰衣草夕陽",
+   "ns": "薰衣草夕阳",
+   "ne": "Lavender Sunset"
+  },
+  {
+   "f": "bg08.jpg",
+   "t": "bg08s.jpg",
+   "n": "雲海梯田",
+   "ns": "云海梯田",
+   "ne": "Terraced Fields"
+  },
+  {
+   "f": "bg09.jpg",
+   "t": "bg09s.jpg",
+   "n": "金色麥田",
+   "ns": "金色麦田",
+   "ne": "Golden Wheat"
+  },
+  {
+   "f": "bg10.jpg",
+   "t": "bg10s.jpg",
+   "n": "高山溪谷",
+   "ns": "高山溪谷",
+   "ne": "Alpine Meadow"
+  },
+  {
+   "f": "bg11.jpg",
+   "t": "bg11s.jpg",
+   "n": "海蝕拱門",
+   "ns": "海蚀拱门",
+   "ne": "Sea Arch"
+  },
+  {
+   "f": "bg12.jpg",
+   "t": "bg12s.jpg",
+   "n": "峽灣瀑布",
+   "ns": "峡湾瀑布",
+   "ne": "Fjord Falls"
+  },
+  {
+   "f": "bg13.jpg",
+   "t": "bg13s.jpg",
+   "n": "椰林海灘",
+   "ns": "椰林海滩",
+   "ne": "Palm Beach"
+  },
+  {
+   "f": "bg14.jpg",
+   "t": "bg14s.jpg",
+   "n": "沙丘日出",
+   "ns": "沙丘日出",
+   "ne": "Desert Dunes"
+  },
+  {
+   "f": "bg15.jpg",
+   "t": "bg15s.jpg",
+   "n": "峽谷長河",
+   "ns": "峡谷长河",
+   "ne": "Canyon River"
+  },
+  {
+   "f": "bg16.jpg",
+   "t": "bg16s.jpg",
+   "n": "銀河星空",
+   "ns": "银河星空",
+   "ne": "Milky Way"
+  },
+  {
+   "f": "bg17.jpg",
+   "t": "bg17s.jpg",
+   "n": "極光冰湖",
+   "ns": "极光冰湖",
+   "ne": "Northern Lights"
+  },
+  {
+   "f": "bg18.jpg",
+   "t": "bg18s.jpg",
+   "n": "雪林溪澗",
+   "ns": "雪林溪涧",
+   "ne": "Winter Stream"
+  },
+  {
+   "f": "bg19.jpg",
+   "t": "bg19s.jpg",
+   "n": "竹林小徑",
+   "ns": "竹林小径",
+   "ne": "Bamboo Path"
+  },
+  {
+   "f": "bg20.jpg",
+   "t": "bg20s.jpg",
+   "n": "火山湖晨曦",
+   "ns": "火山湖晨曦",
+   "ne": "Crater Lake"
+  },
+  {
+   "f": "bg21.jpg",
+   "t": "bg21s.jpg",
+   "n": "冰川洞穴",
+   "ns": "冰川洞穴",
+   "ne": "Ice Cave"
+  },
+  {
+   "f": "bg22.jpg",
+   "t": "bg22s.jpg",
+   "n": "冰山晚霞",
+   "ns": "冰山晚霞",
+   "ne": "Iceberg Glow"
+  },
+  {
+   "f": "bg23.jpg",
+   "t": "bg23s.jpg",
+   "n": "雨林瀑布",
+   "ns": "雨林瀑布",
+   "ne": "Rainforest Falls"
+  },
+  {
+   "f": "bg24.jpg",
+   "t": "bg24s.jpg",
+   "n": "羚羊峽谷",
+   "ns": "羚羊峡谷",
+   "ne": "Slot Canyon"
+  },
+  {
+   "f": "bg25.jpg",
+   "t": "bg25s.jpg",
+   "n": "雲海日出",
+   "ns": "云海日出",
+   "ne": "Sunrise Above Clouds"
+  },
+  {
+   "f": "bg26.jpg",
+   "t": "bg26s.jpg",
+   "n": "紅樹林水道",
+   "ns": "红树林水道",
+   "ne": "Mangrove Lagoon"
+  },
+  {
+   "f": "bg27.jpg",
+   "t": "bg27s.jpg",
+   "n": "杜鵑山嶺",
+   "ns": "杜鹃山岭",
+   "ne": "Rhododendron Ridge"
+  },
+  {
+   "f": "bg28.jpg",
+   "t": "bg28s.jpg",
+   "n": "向日葵花海",
+   "ns": "向日葵花海",
+   "ne": "Sunflower Field"
+  },
+  {
+   "f": "bg29.jpg",
+   "t": "bg29s.jpg",
+   "n": "白樺湖畔",
+   "ns": "白桦湖畔",
+   "ne": "Birch Lakeside"
+  },
+  {
+   "f": "bg30.jpg",
+   "t": "bg30s.jpg",
+   "n": "晨霧濕地",
+   "ns": "晨雾湿地",
+   "ne": "Misty Marsh"
+  }
+ ]
+}
