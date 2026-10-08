@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.15.4';
+const VERSION = 'v2.16.0';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -106,6 +106,7 @@ const I18N = {
         photo:'加一張相片（選用）', photoPick:'從相簿選相片', photoSwap:'從相簿換一張', photoDel:'移除相片',
         photoBg:['作背景','作背景'], photoStk:['貼在卡片上','贴在卡片上'],
         photoHint:'可以當卡片背景，也可以像貼紙貼上去，大小與位置都能調。',
+        photoBgHint:'先選一張當卡片背景；之後可以再切到「貼在卡片上」加第二張。', photoStkHint:'背景之外，可以再貼一張相片在卡片上，底部署名會自動往上讓開。', photoUseBg:'把背景這張改貼在卡片上',
         photoBad:'這張相片讀不出來，換一張試試',
         stkShape:'相片形狀', stkSize:'相片大小', stkPos:'相片位置',
         bgm:'背景音樂（選用）', bgmPick:'從檔案選音樂', bgmSwap:'換一首', bgmDel:'移除音樂',
@@ -207,6 +208,7 @@ const I18N = {
         photo:'加一张相片（选用）', photoPick:'从相册选相片', photoSwap:'从相册换一张', photoDel:'移除相片',
         photoBg:['作背景','作背景'], photoStk:['贴在卡片上','贴在卡片上'],
         photoHint:'可以当卡片背景，也可以像贴纸贴上去，大小与位置都能调。',
+        photoBgHint:'先选一张当卡片背景；之后可以再切到“贴在卡片上”加第二张。', photoStkHint:'背景之外，可以再贴一张相片在卡片上，底部署名会自动往上让开。', photoUseBg:'把背景这张改贴在卡片上',
         photoBad:'这张相片读不出来，换一张试试',
         stkShape:'相片形状', stkSize:'相片大小', stkPos:'相片位置',
         bgm:'背景音乐（选用）', bgmPick:'从文件选音乐', bgmSwap:'换一首', bgmDel:'移除音乐',
@@ -310,6 +312,7 @@ const I18N = {
         photo:'Add a photo (optional)', photoPick:'Choose a photo', photoSwap:'Choose from album', photoDel:'Remove photo',
         photoBg:['As background','As background'], photoStk:['As a sticker','As a sticker'],
         photoHint:'Use it as the card background, or stick it on like a polaroid. Size and position are adjustable.',
+        photoBgHint:'Pick a background photo first; then switch to “As a sticker” to add a second one.', photoStkHint:'On top of the background you can stick a second photo on the card — the signature moves up to make room.', photoUseBg:'Move the background photo onto the card',
         photoBad:"That photo could not be read — try another one",
         stkShape:'Photo shape', stkSize:'Photo size', stkPos:'Photo position',
         bgm:'Background music (optional)', bgmPick:'Choose music', bgmSwap:'Change music', bgmDel:'Remove music',
@@ -1962,9 +1965,8 @@ async function pxLoad(photo){
       i.onerror = () => rej(new Error('decode'));
       i.src = obj;
     });
-    photoImg = im;
-    photoBy = photo.photographer || '';
     if (!photoMode) photoMode = 'bg';
+    setPhoto(im, photo.photographer || '');
     return true;
   }finally{ setTimeout(() => { try{ URL.revokeObjectURL(obj); }catch(_){} }, 30000); }
 }
@@ -2045,6 +2047,7 @@ const HYM_L = {
        e404a:'找不到 ', e404b:'（根目錄也找過了）　這個音檔還沒上傳到網站上',
        eNet:'連不到音檔（網路或離線）：', eEmpty:'　這個檔是空的，請重新上傳',
        eHtml:'　抓回來的不是音檔，是網頁（多半是 404 頁面）', again:'找到音檔了，請再按一次 ▶',
+       miss:'音檔還沒上傳到網站：',
        hint:'詩歌放在自己的網站上，錄影片時混得進去。下載與使用請遵守各詩歌的授權規定。' },
   zs:{ lib:'诗歌库', btn:'🎵 从诗歌库选', title:'诗歌库', ph:'找歌名…',
        loading:'载入中…', close:'关闭', all:'全部', play:'试听', stop:'停止',
@@ -2054,6 +2057,7 @@ const HYM_L = {
        e404a:'找不到 ', e404b:'（根目录也找过了）　这个音档还没上传到网站上',
        eNet:'连不到音档（网络或离线）：', eEmpty:'　这个档是空的，请重新上传',
        eHtml:'　抓回来的不是音档，是网页（多半是 404 页面）', again:'找到音档了，请再按一次 ▶',
+       miss:'音档还没上传到网站：',
        hint:'诗歌放在自己的网站上，录视频时混得进去。下载与使用请遵守各诗歌的授权规定。' },
   en:{ lib:'Hymn library', btn:'🎵 Pick a hymn', title:'Hymn library', ph:'Find a hymn…',
        loading:'Loading…', close:'Close', all:'All', play:'Preview', stop:'Stop',
@@ -2063,6 +2067,7 @@ const HYM_L = {
        e404a:'Not found: ', e404b:' (the site root was checked too) — this file has not been uploaded yet',
        eNet:'Cannot reach the audio file (offline?): ', eEmpty:' — the file is empty, please re-upload',
        eHtml:' — what came back is a web page, not audio (usually a 404 page)', again:'Found it — tap ▶ once more',
+       miss:'Not uploaded yet: ',
        hint:'Hymns are hosted on this site, so they mix into recordings properly. Please respect each hymn’s licence.' }
 };
 const hl_ = () => HYM_L[state.lang] || HYM_L.zh;
@@ -2091,20 +2096,24 @@ function hymnAudio(){
 /* 面板一打開就先確定音檔放在 music/ 還是根目錄，
    等到按下去才查就來不及了（查完手勢已經過期）。 */
 async function musicProbe(list){
-  if (musicBase !== null || !list || !list.length) return;
-  /* 只探第一首是不夠的：萬一那一首剛好還沒上傳，整份清單就都判成「找不到」，
-     連已經傳好的歌也跟著放不出來。所以從頭往下一首一首試，有一首通就算數
-     （HEAD 很輕，最多試十二首就停）。 */
-  const max = Math.min(list.length, 12);
-  for (let i = 0; i < max; i++){
-    const name = encodeURIComponent(list[i].f);
+  if (!list || !list.length) return;
+  /* v2.16.0：每一首各自探路（並行 HEAD），記在 songBase[檔名]。
+     以前只試前十二首、找到一邊就套用全部——結果 m01～m20 還沒上傳、
+     後面幾首又放在根目錄時，整份清單都判成「找不到」，一首也放不出來。
+     現在 music/ 與根目錄混放也沒關係，沒上傳的那幾首會清楚標示。 */
+  await Promise.all(list.map(async s => {
+    if (!s || !s.f || songBase[s.f] !== undefined) return;
+    const name = encodeURIComponent(s.f);
     for (const b of [MUSIC_DIR, '']){
       try{
-        const r = await fetch(b + name + '?v=' + VERSION, { method:'HEAD' });
-        if (r.ok){ musicBase = b; return; }
-      }catch(e){}
+        const r = await fetch(b + name + '?v=' + VERSION, { method:'HEAD', cache:'no-cache' });
+        if (r.ok && !/(^|,)\s*text\/html/.test(r.headers.get('content-type') || '')){
+          songBase[s.f] = b; if (musicBase === null) musicBase = b; return;
+        }
+      }catch(e){ return; }               /* 離線：不下結論，按的時候再查 */
     }
-  }
+    songBase[s.f] = false;
+  }));
 }
 
 
@@ -2126,9 +2135,11 @@ function hymnStopPrev(){
    掉在根目錄。與其叫人重傳，不如兩個地方都找——先找 music/，沒有就找根目錄，
    找到哪一邊就記起來，後面幾首不必再試。 */
 let musicBase = null;                      // null = 還沒試過
+const songBase = {};                       // 每首歌在哪裡：'music/'／''／false（沒上傳）
 async function hymnFetch(s){
   const name = encodeURIComponent(s.f);
-  const tries = (musicBase !== null) ? [musicBase] : [MUSIC_DIR, ''];
+  const sb = songBase[s.f];
+  const tries = (typeof sb === 'string') ? [sb] : [MUSIC_DIR, ''];
   let why = '';
   for (const b of tries){
     const path = b + name;
@@ -2140,7 +2151,7 @@ async function hymnFetch(s){
     const blob = await r.blob();
     if (!blob.size){ why = path + hl_().eEmpty; continue; }
     if (/(^|,)text\/html/.test(blob.type || '')){ why = path + hl_().eHtml; continue; }
-    musicBase = b;                          // 這一邊有，記下來
+    songBase[s.f] = b; if (musicBase === null) musicBase = b;   // 這一首在這一邊，記下來
     return blob;
   }
   throw new Error(why || hl_().bad);
@@ -2187,10 +2198,11 @@ function openHymns(){
     if (!list.length){ box.innerHTML = `<div class="empty">${esc(L.none)}</div>`; return; }
     box.innerHTML = list.map(function (s){
       const i = hymnList.indexOf(s);
-      return `<div class="hymnrow" data-i="${i}">
+      const miss = songBase[s.f] === false;
+      return `<div class="hymnrow${miss ? ' miss' : ''}" data-i="${i}"${miss ? ' style="opacity:.5"' : ''}>
         <button class="hymnplay" data-p="${i}">▶</button>
         <div class="meta"><div class="t">${esc(songName(s))}</div>
-        <div class="s">${esc([s.by, s.tag].filter(Boolean).join('　·　'))}</div></div>
+        <div class="s">${esc(miss ? L.miss + s.f : [s.by, s.tag].filter(Boolean).join('　·　'))}</div></div>
         <div class="chev">›</div></div>`;
     }).join('');
     $$('.hymnrow', box).forEach(row => {
@@ -2209,7 +2221,8 @@ function openHymns(){
         hymnStopPrev();
         if (playing) return;
         const a = hymnAudio();
-        const src = (musicBase !== null ? musicBase : MUSIC_DIR) + encodeURIComponent(s.f);
+        const sb = songBase[s.f];
+        const src = (typeof sb === 'string' ? sb : (musicBase !== null ? musicBase : MUSIC_DIR)) + encodeURIComponent(s.f);
         try{ if (a.src && a.src.indexOf('blob:') === 0) URL.revokeObjectURL(a.src); }catch(e){}
         a.onended = hymnStopPrev;
         a.onerror = null;
@@ -2290,6 +2303,13 @@ const cardFs = () => Math.min(1.8, Math.max(.85, +state.cardFs || 1));
 
 /* ---- 相片（作背景／貼在卡片上）---- */
 let photoImg = null, photoMode = 'bg', suppressSticker = false, selfieLayout = false;
+/* v2.16.0：背景與貼紙各一張，可以同時存在。photoImg/photoBy＝背景；stkImg/stkBy＝貼在卡片上。
+   photoMode 現在只代表「目前在編輯哪一張」，選相片時放進那一格。 */
+let stkImg = null, stkBy = '';
+function setPhoto(im, by){
+  if (photoMode === 'sticker'){ stkImg = im; stkBy = by || ''; }
+  else { photoImg = im; photoBy = by || ''; }
+}
 let stkSize = 0.30, stkPos = 'br', stkShape = 'p';
 const STK_SIZES  = [[0.22,['小張','小张']],[0.30,['中等','中等']],[0.38,['大張','大张']],
                     [0.46,['滿版','满版']],[0.62,['超大','超大']],[0.84,['整排','整排']]];
@@ -2302,7 +2322,7 @@ function pickPhoto(inp){
   const rd = new FileReader();
   rd.onload = () => {
     const im = new Image();
-    im.onload = () => { photoImg = im; photoBy = ''; if (!photoMode) photoMode = 'bg'; studioRefresh(); };
+    im.onload = () => { if (!photoMode) photoMode = 'bg'; setPhoto(im, ''); studioRefresh(); };
     im.onerror = () => toast(t().photoBad);
     im.src = rd.result;
   };
@@ -2495,7 +2515,7 @@ function drawVerseCard(cv, h, W, H){
   g.addColorStop(0, T.bg[0]); g.addColorStop(.55, T.bg[1]); g.addColorStop(1, T.bg[2]);
   ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
   /* 相片當背景時鋪上半透明遮罩，字才看得清楚 */
-  if (photoImg && photoMode === 'bg'){
+  if (photoImg){
     coverDraw(ctx, photoImg, 0, 0, W, H);
     const hx = T.bg[1].replace('#', '');
     const R0 = parseInt(hx.slice(0, 2), 16), G0 = parseInt(hx.slice(2, 4), 16), B0 = parseInt(hx.slice(4, 6), 16);
@@ -2537,7 +2557,7 @@ function drawVerseCard(cv, h, W, H){
   }
 
   /* 版位：經文＋領受垂直置中 */
-  const hasSticker = photoImg && photoMode === 'sticker' && !suppressSticker;
+  const hasSticker = stkImg && !suppressSticker;
   const stkBottom = hasSticker && stkPos !== 'tl' && stkPos !== 'tr';
   const liftRoom = stkBottom ? Math.round(W * stkSize * stkRatio()) + Math.round(30 * F) : 0;
   const topRoom = pad + Math.round((toName ? 176 : 100) * F), botRoom = pad + Math.round(70 * F) + liftRoom;
@@ -2622,7 +2642,7 @@ function drawVerseCard(cv, h, W, H){
     ctx.shadowColor = 'transparent';
     const iw2 = sw - fr * 2, ih2 = sh - fr - pb;
     ctx.save(); rr(ctx, -sw / 2 + fr, -sh / 2 + fr, iw2, ih2, Math.round(4 * F)); ctx.clip();
-    coverDraw(ctx, photoImg, -sw / 2 + fr, -sh / 2 + fr, iw2, ih2); ctx.restore();
+    coverDraw(ctx, stkImg, -sw / 2 + fr, -sh / 2 + fr, iw2, ih2); ctx.restore();
     ctx.restore();
   }
 }
@@ -3630,24 +3650,30 @@ async function viewStudio(v){
     <div class="muted" style="font-size:12px;margin-top:6px">${esc(L.cardFsHint)}</div>
 
     <div class="section-title">${esc(L.photo)}</div>
-    <div class="card">${photoImg ? `
-      ${chips('pMode', [['bg', L.photoBg], ['sticker', L.photoStk]], photoMode, 'm')}
-      ${photoMode === 'sticker' ? `
+    <div class="card">${(() => {
+      const isStk = photoMode === 'sticker';
+      const cur = isStk ? stkImg : photoImg, by = isStk ? stkBy : photoBy;
+      const mark = (n, on) => on ? n.map(x => x + ' ✓') : n;
+      return `${chips('pMode', [['bg', mark(L.photoBg, !!photoImg)], ['sticker', mark(L.photoStk, !!stkImg)]], isStk ? 'sticker' : 'bg', 'm')}
+      ${cur ? `
+      ${isStk ? `
         <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.stkShape)}</div>
         ${chips('pShape', STK_SHAPES, stkShape, 'v')}
         <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.stkSize)}</div>
         ${chips('pSize', STK_SIZES, stkSize, 'v')}
         <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.stkPos)}</div>
         ${chips('pPos', STK_POS, stkPos, 'v')}` : ''}
-      ${photoBy ? `<div class="muted" style="font-size:11.5px;margin-top:10px">${esc(pl().by + photoBy)}</div>` : ''}
+      ${by ? `<div class="muted" style="font-size:11.5px;margin-top:10px">${esc(pl().by + by)}</div>` : ''}
       <div class="hlsheet-acts2" style="margin-top:12px">
         <label class="btn sm" style="cursor:pointer">${esc(L.photoSwap)}<input type="file" accept="image/*" hidden id="pRe"></label>
         <button class="btn sm gold" id="pLib">${esc(pl().libBtn)}</button>
         <button class="btn sm danger" id="pDel">${esc(L.photoDel)}</button>
       </div>` : `
-      <button class="btn block gold" id="pLib">${esc(pl().libBtn)}</button>
+      <button class="btn block gold" id="pLib" style="margin-top:12px">${esc(pl().libBtn)}</button>
       <label class="btn block" style="cursor:pointer;margin-top:8px">${esc(L.photoPick)}<input type="file" accept="image/*" hidden id="pNew"></label>
-      <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.photoHint)}</div>`}
+      ${isStk && photoImg ? `<button class="btn block" id="pUseBg" style="margin-top:8px">${esc(L.photoUseBg)}</button>` : ''}
+      <div class="muted" style="font-size:12px;margin-top:8px">${esc(isStk ? L.photoStkHint : (stkImg ? L.photoHint : L.photoBgHint))}</div>`}`;
+    })()}
     </div>
 
     <div class="section-title">${esc(L.bgm)}</div>
@@ -3726,7 +3752,10 @@ async function viewStudio(v){
   bind('#mLen button', b => { mcLen = +b.dataset.v; studioRefresh(); });
   bind('#rBeauty button', b => { state.beauty = b.dataset.v === '1'; saveState(); studioRefresh(); });
   bind('#rMode button', b => setRecMode(b.dataset.s));
-  const pd = $('#pDel'); if (pd) pd.onclick = () => { photoImg = null; photoBy = ''; studioRefresh(); };
+  const pd = $('#pDel'); if (pd) pd.onclick = () => {
+    if (photoMode === 'sticker'){ stkImg = null; stkBy = ''; } else { photoImg = null; photoBy = ''; }
+    studioRefresh(); };
+  const pub = $('#pUseBg'); if (pub) pub.onclick = () => { stkImg = photoImg; stkBy = photoBy; photoImg = null; photoBy = ''; studioRefresh(); };
   const pl2 = $('#pLib'); if (pl2) pl2.onclick = openPexels;
   const bd = $('#bDel'); if (bd) bd.onclick = () => { bgmBlob = null; bgmName = ''; bgmCredit = ''; studioRefresh(); };
   const blb = $('#bLib'); if (blb) blb.onclick = openHymns;
