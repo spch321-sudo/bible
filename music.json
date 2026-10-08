@@ -8,7 +8,8 @@
   "改歌名或換檔名只要改這個檔，不用動程式。",
   "音檔一定要放自己的網站，不要直接連別人的網址：跨網域的音檔對方若沒開 CORS，",
   "錄出來的影片會「有畫面、沒聲音」。",
-  "下載與使用請遵守各詩歌的授權規定；要公開散布前先問過原出處。"
+  "下載與使用請遵守各詩歌的授權規定；要公開散布前先問過原出處。",
+  "bs／be＝簡體／英文出處，ts／te＝簡體／英文分類（沒填就用中文）。"
  ],
  "songs": [
   {
@@ -17,7 +18,11 @@
    "ns": "清晨日出",
    "ne": "Sunrise",
    "by": "321互動聖經 配樂",
-   "tag": "盼望"
+   "tag": "盼望",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "盼望",
+   "te": "Hope"
   },
   {
    "f": "m02.mp3",
@@ -25,7 +30,11 @@
    "ns": "盼望-清晨日出",
    "ne": "Hope - Sunrise",
    "by": "321互動聖經 配樂",
-   "tag": "盼望"
+   "tag": "盼望",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "盼望",
+   "te": "Hope"
   },
   {
    "f": "m03.mp3",
@@ -33,7 +42,11 @@
    "ns": "盼望(二)-创造、山川海洋",
    "ne": "Hope 2 - Creation, Mountains and Seas",
    "by": "321互動聖經 配樂",
-   "tag": "盼望"
+   "tag": "盼望",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "盼望",
+   "te": "Hope"
   },
   {
    "f": "m04.mp3",
@@ -41,7 +54,11 @@
    "ns": "盼望(三)-安静默想、祷告",
    "ne": "Hope 3 - Quiet Meditation and Prayer",
    "by": "321互動聖經 配樂",
-   "tag": "盼望"
+   "tag": "盼望",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "盼望",
+   "te": "Hope"
   },
   {
    "f": "m05.mp3",
@@ -49,7 +66,11 @@
    "ns": "盼望(四)-敬拜、荣耀",
    "ne": "Hope 4 - Worship and Glory",
    "by": "321互動聖經 配樂",
-   "tag": "盼望"
+   "tag": "盼望",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "盼望",
+   "te": "Hope"
   },
   {
    "f": "m06.mp3",
@@ -57,7 +78,11 @@
    "ns": "信心(一)-凭信心而行",
    "ne": "Faith 1 - Walk by Faith",
    "by": "321互動聖經 配樂",
-   "tag": "信心"
+   "tag": "信心",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "信心",
+   "te": "Faith"
   },
   {
    "f": "m07.mp3",
@@ -65,7 +90,11 @@
    "ns": "信心(二)-如芥菜种的信心",
    "ne": "Faith 2 - Faith like a Mustard Seed",
    "by": "321互動聖經 配樂",
-   "tag": "信心"
+   "tag": "信心",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "信心",
+   "te": "Faith"
   },
   {
    "f": "m08.mp3",
@@ -73,7 +102,11 @@
    "ns": "爱心(一)-神爱世人",
    "ne": "Love 1 - God So Loved the World",
    "by": "321互動聖經 配樂",
-   "tag": "愛心"
+   "tag": "愛心",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "爱心",
+   "te": "Love"
   },
   {
    "f": "m09.mp3",
@@ -81,7 +114,11 @@
    "ns": "爱心(二)-爱的极致，为我舍命",
    "ne": "Love 2 - The Greatest Love, He Laid Down His Life",
    "by": "321互動聖經 配樂",
-   "tag": "愛心"
+   "tag": "愛心",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "爱心",
+   "te": "Love"
   },
   {
    "f": "m10.mp3",
@@ -89,7 +126,11 @@
    "ns": "爱心(三)-爱的真谛",
    "ne": "Love 3 - What Love Is",
    "by": "321互動聖經 配樂",
-   "tag": "愛心"
+   "tag": "愛心",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "爱心",
+   "te": "Love"
   },
   {
    "f": "m11.mp3",
@@ -97,7 +138,11 @@
    "ns": "爱心(四)-彼此相爱",
    "ne": "Love 4 - Love One Another",
    "by": "321互動聖經 配樂",
-   "tag": "愛心"
+   "tag": "愛心",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "爱心",
+   "te": "Love"
   },
   {
    "f": "m12.mp3",
@@ -105,7 +150,11 @@
    "ns": "爱心(五)-爱能遮掩许多的罪",
    "ne": "Love 5 - Love Covers a Multitude of Sins",
    "by": "321互動聖經 配樂",
-   "tag": "愛心"
+   "tag": "愛心",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "爱心",
+   "te": "Love"
   },
   {
    "f": "m13.mp3",
@@ -113,7 +162,11 @@
    "ns": "祝福(一)-神赐福的应许",
    "ne": "Blessing 1 - God's Promise of Blessing",
    "by": "321互動聖經 配樂",
-   "tag": "祝福"
+   "tag": "祝福",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "祝福",
+   "te": "Blessing"
   },
   {
    "f": "m14.mp3",
@@ -121,7 +174,11 @@
    "ns": "祝福(二)-祭司的祝福",
    "ne": "Blessing 2 - The Priestly Blessing",
    "by": "321互動聖經 配樂",
-   "tag": "祝福"
+   "tag": "祝福",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "祝福",
+   "te": "Blessing"
   },
   {
    "f": "m15.mp3",
@@ -129,7 +186,11 @@
    "ns": "恩典(一)-因恩典得救",
    "ne": "Grace 1 - Saved by Grace",
    "by": "321互動聖經 配樂",
-   "tag": "恩典"
+   "tag": "恩典",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "恩典",
+   "te": "Grace"
   },
   {
    "f": "m16.mp3",
@@ -137,7 +198,11 @@
    "ns": "恩典(二)-十字架上的恩典",
    "ne": "Grace 2 - Grace at the Cross",
    "by": "321互動聖經 配樂",
-   "tag": "恩典"
+   "tag": "恩典",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "恩典",
+   "te": "Grace"
   },
   {
    "f": "m17.mp3",
@@ -145,7 +210,11 @@
    "ns": "平安(一)-基督所赐的平安",
    "ne": "Peace 1 - The Peace Christ Gives",
    "by": "321互動聖經 配樂",
-   "tag": "平安"
+   "tag": "平安",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "平安",
+   "te": "Peace"
   },
   {
    "f": "m18.mp3",
@@ -153,7 +222,11 @@
    "ns": "平安(二)-风浪中的平安",
    "ne": "Peace 2 - Peace in the Storm",
    "by": "321互動聖經 配樂",
-   "tag": "平安"
+   "tag": "平安",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "平安",
+   "te": "Peace"
   },
   {
    "f": "m19.mp3",
@@ -161,7 +234,11 @@
    "ns": "喜乐(一)-靠主常常喜乐",
    "ne": "Joy 1 - Rejoice in the Lord Always",
    "by": "321互動聖經 配樂",
-   "tag": "喜樂"
+   "tag": "喜樂",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "喜乐",
+   "te": "Joy"
   },
   {
    "f": "m20.mp3",
@@ -169,7 +246,11 @@
    "ns": "喜乐(二)-早晨欢呼",
    "ne": "Joy 2 - Joy Comes in the Morning",
    "by": "321互動聖經 配樂",
-   "tag": "喜樂"
+   "tag": "喜樂",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "喜乐",
+   "te": "Joy"
   },
   {
    "f": "m21.mp3",
@@ -177,7 +258,11 @@
    "ns": "喜乐(三)-欢唱赞美",
    "ne": "Joy 3 - Sing for Joy",
    "by": "321互動聖經 配樂",
-   "tag": "喜樂"
+   "tag": "喜樂",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "喜乐",
+   "te": "Joy"
   },
   {
    "f": "m22.mp3",
@@ -185,7 +270,11 @@
    "ns": "喜乐(四)-欢喜跳舞",
    "ne": "Joy 4 - Dancing for Joy",
    "by": "321互動聖經 配樂",
-   "tag": "喜樂"
+   "tag": "喜樂",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "喜乐",
+   "te": "Joy"
   },
   {
    "f": "m23.mp3",
@@ -193,7 +282,11 @@
    "ns": "喜乐(五)-在主里的喜乐是我的力量",
    "ne": "Joy 5 - The Joy of the Lord Is My Strength",
    "by": "321互動聖經 配樂",
-   "tag": "喜樂"
+   "tag": "喜樂",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "喜乐",
+   "te": "Joy"
   },
   {
    "f": "m24.mp3",
@@ -201,7 +294,11 @@
    "ns": "等候(一)-等候耶和华",
    "ne": "Waiting 1 - Wait for the LORD",
    "by": "321互動聖經 配樂",
-   "tag": "等候"
+   "tag": "等候",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "等候",
+   "te": "Waiting"
   },
   {
    "f": "m25.mp3",
@@ -209,7 +306,11 @@
    "ns": "等候(二)-如鹰展翅",
    "ne": "Waiting 2 - On Wings like Eagles",
    "by": "321互動聖經 配樂",
-   "tag": "等候"
+   "tag": "等候",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "等候",
+   "te": "Waiting"
   },
   {
    "f": "m26.mp3",
@@ -217,7 +318,11 @@
    "ns": "等候(四)-安静默然倚靠",
    "ne": "Waiting 4 - Be Still and Rest in Him",
    "by": "321互動聖經 配樂",
-   "tag": "等候"
+   "tag": "等候",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "等候",
+   "te": "Waiting"
   },
   {
    "f": "m27.mp3",
@@ -225,7 +330,11 @@
    "ns": "病痛得安慰(二)-疼痛中的眼泪",
    "ne": "Comfort in Illness 2 - Tears in Pain",
    "by": "321互動聖經 配樂",
-   "tag": "病痛得安慰"
+   "tag": "病痛得安慰",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "病痛得安慰",
+   "te": "Comfort in Illness"
   },
   {
    "f": "m28.mp3",
@@ -233,7 +342,11 @@
    "ns": "病中静默 与神同在",
    "ne": "Stillness with God in Illness",
    "by": "321互動聖經 配樂",
-   "tag": "病痛得安慰"
+   "tag": "病痛得安慰",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "病痛得安慰",
+   "te": "Comfort in Illness"
   },
   {
    "f": "m29.mp3",
@@ -241,7 +354,11 @@
    "ns": "生日欢庆—生日登场 祝福出场",
    "ne": "Birthday Celebration - Grand Entrance",
    "by": "321互動聖經 配樂",
-   "tag": "生日歡慶"
+   "tag": "生日歡慶",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "生日欢庆",
+   "te": "Birthday"
   },
   {
    "f": "m30.mp3",
@@ -249,7 +366,11 @@
    "ns": "生日登场 祝福开场",
    "ne": "Birthday Entrance - Blessings Begin",
    "by": "321互動聖經 配樂",
-   "tag": "生日歡慶"
+   "tag": "生日歡慶",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "生日欢庆",
+   "te": "Birthday"
   },
   {
    "f": "m31.mp3",
@@ -257,7 +378,11 @@
    "ns": "生日快乐颂",
    "ne": "Happy Birthday Song",
    "by": "321互動聖經 配樂",
-   "tag": "生日歡慶"
+   "tag": "生日歡慶",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "生日欢庆",
+   "te": "Birthday"
   },
   {
    "f": "m32.mp3",
@@ -265,7 +390,11 @@
    "ns": "欢庆",
    "ne": "Celebration",
    "by": "321互動聖經 配樂",
-   "tag": "生日歡慶"
+   "tag": "生日歡慶",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "生日欢庆",
+   "te": "Birthday"
   },
   {
    "f": "m33.mp3",
@@ -273,7 +402,11 @@
    "ns": "病痛得安慰(五)",
    "ne": "Comfort in Illness 5",
    "by": "321互動聖經 配樂",
-   "tag": "病痛得安慰"
+   "tag": "病痛得安慰",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "病痛得安慰",
+   "te": "Comfort in Illness"
   },
   {
    "f": "m34.mp3",
@@ -281,7 +414,11 @@
    "ns": "庆贺",
    "ne": "Rejoicing",
    "by": "321互動聖經 配樂",
-   "tag": "生日歡慶"
+   "tag": "生日歡慶",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "生日欢庆",
+   "te": "Birthday"
   },
   {
    "f": "m35.mp3",
@@ -289,7 +426,11 @@
    "ns": "盼望",
    "ne": "Hope",
    "by": "321互動聖經 配樂",
-   "tag": "盼望"
+   "tag": "盼望",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "盼望",
+   "te": "Hope"
   },
   {
    "f": "m36.mp3",
@@ -297,7 +438,11 @@
    "ns": "和平",
    "ne": "Peace",
    "by": "321互動聖經 配樂",
-   "tag": "平安"
+   "tag": "平安",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "平安",
+   "te": "Peace"
   },
   {
    "f": "m37.mp3",
@@ -305,7 +450,11 @@
    "ns": "慈爱",
    "ne": "Lovingkindness",
    "by": "321互動聖經 配樂",
-   "tag": "愛心"
+   "tag": "愛心",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "爱心",
+   "te": "Love"
   },
   {
    "f": "m38.mp3",
@@ -313,7 +462,11 @@
    "ns": "温柔",
    "ne": "Gentleness",
    "by": "321互動聖經 配樂",
-   "tag": "愛心"
+   "tag": "愛心",
+   "bs": "321互动圣经 配乐",
+   "be": "321 Interactive Bible Music",
+   "ts": "爱心",
+   "te": "Love"
   }
  ]
 }

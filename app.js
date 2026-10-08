@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.16.0';
+const VERSION = 'v2.16.1';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -677,22 +677,22 @@ function intro321(){
   const T = (zh, zs, en) => esc(L3(zh, zs, en));
   const row = (ic, h, d) => `<div class="i321-row"><span class="i321-ic">${ic}</span><div><b>${h}</b><div class="i321-d">${d}</div></div></div>`;
   return `<div class="card i321">
-    <h3 style="margin:0 0 4px">${T('321 理念','321 理念','The 321 Vision')}</h3>
-    <div class="muted" style="font-size:13px;margin-bottom:10px">${T('改變觀念，就改變生命；改變生命，就改變生活。','改变观念，就改变生命；改变生命，就改变生活。','Change the mindset, and life is changed; change life, and living is changed.')}</div>
-    ${row('3', T('三個基礎','三个基础','Three foundations'),
-      T('耶穌是我的榜樣　聖經是我的準則　聖靈是我的引導','耶稣是我的榜样　圣经是我的准则　圣灵是我的引导','Jesus is my example · the Bible is my standard · the Holy Spirit is my guide'))}
-    ${row('2', T('兩個核心','两个核心','Two cores'),
-      T('讓耶穌作王　讓耶穌得著一切的榮耀','让耶稣作王　让耶稣得着一切的荣耀','Let Jesus be King · let Jesus have all the glory'))}
-    ${row('1', T('一個目的','一个目的','One purpose'),
-      T('建立屬神的體系，成就主禱文：願你的國降臨，願你的旨意行在地上如同行在天上','建立属神的体系，成就主祷文：愿你的国降临，愿你的旨意行在地上如同行在天上','Build God’s order, fulfilling the Lord’s Prayer: Your kingdom come, Your will be done on earth as in heaven'))}
+    <h3 style="margin:0 0 4px">${T('321 理念','321 理念','The 3-2-1 Ideology')}</h3>
+    <div class="muted" style="font-size:13px;margin-bottom:10px">${T('改變觀念，就改變生命；改變生命，就改變生活。','改变观念，就改变生命；改变生命，就改变生活。','Change your mindset, and your life is changed; change your life, and your living is changed.')}</div>
+    ${row('3', T('三個基礎','三个基础','The three foundations'),
+      T('耶穌是我的榜樣　聖經是我的準則　聖靈是我的引導','耶稣是我的榜样　圣经是我的准则　圣灵是我的引导','Jesus is my Role Model · The Bible is my Standard · The Holy Spirit is my Guide'))}
+    ${row('2', T('兩個核心','两个核心','The two core values'),
+      T('讓耶穌作王　讓耶穌得著一切的榮耀','让耶稣作王　让耶稣得着一切的荣耀','Let Jesus be King · Let Jesus receive all the glory'))}
+    ${row('1', T('一個目的','一个目的','The one purpose'),
+      T('建立屬神的體系，成就主禱文：願你的國降臨，願你的旨意行在地上如同行在天上','建立属神的体系，成就主祷文：愿你的国降临，愿你的旨意行在地上如同行在天上','To build God’s system — the fulfilment of the Lord’s Prayer: Your kingdom come, Your will be done on earth as it is in heaven'))}
     <details class="i321-more">
       <summary>${T('再多認識一點','再多认识一点','Learn a little more')}</summary>
       <p>${T('舊人有己，以自己為中心，驕傲、離開本位、想要代替神，這是問題的根源；耶穌的死解決我們的罪，耶穌的復活賜給我們新生命。「我已經與基督同釘十字架，現在活著的不再是我，乃是基督在我裡面活著。」（加拉太書 2:20）',
           '旧人有己，以自己为中心，骄傲、离开本位、想要代替神，这是问题的根源；耶稣的死解决我们的罪，耶稣的复活赐给我们新生命。“我已经与基督同钉十字架，现在活着的不再是我，乃是基督在我里面活着。”（加拉太书 2:20）',
-          'The old self centers on “me”: proud, leaving its place, trying to take God’s. Jesus’ death deals with our sin, and His resurrection gives us new life. “I have been crucified with Christ; and it is no longer I who live, but Christ lives in me.” (Galatians 2:20)')}</p>
+          'The old self is full of self (self-centredness): in pride it leaves its position and grasps at God’s authority, wanting to take His place — this is the root of the problem. Jesus’ death deals with our sin, and His resurrection gives us new life. “I have been crucified with Christ; and it is no longer I who live, but Christ lives in me.” (Galatians 2:20)')}</p>
       <p>${T('無己，不是沒有，乃是讓基督在裡面活，進入無限。由內而外五重的改變：觀念、生命、生活、關係、事工。謙卑戰勝驕傲，無己戰勝撒旦，一同成為得勝者。',
           '无己，不是没有，乃是让基督在里面活，进入无限。由内而外五重的改变：观念、生命、生活、关系、事工。谦卑战胜骄傲，无己战胜撒旦，一同成为得胜者。',
-          'Self-emptying is not losing, but letting Christ live in us. Change moves from the inside out: mindset, life, living, relationships, ministry. Humility overcomes pride, and together we become overcomers.')}</p>
+          'Selflessness (“self is absent”) is not emptiness — it is letting Christ live in us and entering the infinite. The five-fold change from the inside out: Mindset → Life → Living → Relationships → Ministry. Humility overcomes pride, selflessness overcomes Satan, and together we become victors.')}</p>
     </details>
   </div>`;
 }
@@ -918,7 +918,7 @@ function rwShow(id, replay){
   $('#rwShare', mask).onclick = async () => {
     clearTimeout(rwTimer);
     const home = location.origin + location.pathname.replace(/index\.html$/, '');
-    const text = '🏅 ' + l1 + '\n\n—— ' + (state.cardTop || L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Fellowship')) + '\n' + home;
+    const text = '🏅 ' + l1 + '\n\n—— ' + (state.cardTop || L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Online Fellowship')) + '\n' + home;
     if (navigator.share){ try{ await navigator.share({ title: t().app, text }); return; }catch(e){ if (e && e.name === 'AbortError') return; } }
     try{ await navigator.clipboard.writeText(text); toast(L3('已複製，可以貼到群組裡', '已复制，可以贴到群组里', 'Copied — paste it anywhere'), 3000); }catch(e){}
   };
@@ -1081,7 +1081,7 @@ function companionShareText(p, today){
   return L3('我們這一週一起讀', '我们这一周一起读', 'This week we are reading together') + C + cpL(w.t) + '\n'
     + L3('今天讀', '今天读', 'Today') + C + companionPassage(today) + '\n\n' + cpL(w.i) + '\n\n'
     + L3('一起聊聊', '一起聊聊', 'Talk about') + C + '\n' + qs + '\n\n🙏 ' + cpL(w.p)
-    + '\n\n—— ' + (state.cardTop || L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Fellowship'));
+    + '\n\n—— ' + (state.cardTop || L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Online Fellowship'));
 }
 function companionAsk(p, today){
   const w = p.weeks[today.week], who = p.id === 'seeker'
@@ -2073,6 +2073,10 @@ const HYM_L = {
 const hl_ = () => HYM_L[state.lang] || HYM_L.zh;
 /* 一首歌的顯示名稱（三語，沒填就用中文那個） */
 const songName = s => (isEN() ? (s.ne || s.n) : (isZS() ? (s.ns || s.n) : s.n)) || s.f || '';
+/* 出處與分類也跟著語言走（music.json 的 bs／be、ts／te；沒填就用中文那個） */
+const songBy  = s => (isEN() ? (s.be || s.by) : (isZS() ? (s.bs || s.by) : s.by)) || '';
+const tagName = (s, tg) => { const L = (hymnList || []).find(x => x.tag === tg) || s || {};
+  return (isEN() ? (L.te || tg) : (isZS() ? (L.ts || tg) : tg)) || ''; };
 
 let hymnList = null;          // null = 還沒抓過
 let bgmCredit = '';           // 「詩歌：〈歌名〉／出處」，會印在影片下緣
@@ -2160,7 +2164,7 @@ async function hymnFetch(s){
 async function hymnPick(s){
   bgmBlob = await hymnFetch(s);
   bgmName = songName(s);
-  bgmCredit = hl_().credit + songName(s) + (s.by ? '／' + s.by : '');
+  bgmCredit = hl_().credit + songName(s) + (songBy(s) ? (isEN() ? ' / ' : '／') + songBy(s) : '');
 }
 
 function openHymns(){
@@ -2192,7 +2196,7 @@ function openHymns(){
     const list = (hymnList || []).filter(s => {
       if (tag && (s.tag || '') !== tag) return false;
       if (!q) return true;
-      return (songName(s) + ' ' + (s.n || '') + ' ' + (s.ne || '') + ' ' + (s.by || ''))
+      return (songName(s) + ' ' + (s.n || '') + ' ' + (s.ne || '') + ' ' + (s.by || '') + ' ' + tagName(s, s.tag || ''))
              .toLowerCase().indexOf(q) >= 0;
     });
     if (!list.length){ box.innerHTML = `<div class="empty">${esc(L.none)}</div>`; return; }
@@ -2202,7 +2206,7 @@ function openHymns(){
       return `<div class="hymnrow${miss ? ' miss' : ''}" data-i="${i}"${miss ? ' style="opacity:.5"' : ''}>
         <button class="hymnplay" data-p="${i}">▶</button>
         <div class="meta"><div class="t">${esc(songName(s))}</div>
-        <div class="s">${esc(miss ? L.miss + s.f : [s.by, s.tag].filter(Boolean).join('　·　'))}</div></div>
+        <div class="s">${esc(miss ? L.miss + s.f : [songBy(s), s.tag ? tagName(s, s.tag) : ''].filter(Boolean).join(isEN() ? ' · ' : '　·　'))}</div></div>
         <div class="chev">›</div></div>`;
     }).join('');
     $$('.hymnrow', box).forEach(row => {
@@ -2247,7 +2251,7 @@ function openHymns(){
     list.forEach(s => { if (s.tag && tags.indexOf(s.tag) < 0) tags.push(s.tag); });
     if (tags.length > 1){
       tagBox.innerHTML = `<button class="on" data-t="">${esc(L.all)}</button>`
-        + tags.map(x => `<button data-t="${esc(x)}">${esc(x)}</button>`).join('');
+        + tags.map(x => `<button data-t="${esc(x)}">${esc(tagName(null, x))}</button>`).join('');
       $$('#hyTags button', mask).forEach(b => b.onclick = () => {
         tag = b.dataset.t;
         $$('#hyTags button', mask).forEach(x => x.classList.toggle('on', x === b));
@@ -2266,35 +2270,35 @@ function openHymns(){
    作法與《321愛的關懷》相同：canvas 畫好 → navigator.share 傳檔，
    不支援就退回下載，讓使用者自己從相簿分享。 */
 const CARD_TPL = {
-  navy:  { n:['深藍聖夜','深蓝圣夜'], bg:['#123F92','#0D3988','#071A42'], glow:'rgba(212,166,91,.30)',
+  navy:  { n:['深藍聖夜','深蓝圣夜','Midnight Navy'], bg:['#123F92','#0D3988','#071A42'], glow:'rgba(212,166,91,.30)',
            ink:'#F2ECDD', accent:'#F7EFDC', gold:'#D4A65B', sub:'#BBA98A', frame:'rgba(212,166,91,.42)' },
-  paper: { n:['素樸信箋','素朴信笺'], bg:['#FBF8F1','#F4EFE3','#EDE6D6'], glow:'rgba(212,166,91,.45)',
+  paper: { n:['素樸信箋','素朴信笺','Plain Letter'], bg:['#FBF8F1','#F4EFE3','#EDE6D6'], glow:'rgba(212,166,91,.45)',
            ink:'#3A3122', accent:'#23211C', gold:'#A9762F', sub:'#8A7C63', frame:'rgba(169,118,47,.34)' },
-  dawn:  { n:['晨曦盼望','晨曦盼望'], bg:['#FFF6EC','#FBE9D2','#F6D9B8'], glow:'rgba(255,214,150,.6)',
+  dawn:  { n:['晨曦盼望','晨曦盼望','Dawn of Hope'], bg:['#FFF6EC','#FBE9D2','#F6D9B8'], glow:'rgba(255,214,150,.6)',
            ink:'#3A2A1A', accent:'#8A4B16', gold:'#C97A22', sub:'#8A6A4A', frame:'rgba(181,101,29,.30)' },
-  grace: { n:['青草安歇','青草安歇'], bg:['#F2F7F1','#E4EFE6','#D6E7DA'], glow:'rgba(160,200,170,.5)',
+  grace: { n:['青草安歇','青草安歇','Green Pastures'], bg:['#F2F7F1','#E4EFE6','#D6E7DA'], glow:'rgba(160,200,170,.5)',
            ink:'#1C2E26', accent:'#255943', gold:'#3C8A64', sub:'#5C7A6A', frame:'rgba(46,106,80,.28)' },
-  rose:  { n:['溫柔玫瑰','温柔玫瑰'], bg:['#FCF5F3','#F6E7E3','#EFD8D2'], glow:'rgba(220,160,150,.45)',
+  rose:  { n:['溫柔玫瑰','温柔玫瑰','Gentle Rose'], bg:['#FCF5F3','#F6E7E3','#EFD8D2'], glow:'rgba(220,160,150,.45)',
            ink:'#33221E', accent:'#8A3D2E', gold:'#B36A54', sub:'#8A6A62', frame:'rgba(154,74,58,.28)' },
-  sky:   { n:['平安晴空','平安晴空'], bg:['#F1F7FB','#DFEEF6','#CFE4F0'], glow:'rgba(150,200,230,.5)',
+  sky:   { n:['平安晴空','平安晴空','Peaceful Sky'], bg:['#F1F7FB','#DFEEF6','#CFE4F0'], glow:'rgba(150,200,230,.5)',
            ink:'#1B2A33', accent:'#1E5270', gold:'#2E7DA0', sub:'#5A7684', frame:'rgba(37,96,128,.28)' },
-  linen: { n:['素雅棉麻','素雅棉麻'], bg:['#F7F4EE','#EFEAE0','#E6DFD2'], glow:'rgba(200,190,170,.4)',
+  linen: { n:['素雅棉麻','素雅棉麻','Soft Linen'], bg:['#F7F4EE','#EFEAE0','#E6DFD2'], glow:'rgba(200,190,170,.4)',
            ink:'#2A2620', accent:'#4A4234', gold:'#8A7A5A', sub:'#7A7263', frame:'rgba(90,80,64,.26)' },
-  night: { n:['深夜星光','深夜星光'], bg:['#101E1B','#16302A','#0E2420'], glow:'rgba(232,201,122,.26)',
+  night: { n:['深夜星光','深夜星光','Starry Night'], bg:['#101E1B','#16302A','#0E2420'], glow:'rgba(232,201,122,.26)',
            ink:'#EDEAE0', accent:'#E8C97A', gold:'#E8C97A', sub:'#9FB0AA', frame:'rgba(232,201,122,.34)' },
-  plain: { n:['純白簡潔','纯白简洁'], bg:['#FFFFFF','#FFFFFF','#FFFFFF'], glow:'rgba(0,0,0,0)',
+  plain: { n:['純白簡潔','纯白简洁','Pure White'], bg:['#FFFFFF','#FFFFFF','#FFFFFF'], glow:'rgba(0,0,0,0)',
            ink:'#23211C', accent:'#0D3988', gold:'#A9762F', sub:'#6B6255', frame:'rgba(13,57,136,.22)' }
 };
 const CARD_ORDER = ['navy','paper','dawn','grace','rose','sky','linen','night','plain'];
-const CARD_SIZES = { p:[1080,1920,['直式 9:16','直式 9:16']],
-                     t:[1080,1350,['直式 4:5','直式 4:5']],
-                     s:[1080,1080,['方形','方形']],
-                     w:[1920,1080,['橫式','横式']] };
-const CARD_BORDERS = [ ['classic',['古典雙框','古典双框']], ['corner',['雅緻角飾','雅致角饰']],
-                       ['inline',['內斂細線','内敛细线']], ['dots',['珠鏈點框','珠链点框']],
-                       ['ornate',['華麗花角','华丽花角']], ['none',['無邊框','无边框']] ];
-const CARD_FS = [[0.9,['小一點','小一点']], [1,['標準','标准']], [1.2,['大','大']],
-                 [1.45,['特大','特大']], [1.7,['超大','超大']]];
+const CARD_SIZES = { p:[1080,1920,['直式 9:16','直式 9:16','Portrait 9:16']],
+                     t:[1080,1350,['直式 4:5','直式 4:5','Portrait 4:5']],
+                     s:[1080,1080,['方形','方形','Square']],
+                     w:[1920,1080,['橫式','横式','Landscape']] };
+const CARD_BORDERS = [ ['classic',['古典雙框','古典双框','Classic Double']], ['corner',['雅緻角飾','雅致角饰','Elegant Corners']],
+                       ['inline',['內斂細線','内敛细线','Fine Line']], ['dots',['珠鏈點框','珠链点框','Beaded Dots']],
+                       ['ornate',['華麗花角','华丽花角','Ornate Corners']], ['none',['無邊框','无边框','No Border']] ];
+const CARD_FS = [[0.9,['小一點','小一点','Smaller']], [1,['標準','标准','Standard']], [1.2,['大','大','Large']],
+                 [1.45,['特大','特大','Extra Large']], [1.7,['超大','超大','Huge']]];
 let cardImg = null;
 const cardTpl = () => CARD_TPL[state.cardTpl] ? state.cardTpl : 'navy';
 const cardSize = () => CARD_SIZES[state.cardSize] ? state.cardSize : 't';
@@ -2311,11 +2315,11 @@ function setPhoto(im, by){
   else { photoImg = im; photoBy = by || ''; }
 }
 let stkSize = 0.30, stkPos = 'br', stkShape = 'p';
-const STK_SIZES  = [[0.22,['小張','小张']],[0.30,['中等','中等']],[0.38,['大張','大张']],
-                    [0.46,['滿版','满版']],[0.62,['超大','超大']],[0.84,['整排','整排']]];
-const STK_POS    = [['bl',['左下','左下']],['bc',['正下','正下']],['br',['右下','右下']],
-                    ['tl',['左上','左上']],['tr',['右上','右上']]];
-const STK_SHAPES = [['p',['直式','直式']],['w',['橫式 16:9','横式 16:9']],['s',['方形','方形']]];
+const STK_SIZES  = [[0.22,['小張','小张','Small']],[0.30,['中等','中等','Medium']],[0.38,['大張','大张','Large']],
+                    [0.46,['滿版','满版','Full']],[0.62,['超大','超大','Huge']],[0.84,['整排','整排','Full width']]];
+const STK_POS    = [['bl',['左下','左下','Bottom left']],['bc',['正下','正下','Bottom centre']],['br',['右下','右下','Bottom right']],
+                    ['tl',['左上','左上','Top left']],['tr',['右上','右上','Top right']]];
+const STK_SHAPES = [['p',['直式','直式','Portrait']],['w',['橫式 16:9','横式 16:9','Landscape 16:9']],['s',['方形','方形','Square']]];
 const stkRatio = () => stkShape === 'w' ? 0.72 : (stkShape === 's' ? 1.06 : 1.12);
 function pickPhoto(inp){
   const f = inp && inp.files && inp.files[0]; if (!f) return;
@@ -2339,7 +2343,7 @@ function coverDraw(ctx, img, x, y, w, h){
 
 /* ---- 背景音樂 ---- */
 let bgmBlob = null, bgmName = '', bgmVol = 0.22, mcLen = 30;
-const MC_LENS = [[15,['15 秒','15 秒']],[30,['30 秒','30 秒']],[60,['1 分鐘','1 分钟']],[0,['整首','整首']]];
+const MC_LENS = [[15,['15 秒','15 秒','15 sec']],[30,['30 秒','30 秒','30 sec']],[60,['1 分鐘','1 分钟','1 min']],[0,['整首','整首','Whole track']]];
 const BGM_VOLS = [[0.12,['小聲','小声']],[0.22,['適中','适中']],[0.38,['明顯','明显']]];
 const AUD_EXT = /\.(mp3|m4a|aac|wav|aif|aiff|caf|flac|ogg|opus|mp4|mov|webm|wma)$/i;
 function pickBgm(inp){
@@ -2350,7 +2354,7 @@ function pickBgm(inp){
   bgmBlob = f; bgmName = f.name || '背景音樂'; bgmCredit = ''; studioRefresh(); toast(t().bgmAdded);
 }
 
-const DEF_TOP  = () => L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Fellowship');
+const DEF_TOP  = () => L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Online Fellowship');
 const DEF_SIGN = () => isEN() ? '321 Interactive Bible　World English Bible'
                               : (t().app + '　' + L3('新標點和合本', '新标点和合本', ''));
 /* 詩篇用「篇」／Psalm，其餘用「章」／Chapter */
@@ -3508,7 +3512,7 @@ async function noteRewrite(instr, mask){
   const go = mask && $('#twGo', mask);
   if (go){ go.disabled = true; go.textContent = tw_().busy; }
   const sys = isEN()
-    ? 'You are Xiaozhi from Kingdom 321 Fellowship. Rewrite the short blessing the user gives you, following their instruction. Return ONLY the rewritten text — no explanation, no heading, no bullet points, no quotation marks, and do not quote the verse again. Keep it warm and spoken, never preachy. Close with a short blessing ending in just "Amen" — do not write "in the name of Jesus we pray".'
+    ? 'You are Xiaozhi from Kingdom 321 Online Fellowship. Rewrite the short blessing the user gives you, following their instruction. Return ONLY the rewritten text — no explanation, no heading, no bullet points, no quotation marks, and do not quote the verse again. Keep it warm and spoken, never preachy. Close with a short blessing ending in just "Amen" — do not write "in the name of Jesus we pray".'
     : isZS()
     ? '你是「小智」，国度321空中团契的属灵同伴。请照使用者的要求，修改他给你的这段祝福。只回传改好的内文本身——不要解释、不要标题、不要条列、不要引号、不要再抄一次经文。保持温暖、口语、不说教。祝福结尾只用「阿们」，不要写「奉主耶稣的名祷告」。'
     : '你是「小智」，國度321空中團契的屬靈同伴。請照使用者的要求，修改他給你的這段祝福。只回傳改好的內文本身——不要解釋、不要標題、不要條列、不要引號、不要再抄一次經文。保持溫暖、口語、不說教。祝福結尾只用「阿們」，不要寫「奉主耶穌的名禱告」。';
@@ -3563,7 +3567,7 @@ async function blessWrite(){
   const btn = $('#blessBtn');
   if (btn){ btn.disabled = true; btn.textContent = t().blessing; }
   const sys = isEN()
-    ? 'You are Xiaozhi, a spiritual companion from Kingdom 321 Fellowship. From the verse the user gives you, write a short, warm word of encouragement for a brother or sister. First name in one or two sentences what this verse shows of God\'s heart, then one sentence that touches ordinary daily life, then close with a blessing. Three to four sentences, under 60 words. Warm and spoken, never preachy. No headings, no bullet points, no quotation marks, and do not quote the verse again. If it reads as a prayer, close it with "in the name of the Lord Jesus we pray, Amen" — never "in Jesus\' name we ask, Amen."'
+    ? 'You are Xiaozhi, a spiritual companion from Kingdom 321 Online Fellowship. From the verse the user gives you, write a short, warm word of encouragement for a brother or sister. First name in one or two sentences what this verse shows of God\'s heart, then one sentence that touches ordinary daily life, then close with a blessing. Three to four sentences, under 60 words. Warm and spoken, never preachy. No headings, no bullet points, no quotation marks, and do not quote the verse again. If it reads as a prayer, close it with "in the name of the Lord Jesus we pray, Amen" — never "in Jesus\' name we ask, Amen."'
     : state.lang === 'zs'
     ? '你是「小智」，国度321空中团契的属灵同伴。请照使用者给的这节经文，写一段温暖的关怀祝福，送给弟兄姊妹。要求：先用一两句点出这节经文里神的心意，再写一句贴近生活的祝福，最后用一句祝福收尾。总共三到四句、120 字以内，口语、温暖、不说教，不要标题、不要条列、不要引号、不要再抄一次经文。若结尾写成祷告，要用「奉主耶稣的名祷告，阿们」，不要用「奉耶稣的名求」。'
     : '你是「小智」，國度321空中團契的屬靈同伴。請照使用者給的這節經文，寫一段溫暖的關懷祝福，送給弟兄姊妹。要求：先用一兩句點出這節經文裡神的心意，再寫一句貼近生活的祝福，最後用一句祝福收尾。總共三到四句、120 字以內，口語、溫暖、不說教，不要標題、不要條列、不要引號、不要再抄一次經文。若結尾寫成禱告，要用「奉主耶穌的名禱告，阿們」，不要用「奉耶穌的名求」。';
@@ -4479,7 +4483,7 @@ async function teamAIWrite(ta, btn, kind, verse){
   btn.disabled = true; btn.textContent = L.writing;
   const who = { share:'讀經分享', pray:'代禱事項', care:'關懷的話', witness:'見證' }[kind] || '分享';
   const sys = isEN()
-    ? 'You are Xiaozhi, a spiritual companion of Kingdom 321 Fellowship. Write a short, warm piece for a small group: three to four sentences, under 70 words, spoken and personal, never preachy. No headings, no bullets, no quotation marks.'
+    ? 'You are Xiaozhi, a spiritual companion of Kingdom 321 Online Fellowship. Write a short, warm piece for a small group: three to four sentences, under 70 words, spoken and personal, never preachy. No headings, no bullets, no quotation marks.'
     : `你是「小智」，國度321空中團契的屬靈同伴。請幫使用者寫一段要貼在小組裡的「${who}」，三到四句、120 字以內，口語、溫暖、不說教，不要標題、不要條列、不要引號。`;
   const ask = (verse ? L3('經文：', '经文：', 'Verse: ') + verse + '\n' : '')
             + L3(`請寫一段${who}。`, `请写一段${who}。`, `Please write a short ${kind} note.`)
@@ -4863,7 +4867,7 @@ async function chatShare(m){
   const head = p.verse ? (isEN() ? `“${p.verse}”` : `「${p.verse}」`) + (p.ref ? '\n—— ' + p.ref : '') + '\n\n' : '';
   /* 落款只留團契與網址——這是弟兄姊妹之間的分享，不必掛上是誰寫的 */
   const home = location.origin + location.pathname.replace(/index\.html$/, '');
-  const foot = '\n\n—— ' + (state.cardTop || L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Fellowship'))
+  const foot = '\n\n—— ' + (state.cardTop || L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Online Fellowship'))
              + '\n' + home;
   const text = head + p.ans + foot;
   if (navigator.share){
@@ -5081,7 +5085,7 @@ async function sendChat(text){
   chatLog.push({ role:'ai', text: t().thinking, src:srcNow }); paintChat();
   const b = RD.book ? BOOK[RD.book] : null;
   const sys = (isEN()
-    ? 'You are Xiaozhi, a Bible companion from Kingdom 321 Fellowship. Answer in the spirit of the 321 vision — Jesus is my example, Scripture is my standard, the Holy Spirit is my guide; let Jesus reign, let Jesus receive all the glory; build what belongs to God. Explain plainly, use everyday pictures, quote the World English Bible, and keep answers short.'
+    ? 'You are Xiaozhi, a Bible companion from Kingdom 321 Online Fellowship. Answer in the spirit of the 3-2-1 ideology — the three foundations: Jesus is my Role Model, the Bible is my Standard, the Holy Spirit is my Guide; the two core values: Let Jesus be King, Let Jesus receive all the glory; the one purpose: to build God’s system. Explain plainly, use everyday pictures, quote the World English Bible, and keep answers short.'
     : isZS()
     ? '你是「小智」，国度321空中团契的圣经陪读。以321理念（耶稣是我的榜样、圣经是我的准则、圣灵是我的引导；让耶稣作王、让耶稣得着一切的荣耀；建立属神的体系）回应，深入浅出、善用比喻，引用和合本圣经，回答简明。'
     : '你是「小智」，國度321空中團契的聖經陪讀。以321理念（耶穌是我的榜樣、聖經是我的準則、聖靈是我的引導；讓耶穌作王、讓耶穌得著一切的榮耀；建立屬神的體系）回應，深入淺出、善用比喻，引用和合本聖經，回答簡明。')
@@ -5562,7 +5566,7 @@ async function plShare(){
     + L3(`我在讀經樂${PL.mode === 'quiz' ? '測驗' : '猜謎'}「${bname(b)} ${chapLabel(PL.src.b, PL.src.ch)}」答對了 ${PL.right} / ${n}！`,
          `我在读经乐${PL.mode === 'quiz' ? '测验' : '猜谜'}“${bname(b)} ${chapLabel(PL.src.b, PL.src.ch)}”答对了 ${PL.right} / ${n}！`,
          `I got ${PL.right} / ${n} on the ${PL.mode === 'quiz' ? 'quiz' : 'riddles'} for ${bname(b)} ${chapLabel(PL.src.b, PL.src.ch)}!`)
-    + '\n\n—— ' + (state.cardTop || L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Fellowship')) + '\n' + home;
+    + '\n\n—— ' + (state.cardTop || L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Online Fellowship')) + '\n' + home;
   if (navigator.share){
     try{ await navigator.share({ title: t().app, text }); return; }
     catch(e){ if (e && e.name === 'AbortError') return; }
@@ -5722,7 +5726,7 @@ async function viewMe(v){
     </details>
 
     <div class="muted" style="text-align:center;margin:18px 0 8px">
-      ${esc(L.app)} ${VERSION}<br>和合本聖經屬公有領域，沒有版權限制</div>`;
+      ${esc(L.app)} ${VERSION}<br>${esc(L3('和合本聖經屬公有領域，沒有版權限制','和合本圣经属公有领域，没有版权限制','The Chinese Union Version and the World English Bible are in the public domain.'))}</div>`;
 
   $$('#setLang button', v).forEach(b => b.onclick = () => switchLang(b.dataset.l));
   const dg = $('#diagBtn', v); if (dg) dg.onclick = () => runDiag();
@@ -6425,7 +6429,7 @@ function msSet(){
     const b = RD.book ? BOOK[RD.book] : null;
     const title = b ? bname(b) + (RD.flow ? '' : ' ' + RD.ch) : t().app;
     navigator.mediaSession.metadata = new MediaMetadata({
-      title, artist: L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Fellowship'), album: t().app,
+      title, artist: L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Online Fellowship'), album: t().app,
       artwork: [{ src:'icon-512.png', sizes:'512x512', type:'image/png' }] });
     if (!msInit){
       msInit = true;
