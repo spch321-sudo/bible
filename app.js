@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.15.0';
+const VERSION = 'v2.15.1';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -1232,10 +1232,10 @@ async function viewPlan(v){
   if (!user.plan.active){
     v.innerHTML = `
       <div class="section-title">${esc(L.planTitle)}</div>
-      ${PLAN_IDS.map(pid => {
+      ${PLAN_IDS.filter(pid => P[pid]).map(pid => {
         const p = P[pid];
         const comp = p.kind === 'companion';
-        const head = (comp && pid === 'seeker')
+        const head = (comp && pid === PLAN_IDS.filter(x => P[x] && P[x].kind === 'companion')[0])
           ? `<div class="section-title" style="margin-top:18px">${esc(L3('陪讀計畫：陪伴別人一起讀','陪读计划：陪伴别人一起读','Companion plans: read together with someone'))}</div>
              <div class="muted" style="font-size:12.5px;line-height:1.65;margin:0 4px 10px">${esc(L3('每週附上「陪讀指引」：本週重點、可以一起聊的三個問題、一句禱告，還能請小智幫你預備。','每周附上“陪读指引”：本周重点、可以一起聊的三个问题、一句祷告，还能请小智帮你预备。','Each week comes with a companion guide: a focus, three questions to talk through, a prayer, and Xiaozhi can help you prepare.'))}</div>` : '';
         return head + `<div class="card plancard">
@@ -1249,6 +1249,7 @@ async function viewPlan(v){
     return;
   }
   const pid = user.plan.active, p = P[pid];
+  if (!p){ user.plan.active = null; user.plan.sum = null; saveUser(); return viewPlan(v); }   // 計畫資料不在（例如 plans.json 還是舊版）就回到選單，不要當掉
   const doneN = planDoneCount(pid);
   const todayIdx = planTodayIndex(p);
   const today = p.days[todayIdx - 1];
