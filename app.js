@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.16.1';
+const VERSION = 'v2.16.2';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -2456,7 +2456,7 @@ function drawCardBorder(ctx, W, H, pad, F, T){
 /* ---- 自拍圓框（錄影時合成到右下角）---- */
 function drawSelfieCircle(cx, vid, W, H, F){
   if (!vid || !vid.videoWidth) return;
-  const pad = Math.round(W * .085), R = Math.round(Math.min(W, H) * 0.115);
+  const pad = Math.round(Math.min(W, H) * .085), R = Math.round(Math.min(W, H) * 0.115);
   const cxx = W - pad - R + 4 * F, cyy = H - pad - R + 4 * F;
   cx.save();
   cx.shadowColor = 'rgba(0,0,0,.28)'; cx.shadowBlur = Math.round(22 * F); cx.shadowOffsetY = Math.round(8 * F);
@@ -2510,7 +2510,13 @@ const CARD_SANS = () => isZS()
 function drawVerseCard(cv, h, W, H){
   const ctx = cv.getContext('2d'); cv.width = W; cv.height = H;
   const T = CARD_TPL[cardTpl()];
-  const F = W / 1080, pad = Math.round(W * .085), iw = W - pad * 2;
+  /* v2.16.2：比例用短邊算。以前用寬度，橫式 1920 寬會把字放大 1.8 倍，
+     高度只有 1080 塞不下，內文縮到最小還是溢出、壓到署名底下。 */
+  const S = Math.min(W, H), F = S / 1080, pad = Math.round(S * .085);
+  const wide = W > H * 1.2;
+  /* 橫式的文字欄不要拉滿整個寬度（一行太長不好讀），置中留白 */
+  let iw = wide ? Math.min(W - pad * 2, Math.round(H * 1.5)) : W - pad * 2;
+  let tx = Math.round((W - iw) / 2);
   const sans = CARD_SANS(), serif = CARD_SERIF();
   const FB = cardFs();          /* 內文字級——團體名稱、稱呼、署名跟著這個縮放，經文本身維持不變 */
 
@@ -2562,8 +2568,13 @@ function drawVerseCard(cv, h, W, H){
 
   /* 版位：經文＋領受垂直置中 */
   const hasSticker = stkImg && !suppressSticker;
-  const stkBottom = hasSticker && stkPos !== 'tl' && stkPos !== 'tr';
-  const liftRoom = stkBottom ? Math.round(W * stkSize * stkRatio()) + Math.round(30 * F) : 0;
+  const stkW = Math.round(S * stkSize);
+  /* 橫式＋貼在角落：左右空間夠，就把文字欄收窄、讓開相片，不必整段往上擠 */
+  const sideIw = W - 2 * (pad + stkW + Math.round(28 * F));
+  const stkSide = wide && hasSticker && stkPos !== 'bc' && sideIw >= W * .45;
+  if (stkSide){ iw = Math.min(iw, sideIw); tx = Math.round((W - iw) / 2); }
+  const stkBottom = hasSticker && !stkSide && stkPos !== 'tl' && stkPos !== 'tr';
+  const liftRoom = stkBottom ? Math.round(stkW * stkRatio()) + Math.round(30 * F) : 0;
   const topRoom = pad + Math.round((toName ? 176 : 100) * F), botRoom = pad + Math.round(70 * F) + liftRoom;
   const room = H - topRoom - botRoom;
   /* 經文本身可能已經帶了引號（例如神說的話），不要再包一層 */
@@ -2594,6 +2605,15 @@ function drawVerseCard(cv, h, W, H){
       if (fixed + nl.length * ns * 1.76 <= room || ns <= Math.round(21 * F)) break;
       ns -= Math.round(2 * F);
     }
+    /* 縮到最小還放不下：只留放得下的行，最後一行加「…」，絕不壓到署名 */
+    const fit = Math.max(1, Math.floor((room - fixed) / (ns * 1.76)));
+    if (nl.length > fit){
+      nl = nl.slice(0, fit);
+      let last = nl[fit - 1];
+      ctx.font = `${ns}px ${sans}`;
+      while (last.length > 1 && ctx.measureText(last + '…').width > iw) last = last.slice(0, -1);
+      nl[fit - 1] = last.replace(/[，。、；：,.;:\s]+$/, '') + '…';
+    }
   }
   const total = fixed + (note ? nl.length * ns * 1.76 : 0);
   let y = topRoom + Math.max(0, (room - total) / 2);
@@ -2616,12 +2636,12 @@ function drawVerseCard(cv, h, W, H){
     ctx.beginPath(); ctx.moveTo(W / 2 + 16 * F, y); ctx.lineTo(W / 2 + 52 * F, y); ctx.stroke();
     y += Math.round(86 * F);
     ctx.textAlign = 'left'; ctx.fillStyle = T.ink; ctx.font = `${ns}px ${sans}`;
-    nl.forEach(l => { ctx.fillText(l, pad, y); y += ns * 1.76; });
+    nl.forEach(l => { ctx.fillText(l, tx, y); y += ns * 1.76; });
     ctx.textAlign = 'center';
   }
 
   /* 落款（貼紙或自拍佔住底部時往上讓開） */
-  const lift = stkBottom ? Math.round(W * stkSize * stkRatio()) + Math.round(16 * F) : 0;
+  const lift = stkBottom ? Math.round(stkW * stkRatio()) + Math.round(16 * F) : 0;
   ctx.textAlign = 'center'; ctx.fillStyle = T.sub; ctx.font = `600 ${Math.round(25 * F * FB)}px ${sans}`;
   const sign = (state.cardSign || '').trim()
             || DEF_SIGN();
@@ -2631,7 +2651,7 @@ function drawVerseCard(cv, h, W, H){
 
   /* 相片貼紙（拍立得風格） */
   if (hasSticker){
-    const sw = Math.round(W * stkSize), sh = Math.round(sw * stkRatio());
+    const sw = stkW, sh = Math.round(sw * stkRatio());
     const top = stkPos === 'tl' || stkPos === 'tr';
     const bx = (stkPos === 'bl' || stkPos === 'tl') ? pad - 4 * F
              : (stkPos === 'bc') ? Math.round((W - sw) / 2)
@@ -3078,7 +3098,7 @@ function liveCanvas(W, H, withSelfie){
   drawVerseCard(base, studioItem, W, H);
   selfieLayout = false; suppressSticker = false;
   const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
-  const cx = cv.getContext('2d'), t0 = performance.now(), F = W / 1080;
+  const cx = cv.getContext('2d'), t0 = performance.now(), F = Math.min(W, H) / 1080;
   const svid = $('#selfiePrev');
   const draw = () => {
     const el = (performance.now() - t0) / 1000;
