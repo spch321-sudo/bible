@@ -16,7 +16,26 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.11.0';
+const VERSION = 'v2.11.2';
+/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
+   放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
+   外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
+   flex-basis:0），按鈕不准被擠扁（flex:0 0 auto）；長字串（網址、英文長字）也允許換行。 */
+(function(){
+  const css = 'input,textarea,select{min-width:0;max-width:100%}'
+    + '.searchbar input,.chatinput textarea,.pxbar .cardinput,.pl-guess input,.tmrepbox .cardinput{flex:1 1 0;width:0;min-width:0}'
+    + '.searchbar .btn,.chatinput button,.pxbar .btn,.pl-guess .btn,.tmrepbox button{flex:0 0 auto}'
+    + 'main#view{min-width:0}'
+    /* v2.11.2 小智回答裡的表格、引言條、小標題、按鈕原本是固定 px，只有正文跟著字級放大；
+       改成相對於 .msg 的 em，字級調大時整則回答（含追問鈕與範例問題）一起變大 */
+    + '.msg.ai .mdtb{font-size:.93em}.msg.ai blockquote{font-size:.97em}.msg.ai h4,.msg.ai h5,.msg.ai h6{font-size:1.03em}'
+    + '.msg.ai .msg-act{font-size:.82em}.msg .fu-t{font-size:.83em}.msg .fu-chip{font-size:.9em}'
+    + 'html.fs-lg .qs-chip{font-size:15px}html.fs-xl .qs-chip{font-size:17px}html.fs-xxl .qs-chip{font-size:19px}'
+    + 'html.fs-lg .chatctx{font-size:13.5px}html.fs-xl .chatctx{font-size:15px}html.fs-xxl .chatctx{font-size:16.5px}'
+    + '.sres .sx,.msg,.hitem .q,.tmtext,.tmreply,.hl-note,.pl-q,.pl-opt,.pl-hint,.pl-expl,.tmverse,.hlsheet-quote{overflow-wrap:anywhere}';
+  const el = document.createElement('style'); el.id = 'fixcss'; el.textContent = css;
+  document.head.appendChild(el);
+})();
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
