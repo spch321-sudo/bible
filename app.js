@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.11.2';
+const VERSION = 'v2.12.0';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -32,7 +32,11 @@ const VERSION = 'v2.11.2';
     + '.msg.ai .msg-act{font-size:.82em}.msg .fu-t{font-size:.83em}.msg .fu-chip{font-size:.9em}'
     + 'html.fs-lg .qs-chip{font-size:15px}html.fs-xl .qs-chip{font-size:17px}html.fs-xxl .qs-chip{font-size:19px}'
     + 'html.fs-lg .chatctx{font-size:13.5px}html.fs-xl .chatctx{font-size:15px}html.fs-xxl .chatctx{font-size:16.5px}'
-    + '.sres .sx,.msg,.hitem .q,.tmtext,.tmreply,.hl-note,.pl-q,.pl-opt,.pl-hint,.pl-expl,.tmverse,.hlsheet-quote{overflow-wrap:anywhere}';
+    + '.msg.ai.fold .msg-body{max-height:9.6em;overflow:hidden;-webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}'
+         + '.msg-more{display:block;margin:6px 0 0;padding:4px 12px;border:1px solid var(--border);border-radius:999px;background:var(--surface-alt);color:var(--accent);font-size:.8em;font-weight:700;font-family:inherit;cursor:pointer}'
+         + '.msg-cont{margin-top:8px;font-size:.85em;color:var(--ink-faint)}.msg-actions[hidden]{display:none!important}'
+         + '.xz-fold{margin-left:auto;padding:5px 12px;border:1px solid var(--border);border-radius:999px;background:var(--surface-alt);color:var(--accent);font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;white-space:nowrap;flex:none}'
+         + '.sres .sx,.msg,.hitem .q,.tmtext,.tmreply,.hl-note,.pl-q,.pl-opt,.pl-hint,.pl-expl,.tmverse,.hlsheet-quote{overflow-wrap:anywhere}';
   const el = document.createElement('style'); el.id = 'fixcss'; el.textContent = css;
   document.head.appendChild(el);
 })();
@@ -3019,7 +3023,7 @@ function fadeIn(g, ac, to, sec){
   }catch(e){ try{ g.gain.value = to; }catch(_){} }
 }
 async function toggleRec(){
-  if (mr && mr.state === 'recording'){ mr.stop(); return; }
+  if (mr && mr.state === 'recording'){ recStopNow(); return; }
   if (!studioItem) return;
   /* 上一次錄完相機就關了，再按一次自拍要重新開，不然只會錄到靜止的臉 */
   if (recMode === 's' && (!selfieStream || !selfieStream.active)){
@@ -3079,7 +3083,7 @@ async function toggleRec(){
   chunks = []; recSec = 0;
   mr.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
   mr.onstop = async () => {
-    clearInterval(recTimer); cancelAnimationFrame(recAnim);
+    clearInterval(recTimer); cancelAnimationFrame(recAnim); curFade = null; recFading = false;
     mic.getTracks().forEach(tr => tr.stop());
     stopSelfie();
     try{ if (bgmEl){ bgmEl.pause(); bgmEl.src = ''; } }catch(_){}
@@ -3092,6 +3096,7 @@ async function toggleRec(){
   await new Promise(r => setTimeout(r, REC_WARMUP));
   if (!mr) return;
   mr.start(1000);
+  curFade = bgmEl ? (() => fadeOutStop(bgmGain, ac, BGM_FADEOUT)) : null;
   fadeIn(micGain, ac, 1, REC_FADEIN);
   if (bgmEl){
     try{ await bgmEl.play(); }catch(_){}
@@ -3102,7 +3107,7 @@ async function toggleRec(){
 }
 /* 不開口：卡片配上背景音樂直接合成一支影片 */
 async function musicRec(){
-  if (mr && mr.state === 'recording'){ mr.stop(); return; }
+  if (mr && mr.state === 'recording'){ recStopNow(); return; }
   if (!studioItem || !bgmBlob){ toast(t().bgmNeed); return; }
   if (!canVideo()){ toast(t().vidNo); return; }
   let ac, bgmEl, bgmURL, audioStream;
@@ -3127,7 +3132,7 @@ async function musicRec(){
   chunks = []; recSec = 0;
   mr.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
   mr.onstop = async () => {
-    clearInterval(recTimer); cancelAnimationFrame(recAnim);
+    clearInterval(recTimer); cancelAnimationFrame(recAnim); curFade = null; recFading = false;
     try{ if (bgmEl){ bgmEl.pause(); bgmEl.src = ''; } }catch(_){}
     try{ if (bgmURL) URL.revokeObjectURL(bgmURL); }catch(_){}
     try{ if (ac) ac.close(); }catch(_){}
@@ -3137,13 +3142,18 @@ async function musicRec(){
   mr.start(1000);
   try{ await bgmEl.play(); }catch(e){}
   fadeIn(__mcGain, ac, 1, 0.6);
+  curFade = () => fadeOutStop(__mcGain, ac, BGM_FADEOUT);
   bgmEl.onended = () => { if (mr && mr.state === 'recording') mr.stop(); };
+  /* 整首：剩 5 秒就開始淡出；固定長度：在「長度－5 秒」開始淡出，淡完剛好結束 */
+  bgmEl.ontimeupdate = () => {
+    if (mcLen > 0 || recFading || !isFinite(bgmEl.duration)) return;
+    const left = bgmEl.duration - bgmEl.currentTime;
+    if (left <= BGM_FADEOUT && mr && mr.state === 'recording') fadeOutStop(__mcGain, ac, Math.max(.5, left));
+  };
   const lim = mcLen > 0 ? mcLen : 8 * 60;
-  if (mcLen > 0){
-    setTimeout(() => { try{ __mcGain && __mcGain.gain.linearRampToValueAtTime(0, ac.currentTime + 1.8); }catch(_){} },
-               Math.max(0, lim - 2) * 1000);
-  }
-  setTimeout(() => { if (mr && mr.state === 'recording') mr.stop(); }, lim * 1000);
+  setTimeout(() => { if (!recFading && mr && mr.state === 'recording') fadeOutStop(__mcGain, ac, BGM_FADEOUT); },
+             Math.max(0, lim - BGM_FADEOUT) * 1000);
+  setTimeout(() => { if (mr && mr.state === 'recording') mr.stop(); }, lim * 1000 + 300);
   const bt = $('#mcBtn'); if (bt){ bt.textContent = t().recStop; bt.classList.add('danger'); }
   recTick(t().mcing + '　♪');
 }
@@ -3286,10 +3296,10 @@ async function noteRewrite(instr, mask){
   const go = mask && $('#twGo', mask);
   if (go){ go.disabled = true; go.textContent = tw_().busy; }
   const sys = isEN()
-    ? 'You are Xiaozhi from Kingdom 321 Fellowship. Rewrite the short blessing the user gives you, following their instruction. Return ONLY the rewritten text — no explanation, no heading, no bullet points, no quotation marks, and do not quote the verse again. Keep it warm and spoken, never preachy. If it reads as a prayer, close it with "in the name of the Lord Jesus we pray, Amen" — never "in Jesus\' name we ask, Amen."'
+    ? 'You are Xiaozhi from Kingdom 321 Fellowship. Rewrite the short blessing the user gives you, following their instruction. Return ONLY the rewritten text — no explanation, no heading, no bullet points, no quotation marks, and do not quote the verse again. Keep it warm and spoken, never preachy. Close with a short blessing ending in just "Amen" — do not write "in the name of Jesus we pray".'
     : isZS()
-    ? '你是「小智」，国度321空中团契的属灵同伴。请照使用者的要求，修改他给你的这段祝福。只回传改好的内文本身——不要解释、不要标题、不要条列、不要引号、不要再抄一次经文。保持温暖、口语、不说教。若结尾写成祷告，要用「奉主耶稣的名祷告，阿们」，不要用「奉耶稣的名求」。'
-    : '你是「小智」，國度321空中團契的屬靈同伴。請照使用者的要求，修改他給你的這段祝福。只回傳改好的內文本身——不要解釋、不要標題、不要條列、不要引號、不要再抄一次經文。保持溫暖、口語、不說教。若結尾寫成禱告，要用「奉主耶穌的名禱告，阿們」，不要用「奉耶穌的名求」。';
+    ? '你是「小智」，国度321空中团契的属灵同伴。请照使用者的要求，修改他给你的这段祝福。只回传改好的内文本身——不要解释、不要标题、不要条列、不要引号、不要再抄一次经文。保持温暖、口语、不说教。祝福结尾只用「阿们」，不要写「奉主耶稣的名祷告」。'
+    : '你是「小智」，國度321空中團契的屬靈同伴。請照使用者的要求，修改他給你的這段祝福。只回傳改好的內文本身——不要解釋、不要標題、不要條列、不要引號、不要再抄一次經文。保持溫暖、口語、不說教。祝福結尾只用「阿們」，不要寫「奉主耶穌的名禱告」。';
   const ask = L3('經文：', '经文：', 'Verse: ') + studioItem.t + '（' + cardRef(studioItem) + '）'
             + whoLine() + AUD_WRITE()
             + L3('\n\n目前的內文：\n', '\n\n目前的内文：\n', '\n\nCurrent text:\n') + cur
@@ -3347,7 +3357,7 @@ async function blessWrite(){
     : '你是「小智」，國度321空中團契的屬靈同伴。請照使用者給的這節經文，寫一段溫暖的關懷祝福，送給弟兄姊妹。要求：先用一兩句點出這節經文裡神的心意，再寫一句貼近生活的祝福，最後用一句祝福收尾。總共三到四句、120 字以內，口語、溫暖、不說教，不要標題、不要條列、不要引號、不要再抄一次經文。若結尾寫成禱告，要用「奉主耶穌的名禱告，阿們」，不要用「奉耶穌的名求」。';
   const ask = L3('經文：', '经文：', 'Verse: ') + studioItem.t + ' (' + cardRef(studioItem) + ')' + whoLine() + AUD_WRITE();
   const rr_ = await aiOnce(sys, ask);
-  const out = rr_.out, why = rr_.why;
+  const out = amenOnly(rr_.out), why = rr_.why;
   blessBusy = false;
   if (out){
     studioNote = out;
@@ -4256,7 +4266,7 @@ async function teamAIWrite(ta, btn, kind, verse){
     if (!r.ok) throw new Error('http ' + r.status);
     const out = extractReply(await r.json().catch(() => null));
     if (!out) throw new Error('empty');
-    ta.value = out.replace(/[*#>`]/g, '').replace(/^「|」$/g, '').trim();
+    ta.value = amenOnly(out.replace(/[*#>`]/g, '').replace(/^「|」$/g, '').trim());
   }catch(e){ toast(t().chatErr, 3500); }
   btn.disabled = false; btn.textContent = old;
 }
@@ -4478,21 +4488,6 @@ function mdTableMap(src, fmt){
   return out.join('\n');
 }
 /* 朗讀用：把表格說成一句一句的話，不要唸出直線和虛線 */
-function mdSpeak(md){
-  const zh = !isEN();
-  const said = mdTableMap(md, function (head, rows){
-    const lead = L3('下面用表格整理：', '下面用表格整理：', 'Here is a summary:');
-    const body = rows.map(r =>
-      r.map((c, j) => {
-        const h = (head[j] || '').trim();
-        if (!c) return '';
-        return h ? (zh ? h + '是' + c : h + ' is ' + c) : c;
-      }).filter(Boolean).join(zh ? '，' : ', ') + (zh ? '。' : '.')
-    ).join('\n');
-    return lead + '\n' + body;
-  });
-  return mdStrip(said);
-}
 function mdStrip(x){
   const arrow = ' → ';
   return mdTableMap(String(x || ''), function (head, rows){
@@ -4531,7 +4526,7 @@ async function viewCompanion(v){
   const L = t();
   const b = RD.book ? BOOK[RD.book] : null;
   v.innerHTML = `<div class="chatwrap">
-      <div class="xz-head"><button class="xz-back" id="xzBack" title="${esc(L.back || '返回')}">‹</button><img src="icon-72.png" alt=""><span>${esc(L.companionFull)}</span></div>
+      <div class="xz-head"><button class="xz-back" id="xzBack" title="${esc(L.back || '返回')}">‹</button><img src="icon-72.png" alt=""><span>${esc(L.companionFull)}</span><button class="xz-fold" id="xzFold">${esc(L3('收合', '收合', 'Fold'))}</button></div>
       ${b ? `<div class="chatctx">${esc(L.ctx(bname(b), RD.ch))}</div>` : ''}
       <div class="aud-row" style="display:flex;align-items:center;gap:8px;margin:0 0 4px">
         <span class="muted" style="font-size:12.5px;white-space:nowrap">${esc(L3('對象', '对象', 'For'))}</span>
@@ -4551,6 +4546,7 @@ async function viewCompanion(v){
     else if (history.length > 1) history.back();
     else go('#/today');
   };
+  $('#xzFold', v).onclick = foldAll;
   const panel = $('#qsPanel', v);
   const paintQs = () => {
     panel.innerHTML = qbankNow().map(q => `<button class="qs-chip">${esc(q)}</button>`).join('');
@@ -4593,7 +4589,7 @@ function fuCss(){
 }
 /* 只在「最新一則」成功的回答底下出現追問；舊的回答與連線失敗的不顯示 */
 function fuHtml(m, i){
-  if (m.role !== 'ai' || !m.ok || chatBusy || i !== chatLog.length - 1) return '';
+  if (m.role !== 'ai' || !m.ok || m.cont || chatBusy || i !== chatLog.length - 1) return '';
   const l = FU_LIST(); if (!l.length) return '';
   return `<div class="fu-row"><span class="fu-t">${esc(L3('追問：', '追问：', 'Ask more: '))}</span>`
     + l.map(x => `<button class="fu-chip" data-q="${esc(x[2])}">${x[0]} ${esc(x[1])}</button>`).join('') + '</div>';
@@ -4603,8 +4599,9 @@ function paintChat(){
   const log = $('#chatlog'); if (!log) return;
   log.innerHTML = chatLog.map((m, i) => m.role === 'user'
     ? `<div class="msg user">${esc(m.text)}</div>`
-    : `<div class="msg ai"><div class="msg-body">${mdToHtml(m.text)}</div>
-        <div class="msg-actions">
+    : `<div class="msg ai${msgFoldCls(m)}" id="msg${i}"><div class="msg-body">${mdToHtml(m.text)}</div>${m.cont
+          ? `<div class="msg-cont">${esc(L3('小智還在接著寫…', '小智还在接着写…', 'Xiaozhi is still writing…'))}</div>` : msgMoreHtml(m, i)}
+        <div class="msg-actions"${m.cont ? ' hidden' : ''}>
           <button class="msg-act ${isFav(m.text) ? 'on' : ''}" data-a="fav" data-i="${i}">★ ${esc(L3('收藏', '收藏', 'Save'))}</button>
           <button class="msg-act" data-a="share" data-i="${i}">↗ ${esc(L3('分享', '分享', 'Share'))}</button>
           <button class="msg-act" data-a="card" data-i="${i}">🖼 ${esc(L3('做成美圖', '做成美图', 'Make a card'))}</button>
@@ -4612,6 +4609,7 @@ function paintChat(){
           <button class="msg-act" data-a="del" data-i="${i}">✕</button>
         </div>${fuHtml(m, i)}</div>`).join('');
   $$('.fu-chip', log).forEach(b => b.onclick = () => sendChat(b.dataset.q));
+  $$('.msg-more', log).forEach(b => b.onclick = () => msgFold(+b.dataset.i));
   $$('.msg-act', log).forEach(b => b.onclick = () => {
     const i = +b.dataset.i, m = chatLog[i];
     if (b.dataset.a === 'fav'){ toggleFav(m.text); paintChat(); }
@@ -4857,33 +4855,25 @@ async function sendChat(text){
     + (b ? (isEN() ? ` (The reader is currently in ${bname(b)} ${RD.ch}.)`
           : isZS() ? `（读者目前在读：${bname(b)} 第 ${RD.ch} 章）`
                    : `（讀者目前在讀：${bname(b)} 第 ${RD.ch} 章）`) : '');
-  const payload = JSON.stringify({
-    system: sys,
-    messages: chatLog.filter(m => m.text !== t().thinking).slice(-12)
-      .map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.text }))
-  });
-  /* Worker 冷啟動時第一次呼叫常常會失敗，跟朗讀一樣退幾步再試。
-     真的連不上就把原因寫出來（http 500／逾時…），才知道是哪一邊的問題。 */
-  let reply = '', why = '';
-  for (let a = 0; a <= CHAT_RETRY.length; a++){
-    try{
-      const r = await fetch(API.chat, {
-        method:'POST', headers:{'Content-Type':'application/json'}, body: payload
-      });
-      if (!r.ok) throw new Error('http ' + r.status);
-      const data = await r.json().catch(() => null);
-      reply = extractReply(data);
-      if (!reply) why = '回覆是空的';
-      break;
-    }catch(e){
-      why = (e && e.message) ? String(e.message) : 'network';
-      if (a === CHAT_RETRY.length) break;
-      await new Promise(r => setTimeout(r, CHAT_RETRY[a]));
-    }
+  const msgs = chatLog.filter(m => m.text !== t().thinking).slice(-12)
+    .map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.text }));
+  while (msgs.length && msgs[0].role !== 'user') msgs.shift();    // 第一則一定要是使用者
+  /* Worker 冷啟動時第一次呼叫常常會失敗，退幾步再試；真的連不上就把原因寫出來。
+     回答被截斷（max_tokens）時，自動把已寫的內容當作上文，請小智從中斷處接著寫完。 */
+  let r = await chatCall(sys, msgs);
+  let acc = r.out, why = r.why, stop = r.stop, n = 0;
+  for (;;){
+    const tr = acc ? chatTruncated(acc, stop) : '';
+    if (!tr || n >= (tr === 'sure' ? 4 : 1)) break;
+    n++;
+    chatLog[chatLog.length - 1] = { role:'ai', src:srcNow, ok:false, cont:true, text:acc }; paintChat();
+    const r2 = await chatCall(sys, msgs.concat([{ role:'assistant', content:acc }, { role:'user', content:CONT_ASK() }]));
+    if (!r2.out) break;
+    acc = chatJoin(acc, r2.out); stop = r2.stop;
   }
-  chatLog[chatLog.length - 1] = { role:'ai', src:srcNow, ok: !!reply,
-    text: reply || (t().chatErr + (why ? '（' + why + '）' : '')) };
-  chatBusy = false; paintChat();
+  chatLog[chatLog.length - 1] = { role:'ai', src:srcNow, ok: !!acc,
+    text: acc || (t().chatErr + (why ? '（' + why + '）' : '')) };
+  chatBusy = false; foldOld(); paintChat();
 }
 
 /* ================================================================ 讀經樂：聖經猜謎＆讀經測驗（v2.9.0）
@@ -5456,7 +5446,7 @@ async function viewMe(v){
         ${L.onoff.map((m, i) => `<button class="${(state.ttsAutoNext ? 0 : 1) === i ? 'on' : ''}" data-i="${i}">${esc(m)}</button>`).join('')}
         </div></div>
       <div class="setrow"><div class="sl">${esc(L.upd)}<div class="muted" style="font-size:11.5px;line-height:1.6" id="updOut"></div></div>
-        <div class="segbtns"><button id="updBtn">${esc(L.updCheck)}</button></div></div>
+        <div class="segbtns"><button id="updBtn">${esc(L.updCheck)}</button><button id="updHardBtn">${esc(L3('強制更新', '强制更新', 'Force update'))}</button></div></div>
     </div>
 
     <details class="grp">
@@ -5496,6 +5486,8 @@ async function viewMe(v){
 
   $$('#setLang button', v).forEach(b => b.onclick = () => switchLang(b.dataset.l));
   const dg = $('#diagBtn', v); if (dg) dg.onclick = () => runDiag();
+  const uo = $('#updOut', v); if (uo) uo.textContent = VERSION;
+  const uh = $('#updHardBtn', v); if (uh) uh.onclick = () => applyUpdate(true);
   const ub = $('#updBtn', v);
   if (ub){
     const setReady = () => { ub.textContent = L.updReadyBar; ub.classList.add('on'); ub.onclick = applyUpdate; };
@@ -5595,6 +5587,22 @@ let ttsStartAt = null;
 let ttsAutoNextPending = false;
 
 /* 朗讀發音修正（僅影響語音，不影響畫面文字） */
+const TTS_FIX_MORE = [
+  [/(與主|與神|與祂|與他|與你|與我|一起|彼此|同心)同行/g, '$1同形'], [/(与主|与神|与祂|与他|与你|与我|一起|彼此|同心)同行/g, '$1同形'],
+  [/重生/g, '蟲生'], [/重擔/g, '眾擔'], [/重担/g, '众担'],
+  [/差遣/g, '拆遣'], [/差派/g, '拆派'], [/差役/g, '拆役'], [/([主神祂他])差([人我你])/g, '$1拆$2'],
+  [/背起/g, '揹起'], [/背負/g, '揹負'], [/背负/g, '揹负'], [/背著/g, '揹著'], [/背着/g, '揹着'],
+  [/得著/g, '得着'],
+  [/數算/g, '鼠算'], [/數到/g, '鼠到'], [/數一數/g, '鼠一鼠'], [/数算/g, '鼠算'], [/数到/g, '鼠到'], [/数一数/g, '鼠一鼠'],
+  [/朝拜/g, '潮拜'], [/朝见/g, '潮见'],
+  [/(長者|長輩|長進|長出|長執|成長|生長|年長|師長|兄長)/g, m => m.replace('長', '掌')],
+  [/(长者|长辈|长进|长出|长执|成长|生长|年长|师长|兄长|长老|长子|家长|长大)/g, m => m.replace('长', '掌')],
+  [/([組團校部首夫牧區會社])長/g, '$1掌'], [/([组团校部首夫牧区会社])长/g, '$1掌'],
+  [/行傳/g, '行賺'], [/傳記/g, '賺記'], [/行传/g, '行赚'], [/传记/g, '赚记'],
+  [/好施/g, '耗施'], [/年少/g, '年紹'],
+  [/行为/g, '行围'], [/为大/g, '围大'], [/教会/g, '叫会'], [/传道/g, '船道'],
+  [/应当/g, '英当'], [/应许/g, '英许'], [/相应/g, '相映'], [/种子/g, '肿子'], [/中间/g, '衷间'], [/分开/g, '芬开']
+];
 const TTS_FIX = [
   [/長老/g, '掌老'], [/長子/g, '掌子'], [/家長/g, '家掌'], [/長大/g, '掌大'],
   [/行為/g, '行圍'], [/為大/g, '圍大'], [/中了/g, '衷了'],
@@ -5611,7 +5619,7 @@ const TTS_FIX = [
      （這兩個字繁簡分屬不同碼位：簡體版對應的是「干」「鸽」，「干」本身就是常用字沒有
      誤讀風險不用修；「鸽」使用者沒有回報過，先不動，之後真的回報再比照這裡加。） */
   [/乾/g, '甘'], [/鴿/g, '哥']
-];
+].concat(TTS_FIX_MORE);
 /* 「地」這個字有兩種讀音：當名詞（大地／土地／地方…）要唸 dì；
    接在疊字形容詞或副詞後面、修飾後面動詞的「地」結構助詞（大大地、漸漸地、不住地…）要唸輕聲 de。
    使用者回報好幾處 dì 被唸成了 de（「地發生」「地必為…受咒詛」「從地裡得吃的」…），
@@ -5698,7 +5706,7 @@ function ttsRef(x){
 const EMOJI_RE = /[\u{1F000}-\u{1FAFF}\u{2190}-\u{21FF}\u{2300}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE00}-\u{FE0F}\u{1F1E6}-\u{1F1FF}\u{200D}\u{20E3}]/gu;
 const noEmoji = x => String(x || '').replace(EMOJI_RE, '').replace(/[ \t]{2,}/g, ' ');
 function ttsPrep(s){
-  let x = noEmoji(ttsRef(s));
+  let x = noEmoji(ttsRef(dropRefParens(s)));
   x = x.replace(/〔[^〕]*〕/g, '').replace(/\[[^\]]*\]/g, '');   // 譯者註不朗讀
   if (isEN()) return x.replace(/\s+/g, ' ').trim();                  // 英文不做破音字修正
   x = x.replace(/[「」『』（）]/g, '');
@@ -5788,6 +5796,7 @@ function raShow(item){
 
 /* 開始／暫停／停止三顆各自的可按狀態。st：'' 閒置、'loading' 抓語音中、'playing' 播放中、'paused' 暫停中 */
 function ttsBtn(st){
+  ttsSys(st);
   const play = $('#rdPlay'), pause = $('#rdPause'), stop = $('#rdStop');
   if (!play || !pause || !stop) return;
   [play, pause, stop].forEach(b => b.removeAttribute('data-state'));
@@ -6075,55 +6084,395 @@ async function ttsSpeakText(text, id){
   }
 }
 
+/* ================================================================ v2.12.0 補強（依 321 互動聖經功能套件）
+   小智：長回答收合、回答被截斷自動接著寫完；朗讀：鎖屏顯示與防休眠、括號出處不唸、小智回答說成口語；
+   錄製：配樂結束一律淡出 5 秒；祝福結尾只留「阿們」。 */
+
+/* ---------- 小智回答：收合 ---------- */
+const msgLong = m => m && m.role === 'ai' && !m.cont && mdStrip(m.text || '').length > (isEN() ? 420 : 200);
+const msgFoldCls = m => (m.fold && msgLong(m)) ? ' fold' : '';
+function msgMoreHtml(m, i){
+  if (!msgLong(m)) return '';
+  return `<button class="msg-more" data-i="${i}">${esc(m.fold ? L3('展開全文 ▾', '展开全文 ▾', 'Read more ▾') : L3('收合 ▴', '收合 ▴', 'Collapse ▴'))}</button>`;
+}
+/* 只改這一則的 class 與按鈕字，不重畫整個對話——才不會打斷正在朗讀的那一則 */
+function msgFold(i){
+  const m = chatLog[i]; if (!m || !msgLong(m)) return;
+  m.fold = !m.fold;
+  const el = document.getElementById('msg' + i); if (!el) return;
+  el.classList.toggle('fold', !!m.fold);
+  const b = el.querySelector('.msg-more');
+  if (b) b.textContent = m.fold ? L3('展開全文 ▾', '展开全文 ▾', 'Read more ▾') : L3('收合 ▴', '收合 ▴', 'Collapse ▴');
+  if (m.fold) try{ el.scrollIntoView({ block:'nearest' }); }catch(e){}
+}
+/* 新回答抵達：之前的長回答自動收起，只留最新一則展開 */
+function foldOld(){
+  let last = -1;
+  chatLog.forEach((m, i) => { if (m.role === 'ai') last = i; });
+  chatLog.forEach((m, i) => { if (m.role === 'ai' && msgLong(m)) m.fold = (i !== last); });
+}
+function foldAll(){
+  let n = 0;
+  chatLog.forEach(m => { if (msgLong(m)){ m.fold = true; n++; } });
+  if (!n){ toast(L3('目前沒有需要收合的回答', '目前没有需要收合的回答', 'No long answers to collapse')); return; }
+  paintChat();
+  toast(L3('已收合所有長回答', '已收合所有长回答', 'All long answers collapsed'));
+}
+
+/* ---------- 小智回答：呼叫＋被截斷時自動接著寫 ---------- */
+async function chatCall(sys, msgs){
+  let out = '', why = '', stop = '';
+  for (let a = 0; a <= CHAT_RETRY.length; a++){
+    try{
+      const r = await fetch(API.chat, { method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ system: sys, messages: msgs }) });
+      if (!r.ok) throw new Error('http ' + r.status);
+      const d = await r.json().catch(() => null);
+      out = extractReply(d);
+      stop = (d && (d.stop_reason || d.finish_reason ||
+             (d.choices && d.choices[0] && d.choices[0].finish_reason))) || '';
+      if (!out) why = L3('回覆是空的', '回复是空的', 'empty reply');
+      break;
+    }catch(e){
+      why = (e && e.message) ? String(e.message) : 'network';
+      if (a === CHAT_RETRY.length) break;
+      await new Promise(rs => setTimeout(rs, CHAT_RETRY[a]));
+    }
+  }
+  return { out, why, stop };
+}
+/* 回傳 stop_reason 為 max_tokens／length 就是被截斷；沒有 stop_reason 時，只在長文又沒有結束標點時才猜是被截斷 */
+function chatTruncated(text, stop){
+  if (stop === 'max_tokens' || stop === 'length') return 'sure';
+  if (stop) return '';
+  const x = String(text || '').trim();
+  if (x.length < 280) return '';
+  if (/[。！？.!?」』）)”"…~|]$/.test(x) || /(阿們|阿门|amen\.?)$/i.test(x)) return '';
+  return 'guess';
+}
+function chatJoin(acc, piece){
+  piece = String(piece || '').replace(/^\s*(好的|好|OK|Okay|Sure)[，,。.!！]?\s*/i, '');
+  const max = Math.min(40, acc.length, piece.length);
+  for (let k = max; k >= 4; k--){
+    if (acc.slice(-k) === piece.slice(0, k)){ piece = piece.slice(k); break; }
+  }
+  const head = piece.replace(/^\s+/, '');
+  if (/^(#{1,6} |&gt;|>|---)/.test(head)) return acc.replace(/\s+$/, '') + '\n\n' + head;
+  if (/^([-*] |\d+[.)] |\|)/.test(head)) return acc.replace(/\s+$/, '') + '\n' + head;
+  return acc + piece;
+}
+const CONT_ASK = () => L3('請從中斷的地方直接接著寫完，不要重複前面已經寫過的內容，也不要加開場白。',
+  '请从中断的地方直接接着写完，不要重复前面已经写过的内容，也不要加开场白。',
+  'Please continue exactly where you stopped and finish. Do not repeat anything already written and do not add an opening line.');
+
+/* ---------- 朗讀：鎖屏顯示與防休眠 ---------- */
+let wakeLock = null;
+async function wlAcquire(){
+  try{
+    if (!navigator.wakeLock || wakeLock) return;
+    wakeLock = await navigator.wakeLock.request('screen');
+    wakeLock.addEventListener('release', () => { wakeLock = null; });
+  }catch(e){ wakeLock = null; }
+}
+function wlRelease(){ try{ if (wakeLock) wakeLock.release(); }catch(e){} wakeLock = null; }
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && spk && spk.on && !spk.paused) wlAcquire();
+});
+let msInit = false;
+function msSet(){
+  if (!('mediaSession' in navigator)) return;
+  try{
+    const b = RD.book ? BOOK[RD.book] : null;
+    const title = b ? bname(b) + (RD.flow ? '' : ' ' + RD.ch) : t().app;
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title, artist: L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Fellowship'), album: t().app,
+      artwork: [{ src:'icon-512.png', sizes:'512x512', type:'image/png' }] });
+    if (!msInit){
+      msInit = true;
+      navigator.mediaSession.setActionHandler('play', () => { try{ ttsStart(); }catch(e){} });
+      navigator.mediaSession.setActionHandler('pause', () => { try{ ttsPauseNow(); }catch(e){} });
+      navigator.mediaSession.setActionHandler('stop', () => { try{ ttsStop(); }catch(e){} });
+    }
+    navigator.mediaSession.playbackState = 'playing';
+  }catch(e){}
+}
+function ttsSys(st){
+  if (st === 'playing' || st === 'loading'){ wlAcquire(); msSet(); }
+  else if (st === 'paused'){
+    wlRelease();
+    try{ if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused'; }catch(e){}
+  } else {
+    wlRelease();
+    try{ if ('mediaSession' in navigator){ navigator.mediaSession.playbackState = 'none'; navigator.mediaSession.metadata = null; } }catch(e){}
+  }
+}
+
+/* ---------- 朗讀：括號裡只有經文出處的整段不唸 ---------- */
+let _refPartRe = null, _refPartLang = '';
+function refPartRe(){
+  if (_refPartRe && _refPartLang === state.lang) return _refPartRe;
+  const ks = Object.keys(refTable().map).sort((a, b) => b.length - a.length)
+               .map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  const nums = '\\d+(?:\\s*[:：]\\s*\\d+(?:\\s*[-–—~～至]\\s*\\d+)?)?';
+  _refPartRe = new RegExp('^(?:' + (ks.length ? '(?:' + ks.join('|') + ')\\s*\\.?\\s*' + nums + '|' : '') + '\\d+\\s*[:：]\\s*\\d+(?:\\s*[-–—~～至]\\s*\\d+)?)$', 'i');
+  _refPartLang = state.lang;
+  return _refPartRe;
+}
+function dropRefParens(s){
+  const re = refPartRe();
+  return String(s || '').replace(/[（(]([^（）()]{1,80})[）)]/g, (m, inner) => {
+    const x = inner.replace(/^\s*(?:另見|參看|參見|参看|参见|參|参|見|见|cf\.?|see)\s*/i, '').trim();
+    if (!x) return m;
+    const parts = x.split(/[；;、，,]/).map(p => p.trim()).filter(Boolean);
+    return parts.length && parts.every(p => re.test(p)) ? '' : m;
+  });
+}
+
+/* ---------- 祝福結尾只留「阿們」 ---------- */
+function amenOnly(s){
+  let x = String(s || '');
+  x = x.replace(/[，,、]?\s*奉\s*(?:主\s*)?(?:耶穌|耶稣)\s*(?:基督\s*)?的\s*名\s*(?:禱告|祈禱|祈求|祷告|祈祷|求)\s*[，,]?\s*/g, m => /^[，,、]/.test(m) ? '。' : '');
+  x = x.replace(/[,，]?\s*in\s+(?:the\s+name\s+of\s+)?(?:the\s+Lord\s+)?Jesus(?:\s+Christ)?(?:['’]s\s+name)?(?:\s+we\s+(?:pray|ask))?\s*[,，]?\s*/gi, ' ');
+  return x.replace(/。。+/g, '。').replace(/\s{2,}/g, ' ').replace(/\s+([。！？.!?])/g, '$1').trim();
+}
+
+/* ---------- 小智回答說成自然口吻（朗讀用） ---------- */
+function mdSpeak(md){
+  const zh = !isEN();
+  const tbl = mdTableMap(String(md || ''), function (head, rows){
+    const lead = L3('我們用一個對照來整理。', '我们用一个对照来整理。', 'Here is a quick comparison.');
+    const body = rows.map((r, ri) => {
+      const cells = r.map((c, j) => {
+        const h = (head[j] || '').trim();
+        if (!c) return '';
+        return h ? (zh ? h + '是' + c : h + ' is ' + c) : c;
+      }).filter(Boolean).join(zh ? '，' : ', ');
+      const pre = (rows.length > 1 && ri === rows.length - 1) ? (zh ? '最後，' : 'Finally, ') : '';
+      return pre + cells + (zh ? '。' : '.');
+    }).join('\n');
+    return lead + '\n' + body;
+  });
+  const clean = s => mdStrip(String(s || '').replace(/&gt;/g, '>')).replace(/\s+/g, ' ').trim();
+  const NUMS = '零一二三四五六七八九十';
+  const blocks = [];
+  tbl.split('\n').forEach(line => {
+    const l = line.replace(/\s+$/, '');
+    if (!l.trim()){ blocks.push({ k:'br' }); return; }
+    let m;
+    if ((m = l.match(/^\s*#{1,6}\s+(.*)$/))){ blocks.push({ k:'h', t:clean(m[1]) }); return; }
+    if ((m = l.match(/^\s*(?:&gt;|>)\s?(.*)$/))){ blocks.push({ k:'q', t:clean(m[1]) }); return; }
+    if (/^\s*---+\s*$/.test(l)){ blocks.push({ k:'br' }); return; }
+    if ((m = l.match(/^\s*\*\*(\d{1,2})[.)、]\s*([^*]*)\*\*\s*(.*)$/))){
+      blocks.push({ k:'li', num:+m[1], t:clean(m[2] + (m[3] ? '：' + m[3] : '')) }); return; }
+    if ((m = l.match(/^\s*(?:[-*・•]\s+|(\d{1,2})[.)、]\s+|([一二三四五六七八九十])、|[（(]([一二三四五六七八九十])[）)]\s*)(.*)$/))){
+      const num = m[1] ? +m[1] : ((m[2] || m[3]) ? NUMS.indexOf(m[2] || m[3]) : 0);
+      const body = m[4], lb = body.match(/^\*\*([^*]+)\*\*\s*[:：]?\s*(.*)$/);
+      blocks.push({ k:'li', num, lab: lb ? clean(lb[1]) : '', desc: lb ? clean(lb[2]) : '', t:clean(body) }); return; }
+    blocks.push({ k:'p', t:clean(l) });
+  });
+  /* 分組：連續的條列算一組；有編號的清單中間夾說明段也算同一組 */
+  let cur = null, gid = 0;
+  const groups = [];
+  blocks.forEach((b, bi) => {
+    if (b.k === 'li'){
+      if (!cur || (cur.numbered !== !!b.num)){ cur = { id:gid++, items:[], numbered:!!b.num, prev:'' }; groups.push(cur);
+        for (let j = bi - 1; j >= 0 && j >= bi - 3; j--) if (blocks[j].k === 'p'){ cur.prev = blocks[j].t; break; } }
+      cur.items.push(b); b.g = cur; b.gi = cur.items.length - 1;
+    } else if (b.k === 'p'){ if (!(cur && cur.numbered)) cur = null; }
+    else if (b.k !== 'br'){ cur = null; }
+  });
+  const isKW = /想更多|延伸|多想|再想|深思|think more/i, isPR = /禱告|祷告|pray/i;
+  const normalH = blocks.filter(b => b.k === 'h' && !isKW.test(b.t) && !isPR.test(b.t));
+  let hn = 0, qn = 0;
+  const startsLead = /^(首先|其次|另外|最後|最后|第[一二三四五六七八九十]|first|second|third|finally|next)/i;
+  const scripture = t => /[「“”"]|\d+\s*[:：]\s*\d+/.test(t);
+  const endP = s => { s = s.trim(); if (!s) return s; return zh ? (/[。！？：；，、」』）…]$/.test(s) ? s : s + '。') : (/[.!?:;,)"”]$/.test(s) ? s : s + '.'); };
+  const modeOf = g => {
+    const its = g.items, n = its.length;
+    if (n === 1) return 'none';
+    if (its.every(i => scripture(i.t))) return 'none';
+    if (g.numbered) return 'num';
+    if (/步驟|步骤|方法|做法|如何|幾個|几个|幾件事|几件事|steps?|ways?|how to/i.test(g.prev)) return 'num';
+    if (its.filter(i => i.lab).length * 2 > n) return 'label';
+    if (its.every(i => (zh ? i.t.length <= 14 : i.t.length <= 28) && !/[，。；,;]/.test(i.t))) return 'short';
+    return 'plain';
+  };
+  groups.forEach(g => { g.mode = modeOf(g); });
+  const LEAD = zh
+    ? { first:'首先，', mid:['另外，', '還有，'], last:'最後，', only2last:'最後，' }
+    : { first:'First, ', mid:['Next, ', 'Also, '], last:'Finally, ', only2last:'Finally, ' };
+  const out = [];
+  blocks.forEach(b => {
+    if (b.k === 'br') return;
+    if (b.k === 'h'){
+      if (isKW.test(b.t)) out.push(zh ? '如果想更多一點，可以這樣想。' : 'If you want to think a little further, here is a thought.');
+      else if (isPR.test(b.t)) out.push(zh ? '讓我們一起禱告。' : 'Let us pray together.');
+      else {
+        const n = normalH.length, i = hn++, t = b.t.replace(/^\d+[.)、]\s*/, '');
+        if (zh){
+          const w = n === 1 ? '我們來談' : (i === 0 ? '先談' : ((n >= 3 && i === n - 1) ? '最後談' : ['接下來談', '再來看', '我們再看'][(i - 1) % 3]));
+          out.push(w + t + '。');
+        } else {
+          const w = n === 1 ? 'Let us talk about ' : (i === 0 ? 'Let us start with ' : ((n >= 3 && i === n - 1) ? 'Finally, ' : ['Next, let us look at ', 'Then, ', 'Now, '][(i - 1) % 3]));
+          out.push(w + t + '.');
+        }
+      }
+      return;
+    }
+    if (b.k === 'q'){
+      const i = qn++;
+      const lead = zh ? (i === 0 ? (scripture(b.t) ? '聖經說：' : '有一句話特別要記住：') : '還有一句：')
+                      : (i === 0 ? (scripture(b.t) ? 'The Bible says: ' : 'One line is worth remembering: ') : 'And another: ');
+      out.push(lead + endP(b.t)); return;
+    }
+    if (b.k === 'li'){
+      const g = b.g, n = g.items.length, i = b.gi;
+      if (g.mode === 'short'){
+        if (i > 0) return;
+        const ts = g.items.map(x => x.t);
+        out.push(endP(ts.length === 2 ? ts.join(zh ? '和' : ' and ') : ts.slice(0, -1).join(zh ? '、' : ', ') + (zh ? '，還有' : ', and ') + ts[ts.length - 1]));
+        return;
+      }
+      let lead = '', text = b.t;
+      if (g.mode === 'num'){
+        const k = b.num || (i + 1);
+        lead = zh ? '第' + (k <= 10 ? NUMS.charAt(k) : k) + '，' : (['', 'First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth'][k] || 'Number ' + k) + ', ';
+      } else if (g.mode === 'label'){
+        if (b.lab){
+          const w = zh ? (i === 0 ? '首先是' : (i === n - 1 ? '最後是' : '再來是')) : (i === 0 ? 'First is ' : (i === n - 1 ? 'Last is ' : 'Then '));
+          out.push(w + b.lab + (b.desc ? (zh ? '，' : ', ') + endP(b.desc) : (zh ? '。' : '.'))); return;
+        }
+      } else if (g.mode === 'plain'){
+        lead = i === 0 ? LEAD.first : (i === n - 1 ? LEAD.last : LEAD.mid[(i - 1) % 2]);
+      }
+      if (startsLead.test(text)) lead = '';
+      out.push(lead + endP(text)); return;
+    }
+    out.push(endP(b.t));
+  });
+  return mdStrip(out.join('\n'));
+}
+
+/* ---------- 錄製：配樂結束一律淡出 5 秒 ---------- */
+const BGM_FADEOUT = 5;
+let curFade = null, recFading = false;
+function fadeOutStop(g, ac, sec){
+  if (recFading) return;
+  if (!g || !ac){ if (mr && mr.state === 'recording') mr.stop(); return; }
+  recFading = true;
+  try{
+    const t0 = ac.currentTime;
+    g.gain.cancelScheduledValues(t0);
+    g.gain.setValueAtTime(Math.max(g.gain.value, 0.0001), t0);
+    g.gain.linearRampToValueAtTime(0.0001, t0 + sec);
+  }catch(e){}
+  const st = $('#recSt');
+  if (st) st.innerHTML = '<span class="recdot"></span>' + L3('音樂淡出中…（再按一次立即停止）', '音乐淡出中…（再按一次立即停止）', 'Music fading out… (tap again to stop now)');
+  setTimeout(() => { if (mr && mr.state === 'recording') mr.stop(); }, sec * 1000 + 150);
+}
+/* 有配樂：第一次按「停止」先淡出；淡出中再按就立即停；沒有配樂就直接停 */
+function recStopNow(){
+  if (!(mr && mr.state === 'recording')) return;
+  if (recFading || !curFade) mr.stop(); else curFade();
+}
+
 /* ================================================================ 自動更新
-   舊版本（已經加到主畫面／之前打開過的）要能自動跟上新版本，靠這裡：
-   每次回到前景、以及背景每隔一段時間，都請瀏覽器去問一次新版本有沒有出來；
-   找到了就先在背景悄悄下載好，準備好了才提醒「點一下更新」──
-   不會沒說一聲就把正在讀經、正在打字的畫面整個重新整理掉。 */
+   發佈新版後，已安裝的舊版（含主畫面 PWA）要自動換成新版，靠三道保險：
+   ① version.json 輪詢：開 App 後 2.5 秒、每 30 分鐘、回到前景、從 bfcache 回來、恢復連線時，
+      讀一次 version.json（帶時間戳、不快取），版本和 VERSION 不同就是有新版。
+   ② Service Worker 更新：register 用 updateViaCache:'none'，每次檢查也呼叫 reg.update()。
+   ③ 新 SW 啟用時通知所有視窗，背景中的頁面直接被帶到新版（見 sw.js）。
+   朗讀、錄影、小智回答中、打字中、讀經樂進行中都不打斷：只顯示更新條，空閒後自動套用。
+   同一個新版只自動重整一次；第二次改硬更新（清快取）；硬更新過還是舊版就只留更新條。 */
 let swReg = null, updReady = false;
+const UPD = { target:'', pending:false };
+function ssGet(k){ try{ return sessionStorage.getItem(k); }catch(e){ return null; } }
+function ssSet(k, v){ try{ sessionStorage.setItem(k, v); }catch(e){} }
+function updBusy(){
+  if (spk && spk.on) return true;
+  if (mr && mr.state === 'recording') return true;
+  if (chatBusy || blessBusy) return true;
+  if (PL) return true;
+  const ae = document.activeElement;
+  if (ae && /^(TEXTAREA|INPUT)$/.test(ae.tagName) && ae.value) return true;
+  if (document.querySelector('.hlsheet-mask, .rw-mask')) return true;
+  return false;
+}
 function updBar(show){
   let d = $('#updbar');
   if (show){
     if (!d){
       d = document.createElement('div'); d.id = 'updbar'; d.className = 'updbar';
-      d.textContent = t().updReadyBar;
-      d.onclick = applyUpdate;
+      d.onclick = () => applyUpdate(ssGet('updTry') === UPD.target);
       document.body.appendChild(d);
-    } else d.textContent = t().updReadyBar;
+    }
+    d.textContent = t().updReadyBar;
   } else if (d) d.remove();
 }
-function applyUpdate(){
-  updBar(false);
-  toast(t().updApplying);
-  let done = false;
-  const reload = () => { if (!done){ done = true; location.reload(); } };
-  if (navigator.serviceWorker){
-    navigator.serviceWorker.addEventListener('controllerchange', reload);
-    if (swReg && swReg.waiting) try{ swReg.waiting.postMessage('skipWaiting'); }catch(e){}
-  }
-  setTimeout(reload, 1500);   // 保底：萬一等不到 controllerchange 就直接重整
+function reloadFresh(){
+  if (window.__reloading) return;
+  window.__reloading = true;
+  location.replace(location.pathname + '?u=' + Date.now() + location.hash);
+}
+function applyUpdate(hard){
+  hard = (hard === true);
+  UPD.pending = false; updBar(false); toast(t().updApplying);
+  (async () => {
+    try{
+      if (hard){
+        if ('caches' in window){ const ks = await caches.keys(); await Promise.all(ks.map(k => caches.delete(k))); }
+        if (navigator.serviceWorker){ const rs = await navigator.serviceWorker.getRegistrations(); await Promise.all(rs.map(r => r.unregister())); }
+      } else if (swReg){
+        try{ if (swReg.waiting) swReg.waiting.postMessage('skip'); }catch(e){}
+        try{ await swReg.update(); }catch(e){}
+      }
+    }catch(e){}
+    setTimeout(reloadFresh, hard ? 100 : 900);
+  })();
+}
+function onNewVersion(v){
+  updReady = true; UPD.target = v; UPD.pending = true;
+  updBar(true);
+  updIdle();
+}
+/* 空閒時才套用；防無限重整：第一次一般更新，第二次硬更新，硬更新過還是舊版就只顯示更新條 */
+function updIdle(){
+  if (!UPD.pending || updBusy()) return;
+  const v = UPD.target;
+  if (ssGet('updHard') === v) return;
+  if (ssGet('updTry') === v){ ssSet('updHard', v); applyUpdate(true); }
+  else { ssSet('updTry', v); applyUpdate(false); }
+}
+/* 回傳 true＝有新版、false＝已是最新、null＝讀不到 version.json（離線或沒上傳） */
+async function checkVersion(){
+  try{
+    const r = await fetch('version.json?t=' + Date.now(), { cache:'no-store' });
+    if (!r.ok) return null;
+    const d = await r.json();
+    if (d && d.v && d.v !== VERSION){ onNewVersion(d.v); return true; }
+    return false;
+  }catch(e){ return null; }
 }
 function watchForUpdate(reg){
   const track = w => { if (w) w.addEventListener('statechange', () => {
-    if (w.state === 'installed' && navigator.serviceWorker.controller){ updReady = true; updBar(true); }
+    if (w.state === 'installed' && navigator.serviceWorker.controller){
+      checkVersion().then(r => { if (!r && !UPD.pending){ onNewVersion(UPD.target || 'sw'); } });
+    }
   }); };
   track(reg.installing); track(reg.waiting);
   reg.addEventListener('updatefound', () => track(reg.installing));
 }
 async function checkForUpdate(manual){
+  const out = manual ? $('#updOut') : null;
+  if (out) out.textContent = t().updChecking;
+  const r = await checkVersion();
+  if (swReg){ try{ await swReg.update(); }catch(e){} }
   if (manual){
-    const out = $('#updOut'); if (out) out.textContent = t().updChecking;
+    await new Promise(rs => setTimeout(rs, 400));   // 讓 statechange 有時間跑完
+    const has = r === true || updReady;
+    if (out) out.textContent = has ? t().updFound : (r === null && !swReg ? t().updFail : t().updLatest);
+    if (!has) toast(r === null && !swReg ? t().updFail : t().updLatest);
   }
-  if (!swReg){ if (manual) toast(t().updFail); return; }
-  try{
-    await swReg.update();
-    if (manual){
-      await new Promise(r => setTimeout(r, 400));   // 讓 statechange 有時間跑完，才知道是不是真的有新版本
-      const out = $('#updOut');
-      if (out) out.textContent = updReady ? t().updFound : t().updLatest;
-      if (!updReady) toast(t().updLatest);
-    }
-  }catch(e){ if (manual) toast(t().updFail); }
 }
 
 /* ================================================================ 啟動 */
@@ -6135,6 +6484,7 @@ async function switchLang(l){
   await render();
 }
 async function boot(){
+  if (/[?&]u=\d+/.test(location.search)) try{ history.replaceState(null, '', location.pathname + location.hash); }catch(e){}
   loadState(); loadUser(); applyChrome();
   $$('#langswitch button').forEach(b => b.onclick = () => switchLang(b.dataset.lang));
   const diagTimer = setTimeout(() => { const d = $('#boot-diag'); if (d) d.style.display = 'flex'; }, 8000);
@@ -6163,12 +6513,18 @@ async function boot(){
   window.addEventListener('orientationchange', () => setTimeout(syncHeaderH, 200));
   if ('serviceWorker' in navigator){
     try{
-      swReg = await navigator.serviceWorker.register('sw.js');
+      swReg = await navigator.serviceWorker.register('sw.js', { updateViaCache:'none' });
       watchForUpdate(swReg);
-      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkForUpdate(false); });
-      setInterval(() => checkForUpdate(false), 30 * 60 * 1000);   // 背景每 30 分鐘問一次
+      navigator.serviceWorker.addEventListener('message', e => { if (e.data && e.data.t === 'sw-updated') checkVersion(); });
+      navigator.serviceWorker.addEventListener('controllerchange', () => { if (UPD.target && !updBusy()) reloadFresh(); });
     }catch(e){}
   }
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkForUpdate(false); });
+  window.addEventListener('pageshow', e => { if (e.persisted) checkForUpdate(false); });
+  window.addEventListener('online', () => checkForUpdate(false));
+  setInterval(() => checkForUpdate(false), 30 * 60 * 1000);   // 背景每 30 分鐘問一次
+  setInterval(updIdle, 15000);                                 // 忙完了就套用等著的更新
+  setTimeout(() => checkForUpdate(false), 2500);
   setTimeout(ttsWarmUp, 1200);
   if ((user.teams || []).length) setTimeout(teamPingNow, 2500);   // 開 App 就把今天的進度同步給隊友
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkPlanRemind(); });
