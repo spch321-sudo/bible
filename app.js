@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.10.0';
+const VERSION = 'v2.11.0';
 
 /* ---------------------------------------------------------------- 基本工具 */
 const $  = (s, r) => (r || document).querySelector(s);
@@ -392,7 +392,7 @@ function loadState(){
     if (s.chnum !== undefined && s.shCh === undefined){ state.shCh = !!s.chnum; state.shV = !!s.chnum; }
     delete state.chnum;
     state.flow = !!state.flow; state.shCh = !!state.shCh; state.shV = !!state.shV;
-    if (!['adult','teen','kid'].includes(state.audience)) state.audience = 'adult';
+    if (!['adult','teen','kid','seeker'].includes(state.audience)) state.audience = 'adult';
   }catch(e){ state = Object.assign({}, DEFAULTS); }
 }
 function saveState(){ try{ localStorage.setItem('ib_state', JSON.stringify(state)); }catch(e){} }
@@ -814,6 +814,7 @@ let rwQueue = [], rwShowing = false, rwTimer = 0;
 function rwLine(id){
   const a = state.audience;
   const b = BOOK[id], nm = bname(b);
+  if (a === 'seeker') return SK_RW(nm);
   return {
     adult:[L3(`你讀完整卷《${nm}》了！`, `你读完整卷《${nm}》了！`, `You finished the whole book of ${nm}!`),
            L3('一天一天走到這裡，神的話已經在你裡面扎根。', '一天一天走到这里，神的话已经在你里面扎根。', 'Day by day you came this far — the Word is taking root in you.')],
@@ -3215,6 +3216,7 @@ async function aiOnce(sys, ask){
    這幾處的內文會被畫在卡片上，所以一律不要表情符號。 */
 const AUD_WRITE = () => {
   const a = state.audience;
+  if (a === 'seeker') return SK_WRITE();
   if (isEN()) return {
     adult:'\nThe reader is an adult: mature, warm and sincere.',
     teen :'\nThe reader is a teenager: light, witty, like a friend chatting; a little humour is fine, but never preachy, flippant, or joking about God or Scripture. No emoji.',
@@ -4557,7 +4559,28 @@ async function viewCompanion(v){
   };
   if (chatPending){ const p = chatPending; chatPending = null; sendChat(p); }
 }
+/* ---- 小智回答後的「追問」（v2.11.0）：不同方向一鍵追問，把剛才的回答用到婚姻、家庭、職場、生活…
+   方向隨「回答對象」換；點下去等於替使用者送出一句完整的追問，不必再打字。 */
+const FU_BANK = {"zh": {"adult": [["💍", "婚姻", "請針對你剛才的回答，說明怎麼把它應用在夫妻關係與婚姻裡，並給我一個這個星期可以做的具體小步驟。"], ["👨‍👩‍👧", "家庭", "請針對你剛才的回答，說明怎麼把它應用在家庭與教養孩子（或與父母相處）上，並給我一個這個星期可以做的具體小步驟。"], ["💼", "職場", "請針對你剛才的回答，說明怎麼把它應用在工作與職場上（同事、主管、壓力、誠信），並給我一個這個星期可以做的具體小步驟。"], ["🏡", "日常", "請針對你剛才的回答，說明怎麼把它應用在日常生活的小事上（時間、金錢、習慣），並給我一個這個星期可以做的具體小步驟。"], ["💭", "內心", "請針對你剛才的回答，說明怎麼把它應用在面對內心的情緒與軟弱上（焦慮、憤怒、驕傲），並給我一個這個星期可以做的具體小步驟。"], ["🙏", "禱告", "請把你剛才說的重點，寫成一段簡短、真誠的禱告，讓我可以拿來禱告。"]], "teen": [["🏫", "學校", "用你剛才講的，幫我想想怎麼用在學校與課業上，給我一個今天就能試的小招。"], ["🤝", "朋友", "用你剛才講的，幫我想想怎麼用在朋友相處上，給我一個今天就能試的小招。"], ["🏠", "家人", "用你剛才講的，幫我想想怎麼用在跟爸媽、家人的相處上，給我一個今天就能試的小招。"], ["📱", "手機網路", "用你剛才講的，幫我想想怎麼用在手機、網路與社群上，給我一個今天就能試的小招。"], ["💭", "壓力", "用你剛才講的，幫我想想怎麼用在壓力和情緒上，給我一個今天就能試的小招。"], ["🌟", "未來", "用你剛才講的，幫我想想怎麼用在未來和夢想上，給我一個今天就能試的小招。"], ["🎯", "今天挑戰", "請給我一個跟剛才有關、今天就能完成的小挑戰，要具體、有點好玩。"]], "kid": [["🏠", "在家", "剛剛講的，我在家裡可以怎麼做呢？請用簡單的話告訴我。"], ["🏫", "在學校", "剛剛講的，我在學校可以怎麼做呢？請用簡單的話告訴我。"], ["🤝", "跟朋友", "剛剛講的，我在跟好朋友相處時可以怎麼做呢？請用簡單的話告訴我。"], ["🙏", "小禱告", "請教我一個很短的小禱告，我可以跟耶穌說。"], ["📖", "小故事", "可以再講一個跟這個有關的小故事給我聽嗎？"]], "seeker": [["🤝", "人際", "剛才說的放在人際關係裡（家人、朋友、同事），對一個還不是基督徒的人有什麼實際的幫助？請舉一個生活的例子。"], ["💍", "婚姻家庭", "剛才說的放在婚姻與家庭裡，對一個還不是基督徒的人有什麼實際的幫助？請舉一個生活的例子。"], ["💼", "工作", "剛才說的放在工作與職場裡，對一個還不是基督徒的人有什麼實際的幫助？請舉一個生活的例子。"], ["😟", "壓力焦慮", "剛才說的放在壓力與焦慮裡，對一個還不是基督徒的人有什麼實際的幫助？請舉一個生活的例子。"], ["🌍", "人生意義", "剛才說的放在尋找人生的意義與方向裡，對一個還不是基督徒的人有什麼實際的幫助？請舉一個生活的例子。"], ["❓", "我的疑問", "我心裡還有疑問，請誠實告訴我：信耶穌對一個人的生活到底有什麼實際的幫助？也請告訴我可以怎麼自己去查證。"], ["🌱", "下一步", "如果我想進一步了解，下一步可以做什麼？請給我一兩個不會有壓力的建議。"]]}, "zs": {"adult": [["💍", "婚姻", "请针对你刚才的回答，说明怎么把他应用在夫妻关系与婚姻里，并给我一个这个星期可以做的具体小步驟。"], ["👨‍👩‍👧", "家庭", "请针对你刚才的回答，说明怎么把他应用在家庭与教养孩子（或与父母相处）上，并给我一个这个星期可以做的具体小步驟。"], ["💼", "职场", "请针对你刚才的回答，说明怎么把他应用在工作与职场上（同事、主管、压力、诚信），并给我一个这个星期可以做的具体小步驟。"], ["🏡", "日常", "请针对你刚才的回答，说明怎么把他应用在日常生活的小事上（时间、金钱、习惯），并给我一个这个星期可以做的具体小步驟。"], ["💭", "内心", "请针对你刚才的回答，说明怎么把他应用在面对内心的情緒与软弱上（焦虑、愤怒、骄傲），并给我一个这个星期可以做的具体小步驟。"], ["🙏", "祷告", "请把你刚才说的重点，写成一段簡短、真诚的祷告，让我可以拿来祷告。"]], "teen": [["🏫", "学校", "用你刚才讲的，帮我想想怎么用在学校与课业上，给我一个今天就能试的小招。"], ["🤝", "朋友", "用你刚才讲的，帮我想想怎么用在朋友相处上，给我一个今天就能试的小招。"], ["🏠", "家人", "用你刚才讲的，帮我想想怎么用在跟爸妈、家人的相处上，给我一个今天就能试的小招。"], ["📱", "手机网路", "用你刚才讲的，帮我想想怎么用在手机、网路与社群上，给我一个今天就能试的小招。"], ["💭", "压力", "用你刚才讲的，帮我想想怎么用在压力和情緒上，给我一个今天就能试的小招。"], ["🌟", "未来", "用你刚才讲的，帮我想想怎么用在未来和梦想上，给我一个今天就能试的小招。"], ["🎯", "今天挑战", "请给我一个跟刚才有关、今天就能完成的小挑战，要具体、有点好玩。"]], "kid": [["🏠", "在家", "刚刚讲的，我在家里可以怎么做呢？请用簡单的话告诉我。"], ["🏫", "在学校", "刚刚讲的，我在学校可以怎么做呢？请用簡单的话告诉我。"], ["🤝", "跟朋友", "刚刚讲的，我在跟好朋友相处时可以怎么做呢？请用簡单的话告诉我。"], ["🙏", "小祷告", "请教我一个很短的小祷告，我可以跟耶稣说。"], ["📖", "小故事", "可以再讲一个跟这个有关的小故事给我听吗？"]], "seeker": [["🤝", "人際", "刚才说的放在人際关系里（家人、朋友、同事），对一个还不是基督徒的人有什么实際的帮助？请举一个生活的例子。"], ["💍", "婚姻家庭", "刚才说的放在婚姻与家庭里，对一个还不是基督徒的人有什么实際的帮助？请举一个生活的例子。"], ["💼", "工作", "刚才说的放在工作与职场里，对一个还不是基督徒的人有什么实際的帮助？请举一个生活的例子。"], ["😟", "压力焦虑", "刚才说的放在压力与焦虑里，对一个还不是基督徒的人有什么实際的帮助？请举一个生活的例子。"], ["🌍", "人生意义", "刚才说的放在寻找人生的意义与方向里，对一个还不是基督徒的人有什么实際的帮助？请举一个生活的例子。"], ["❓", "我的疑问", "我心里还有疑问，请诚实告诉我：信耶稣对一个人的生活到底有什么实際的帮助？也请告诉我可以怎么自己去查证。"], ["🌱", "下一步", "如果我想进一步了解，下一步可以做什么？请给我一两个不会有压力的建议。"]]}, "en": {"adult": [["💍", "Marriage", "Based on your answer, explain how to apply it in my marriage, and give me one concrete step I can take this week."], ["👨‍👩‍👧", "Family", "Based on your answer, explain how to apply it in my family and parenting (or with my parents), and give me one concrete step I can take this week."], ["💼", "Work", "Based on your answer, explain how to apply it at work (colleagues, boss, pressure, integrity), and give me one concrete step I can take this week."], ["🏡", "Daily life", "Based on your answer, explain how to apply it in everyday life (time, money, habits), and give me one concrete step I can take this week."], ["💭", "Inner life", "Based on your answer, explain how to apply it in facing my inner struggles (anxiety, anger, pride), and give me one concrete step I can take this week."], ["🙏", "Prayer", "Please turn the key point of your answer into a short, sincere prayer I can pray."]], "teen": [["🏫", "School", "Using what you just said, help me think through how to use it at school and with my studies — give me one small move I can try today."], ["🤝", "Friends", "Using what you just said, help me think through how to use it with my friends — give me one small move I can try today."], ["🏠", "Family", "Using what you just said, help me think through how to use it with my parents and family — give me one small move I can try today."], ["📱", "Phone & online", "Using what you just said, help me think through how to use it on my phone, online and on social media — give me one small move I can try today."], ["💭", "Stress", "Using what you just said, help me think through how to use it with stress and emotions — give me one small move I can try today."], ["🌟", "Future", "Using what you just said, help me think through how to use it for my future and dreams — give me one small move I can try today."], ["🎯", "Challenge", "Give me one small, specific, slightly fun challenge related to this that I can finish today."]], "kid": [["🏠", "At home", "About what you just said — what can I do at home? Please tell me in simple words."], ["🏫", "At school", "About what you just said — what can I do at school? Please tell me in simple words."], ["🤝", "With friends", "About what you just said — what can I do with my friends? Please tell me in simple words."], ["🙏", "Little prayer", "Please teach me a very short little prayer I can say to Jesus."], ["📖", "Story", "Can you tell me another little story about this?"]], "seeker": [["🤝", "Relationships", "Applying what you just said in relationships (family, friends, colleagues), what practical help would it be for someone who is not yet a Christian? Please give an everyday example."], ["💍", "Marriage & family", "Applying what you just said in marriage and family, what practical help would it be for someone who is not yet a Christian? Please give an everyday example."], ["💼", "Work", "Applying what you just said at work, what practical help would it be for someone who is not yet a Christian? Please give an everyday example."], ["😟", "Stress", "Applying what you just said in stress and anxiety, what practical help would it be for someone who is not yet a Christian? Please give an everyday example."], ["🌍", "Meaning", "Applying what you just said in searching for meaning and direction in life, what practical help would it be for someone who is not yet a Christian? Please give an everyday example."], ["❓", "My doubts", "I still have doubts. Please tell me honestly: what practical difference does faith in Jesus make to a person's life? And how could I check it out for myself?"], ["🌱", "Next step", "If I want to learn more, what could my next step be? Please give one or two no-pressure suggestions."]]}};
+const FU_LIST = () => (FU_BANK[state.lang] || FU_BANK.zh)[state.audience] || [];
+function fuCss(){
+  if ($('#fucss')) return;
+  const el = document.createElement('style'); el.id = 'fucss';
+  el.textContent = '.fu-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:10px;padding-top:8px;border-top:1px dashed var(--border)}'
+    + '.fu-t{font-size:12px;font-weight:700;color:var(--gold);margin-right:2px}'
+    + '.fu-chip{border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent-ink);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;line-height:1.3}'
+    + '.fu-chip:active{opacity:.7}';
+  document.head.appendChild(el);
+}
+/* 只在「最新一則」成功的回答底下出現追問；舊的回答與連線失敗的不顯示 */
+function fuHtml(m, i){
+  if (m.role !== 'ai' || !m.ok || chatBusy || i !== chatLog.length - 1) return '';
+  const l = FU_LIST(); if (!l.length) return '';
+  return `<div class="fu-row"><span class="fu-t">${esc(L3('追問：', '追问：', 'Ask more: '))}</span>`
+    + l.map(x => `<button class="fu-chip" data-q="${esc(x[2])}">${x[0]} ${esc(x[1])}</button>`).join('') + '</div>';
+}
 function paintChat(){
+  fuCss();
   const log = $('#chatlog'); if (!log) return;
   log.innerHTML = chatLog.map((m, i) => m.role === 'user'
     ? `<div class="msg user">${esc(m.text)}</div>`
@@ -4568,7 +4591,8 @@ function paintChat(){
           <button class="msg-act" data-a="card" data-i="${i}">🖼 ${esc(L3('做成美圖', '做成美图', 'Make a card'))}</button>
           <button class="msg-act ${sayId === i ? 'on' : ''}" data-a="tts" data-i="${i}">${sayId === i ? '⏸' : '🔊'}</button>
           <button class="msg-act" data-a="del" data-i="${i}">✕</button>
-        </div></div>`).join('');
+        </div>${fuHtml(m, i)}</div>`).join('');
+  $$('.fu-chip', log).forEach(b => b.onclick = () => sendChat(b.dataset.q));
   $$('.msg-act', log).forEach(b => b.onclick = () => {
     const i = +b.dataset.i, m = chatLog[i];
     if (b.dataset.a === 'fav'){ toggleFav(m.text); paintChat(); }
@@ -4661,20 +4685,23 @@ const SYS_FMT = () => isEN()
 /* ================================================================ 小智回答對象（v2.8.0）
    成人／青少年／兒童：同一個問題，用不同的口氣、比喻、長度回答。
    這段話接在 SYS_FMT() 後面，所以格式規矩（引言標重點、禱告結尾）三種對象都照樣有。 */
-const AUD_KEYS = ['adult', 'teen', 'kid'];
-const AUD_ICON = { adult:'🧑', teen:'🧒', kid:'🧸' };
+const AUD_KEYS = ['adult', 'teen', 'kid', 'seeker'];
+const AUD_ICON = { adult:'🧑', teen:'🧒', kid:'🧸', seeker:'🌱' };
 const AUD_NAME = () => ({
   adult: L3('成人', '成人', 'Adult'),
   teen : L3('青少年', '青少年', 'Teen'),
-  kid  : L3('兒童', '儿童', 'Child')
+  kid  : L3('兒童', '儿童', 'Child'),
+  seeker: L3('慕道友', '慕道友', 'Seeker')
 });
 const AUD_HINT = () => ({
   adult: L3('有深度，貼近工作、家庭與關係', '有深度，贴近工作、家庭与关系', 'Thoughtful, with depth for work, family and relationships'),
   teen : L3('幽默風趣、不說教，用你的世界來比喻', '幽默风趣、不说教，用你的世界来比喻', 'Funny and real — no lecturing, pictures from your world'),
-  kid  : L3('非常簡單好懂，像在聽故事', '非常简单好懂，像在听故事', 'Super simple, like a story')
+  kid  : L3('非常簡單好懂，像在聽故事', '非常简单好懂，像在听故事', 'Super simple, like a story'),
+  seeker: L3('還沒信主也聽得懂，不說教，給實際的幫助', '还没信主也听得懂，不说教，给实际的帮助', 'Plain words for someone exploring faith — no pressure, practical help')
 });
 const AUD_SYS = () => {
   const a = state.audience;
+  if (a === 'seeker') return SK_SYS();
   if (isEN()) return {
     adult:
       ' Audience: an adult. Speak with a mature, steady and warm voice. You may go a little deeper — note the context and the meaning of key words — and connect the passage to work, marriage, parenting, relationships and spiritual battle. Close with one concrete step the reader can practise this week.',
@@ -4702,6 +4729,11 @@ const AUD_SYS = () => {
 };
 /* 範例問題也跟著對象換：青少年問的是他的世界，兒童問的是故事 */
 const QBANK_AUD = {
+  seeker: {
+    zh: ["這段話跟我現在的生活有什麼關係？", "我還不是基督徒，這段話對我有什麼意義？", "神真的存在嗎？有什麼理由可以相信？", "聖經為什麼說每個人都需要耶穌？", "我壓力很大，聖經能給我什麼實際的幫助？", "這段話裡的「罪」是什麼意思？跟我有關嗎？", "基督徒常說的「恩典」，用白話說是什麼？", "如果我想多了解，可以從哪裡開始？"],
+    zs: ["这段话跟我现在的生活有什么关系？", "我还不是基督徒，这段话对我有什么意义？", "神真的存在吗？有什么理由可以相信？", "圣经为什么说每个人都需要耶稣？", "我压力很大，圣经能给我什么实際的帮助？", "这段话里的“罪”是什么意思？跟我有关吗？", "基督徒常说的“恩典”，用白话说是什么？", "如果我想多了解，可以从哪里开始？"],
+    en: ["How does this passage connect to my life right now?", "I am not a Christian — what could this mean for me?", "Is there a God? What reasons are there to believe?", "Why does the Bible say everyone needs Jesus?", "I am under a lot of stress — what practical help does the Bible offer?", "What does \"sin\" mean here, and does it apply to me?", "Christians talk about \"grace\" — what does it mean in plain words?", "If I want to know more, where can I start?"]
+  },
   teen: {
     zh: ['這段經文跟我的日常（學校、朋友、手機）有什麼關係？',
          '如果這段經文是神傳給我的一則訊息，它想說什麼？',
@@ -4760,6 +4792,19 @@ const qbankNow = () => {
   const a = QBANK_AUD[state.audience];
   return (a && (a[lg] || a.zh)) || QBANK[lg] || QBANK.zh;
 };
+/* ---- 慕道友（v2.11.0）：站在還沒信主的人的角度，用生活的話說明聖經的真理，並給實際有用的幫助 ---- */
+const SK_SYS   = () => isEN() ? ' Audience: a seeker — a friend who is not yet a believer and is exploring the Christian faith. Stand fully in their shoes: they may never have read the Bible, do not know church language, and may have questions or reservations. (1) Start from their real situation, feelings or question, then bring in the passage, so they feel "this is about me". (2) Use plain everyday words; the 321 vision is only your inner compass — never use insider words like "self-emptied", "let Jesus reign", "overcomer" or "spiritual", and no church or theological jargon; if a word like grace, sin or salvation is unavoidable, explain it at once in everyday terms. (3) Be honest and respectful — no preaching, no pressure, no demand to believe now, no judging; doubts and objections are normal, so acknowledge the weight of the question first, then answer it honestly. (4) State clearly what the Bible says about it (what God is like, what Jesus did for us) through stories, pictures and everyday examples they can understand and remember. (5) Always give practical help: one or two small steps they can try this week by themselves (something to notice, a question to ask, a simple action). (6) When it fits, gently invite them to keep exploring (read a short passage, ask a question) — never force the conversation toward a decision. (7) Never say things like "we Christians all know", which assumes they already believe. Quote the World English Bible and explain it in plain words. If you include a prayer, offer it only as "if you like, you could say something like this to God" — never forced. Keep the whole answer concise, with short paragraphs.' : (isZS() ? ' 回答对象：慕道友（还没有信主、正在了解基督信仰的朋友）。请完全站在他的立场和角度：他可能没读过圣经、不懂教会用语，心里有疑问，甚至有些保留。①先从他真实的生活处境、感受或疑问切入，再带到经文，让他觉得“这跟我有关”。②用最平常的话说；321理念只是你心里的方向，不要在回答里出现“无己、作王、得胜、属灵”这类内部用语，也不用教会与神学术语；一定要提到的词（如恩典、罪、救恩），马上用生活的说法解释。③诚实、尊重、不说教、不施压、不要求他现在就相信，也不论断他；有疑问或质疑很正常，先认真承认那个问题的份量，再诚实回答。④清楚说出圣经在这件事上的真理（神是怎样的神、耶稣为我们做了什么），用故事、比喻和日常例子，让他听得懂、记得住。⑤一定要有实際有用的帮助：给一两个他这个星期就能自己试试看的小步驟（一个观察、一个提问、一个簡单的行动）。⑥合适时，可以温和邀请他继续探索（例如读一小段、问一个问题），不要硬把话题转到决志。⑦不要说“我们基督徒都知道”这类预设他已经信的话。引用经文用和合本，并用白话解释他的意思。若写到祷告，只当作“若你愿意，可以这样对神说”的邀请，不强迫。整个回答要簡明、段落要短。' : ' 回答對象：慕道友（還沒有信主、正在了解基督信仰的朋友）。請完全站在他的立場和角度：他可能沒讀過聖經、不懂教會用語，心裡有疑問，甚至有些保留。①先從他真實的生活處境、感受或疑問切入，再帶到經文，讓他覺得「這跟我有關」。②用最平常的話說；321理念只是你心裡的方向，不要在回答裡出現「無己、作王、得勝、屬靈」這類內部用語，也不用教會與神學術語；一定要提到的詞（如恩典、罪、救恩），馬上用生活的說法解釋。③誠實、尊重、不說教、不施壓、不要求他現在就相信，也不論斷他；有疑問或質疑很正常，先認真承認那個問題的份量，再誠實回答。④清楚說出聖經在這件事上的真理（神是怎樣的神、耶穌為我們做了什麼），用故事、比喻和日常例子，讓他聽得懂、記得住。⑤一定要有實際有用的幫助：給一兩個他這個星期就能自己試試看的小步驟（一個觀察、一個提問、一個簡單的行動）。⑥合適時，可以溫和邀請他繼續探索（例如讀一小段、問一個問題），不要硬把話題轉到決志。⑦不要說「我們基督徒都知道」這類預設他已經信的話。引用經文用和合本，並用白話解釋它的意思。若寫到禱告，只當作「若你願意，可以這樣對神說」的邀請，不強迫。整個回答要簡明、段落要短。');
+const SK_WRITE = () => isEN() ? '\nThe reader is a friend who is not yet a believer: everyday, warm, never preachy, no church jargon, never assuming they already believe. No emoji.' : (isZS() ? '\n读者是还没信主的朋友：用生活化、亲切、不说教的话，不用教会术语，不预设他已经信；不要用表情符号。' : '\n讀者是還沒信主的朋友：用生活化、親切、不說教的話，不用教會術語，不預設他已經信；不要用表情符號。');
+const SK_STYLE = () => isEN() ? 'Style: for someone who is not a believer and has never read the Bible. State the background in the question itself (name the person or event), assume no Bible or church vocabulary, use plain words, and make the explanation one plain sentence on why it matters to an ordinary person.' : (isZS() ? '风格：给还没信主、没读过圣经的人。题目要把背景交代清楚（人物、事件的名字直接写出来），不假设他懂圣经或教会用语；用字平实，解析用一句白话说明这件事对一般人有什么意义。' : '風格：給還沒信主、沒讀過聖經的人。題目要把背景交代清楚（人物、事件的名字直接寫出來），不假設他懂聖經或教會用語；用字平實，解析用一句白話說明這件事對一般人有什麼意義。');
+const SK_RW = nm => [
+  L3(`恭喜你！《${nm}》整卷讀完了！`, `恭喜你！《${nm}》整卷读完了！`, `Congratulations — you finished the whole book of ${nm}!`),
+  L3('你願意一天一天走進這本書，真不簡單。希望這些話對你有幫助。', '你愿意一天一天走进这本书，真不簡单。希望这些话对你有帮助。', 'You kept walking into this book day by day — that is not easy. I hope these words help you.')
+];
+const SK_RES = () => [
+  L3('沒關係，剛接觸這些內容本來就不容易，再看一遍會更清楚。', '没关系，刚接触这些内容本来就不容易，再看一遍会更清楚。', 'That is okay — it takes time with new material. Another look will make it clearer.'),
+  L3('不錯喔！你已經抓到這一章的重點了。', '不错喔！你已经抓到这一章的重点了。', 'Nice! You have caught the main points of this chapter.'),
+  L3('太厲害了！你對這一章的內容很清楚。', '太厉害了！你对这一章的内容很清楚。', 'Excellent! You know this chapter really well.')
+];
 const CHAT_RETRY = [900, 1800];
 /* 代理可能回傳幾種格式，一律寬鬆解析（與 321領導力 的 extractReplyText 相同） */
 function extractReply(d){
@@ -4817,7 +4862,7 @@ async function sendChat(text){
       await new Promise(r => setTimeout(r, CHAT_RETRY[a]));
     }
   }
-  chatLog[chatLog.length - 1] = { role:'ai', src:srcNow,
+  chatLog[chatLog.length - 1] = { role:'ai', src:srcNow, ok: !!reply,
     text: reply || (t().chatErr + (why ? '（' + why + '）' : '')) };
   chatBusy = false; paintChat();
 }
@@ -4909,6 +4954,7 @@ function chapPlain(chap){
 /* ---- 出題的指示（三語）：只回 JSON；風格跟著「回答對象」走 ---- */
 const PL_STYLE = () => {
   const a = state.audience;
+  if (a === 'seeker') return SK_STYLE();
   if (isEN()) return {
     adult:'Style: steady and clear; one or two questions should bring out a life application.',
     teen :'Style: the questions and explanations are funny and witty, like friendly banter; the options may be playful, but the correct answer must be unambiguous, and never joke about God or Scripture itself.',
@@ -4926,18 +4972,62 @@ const PL_STYLE = () => {
   }[a];
 };
 function plSysQuiz(n, k){
-  if (isEN()) return `You are a Bible teacher writing a quiz for a Bible-reading app. From the passage the user gives you, write ${n} single-answer multiple-choice questions, each with exactly ${k} options and exactly one correct option. Every answer must be found directly in the passage — do not go beyond it, and avoid obscure trivia or guessing games. Order from easy to harder, covering events, people, who God is, and one or two applications. Each explanation is one short sentence (under 25 words) saying why. "v" is the verse number(s) in the passage that hold the answer, e.g. "3" or "3-4". ${PL_STYLE()} Write in English. Reply with JSON ONLY — no explanation, no markdown fence: {"q":[{"q":"question","o":["option","option"],"a":index of the correct option starting at 0,"e":"one-sentence explanation","v":"3"}]}`;
-  const zs = isZS();
-  const t_ = (a, b) => zs ? b : a;
-  return t_(`你是聖經教師，替讀經App出測驗題。依使用者提供的經文，出 ${n} 題單選題，每題剛好 ${k} 個選項、只有一個正確。答案必須能直接從這段經文找到，不可超出經文，不要考冷僻細節或要靠猜的題目；由易到難，涵蓋事件、人物、神是怎樣的神，並有一兩題生命應用。解析用一句話（30字內）說明為什麼。v 是答案所在的節號，例如 "3" 或 "3-4"。${PL_STYLE()}請用繁體中文。只回傳 JSON，不要任何說明、不要 markdown 圍欄：{"q":[{"q":"題目","o":["選項","選項"],"a":正確選項的序號（從0開始）,"e":"一句解析","v":"3"}]}`,
-            `你是圣经教师，替读经App出测验题。依使用者提供的经文，出 ${n} 题单选题，每题刚好 ${k} 个选项、只有一个正确。答案必须能直接从这段经文找到，不可超出经文，不要考冷僻细节或要靠猜的题目；由易到难，涵盖事件、人物、神是怎样的神，并有一两题生命应用。解析用一句话（30字内）说明为什么。v 是答案所在的节号，例如 "3" 或 "3-4"。${PL_STYLE()}请用简体中文。只回传 JSON，不要任何说明、不要 markdown 围栏：{"q":[{"q":"题目","o":["选项","选项"],"a":正确选项的序号（从0开始）,"e":"一句解析","v":"3"}]}`);
+  if (isEN()) return `You are a Bible teacher writing a quiz for a Bible-reading app. The goal is to help people remember the KEY POINTS of this chapter.
+Method: first decide the ${n} most important points in the passage (the core message, a key person or event, what God does or promises, one command or lesson, one life application) and write one question for each point.
+Every question must:
+1. Be clear and instantly understandable: one complete sentence under 25 words; name the person, place or event directly — never say "the man in this passage" or "that event" so the reader has to look back.
+2. Ask about one thing only, with no tricks or wordplay; never use "which of these is NOT", "all of the above" or "none of the above".
+3. Have exactly one correct answer that is found directly in the passage; wrong options must look like reasonable choices yet clearly contradict the passage — never two options that both work.
+4. Have short options (under 8 words), similar in length and form; do not make the correct answer longer or more detailed than the others.
+5. Avoid obscure numbers, names or guessing games; order from easier to harder.
+6. Have a one-sentence explanation (under 25 words): the answer first, then why, in a friendly tone; do not leak the explanation in the question or options.
+Write ${n} questions, each with exactly ${k} options. "v" is the verse number(s) holding the answer, e.g. "3" or "3-4". ${PL_STYLE()} Write in English. Reply with JSON ONLY — no explanation, no markdown fence: {"q":[{"q":"question","o":["option","option"],"a":index of the correct option starting at 0,"e":"one-sentence explanation","v":"3"}]}`;
+  if (isZS()) return `你是圣经教师，替读经App出测验题，目标是帮人记住这一章的“重点”。
+做法：先在心里找出这段经文最重要的 ${n} 个重点（核心信息、关鍵人物或事件、神的作为或应许、一条命令或教训、一个生命应用），每个重点出一题。
+每一题都要做到：
+1. 清楚明确、一看就懂：用完整的一句话，30字以内；直接写出人名、地名、事件，不要用“这段经文中的他”“文中那件事”这种要回头翻才懂的说法。
+2. 一题只问一件事，不绕弯、不玩文字陷阱；不要用“下列何者不是”“以上皆是”“以上皆非”。
+3. 只有一个正确答案，必须能直接从这段经文找到；错误选项要像合理的选择，但和经文明显不符，不可以有两个选项都说得通。
+4. 选项簡短（12字以内）、长度相近、句型一致，不要把正确答案写得特别长或特别详细。
+5. 不考冷僻的数字、人名或要靠猜的细节；由易到难。
+6. 解析用一句话（30字以内）：先说答案，再说为什么，口气友善；题目与选项里不要泄漏解析的内容。
+共 ${n} 题，每题刚好 ${k} 个选项。v 是答案所在的节号，例如 "3" 或 "3-4"。${PL_STYLE()}请用繁体中文。只回传 JSON，不要任何说明、不要 markdown 围栏：{"q":[{"q":"题目","o":["选项","选项"],"a":正确选项的序号（从0开始）,"e":"一句解析","v":"3"}]}`;
+  return `你是聖經教師，替讀經App出測驗題，目標是幫人記住這一章的「重點」。
+做法：先在心裡找出這段經文最重要的 ${n} 個重點（核心信息、關鍵人物或事件、神的作為或應許、一條命令或教訓、一個生命應用），每個重點出一題。
+每一題都要做到：
+1. 清楚明確、一看就懂：用完整的一句話，30字以內；直接寫出人名、地名、事件，不要用「這段經文中的他」「文中那件事」這種要回頭翻才懂的說法。
+2. 一題只問一件事，不繞彎、不玩文字陷阱；不要用「下列何者不是」「以上皆是」「以上皆非」。
+3. 只有一個正確答案，必須能直接從這段經文找到；錯誤選項要像合理的選擇，但和經文明顯不符，不可以有兩個選項都說得通。
+4. 選項簡短（12字以內）、長度相近、句型一致，不要把正確答案寫得特別長或特別詳細。
+5. 不考冷僻的數字、人名或要靠猜的細節；由易到難。
+6. 解析用一句話（30字以內）：先說答案，再說為什麼，口氣友善；題目與選項裡不要洩漏解析的內容。
+共 ${n} 題，每題剛好 ${k} 個選項。v 是答案所在的節號，例如 "3" 或 "3-4"。${PL_STYLE()}請用繁體中文。只回傳 JSON，不要任何說明、不要 markdown 圍欄：{"q":[{"q":"題目","o":["選項","選項"],"a":正確選項的序號（從0開始）,"e":"一句解析","v":"3"}]}`;
 }
 function plSysRiddle(n){
-  if (isEN()) return `You are a Bible teacher designing riddles for a Bible-reading app. From the passage the user gives you, write ${n} riddles. Each answer is one person, place, object or event found in the passage, given as a short name (1–4 words). Give THREE hints per riddle: hint 1 is subtle (it must not contain the answer), hint 2 is medium, hint 3 is the clearest but still does not say the answer. Also give "alt" (other common ways to say the answer, may be empty), "v" (the related verse number, e.g. "3") and "e" (one short sentence of insight to show after it is guessed, under 25 words). ${PL_STYLE()} Write in English. Reply with JSON ONLY — no explanation, no markdown fence: {"r":[{"h":["hint 1","hint 2","hint 3"],"a":"answer","alt":["other name"],"v":"3","e":"insight"}]}`;
-  const zs = isZS();
-  const t_ = (a, b) => zs ? b : a;
-  return t_(`你是聖經教師，替讀經App設計「猜謎」。依使用者提供的經文出 ${n} 個謎題，每題的答案是這段經文中的一個人物、地點、物件或事件，用簡短的名稱（2到6個字）。每題給三個提示：第1個最含蓄（絕不可含有答案）、第2個中等、第3個最明顯但仍不直接說出答案。再給 alt（答案的其他常見說法，陣列，可為空）、v（相關節號，例如 "3"）、e（猜出來之後顯示的一句話亮點，30字內）。${PL_STYLE()}請用繁體中文。只回傳 JSON，不要任何說明、不要 markdown 圍欄：{"r":[{"h":["提示1","提示2","提示3"],"a":"答案","alt":["別名"],"v":"3","e":"亮點"}]}`,
-            `你是圣经教师，替读经App设计“猜谜”。依使用者提供的经文出 ${n} 个谜题，每题的答案是这段经文中的一个人物、地点、物件或事件，用简短的名称（2到6个字）。每题给三个提示：第1个最含蓄（绝不可含有答案）、第2个中等、第3个最明显但仍不直接说出答案。再给 alt（答案的其他常见说法，数组，可为空）、v（相关节号，例如 "3"）、e（猜出来之后显示的一句话亮点，30字内）。${PL_STYLE()}请用简体中文。只回传 JSON，不要任何说明、不要 markdown 围栏：{"r":[{"h":["提示1","提示2","提示3"],"a":"答案","alt":["别名"],"v":"3","e":"亮点"}]}`);
+  if (isEN()) return `You are a Bible teacher designing riddles for a Bible-reading app, to help people remember the key people, places, objects or events of this chapter. From the passage the user gives you, write ${n} riddles.
+Every riddle must:
+1. Have an answer that is a KEY point of the chapter: a central person, a key place, an important object or the main event; given as the most common short name (1–4 words); no obscure minor characters.
+2. Start with "t" (type) — exactly one of "Person", "Place", "Object", "Event" — so the reader knows at once what kind of thing to guess.
+3. Give THREE hints, each one simple, clear sentence (under 18 words) stating a concrete fact — no poetic or vague imagery: hint 1 is a true but not-too-obvious feature (it must NOT contain the answer); hint 2 narrows it down; hint 3 gives the most telling feature, almost giving it away without saying the answer.
+4. Use only facts that are really in the passage; the three hints must not repeat each other and together must point to one answer only — no second answer may fit.
+5. "alt" lists other common ways to say the answer (array, may be empty); "v" is the related verse number, e.g. "3"; "e" is one sentence (under 25 words) shown after it is guessed, saying why this answer matters in the chapter.
+${PL_STYLE()} Write in English. Reply with JSON ONLY — no explanation, no markdown fence: {"r":[{"t":"Person","h":["hint 1","hint 2","hint 3"],"a":"answer","alt":["other name"],"v":"3","e":"insight"}]}`;
+  if (isZS()) return `你是圣经教师，替读经App设计“猜谜”，帮人记住这一章的重点人物、地点、物件或事件。依使用者提供的经文出 ${n} 个谜题。
+每个谜题都要做到：
+1. 答案必须是这一章的“重点”：核心人物、关鍵地点、重要物件或主要事件；用最常见的簡短名称（2到6个字）；不要选冷僻的配角。
+2. 先给 t（类型），只能是“人物”“地点”“物件”“事件”其中一个，让人一看就知道在猜什么。
+3. 三个提示都用簡单明白的一句话（25字以内），讲具体的事实，不要用诗意或模糊的比喻：提示1给一个真实但不太明显的特征（绝不可含有答案）；提示2再缩小范围；提示3说出最关鍵的特征，几乎能让人猜到，但不直接说出答案。
+4. 每个提示都必须是这段经文里真有的事，不要超出经文；三个提示不重复；合起来只能指向唯一的答案，不能有第二个也说得通的答案。
+5. alt 是答案的其他常见说法（阵列，可为空）；v 是相关的节号，例如 "3"；e 是猜出来之后显示的一句话亮点（30字以内），说明这个答案在这一章的重点。
+${PL_STYLE()}请用繁体中文。只回传 JSON，不要任何说明、不要 markdown 围栏：{"r":[{"t":"人物","h":["提示1","提示2","提示3"],"a":"答案","alt":["别名"],"v":"3","e":"亮点"}]}`;
+  return `你是聖經教師，替讀經App設計「猜謎」，幫人記住這一章的重點人物、地點、物件或事件。依使用者提供的經文出 ${n} 個謎題。
+每個謎題都要做到：
+1. 答案必須是這一章的「重點」：核心人物、關鍵地點、重要物件或主要事件；用最常見的簡短名稱（2到6個字）；不要選冷僻的配角。
+2. 先給 t（類型），只能是「人物」「地點」「物件」「事件」其中一個，讓人一看就知道在猜什麼。
+3. 三個提示都用簡單明白的一句話（25字以內），講具體的事實，不要用詩意或模糊的比喻：提示1給一個真實但不太明顯的特徵（絕不可含有答案）；提示2再縮小範圍；提示3說出最關鍵的特徵，幾乎能讓人猜到，但不直接說出答案。
+4. 每個提示都必須是這段經文裡真有的事，不要超出經文；三個提示不重複；合起來只能指向唯一的答案，不能有第二個也說得通的答案。
+5. alt 是答案的其他常見說法（陣列，可為空）；v 是相關的節號，例如 "3"；e 是猜出來之後顯示的一句話亮點（30字以內），說明這個答案在這一章的重點。
+${PL_STYLE()}請用繁體中文。只回傳 JSON，不要任何說明、不要 markdown 圍欄：{"r":[{"t":"人物","h":["提示1","提示2","提示3"],"a":"答案","alt":["別名"],"v":"3","e":"亮點"}]}`;
 }
 
 /* ---- 解析小智回的 JSON；被截斷時盡量救回已經完整的題目 ---- */
@@ -5003,7 +5093,7 @@ function plNormRiddle(list, src){
       return z;
     });
     const vv = plVerse(x.v);
-    out.push({ h, a, alt, e:String(x.e || '').trim(), b:src.b, ch:src.ch, v:vv.v, v2:vv.v2 });
+    out.push({ h, a, alt, t:String(x.t || '').trim().slice(0, 12), e:String(x.e || '').trim(), b:src.b, ch:src.ch, v:vv.v, v2:vv.v2 });
   });
   return out;
 }
@@ -5091,6 +5181,7 @@ function plAudPicker(v){
 }
 function plResultMsg(tier){
   const a = state.audience;
+  if (a === 'seeker') return SK_RES()[tier];
   const M = {
     adult:[L3('再讀一遍這章，細細品味，下次會更好。', '再读一遍这章，细细品味，下次会更好。', 'Read the chapter once more, slowly — next time will be better.'),
            L3('不錯！這章的信息已經進到你裡面了。', '不错！这章的信息已经进到你里面了。', 'Well done — this chapter is taking root in you.'),
@@ -5176,7 +5267,7 @@ function plPaint(){
   /* 猜謎 */
   const shown = PL.hints, canMore = shown < it.h.length;
   const pts = Math.max(1, 4 - shown);
-  let html = head + `<div class="muted" style="margin-bottom:8px">${esc(L3('猜猜看，答案是這一章裡的什麼？', '猜猜看，答案是这一章里的什么？', 'Guess: what is it, from this chapter?'))}</div>`
+  let html = head + `<div class="muted" style="margin-bottom:8px">${it.t ? esc(L3('這一題的答案是一個「' + it.t + '」', '这一题的答案是一个“' + it.t + '”', 'The answer is a ' + it.t.toLowerCase())) : esc(L3('猜猜看，答案是這一章裡的什麼？', '猜猜看，答案是这一章里的什么？', 'Guess: what is it, from this chapter?'))}</div>`
     + it.h.slice(0, shown).map((h, i) => `<div class="pl-hint"><b>💡${i + 1}</b><span>${esc(h)}</span></div>`).join('');
   if (!PL.revealed){
     html += `<div class="pl-guess"><input class="cardinput" id="plIn" placeholder="${esc(L3('輸入你的答案…', '输入你的答案…', 'Type your answer…'))}" autocomplete="off"><button class="btn primary" id="plGo">${esc(L3('猜', '猜', 'Guess'))}</button></div>
