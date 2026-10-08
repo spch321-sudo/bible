@@ -214,6 +214,111 @@
    "n": "晨霧濕地",
    "ns": "晨雾湿地",
    "ne": "Misty Marsh"
+  },
+  {
+   "f": "bg31.jpg",
+   "t": "bg31s.jpg",
+   "n": "玄武岩海岸",
+   "ns": "玄武岩海岸",
+   "ne": "Basalt Coast"
+  },
+  {
+   "f": "bg32.jpg",
+   "t": "bg32s.jpg",
+   "n": "彩虹溫泉",
+   "ns": "彩虹温泉",
+   "ne": "Rainbow Hot Spring"
+  },
+  {
+   "f": "bg33.jpg",
+   "t": "bg33s.jpg",
+   "n": "石灰華梯池",
+   "ns": "石灰华梯池",
+   "ne": "Travertine Terraces"
+  },
+  {
+   "f": "bg34.jpg",
+   "t": "bg34s.jpg",
+   "n": "天坑光影",
+   "ns": "天坑光影",
+   "ne": "Cave Skylight"
+  },
+  {
+   "f": "bg35.jpg",
+   "t": "bg35s.jpg",
+   "n": "鐘乳石湖",
+   "ns": "钟乳石湖",
+   "ne": "Crystal Cave Lake"
+  },
+  {
+   "f": "bg36.jpg",
+   "t": "bg36s.jpg",
+   "n": "奇峰石林",
+   "ns": "奇峰石林",
+   "ne": "Stone Pinnacles"
+  },
+  {
+   "f": "bg37.jpg",
+   "t": "bg37s.jpg",
+   "n": "彩色丘陵",
+   "ns": "彩色丘陵",
+   "ne": "Painted Hills"
+  },
+  {
+   "f": "bg38.jpg",
+   "t": "bg38s.jpg",
+   "n": "天空之鏡",
+   "ns": "天空之镜",
+   "ne": "Mirror of the Sky"
+  },
+  {
+   "f": "bg39.jpg",
+   "t": "bg39s.jpg",
+   "n": "沙漠枯樹",
+   "ns": "沙漠枯树",
+   "ne": "Desert Tree"
+  },
+  {
+   "f": "bg40.jpg",
+   "t": "bg40s.jpg",
+   "n": "猴麵包樹",
+   "ns": "猴面包树",
+   "ne": "Baobab Sunset"
+  },
+  {
+   "f": "bg41.jpg",
+   "t": "bg41s.jpg",
+   "n": "榕樹拱門",
+   "ns": "榕树拱门",
+   "ne": "Banyan Arch"
+  },
+  {
+   "f": "bg42.jpg",
+   "t": "bg42s.jpg",
+   "n": "紅杉巨木",
+   "ns": "红杉巨木",
+   "ne": "Giant Redwood"
+  },
+  {
+   "f": "bg43.jpg",
+   "t": "bg43s.jpg",
+   "n": "石楠花原",
+   "ns": "石楠花原",
+   "ne": "Heather Moor"
+  },
+  {
+   "f": "bg44.jpg",
+   "t": "bg44s.jpg",
+   "n": "棉花草湖",
+   "ns": "棉花草湖",
+   "ne": "Cotton Grass Tarn"
+  },
+  {
+   "f": "bg45.jpg",
+   "t": "bg45s.jpg",
+   "n": "晨露百合",
+   "ns": "晨露百合",
+   "ne": "Dewy Lily Meadow"
   }
  ]
 }

@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.17.0';
+const VERSION = 'v2.17.1';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -2350,7 +2350,7 @@ async function fillBuiltins(){
   const list = await bgLoadList();
   if (!list.length){ box.parentNode && (box.previousElementSibling.hidden = true); box.remove(); return; }
   box.innerHTML = list.map((b, i) => `<button class="bgcell" data-i="${i}" title="${esc(bgName(b))}">
-      <img alt="" loading="lazy" src="${esc(b.t || b.f)}?v=${VERSION}" onerror="if(!this.dataset.r){this.dataset.r=1;this.src='bg/'+this.getAttribute('src')}else{this.closest('.bgcell').remove()}">
+      <img alt="" loading="lazy" src="${esc(b.t || b.f)}?v=${VERSION}" data-alt="${esc([b.f, 'bg/' + (b.t || b.f), 'bg/' + b.f].join('|'))}" onerror="bgThumbErr(this)">
       <span>${esc(bgName(b))}</span></button>`).join('');
   $$('.bgcell', box).forEach(btn => btn.onclick = async () => {
     const b = list[+btn.dataset.i]; if (!b) return;
@@ -2363,6 +2363,14 @@ async function fillBuiltins(){
     }catch(e){ btn.classList.remove('on'); toast(L3('這張背景還沒上傳到網站：','这张背景还没上传到网站：','This background is not uploaded yet: ') + b.f, 6000); }
   });
 }
+/* 縮圖沒上傳就改用大圖，再找 bg/ 資料夾；都沒有才把這格拿掉 */
+function bgThumbErr(img){
+  const alt = (img.dataset.alt || '').split('|').filter(Boolean);
+  if (!alt.length){ const c = img.closest('.bgcell'); if (c) c.remove(); return; }
+  img.dataset.alt = alt.slice(1).join('|');
+  img.src = alt[0] + '?v=' + VERSION;
+}
+window.bgThumbErr = bgThumbErr;
 function bgCss(){
   if ($('#bgcss')) return;
   const st = document.createElement('style'); st.id = 'bgcss';
@@ -2395,6 +2403,27 @@ function coverDraw(ctx, img, x, y, w, h){
 
 /* ---- 背景音樂 ---- */
 let bgmBlob = null, bgmName = '', bgmVol = 0.22, mcLen = 30;
+/* v2.17.1：選好的配樂可以先試聽（共用詩歌庫那個唯一的 <audio>，iPhone 才放得出聲） */
+let bgmPrevOn = false, bgmPrevURL = null;
+function bgmPrevStop(){
+  bgmPrevOn = false;
+  try{ if (hymnEl){ hymnEl.pause(); hymnEl.onended = null; } }catch(e){}
+  try{ if (bgmPrevURL) URL.revokeObjectURL(bgmPrevURL); }catch(e){}
+  bgmPrevURL = null;
+  const b = $('#bPrev'); if (b) b.textContent = L3('▶ 試聽','▶ 试听','▶ Preview');
+}
+function bgmPrevToggle(){
+  if (bgmPrevOn || !bgmBlob){ bgmPrevStop(); return; }
+  hymnStopPrev();
+  const a = hymnAudio();
+  bgmPrevURL = URL.createObjectURL(bgmBlob);
+  a.src = bgmPrevURL; a.volume = 1;
+  a.onended = bgmPrevStop;
+  bgmPrevOn = true;
+  const b = $('#bPrev'); if (b) b.textContent = L3('⏸ 停止試聽','⏸ 停止试听','⏸ Stop preview');
+  const q = a.play();                       /* 手勢裡同步呼叫 */
+  if (q && q.catch) q.catch(bgmPrevStop);
+}
 const MC_LENS = [[15,['15 秒','15 秒','15 sec']],[30,['30 秒','30 秒','30 sec']],[60,['1 分鐘','1 分钟','1 min']],[0,['整首','整首','Whole track']]];
 const BGM_VOLS = [[0.12,['小聲','小声']],[0.22,['適中','适中']],[0.38,['明顯','明显']]];
 const AUD_EXT = /\.(mp3|m4a|aac|wav|aif|aiff|caf|flac|ogg|opus|mp4|mov|webm|wma)$/i;
@@ -3306,6 +3335,7 @@ function fadeIn(g, ac, to, sec){
 async function toggleRec(){
   if (mr && mr.state === 'recording'){ recStopNow(); return; }
   if (!studioItem) return;
+  bgmPrevStop();
   /* 上一次錄完相機就關了，再按一次自拍要重新開，不然只會錄到靜止的臉 */
   if (recMode === 's' && (!selfieStream || !selfieStream.active)){
     try{ selfieStream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'user' }, audio:false }); }
@@ -3391,6 +3421,7 @@ async function musicRec(){
   if (mr && mr.state === 'recording'){ recStopNow(); return; }
   if (!studioItem || !bgmBlob){ toast(t().bgmNeed); return; }
   if (!canVideo()){ toast(t().vidNo); return; }
+  bgmPrevStop();
   const jobItem = studioItem;
   mjAsk();
   let ac, bgmEl, bgmURL, audioStream;
@@ -3402,6 +3433,8 @@ async function musicRec(){
     const gain = ac.createGain(); gain.gain.value = 0.0001; __mcGain = gain;
     const dst = ac.createMediaStreamDestination();
     ac.createMediaElementSource(bgmEl).connect(gain).connect(dst);
+    /* 邊聽邊製作：同一路聲音也送到喇叭；音量跟著淡入淡出一起走 */
+    if (state.mcHear !== false) gain.connect(ac.destination);
     audioStream = dst.stream;
   }catch(e){ toast(t().bgmBad); return; }
 
@@ -3758,7 +3791,8 @@ async function viewStudio(v){
     <div class="card">${bgmBlob ? `
       <div style="font-weight:700;font-size:14px">♪ ${esc(bgmName)}</div>
       ${bgmCredit ? `<div class="muted" style="font-size:11.5px;margin-top:3px">${esc(bgmCredit)}</div>` : ''}
-      <div class="muted" style="font-size:12px;margin:4px 0 10px">${esc(L.bgmNote)}</div>
+      <button class="btn sm" id="bPrev" style="margin-top:8px">${esc(bgmPrevOn ? L3('⏸ 停止試聽','⏸ 停止试听','⏸ Stop preview') : L3('▶ 試聽','▶ 试听','▶ Preview'))}</button>
+      <div class="muted" style="font-size:12px;margin:8px 0 10px">${esc(L.bgmNote)}</div>
       <div class="muted" style="font-size:12px;margin-bottom:6px">${esc(L.bgmVol)}</div>
       ${chips('bVol', BGM_VOLS, bgmVol, 'v')}
       <div class="hlsheet-acts2" style="margin-top:12px">
@@ -3788,6 +3822,8 @@ async function viewStudio(v){
       ${(vOK && bgmBlob) ? `
         <div class="muted" style="font-size:12px;margin:14px 0 6px">${esc(L.mcLen)}</div>
         ${chips('mLen', MC_LENS, mcLen, 'v')}
+        <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L3('製作時','制作时','While making'))}</div>
+        ${chips('mHear', [[1, ['邊聽邊製作','边听边制作','Play aloud']], [0, ['靜音製作','静音制作','Silent']]], state.mcHear === false ? 0 : 1, 'v')}
         <button class="btn gold block" id="mcBtn" style="margin-top:10px">🎵 ${esc(L.mcStart)}</button>
         <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.mcHint)}</div>
         <div class="muted" style="font-size:12px;margin-top:6px">${esc(L3('可以先離開這頁去讀經或做別的事（請留在 App 裡、不要鎖屏），做好會通知你，並自動存進「我的作品」。', '可以先离开这页去读经或做别的事（请留在 App 里、不要锁屏），做好会通知你，并自动存进“我的作品”。', 'You can leave this page and keep reading (stay in the app, keep the screen on). You will be notified, and it is saved to My works automatically.'))}</div>` : ''}
@@ -3836,7 +3872,9 @@ async function viewStudio(v){
   const pub = $('#pUseBg'); if (pub) pub.onclick = () => { stkImg = photoImg; stkBy = photoBy; photoImg = null; photoBy = ''; studioRefresh(); };
   const pl2 = $('#pLib'); if (pl2) pl2.onclick = openPexels;
   bgCss(); fillBuiltins();
-  const bd = $('#bDel'); if (bd) bd.onclick = () => { bgmBlob = null; bgmName = ''; bgmCredit = ''; studioRefresh(); };
+  const bd = $('#bDel'); if (bd) bd.onclick = () => { bgmPrevStop(); bgmBlob = null; bgmName = ''; bgmCredit = ''; studioRefresh(); };
+  const bp = $('#bPrev'); if (bp) bp.onclick = bgmPrevToggle;
+  bind('#mHear button', b => { state.mcHear = b.dataset.v === '1'; saveState(); studioRefresh(); });
   const blb = $('#bLib'); if (blb) blb.onclick = openHymns;
   ['pNew','pRe'].forEach(id => { const e = $('#' + id); if (e) e.onchange = () => pickPhoto(e); });
   ['bNew','bRe'].forEach(id => { const e = $('#' + id); if (e) e.onchange = () => pickBgm(e); });
