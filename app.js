@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.13.0';
+const VERSION = 'v2.13.1';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -653,6 +653,41 @@ function openAt(m){ jumpTo = { c:m.c, p:m.p, s:m.s }; go(`#/read/${m.b}/${m.c}`)
 
 /* ---------------------------------------------------------------- 路由 */
 function go(h){ location.hash = h; }
+// ===== 321 理念簡介（首頁） =====
+function intro321(){
+  if (!document.getElementById('i321css')){
+    const st=document.createElement('style'); st.id='i321css';
+    st.textContent='.hero-cover{max-height:none!important}.hero-cover img{object-fit:contain}'
+     +'.i321-row{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line,rgba(0,0,0,.08))}'
+     +'.i321-ic{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:#0D3988;color:#F7EFDC;font-weight:900;display:flex;align-items:center;justify-content:center;font-family:var(--f-serif)}'
+     +'.i321-row b{font-size:1em}.i321-d{font-size:.92em;line-height:1.65;color:var(--muted,#6b6455);margin-top:2px;overflow-wrap:anywhere}'
+     +'.i321-more{margin-top:6px;border-top:1px solid var(--line,rgba(0,0,0,.08));padding-top:8px}.i321-more summary{cursor:pointer;color:#0D3988;font-weight:700;font-size:.95em}'
+     +'.i321-more p{font-size:.92em;line-height:1.75;margin:8px 0 0;overflow-wrap:anywhere}';
+    document.head.appendChild(st);
+  }
+  const T = (zh, zs, en) => esc(L3(zh, zs, en));
+  const row = (ic, h, d) => `<div class="i321-row"><span class="i321-ic">${ic}</span><div><b>${h}</b><div class="i321-d">${d}</div></div></div>`;
+  return `<div class="card i321">
+    <h3 style="margin:0 0 4px">${T('321 理念','321 理念','The 321 Vision')}</h3>
+    <div class="muted" style="font-size:13px;margin-bottom:10px">${T('改變觀念，就改變生命；改變生命，就改變生活。','改变观念，就改变生命；改变生命，就改变生活。','Change the mindset, and life is changed; change life, and living is changed.')}</div>
+    ${row('3', T('三個基礎','三个基础','Three foundations'),
+      T('耶穌是我的榜樣　聖經是我的準則　聖靈是我的引導','耶稣是我的榜样　圣经是我的准则　圣灵是我的引导','Jesus is my example · the Bible is my standard · the Holy Spirit is my guide'))}
+    ${row('2', T('兩個核心','两个核心','Two cores'),
+      T('讓耶穌作王　讓耶穌得著一切的榮耀','让耶稣作王　让耶稣得着一切的荣耀','Let Jesus be King · let Jesus have all the glory'))}
+    ${row('1', T('一個目的','一个目的','One purpose'),
+      T('建立屬神的體系，成就主禱文：願你的國降臨，願你的旨意行在地上如同行在天上','建立属神的体系，成就主祷文：愿你的国降临，愿你的旨意行在地上如同行在天上','Build God’s order, fulfilling the Lord’s Prayer: Your kingdom come, Your will be done on earth as in heaven'))}
+    <details class="i321-more">
+      <summary>${T('再多認識一點','再多认识一点','Learn a little more')}</summary>
+      <p>${T('舊人有己，以自己為中心，驕傲、離開本位、想要代替神，這是問題的根源；耶穌的死解決我們的罪，耶穌的復活賜給我們新生命。「我已經與基督同釘十字架，現在活著的不再是我，乃是基督在我裡面活著。」（加拉太書 2:20）',
+          '旧人有己，以自己为中心，骄傲、离开本位、想要代替神，这是问题的根源；耶稣的死解决我们的罪，耶稣的复活赐给我们新生命。“我已经与基督同钉十字架，现在活着的不再是我，乃是基督在我里面活着。”（加拉太书 2:20）',
+          'The old self centers on “me”: proud, leaving its place, trying to take God’s. Jesus’ death deals with our sin, and His resurrection gives us new life. “I have been crucified with Christ; and it is no longer I who live, but Christ lives in me.” (Galatians 2:20)')}</p>
+      <p>${T('無己，不是沒有，乃是讓基督在裡面活，進入無限。由內而外五重的改變：觀念、生命、生活、關係、事工。謙卑戰勝驕傲，無己戰勝撒旦，一同成為得勝者。',
+          '无己，不是没有，乃是让基督在里面活，进入无限。由内而外五重的改变：观念、生命、生活、关系、事工。谦卑战胜骄傲，无己战胜撒旦，一同成为得胜者。',
+          'Self-emptying is not losing, but letting Christ live in us. Change moves from the inside out: mindset, life, living, relationships, ministry. Humility overcomes pride, and together we become overcomers.')}</p>
+    </details>
+  </div>`;
+}
+
 function currentRoute(){
   const h = (location.hash || '#/today').replace(/^#/, '');
   return h.split('/').filter(Boolean);
@@ -709,13 +744,9 @@ async function viewToday(v){
   const C = 2 * Math.PI * 25;
 
   v.innerHTML = `
-    <div class="hero-cover">
-      <img src="cover.jpg" alt="" loading="eager">
-      <div class="hc-mask">
-        <div class="hc-title">${esc(L.app)}</div>
-        <div class="hc-sub">${esc(L3('新標點和合本 · 去章節 · 只留經文', '新标点和合本 · 去章节 · 只留经文', 'World English Bible · no chapters · just the text'))}</div>
-      </div>
-    </div>
+    <div class="hero-cover"><img src="cover2.jpg" alt="321" loading="eager"></div>
+
+    ${intro321()}
 
     <div class="card">
       <div class="progwrap">
