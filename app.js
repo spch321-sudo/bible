@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.16.2';
+const VERSION = 'v2.16.3';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -389,7 +389,7 @@ const VOICES = {
 
 const DEFAULTS = { lang:'zh', font:0, theme:0, flow:false, shCh:true, shV:true, hidenote:false,
                    cardTpl:'navy', cardSize:'t', cardBorder:'classic', cardFs:1,
-                   cardTop:'', cardSign:'', cardTo:'', cardGreet:'',
+                   cardTop:'', cardSign:'', cardTo:'', cardGreet:'', photoLast:'', photoMode:'bg',
                    voice:{zh:0, zs:0, en:0}, ttsAutoNext:false, beauty:true, planRemindOn:false,
                    audience:'adult' };
 /* 「淨」鍵依序切換的四種組合：[整卷連讀?, 顯示章號?] */
@@ -1965,6 +1965,7 @@ async function pxLoad(photo){
     photoImg = im; autoStkShape();
     photoBy = photo.photographer || '';
     if (!photoMode) photoMode = 'bg';
+    plSave(im, photoBy);
     return true;
   }finally{ setTimeout(() => { try{ URL.revokeObjectURL(obj); }catch(_){} }, 30000); }
 }
@@ -2290,7 +2291,7 @@ const cardBorder = () => CARD_BORDERS.some(b => b[0] === state.cardBorder) ? sta
 const cardFs = () => Math.min(1.8, Math.max(.85, +state.cardFs || 1));
 
 /* ---- 相片（作背景／貼在卡片上）---- */
-let fullKind = 'verse';   /* 整張原圖：文字用經文或問候語 */
+let fullKind = 'verse', fullScale = 1;   /* 整張原圖：文字用經文或問候語 */
 let photoImg = null, photoMode = 'bg', suppressSticker = false, selfieLayout = false;
 let stkSize = 0.30, stkPos = 'br', stkShape = 'p';
 /* 原圖模式：相片完整呈現（不裁切），文字另外排在不蓋住相片的空位；
@@ -2303,12 +2304,93 @@ const STK_POS    = [['bl',['左下','左下']],['bc',['正下','正下']],['br',
                     ['tl',['左上','左上']],['tr',['右上','右上']]];
 const STK_SHAPES = [['p',['直式','直式']],['w',['橫式 16:9','横式 16:9']],['s',['方形','方形']]];
 const stkRatio = () => stkShape === 'w' ? 0.72 : (stkShape === 's' ? 1.06 : 1.12);
+/* ── 我的相片庫：用過的相片自動留在手機裡（IndexedDB），下次直接挑，不用重找 ── */
+const PLIB_MAX = 40;
+let pdb = null, plRestored = false;
+function plOpen(){
+  return new Promise((res, rej) => {
+    if (pdb) return res(pdb);
+    try{
+      const q = indexedDB.open('ib_photos', 1);
+      q.onupgradeneeded = e => e.target.result.createObjectStore('p', { keyPath:'id' });
+      q.onsuccess = e => { pdb = e.target.result; res(pdb); };
+      q.onerror = () => rej(q.error);
+    }catch(e){ rej(e); }
+  });
+}
+const plReq = r => new Promise((res, rej) => { r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+async function plAll(){
+  try{ const db = await plOpen(); return (await plReq(db.transaction('p').objectStore('p').getAll())).sort((a, b) => b.ts - a.ts); }
+  catch(e){ return []; }
+}
+async function plSave(img, by){
+  try{
+    const db = await plOpen();
+    const mk = (max, q, url) => new Promise(r => {
+      const k = Math.min(1, max / Math.max(img.width, img.height)), c = document.createElement('canvas');
+      c.width = Math.max(1, Math.round(img.width * k)); c.height = Math.max(1, Math.round(img.height * k));
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      if (url) r(c.toDataURL('image/jpeg', q)); else c.toBlob(b => r(b), 'image/jpeg', q);
+    });
+    const [blob, thumb] = await Promise.all([mk(1600, .88, false), mk(260, .72, true)]);
+    const id = 'p' + Date.now();
+    await plReq(db.transaction('p', 'readwrite').objectStore('p').put({ id, ts:Date.now(), blob, thumb, by:by || '', w:img.width, h:img.height }));
+    const all = await plAll();
+    for (const o of all.slice(PLIB_MAX)) await plReq(db.transaction('p', 'readwrite').objectStore('p').delete(o.id));
+    state.photoLast = id; state.photoMode = photoMode; saveState();
+  }catch(e){ console.error('photo lib', e); }
+}
+async function plLoad(rec){
+  const url = URL.createObjectURL(rec.blob);
+  try{
+    const im = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('decode')); i.src = url; });
+    photoImg = im; photoBy = rec.by || ''; autoStkShape();
+    state.photoLast = rec.id; saveState();
+    return true;
+  }finally{ setTimeout(() => { try{ URL.revokeObjectURL(url); }catch(_){} }, 30000); }
+}
+/* 進美圖頁時，如果目前沒有相片，就把上次用的那張接回來 */
+async function plRestore(){
+  if (plRestored || photoImg || !state.photoLast) return;
+  plRestored = true;
+  try{
+    const db = await plOpen();
+    const rec = await plReq(db.transaction('p').objectStore('p').get(state.photoLast));
+    if (rec){ await plLoad(rec); photoMode = state.photoMode || 'bg'; }
+  }catch(e){}
+}
+async function openPhotoLib(){
+  const mask = document.createElement('div'); mask.className = 'hlsheet-mask';
+  mask.innerHTML = `<div class="hlsheet-card pxsheet">
+    <div class="hlsheet-title">${esc(L3('📚 我的相片庫', '📚 我的相片库', '📚 My photos'))}</div>
+    <div class="muted" style="font-size:12px;margin-bottom:8px">${esc(L3('從相簿或免費圖庫選過的相片都會自動留在這裡（存在這支手機上，最多 40 張）。點一張就用；右上 × 是移出相片庫。', '从相册或免费图库选过的相片都会自动留在这里（存在这部手机上，最多 40 张）。点一张就用；右上 × 是移出相片库。', 'Photos you pick are kept here automatically (on this device, up to 40). Tap one to use it; × removes it.'))}</div>
+    <div class="pxgrid" id="plGrid"></div>
+    <div class="hlsheet-acts2" style="margin-top:12px"><button class="btn sm" id="plClose">${esc(t().close)}</button></div>
+  </div>`;
+  document.body.appendChild(mask);
+  mask.onclick = e => { if (e.target === mask) mask.remove(); };
+  $('#plClose', mask).onclick = () => mask.remove();
+  const grid = $('#plGrid', mask);
+  const paint = async () => {
+    const all = await plAll();
+    if (!all.length){ grid.innerHTML = `<div class="empty" style="grid-column:1/-1;padding:24px">${esc(L3('還沒有相片。先從相簿或免費圖庫選一張，就會留在這裡。', '还没有相片。先从相册或免费图库选一张，就会留在这里。', 'No photos yet. Pick one from your album or the free library and it will be kept here.'))}</div>`; return; }
+    grid.innerHTML = all.map(o => `<div class="pxcell" data-id="${o.id}" style="position:relative;cursor:pointer"><img src="${o.thumb}" alt=""><span class="pxdel" data-d="${o.id}" style="position:absolute;right:4px;top:4px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;text-align:center;line-height:24px;font-size:16px">×</span></div>`).join('');
+    $$('.pxcell', grid).forEach(c => c.onclick = async e => {
+      const d = e.target.closest('[data-d]');
+      const db = await plOpen();
+      if (d){ await plReq(db.transaction('p', 'readwrite').objectStore('p').delete(d.dataset.d)); if (state.photoLast === d.dataset.d){ state.photoLast = ''; saveState(); } paint(); return; }
+      const rec = await plReq(db.transaction('p').objectStore('p').get(c.dataset.id)); if (!rec) return;
+      await plLoad(rec); if (!photoMode) photoMode = 'bg'; mask.remove(); await studioRefresh();
+    });
+  };
+  paint();
+}
 function pickPhoto(inp){
   const f = inp && inp.files && inp.files[0]; if (!f) return;
   const rd = new FileReader();
   rd.onload = () => {
     const im = new Image();
-    im.onload = () => { photoImg = im; photoBy = ''; if (!photoMode) photoMode = 'bg'; autoStkShape(); studioRefresh(); };
+    im.onload = () => { photoImg = im; photoBy = ''; if (!photoMode) photoMode = 'bg'; autoStkShape(); plSave(im, ''); studioRefresh(); };
     im.onerror = () => toast(t().photoBad);
     im.src = rd.result;
   };
@@ -2516,8 +2598,9 @@ function drawFullCard(cv, h, W, H){
   }
   const mg = Math.round(W * .07);
   const tw = Math.min(W - mg * 2, Math.max(H * 1.05, W * .6));
-  const roomMax = H * .46;
-  const ts = Math.round(44 * S), ss = Math.round(26 * S);
+  const roomMax = Math.min(H * .85, H * .46 * Math.max(1, fullScale || 1));
+  const FS = fullScale || 1;   /* 使用者自己調的文字大小 */
+  const ts = Math.round(44 * S * FS), ss = Math.round(26 * S * FS);
   /* 把相片縮小，算每一列的紋理（邊緣）多寡與亮度，用來找「最空」的一段 */
   let row = null, rl = null; const sh = Math.max(24, Math.round(96 * H / W));
   try{
@@ -2537,11 +2620,11 @@ function drawFullCard(cv, h, W, H){
     }
   }catch(e){ row = null; }
   /* 由大字試到小字：第一個「找得到夠空的位置」的字級就用它；都不夠空就用最空的那個 */
-  let vs = Math.round(58 * S), vl, rs, total, ty = mg, lum = .3, pick = null;
-  const vsMin = Math.round(22 * S);
+  let vs = Math.round(58 * S * FS), vl, rs, total, ty = mg, lum = .3, pick = null;
+  const vsMin = FS !== 1 ? vs : Math.round(22 * S);   /* 使用者指定大小就不再自動縮小 */
   while (true){
     ctx.font = `600 ${vs}px ${serif}`; vl = wrapText(ctx, body, tw);
-    rs = Math.min(Math.round(30 * S), Math.round(vs * .8));
+    rs = Math.min(Math.round(30 * S * FS), Math.round(vs * .8));
     total = (toName ? ts * 1.9 : 0) + vl.length * vs * 1.5 + (ref ? rs * 2 : 0) + ss * 2.2;
     let bestE = 0, bty = mg, blum = .3;
     if (row){
@@ -2854,13 +2937,24 @@ function attachOrigDrag(){
   box.style.outline = on ? '2px dashed var(--gold)' : '';
   if (!on){ box.onpointerdown = null; return; }
   let sx = 0, sy = 0, b0 = [0, 0, 0, 0], act = false;
+  const pts = new Map(); let d0 = 0, s0 = 1;   /* 兩指縮放（整張原圖的文字大小） */
+  const full = photoMode === 'full';
+  const dist = () => { const a = [...pts.values()]; return Math.hypot(a[0][0] - a[1][0], a[0][1] - a[1][1]) || 1; };
   box.onpointerdown = e => {
     const img = $('img', box); if (!img) return;
-    act = true; sx = e.clientX; sy = e.clientY; b0 = [origDX, origDY, origNX, origNY];
+    pts.set(e.pointerId, [e.clientX, e.clientY]);
     try{ box.setPointerCapture(e.pointerId); }catch(_){}
     e.preventDefault();
+    if (full && pts.size === 2){ d0 = dist(); s0 = fullScale; act = false; return; }
+    act = true; sx = e.clientX; sy = e.clientY; b0 = [origDX, origDY, origNX, origNY];
   };
   box.onpointermove = e => {
+    if (pts.has(e.pointerId)) pts.set(e.pointerId, [e.clientX, e.clientY]);
+    if (full && pts.size >= 2){
+      fullScale = Math.max(.5, Math.min(2.5, s0 * dist() / d0));
+      const sl = $('#fSz'); if (sl) sl.value = Math.round(fullScale * 100);
+      renderCardFast(); return;
+    }
     if (!act) return;
     const img = $('img', box); if (!img) return;
     const r = img.getBoundingClientRect(), nw = img.naturalWidth || 1, nh = img.naturalHeight || 1;
@@ -2869,7 +2963,11 @@ function attachOrigDrag(){
     origShift((e.clientX - sx) / dw, (e.clientY - sy) / dh);
     renderCardFast();
   };
-  const end = () => { if (!act) return; act = false; renderCard(studioItem); };
+  const end = e => {
+    const was = pts.size; pts.delete(e.pointerId);
+    if (was >= 2){ act = false; renderCard(studioItem); return; }
+    if (!act) return; act = false; renderCard(studioItem);
+  };
   box.onpointerup = end; box.onpointercancel = end;
 }
 /* iPhone／iPad 的 Safari 不能把檔案直接寫進「相簿」——<a download> 只會存到
@@ -3810,6 +3908,7 @@ function curTab(){ return (location.hash || '').indexOf('#/studio') === 0 ? 'stu
 async function viewStudio(v){
   const L = t();
   if (!studioItem){ go('#/me'); return; }
+  await plRestore();
   const works = wdb ? (await allRec()).sort((a, b) => b.ts - a.ts) : [];
   const vOK = canVideo();
   const FULL = !!(photoImg && photoMode === 'full');
@@ -3872,6 +3971,9 @@ async function viewStudio(v){
       ${chips('pMode', [['bg', L.photoBg], ['sticker', L.photoStk], ['orig', o3('原圖', '原图', 'Original')], ['full', o3('整張原圖', '整张原图', 'Full photo')]], photoMode, 'm')}
       ${photoMode === 'full' ? `
         <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L3('整張相片就是整張卡片，不加邊框；只留稱呼、經文（或問候語）與署名，自動排在相片上方最空的地方。', '整张相片就是整张卡片，不加边框；只留称呼、经文（或问候语）与署名，自动排在相片上方最空的地方。', 'The whole photo is the card, no frame. Only the greeting name, verse (or a greeting) and signature, placed in the emptiest spot at the top.'))}</div>
+        <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L3('文字大小（也可以在預覽圖上用兩指捏合縮放）', '文字大小（也可以在预览图上用两指捏合缩放）', 'Text size (or pinch on the preview with two fingers)'))}　<b id="fSzV">${Math.round(fullScale * 100)}%</b></div>
+        <input type="range" id="fSz" min="50" max="250" step="5" value="${Math.round(fullScale * 100)}" style="width:100%">
+        <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L3('文字內容', '文字内容', 'Text'))}</div>
         ${chips('pFk', [['verse', o3('經文', '经文', 'Verse')], ['greet', o3('問候語', '问候语', 'Greeting')]], fullKind, 'v')}
         ${fullKind === 'greet' ? `<textarea class="hlsheet-ta" id="cardGreet" style="margin-top:8px" placeholder="${esc(L3('平安喜樂，主愛你！', '平安喜乐，主爱你！', 'Peace and joy to you!'))}">${esc(state.cardGreet || '')}</textarea>` : ''}
         <div class="hlsheet-acts2" style="margin-top:8px">
@@ -3914,9 +4016,11 @@ async function viewStudio(v){
       <div class="hlsheet-acts2" style="margin-top:12px">
         <label class="btn sm" style="cursor:pointer">${esc(L.photoSwap)}<input type="file" accept="image/*" hidden id="pRe"></label>
         <button class="btn sm gold" id="pLib">${esc(pl().libBtn)}</button>
+        <button class="btn sm" id="pMy">${esc(L3('📚 我的相片庫', '📚 我的相片库', '📚 My photos'))}</button>
         <button class="btn sm danger" id="pDel">${esc(L.photoDel)}</button>
       </div>` : `
       <button class="btn block gold" id="pLib">${esc(pl().libBtn)}</button>
+      <button class="btn block" id="pMy" style="margin-top:8px">${esc(L3('📚 我的相片庫（用過的相片都在這裡）', '📚 我的相片库（用过的相片都在这里）', '📚 My photos (everything you used before)'))}</button>
       <label class="btn block" style="cursor:pointer;margin-top:8px">${esc(L.photoPick)}<input type="file" accept="image/*" hidden id="pNew"></label>
       <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.photoHint)}</div>`}
     </div>
@@ -3990,6 +4094,10 @@ async function viewStudio(v){
   bind('#cSz  button', b => { state.cardSize = b.dataset.z; saveState(); studioRefresh(); });
   bind('#cFs  button', b => { state.cardFs = +b.dataset.f; saveState(); studioRefresh(); });
   bind('#pMode button', b => { photoMode = b.dataset.m; if (photoMode !== 'orig' && photoMode !== 'full') origMove = false; origDX = origDY = origNX = origNY = 0; studioRefresh(); });
+  const fsz = $('#fSz'); if (fsz){
+    fsz.oninput = () => { fullScale = fsz.value / 100; const lb = $('#fSzV'); if (lb) lb.textContent = fsz.value + '%'; renderCardFast(); };
+    fsz.onchange = () => { renderCard(studioItem); };
+  }
   bind('#pFk button', b => { fullKind = b.dataset.v; studioRefresh(); });
   bind('#pShape button', b => { stkShape = b.dataset.v; if (stkShape === 'w' && stkSize < .38) stkSize = .46; studioRefresh(); });
   bind('#pSize button', b => { stkSize = +b.dataset.v; studioRefresh(); });
@@ -4008,7 +4116,8 @@ async function viewStudio(v){
   bind('#mLen button', b => { mcLen = +b.dataset.v; studioRefresh(); });
   bind('#rBeauty button', b => { state.beauty = b.dataset.v === '1'; saveState(); studioRefresh(); });
   bind('#rMode button', b => setRecMode(b.dataset.s));
-  const pd = $('#pDel'); if (pd) pd.onclick = () => { photoImg = null; photoBy = ''; origMove = false; studioRefresh(); };
+  const pd = $('#pDel'); if (pd) pd.onclick = () => { photoImg = null; photoBy = ''; origMove = false; state.photoLast = ''; saveState(); studioRefresh(); };
+  const pmy = $('#pMy'); if (pmy) pmy.onclick = openPhotoLib;
   const pl2 = $('#pLib'); if (pl2) pl2.onclick = openPexels;
   const bd = $('#bDel'); if (bd) bd.onclick = () => { bgmBlob = null; bgmName = ''; bgmCredit = ''; studioRefresh(); };
   const blb = $('#bLib'); if (blb) blb.onclick = openHymns;
