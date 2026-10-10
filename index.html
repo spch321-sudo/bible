@@ -562,6 +562,9 @@ select.cardinput{appearance:none; -webkit-appearance:none;
   </a>
 </nav>
 
-<script src="app.js"></script>
+<script>
+/* 程式檔帶上更新時間戳（?u=…）載入：更新後重整的那一次一定抓到最新的 app.js，不會被瀏覽器或 CDN 的舊快取擋住 */
+(function(){var m=location.search.match(/[?&]u=(\d+)/);document.write('<script src="app.js'+(m?'?u='+m[1]:'')+'"><\/script>');})();
+</script>
 </body>
 </html>
