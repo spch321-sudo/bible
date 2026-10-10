@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.18.2';
+const VERSION = 'v2.18.3';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -3956,7 +3956,9 @@ const TWEAK_L = {
        picks:['Shorter','Longer','Warmer','More everyday','Stronger','Say it another way'] }
 };
 const tw_ = () => TWEAK_L[state.lang] || TWEAK_L.zh;
+const isFullV = () => !!(photoImg && photoMode === 'full' && fullKind === 'verse');   /* 整張原圖＋經文：要改的是附在經文下面的祝福 */
 function curNote(){
+  if (isFullV()) return String(fullBless || '').trim();
   return String(studioNote != null ? studioNote : (studioItem && studioItem.n) || '').trim();
 }
 async function noteRewrite(instr, mask){
@@ -3978,7 +3980,7 @@ async function noteRewrite(instr, mask){
   const r = await aiOnce(sys, ask);
   blessBusy = false;
   if (r.out){
-    studioNote = r.out;
+    if (isFullV()) fullBless = r.out.replace(/\s*\n+\s*/g, ''); else studioNote = r.out;
     if (mask) mask.remove();
     await studioRefresh();
     toast(tw_().done);
@@ -4136,7 +4138,7 @@ async function viewStudio(v){
         <input type="range" id="fSz" min="50" max="250" step="5" value="${Math.round(fullScale * 100)}" style="width:100%">
         <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L3('文字內容', '文字内容', 'Text'))}</div>
         ${chips('pFk', [['verse', o3('經文', '经文', 'Verse')], ['greet', o3('問候語', '问候语', 'Greeting')]], fullKind, 'v')}
-        ${fullKind === 'verse' ? `<div class="hlsheet-acts2" style="margin-top:8px"><button class="btn sm gold" id="fBless">✍️ ${esc(L3('小智寫祝福（附在經文下面）', '小智写祝福（附在经文下面）', 'Xiaozhi writes a blessing (under the verse)'))}</button><button class="btn sm" id="fBlessClr">${esc(L3('清除祝福', '清除祝福', 'Clear'))}</button></div>
+        ${fullKind === 'verse' ? `<div class="hlsheet-acts2" style="margin-top:8px"><button class="btn sm gold" id="fBless">✍️ ${esc(L3('小智寫祝福（附在經文下面）', '小智写祝福（附在经文下面）', 'Xiaozhi writes a blessing (under the verse)'))}</button><button class="btn sm gold" id="fTweak">${esc(tw_().btn)}</button><button class="btn sm" id="fBlessClr">${esc(L3('清除祝福', '清除祝福', 'Clear'))}</button></div>
         <textarea class="hlsheet-ta" id="fullBless" style="margin-top:8px" placeholder="${esc(L3('按上面的鈕，小智會依這節經文寫一兩句短祝福；也可以自己寫。', '按上面的钮，小智会依这节经文写一两句短祝福；也可以自己写。', 'Tap the button for a one- or two-sentence blessing from this verse, or write your own.'))}">${esc(fullBless)}</textarea>` : ''}
         ${fullKind === 'greet' ? `<textarea class="hlsheet-ta" id="cardGreet" style="margin-top:8px" placeholder="${esc(L3('平安喜樂，主愛你！', '平安喜乐，主爱你！', 'Peace and joy to you!'))}">${esc(state.cardGreet || '')}</textarea>` : ''}
         <div class="hlsheet-acts2" style="margin-top:8px">
@@ -4306,6 +4308,7 @@ async function viewStudio(v){
   const on_ = (id, fn) => { const e = $('#' + id); if (e) e.onclick = fn; };   /* 整張原圖模式沒有這些按鈕 */
   on_('blessBtn', blessWrite);
   on_('fBless', blessWrite);
+  on_('fTweak', openTweak);
   on_('fBlessClr', () => { fullBless = ''; studioRefresh(); });
   { const fb = $('#fullBless'); if (fb){ let tm = null; fb.oninput = () => { fullBless = fb.value; clearTimeout(tm); tm = setTimeout(() => renderCard(studioItem), 400); }; } }
   on_('tweakBtn', openTweak);
