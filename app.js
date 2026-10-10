@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.18.0';
+const VERSION = 'v2.18.1';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -391,8 +391,8 @@ const VOICES = {
 };
 
 const DEFAULTS = { lang:'zh', font:0, theme:0, flow:false, shCh:true, shV:true, hidenote:false,
-                   cardTpl:'navy', cardSize:'t', cardBorder:'classic', cardFs:1,
-                   cardTop:'', cardSign:'', cardTo:'', cardGreet:'', photoLast:'', photoMode:'bg',
+                   cardTpl:'plain', cardSize:'p', cardBorder:'none', cardFs:1.45,
+                   cardTop:'', cardSign:'', cardTo:'親愛的家人：平安！', cardGreet:'', photoLast:'', photoMode:'bg',
                    voice:{zh:0, zs:0, en:0}, ttsAutoNext:false, beauty:true, planRemindOn:false,
                    audience:'adult' };
 /* 「淨」鍵依序切換的四種組合：[整卷連讀?, 顯示章號?] */
@@ -2308,7 +2308,7 @@ const cardBorder = () => CARD_BORDERS.some(b => b[0] === state.cardBorder) ? sta
 const cardFs = () => Math.min(1.8, Math.max(.85, +state.cardFs || 1));
 
 /* ---- 相片（作背景／貼在卡片上）---- */
-let fullKind = 'verse', fullScale = 1;   /* 整張原圖：文字用經文或問候語 */
+let fullKind = 'verse', fullScale = 1.4;   /* 整張原圖：文字用經文或問候語 */
 let photoImg = null, photoMode = 'bg', suppressSticker = false, selfieLayout = false;
 /* v2.16.0：背景與貼紙各一張，可以同時存在。photoImg/photoBy＝背景；stkImg/stkBy＝貼在卡片上。
    photoMode 現在只代表「目前在編輯哪一張」，選相片時放進那一格。 */
@@ -2546,9 +2546,8 @@ function pickBgm(inp){
   bgmBlob = f; bgmName = f.name || '背景音樂'; bgmCredit = ''; studioRefresh(); toast(t().bgmAdded);
 }
 
-const DEF_TOP  = () => L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Online Fellowship');
-const DEF_SIGN = () => isEN() ? '321 Interactive Bible　World English Bible'
-                              : (t().app + '　' + L3('新標點和合本', '新标点和合本', ''));
+const DEF_TOP  = () => L3('貴格會新埔教會', '贵格会新埔教会', 'Xinpu Friends Church');
+const DEF_SIGN = () => L3('願上帝賜福你！', '愿上帝赐福你！', 'God bless you!');
 /* 詩篇用「篇」／Psalm，其餘用「章」／Chapter */
 function chapLabel(bookId, n){
   if (bookId === 'Psalms') return isEN() ? `Psalm ${n}` : L3(`第 ${n} 篇`, `第 ${n} 篇`, '');
