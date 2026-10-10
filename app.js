@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.18.8';
+const VERSION = 'v2.18.9';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -90,7 +90,7 @@ const I18N = {
         updFound:'找到新版本，下載中…', updReadyBar:'有新版本，點一下立即更新 ↻', updFail:'檢查失敗，請稍後再試',
         updApplying:'更新中…',
         card:'做成美圖', cardTitle:'做成美圖分享', cardStyle:'版型', cardSize:'尺寸',
-        cardBorder:'邊框', cardFsL:'內文字級', cardFsHint:'團體名稱、稱呼、內文與署名都會跟著放大，經文本身維持不變。',
+        cardBorder:'邊框', cardFsL:'內文字級', cardFsHint:'團體名稱、稱呼、經文、內文與署名都會跟著放大。',
         cardText:'卡片內文', bless:'請小智寫祝福', blessing:'小智寫作中…', blessDone:'小智寫好了',
         blessHint:'可以自己寫，也可以請小智照這節經文寫一段關懷祝福；改完卡片會立刻跟著變。',
         useMine:'用我的領受', clearText:'不要內文',
@@ -192,7 +192,7 @@ const I18N = {
         updFound:'找到新版本，下载中…', updReadyBar:'有新版本，点一下立即更新 ↻', updFail:'检查失败，请稍后再试',
         updApplying:'更新中…',
         card:'做成美图', cardTitle:'做成美图分享', cardStyle:'版型', cardSize:'尺寸',
-        cardBorder:'边框', cardFsL:'内文字级', cardFsHint:'团体名称、称呼、内文与署名都会跟着放大，经文本身维持不变。',
+        cardBorder:'边框', cardFsL:'内文字级', cardFsHint:'团体名称、称呼、经文、内文与署名都会跟着放大。',
         cardText:'卡片内文', bless:'请小智写祝福', blessing:'小智写作中…', blessDone:'小智写好了',
         blessHint:'可以自己写，也可以请小智照这节经文写一段关怀祝福；改完卡片会立刻跟着变。',
         useMine:'用我的领受', clearText:'不要内文',
@@ -296,7 +296,7 @@ const I18N = {
         updFound:'Update found, downloading…', updReadyBar:'A new version is ready — tap to update ↻', updFail:'Check failed, please try again later',
         updApplying:'Updating…',
         card:'Make an image', cardTitle:'Make an image to share', cardStyle:'Style', cardSize:'Size',
-        cardBorder:'Border', cardFsL:'Body text size', cardFsHint:'The group name, greeting, body text and signature all scale together; the verse itself stays as it is.',
+        cardBorder:'Border', cardFsL:'Body text size', cardFsHint:'The group name, greeting, verse, body text and signature all scale together.',
         cardText:'Card text', bless:'Ask Xiaozhi to write', blessing:'Xiaozhi is writing…', blessDone:'Xiaozhi has written it',
         blessHint:'Write it yourself, or let Xiaozhi write a short blessing from this verse. The card updates as you type.',
         useMine:'Use my reflection', clearText:'No body text',
@@ -2803,7 +2803,7 @@ function drawVerseCard(cv, h, W, H){
   const wide = W > H * 1.2;
   let colW = wide ? Math.min(iw, Math.round(H * 1.5)) : iw;   /* 橫式文字欄不拉滿全寬 */
   const sans = CARD_SANS(), serif = CARD_SERIF();
-  const FB = cardFs();          /* 內文字級——團體名稱、稱呼、署名跟著這個縮放，經文本身維持不變 */
+  const FB = cardFs();          /* 內文字級——團體名稱、稱呼、經文、署名都跟著這個縮放 */
   /* 原圖模式：先切出「相片區」與「文字區」。橫的卡片左圖右字；直的／方的卡片上圖下字 */
   const orig = !!(photoImg && photoMode === 'orig');
   let TX = 0, TY = 0, TW = W, TH = H, TP = pad, pz = null;
@@ -2921,7 +2921,7 @@ function drawVerseCard(cv, h, W, H){
     : ((/^[「『]/.test(raw) ? '' : '「') + raw + (/[」』]$/.test(raw) ? '' : '」'));
   const note = (studioNote != null ? studioNote : (h.n || '')).trim();
 
-  let vs = Math.round(58 * FT), vl, fixed, ns, nl, total;
+  let vs = Math.round(58 * FT * FB), vl, fixed, ns, nl, total;   /* 經文也跟著字級放大 */
   const vsMin = Math.round((orig ? 20 : 28) * FT);
   while (true){
     while (true){
