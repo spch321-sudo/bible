@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.18.7';
+const VERSION = 'v2.18.8';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -2747,7 +2747,7 @@ function drawFullCard(cv, h, W, H){
     ctx.font = `600 ${vs}px ${serif}`; vl = wrapText(ctx, body, tw);
     rs = Math.min(Math.round(30 * S * FS), Math.round(vs * .8));
     bs = Math.round(vs * .66); bl = [];
-    if (bless){ ctx.font = `500 ${bs}px ${serif}`; bl = wrapText(ctx, bless, tw); }
+    if (bless){ ctx.font = `500 ${bs}px ${sans}`; bl = wrapText(ctx, bless, tw); }
     total = (toName ? ts * 1.9 : 0) + vl.length * vs * 1.5 + (ref ? rs * 2 : 0) + (bl.length ? bs * .9 + bl.length * bs * 1.55 : 0) + ss * 2.2;
     let bestE = 0, bty = mg, blum = .3;
     if (row){
@@ -2789,7 +2789,7 @@ function drawFullCard(cv, h, W, H){
   y += vs * .1;
   vl.forEach(l => { y += vs * 1.0; ctx.fillText(l, cx, y); y += vs * .5; });
   if (ref){ ctx.font = `${rs}px ${sans}`; ctx.fillStyle = sub; y += rs * .6; ctx.fillText(ref, cx, y); y += rs * 1.4; }
-  if (bl.length){ ctx.font = `500 ${bs}px ${serif}`; ctx.fillStyle = sub; y += bs * .3; bl.forEach(l => { y += bs * 1.1; ctx.fillText(l, cx, y); y += bs * .45; }); y += bs * .2; }
+  if (bl.length){ ctx.font = `500 ${bs}px ${sans}`; ctx.fillStyle = sub; y += bs * .3; bl.forEach(l => { y += bs * 1.1; ctx.fillText(l, cx, y); y += bs * .45; }); y += bs * .2; }
   let s2 = ss; ctx.font = `600 ${s2}px ${sans}`;
   while (s2 > Math.round(14 * S) && ctx.measureText(sign).width > tw){ s2 -= 2; ctx.font = `600 ${s2}px ${sans}`; }
   ctx.fillStyle = sub; y += ss * 1.1; ctx.fillText(sign, cx, y);
@@ -2931,7 +2931,7 @@ function drawVerseCard(cv, h, W, H){
       vs -= Math.round(3 * FT);
     }
     fixed = vs * .9 + vl.length * vs * 1.52 + Math.round(64 * FT) + (note ? Math.round(86 * FT) : 0);
-    ns = Math.round(38 * FT * FB); nl = [];
+    ns = Math.min(Math.round(38 * FT * FB), Math.round(vs * .82)); nl = [];   /* 領受字一定比經文小一點 */
     if (note){
       while (true){
         ctx.font = `${ns}px ${sans}`;
