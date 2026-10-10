@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.17.2';
+const VERSION = 'v2.18.0';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -2410,16 +2410,18 @@ const STK_POS    = [['bl',['左下','左下','Bottom left']],['bc',['正下','�
 const STK_SHAPES = [['p',['直式','直式','Portrait']],['w',['橫式 16:9','横式 16:9','Landscape 16:9']],['s',['方形','方形','Square']]];
 const stkRatio = () => stkShape === 'w' ? 0.72 : (stkShape === 's' ? 1.06 : 1.12);
 /* ---- v2.17.0 內建風景背景：清單在 bg.json，圖檔放根目錄或 bg/ 都可以 ---- */
-let bgList = null;
+let bgList = null, bgCats = [], bgCat = '';
 async function bgLoadList(){
   if (bgList) return bgList;
   try{
     const r = await fetch('bg.json?v=' + VERSION);
     const d = r.ok ? await r.json() : {};
     bgList = (d && Array.isArray(d.list)) ? d.list : [];
-  }catch(e){ bgList = []; }
+    bgCats = (d && Array.isArray(d.cats)) ? d.cats : [];
+  }catch(e){ bgList = []; bgCats = []; }
   return bgList;
 }
+const bgCatName = c => (isEN() ? (c.ne || c.n) : (isZS() ? (c.ns || c.n) : c.n)) || '';
 const bgName = b => (isEN() ? (b.ne || b.n) : (isZS() ? (b.ns || b.n) : b.n)) || '';
 function bgImgLoad(file){
   return new Promise((res, rej) => {
@@ -2435,20 +2437,31 @@ function bgImgLoad(file){
 }
 async function fillBuiltins(){
   const box = $('#pBuilt'); if (!box) return;
-  const list = await bgLoadList();
-  if (!list.length){ box.parentNode && (box.previousElementSibling.hidden = true); box.remove(); return; }
+  const all = await bgLoadList();
+  if (!all.length){ box.parentNode && (box.previousElementSibling.hidden = true); box.remove(); const cb = $('#pBuiltCat'); if (cb) cb.remove(); return; }
+  /* 分類：只列出真的有圖的分類；沒設分類的圖算「風景」 */
+  const catOf = b => b.c || (bgCats[0] && bgCats[0].id) || '';
+  const cats = bgCats.filter(c => all.some(b => catOf(b) === c.id));
+  if (cats.length && !cats.some(c => c.id === bgCat)) bgCat = cats[0].id;
+  const cbar = $('#pBuiltCat');
+  if (cbar){
+    cbar.innerHTML = cats.map(c => `<button class="${c.id === bgCat ? 'on' : ''}" data-c="${esc(c.id)}">${esc(bgCatName(c))}</button>`).join('');
+    $$('button', cbar).forEach(btn => btn.onclick = () => { bgCat = btn.dataset.c; fillBuiltins(); });
+  }
+  const list = cats.length ? all.filter(b => catOf(b) === bgCat) : all;
+  box.scrollLeft = 0;
   box.innerHTML = list.map((b, i) => `<button class="bgcell" data-i="${i}" title="${esc(bgName(b))}">
       <img alt="" loading="lazy" src="${esc(b.t || b.f)}?v=${VERSION}" data-alt="${esc([b.f, 'bg/' + (b.t || b.f), 'bg/' + b.f].join('|'))}" onerror="bgThumbErr(this)">
       <span>${esc(bgName(b))}</span></button>`).join('');
   $$('.bgcell', box).forEach(btn => btn.onclick = async () => {
     const b = list[+btn.dataset.i]; if (!b) return;
-    btn.classList.add('on'); toast(L3('載入背景中…','载入背景中…','Loading…'), 4000);
+    btn.classList.add('on'); toast(L3('載入圖片中…','载入图片中…','Loading…'), 4000);
     try{
       const im = await bgImgLoad(b.f);
       if (!photoMode) photoMode = 'bg';
       setPhoto(im, '');
       await studioRefresh();
-    }catch(e){ btn.classList.remove('on'); toast(L3('這張背景還沒上傳到網站：','这张背景还没上传到网站：','This background is not uploaded yet: ') + b.f, 6000); }
+    }catch(e){ btn.classList.remove('on'); toast(L3('這張圖還沒上傳到網站：','这张图还没上传到网站：','This picture is not uploaded yet: ') + b.f, 6000); }
   });
 }
 /* 縮圖沒上傳就改用大圖，再找 bg/ 資料夾；都沒有才把這格拿掉 */
@@ -2466,7 +2479,10 @@ function bgCss(){
     + '.bgcell{flex:0 0 auto;width:64px;border:2px solid transparent;border-radius:10px;padding:0;background:none;cursor:pointer;text-align:center}'
     + '.bgcell img{display:block;width:60px;height:96px;object-fit:cover;border-radius:8px}'
     + '.bgcell span{display:block;font-size:10.5px;line-height:1.3;margin-top:3px;color:var(--muted,#6b6455);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
-    + '.bgcell.on{border-color:#A9762F}';
+    + '.bgcell.on{border-color:#A9762F}'
+    + '.bgcats{display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 6px}'
+    + '.bgcats button{border:1px solid var(--border-strong,#cdbfa0);background:var(--surface,#fff);color:var(--ink,#2a2118);border-radius:999px;padding:5px 13px;font-size:12.5px;font-weight:600;cursor:pointer}'
+    + '.bgcats button.on{background:#A9762F;border-color:#A9762F;color:#fff}';
   document.head.appendChild(st);
 }
 function pickPhoto(inp){
@@ -4101,7 +4117,8 @@ async function viewStudio(v){
       const cur = isStk ? stkImg : photoImg, by = isStk ? stkBy : photoBy;
       const mark = (n, on) => on ? n.map(x => x + ' ✓') : n;
       return `${chips('pMode', [['bg', mark(L.photoBg, !!photoImg)], ['sticker', mark(L.photoStk, !!stkImg)], ['orig', o3('原圖', '原图', 'Original')], ['full', o3('整張原圖', '整张原图', 'Full photo')]], photoMode, 'm')}
-      <div class="muted" style="font-size:12px;margin:12px 0 4px">${esc(L3('內建風景（點一下就套用）','内建风景（点一下就套用）','Built-in scenery (tap to use)'))}</div>
+      <div class="muted" style="font-size:12px;margin:12px 0 4px">${esc(L3('內建圖庫（先選分類，點一下就套用）','内建图库（先选分类，点一下就套用）','Built-in gallery (pick a category, tap to use)'))}</div>
+      <div class="bgcats" id="pBuiltCat"></div>
       <div class="bgstrip" id="pBuilt"></div>
       ${cur ? `
       ${photoMode === 'full' ? `
@@ -5263,13 +5280,15 @@ async function viewCompanion(v){
   const b = RD.book ? BOOK[RD.book] : null;
   v.innerHTML = `<div class="chatwrap">
       <div class="xz-head"><button class="xz-back" id="xzBack" title="${esc(L.back || '返回')}">‹</button><img src="icon-72.png" alt=""><span>${esc(L.companionFull)}</span><button class="xz-fold" id="xzFold">${esc(L3('收合', '收合', 'Fold'))}</button></div>
-      ${b ? `<div class="chatctx">${esc(L.ctx(bname(b), RD.ch))}</div>` : ''}
-      <div class="aud-row" style="display:flex;align-items:center;gap:8px;margin:0 0 4px">
-        <span class="muted" style="font-size:12.5px;white-space:nowrap">${esc(L3('對象', '对象', 'For'))}</span>
-        <div class="segbtns" id="audSeg" style="justify-content:flex-start"></div>
+      <div class="xz-bar" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 6px">
+        ${b ? `<span class="chatctx" style="margin:0">${esc(L.ctx(bname(b), RD.ch))}</span>` : ''}
+        <button class="qs-toggle" id="audBtn" style="margin:0"></button>
+        <button class="qs-toggle" id="qsBtn" style="margin:0">💡 ${esc(L.examples)}</button>
       </div>
-      <div class="muted" id="audHint" style="font-size:11.5px;line-height:1.6;margin:0 0 6px"></div>
-      <button class="qs-toggle" id="qsBtn">💡 ${esc(L.examples)}</button>
+      <div class="aud-panel" id="audPanel" hidden style="margin:0 0 6px">
+        <div class="segbtns" id="audSeg" style="justify-content:flex-start"></div>
+        <div class="muted" id="audHint" style="font-size:11.5px;line-height:1.6;margin:6px 0 0"></div>
+      </div>
       <div class="qs-panel" id="qsPanel" hidden></div>
       <div class="chatlog" id="chatlog"></div>
       <div class="chatinput">
@@ -5294,15 +5313,17 @@ async function viewCompanion(v){
     $('#audSeg', v).innerHTML = AUD_KEYS.map(k =>
       `<button class="${state.audience === k ? 'on' : ''}" data-k="${k}">${AUD_ICON[k]} ${esc(nm[k])}</button>`).join('');
     $('#audHint', v).textContent = AUD_HINT()[state.audience];
+    $('#audBtn', v).textContent = AUD_ICON[state.audience] + ' ' + L3('對象：', '对象：', 'For: ') + nm[state.audience] + ' ▾';
     $$('#audSeg button', v).forEach(b => b.onclick = () => {
       if (state.audience === b.dataset.k) return;
       state.audience = b.dataset.k; saveState();
-      paintAud(); paintQs();
+      paintAud(); paintQs(); $('#audPanel', v).hidden = true;
       toast(L3('回答對象：', '回答对象：', 'Answering for: ') + AUD_NAME()[state.audience], 2000);
     });
   };
   paintAud(); paintQs();
-  $('#qsBtn', v).onclick = () => { panel.hidden = !panel.hidden; };
+  $('#qsBtn', v).onclick = () => { panel.hidden = !panel.hidden; if (!panel.hidden) $('#audPanel', v).hidden = true; };
+  $('#audBtn', v).onclick = () => { const ap = $('#audPanel', v); ap.hidden = !ap.hidden; if (!ap.hidden) panel.hidden = true; };
   paintChat();
   $('#chatSend', v).onclick = () => sendChat($('#chatIn').value);
   $('#chatIn', v).onkeydown = e => {
