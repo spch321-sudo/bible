@@ -6,6 +6,166 @@
  ],
  "list": [
   {
+   "f": "bg195.jpg",
+   "t": "bg195s.jpg",
+   "c": "scenery",
+   "n": "石灰華梯池",
+   "ns": "石灰华梯池",
+   "ne": "Travertine Terraces"
+  },
+  {
+   "f": "bg196.jpg",
+   "t": "bg196s.jpg",
+   "c": "scenery",
+   "n": "粉紅鹽湖",
+   "ns": "粉红盐湖",
+   "ne": "Pink Salt Lake"
+  },
+  {
+   "f": "bg197.jpg",
+   "t": "bg197s.jpg",
+   "c": "scenery",
+   "n": "玄武岩海岸日出",
+   "ns": "玄武岩海岸日出",
+   "ne": "Basalt Coast Sunrise"
+  },
+  {
+   "f": "bg198.jpg",
+   "t": "bg198s.jpg",
+   "c": "scenery",
+   "n": "紅岩石塔",
+   "ns": "红岩石塔",
+   "ne": "Red Rock Spires"
+  },
+  {
+   "f": "bg199.jpg",
+   "t": "bg199s.jpg",
+   "c": "scenery",
+   "n": "冰河谷地",
+   "ns": "冰河谷地",
+   "ne": "Glacier Valley"
+  },
+  {
+   "f": "bg200.jpg",
+   "t": "bg200s.jpg",
+   "c": "scenery",
+   "n": "白樺羽扇豆",
+   "ns": "白桦羽扇豆",
+   "ne": "Birch & Lupine"
+  },
+  {
+   "f": "bg201.jpg",
+   "t": "bg201s.jpg",
+   "c": "scenery",
+   "n": "白堊海崖",
+   "ns": "白垩海崖",
+   "ne": "Chalk Cliffs"
+  },
+  {
+   "f": "bg202.jpg",
+   "t": "bg202s.jpg",
+   "c": "scenery",
+   "n": "冰洞藍影",
+   "ns": "冰洞蓝影",
+   "ne": "Blue Ice Cave"
+  },
+  {
+   "f": "bg203.jpg",
+   "t": "bg203s.jpg",
+   "c": "scenery",
+   "n": "紅樹林淺灣",
+   "ns": "红树林浅湾",
+   "ne": "Mangrove Shallows"
+  },
+  {
+   "f": "bg204.jpg",
+   "t": "bg204s.jpg",
+   "c": "scenery",
+   "n": "棉花草濕地",
+   "ns": "棉花草湿地",
+   "ne": "Cotton Grass Wetland"
+  },
+  {
+   "f": "bg205.jpg",
+   "t": "bg205s.jpg",
+   "c": "scenery",
+   "n": "秋日落葉松溪",
+   "ns": "秋日落叶松溪",
+   "ne": "Autumn Larch Stream"
+  },
+  {
+   "f": "bg206.jpg",
+   "t": "bg206s.jpg",
+   "c": "scenery",
+   "n": "紫藤湖畔",
+   "ns": "紫藤湖畔",
+   "ne": "Wisteria Lake"
+  },
+  {
+   "f": "bg207.jpg",
+   "t": "bg207s.jpg",
+   "c": "scenery",
+   "n": "喀斯特山水",
+   "ns": "喀斯特山水",
+   "ne": "Karst River"
+  },
+  {
+   "f": "bg208.jpg",
+   "t": "bg208s.jpg",
+   "c": "scenery",
+   "n": "珊瑚潮池日落",
+   "ns": "珊瑚潮池日落",
+   "ne": "Coral Tidepool Sunset"
+  },
+  {
+   "f": "bg209.jpg",
+   "t": "bg209s.jpg",
+   "c": "scenery",
+   "n": "杜鵑雲海",
+   "ns": "杜鹃云海",
+   "ne": "Rhododendron Sea of Clouds"
+  },
+  {
+   "f": "bg210.jpg",
+   "t": "bg210s.jpg",
+   "c": "scenery",
+   "n": "白沙海灘",
+   "ns": "白沙海滩",
+   "ne": "White Sand Beach"
+  },
+  {
+   "f": "bg211.jpg",
+   "t": "bg211s.jpg",
+   "c": "scenery",
+   "n": "海灣草原",
+   "ns": "海湾草原",
+   "ne": "Coastal Meadow"
+  },
+  {
+   "f": "bg212.jpg",
+   "t": "bg212s.jpg",
+   "c": "scenery",
+   "n": "地熱彩湖",
+   "ns": "地热彩湖",
+   "ne": "Geothermal Lake"
+  },
+  {
+   "f": "bg213.jpg",
+   "t": "bg213s.jpg",
+   "c": "scenery",
+   "n": "橄欖樹夕照",
+   "ns": "橄榄树夕照",
+   "ne": "Olive Tree Sunset"
+  },
+  {
+   "f": "bg214.jpg",
+   "t": "bg214s.jpg",
+   "c": "scenery",
+   "n": "冰封瀑布",
+   "ns": "冰封瀑布",
+   "ne": "Frozen Falls"
+  },
+  {
    "f": "bg175.jpg",
    "t": "bg175s.jpg",
    "c": "scenery",
@@ -166,204 +326,84 @@
    "ne": "Snowy Forest Stream"
   },
   {
-   "f": "bg21.jpg",
-   "t": "bg21s.jpg",
-   "n": "冰川洞穴",
-   "ns": "冰川洞穴",
-   "ne": "Ice Cave",
-   "c": "scenery"
+   "f": "bg215.jpg",
+   "t": "bg215s.jpg",
+   "c": "scenery",
+   "n": "彩色丘陵日出",
+   "ns": "彩色丘陵日出",
+   "ne": "Painted Hills Sunrise"
   },
   {
-   "f": "bg22.jpg",
-   "t": "bg22s.jpg",
-   "n": "冰山晚霞",
-   "ns": "冰山晚霞",
-   "ne": "Iceberg Glow",
-   "c": "scenery"
+   "f": "bg216.jpg",
+   "t": "bg216s.jpg",
+   "c": "scenery",
+   "n": "半圓山谷溪流",
+   "ns": "半圆山谷溪流",
+   "ne": "Valley Stream"
   },
   {
-   "f": "bg23.jpg",
-   "t": "bg23s.jpg",
-   "n": "雨林瀑布",
-   "ns": "雨林瀑布",
-   "ne": "Rainforest Falls",
-   "c": "scenery"
+   "f": "bg217.jpg",
+   "t": "bg217s.jpg",
+   "c": "scenery",
+   "n": "白沙丘暮色",
+   "ns": "白沙丘暮色",
+   "ne": "White Sand Dunes"
   },
   {
-   "f": "bg24.jpg",
-   "t": "bg24s.jpg",
-   "n": "羚羊峽谷",
-   "ns": "羚羊峡谷",
-   "ne": "Slot Canyon",
-   "c": "scenery"
+   "f": "bg218.jpg",
+   "t": "bg218s.jpg",
+   "c": "scenery",
+   "n": "雨林天坑",
+   "ns": "雨林天坑",
+   "ne": "Rainforest Sinkhole"
   },
   {
-   "f": "bg25.jpg",
-   "t": "bg25s.jpg",
-   "n": "雲海日出",
-   "ns": "云海日出",
-   "ne": "Sunrise Above Clouds",
-   "c": "scenery"
+   "f": "bg219.jpg",
+   "t": "bg219s.jpg",
+   "c": "scenery",
+   "n": "金色峽谷花海",
+   "ns": "金色峡谷花海",
+   "ne": "Golden Canyon"
   },
   {
-   "f": "bg26.jpg",
-   "t": "bg26s.jpg",
-   "n": "紅樹林水道",
-   "ns": "红树林水道",
-   "ne": "Mangrove Lagoon",
-   "c": "scenery"
+   "f": "bg220.jpg",
+   "t": "bg220s.jpg",
+   "c": "scenery",
+   "n": "圓石海灘日落",
+   "ns": "圆石海滩日落",
+   "ne": "Boulder Beach Sunset"
   },
   {
-   "f": "bg27.jpg",
-   "t": "bg27s.jpg",
-   "n": "杜鵑山嶺",
-   "ns": "杜鹃山岭",
-   "ne": "Rhododendron Ridge",
-   "c": "scenery"
+   "f": "bg221.jpg",
+   "t": "bg221s.jpg",
+   "c": "scenery",
+   "n": "荷塘晨曦",
+   "ns": "荷塘晨曦",
+   "ne": "Lotus Pond Dawn"
   },
   {
-   "f": "bg28.jpg",
-   "t": "bg28s.jpg",
-   "n": "向日葵花海",
-   "ns": "向日葵花海",
-   "ne": "Sunflower Field",
-   "c": "scenery"
+   "f": "bg222.jpg",
+   "t": "bg222s.jpg",
+   "c": "scenery",
+   "n": "冰晶黑沙灘",
+   "ns": "冰晶黑沙滩",
+   "ne": "Ice on Black Sand"
   },
   {
-   "f": "bg29.jpg",
-   "t": "bg29s.jpg",
-   "n": "白樺湖畔",
-   "ns": "白桦湖畔",
-   "ne": "Birch Lakeside",
-   "c": "scenery"
+   "f": "bg223.jpg",
+   "t": "bg223s.jpg",
+   "c": "scenery",
+   "n": "紅鹽角草濕地",
+   "ns": "红盐角草湿地",
+   "ne": "Red Salt Marsh"
   },
   {
-   "f": "bg30.jpg",
-   "t": "bg30s.jpg",
-   "n": "晨霧濕地",
-   "ns": "晨雾湿地",
-   "ne": "Misty Marsh",
-   "c": "scenery"
-  },
-  {
-   "f": "bg31.jpg",
-   "t": "bg31s.jpg",
-   "n": "玄武岩海岸",
-   "ns": "玄武岩海岸",
-   "ne": "Basalt Coast",
-   "c": "scenery"
-  },
-  {
-   "f": "bg32.jpg",
-   "t": "bg32s.jpg",
-   "n": "彩虹溫泉",
-   "ns": "彩虹温泉",
-   "ne": "Rainbow Hot Spring",
-   "c": "scenery"
-  },
-  {
-   "f": "bg33.jpg",
-   "t": "bg33s.jpg",
-   "n": "石灰華梯池",
-   "ns": "石灰华梯池",
-   "ne": "Travertine Terraces",
-   "c": "scenery"
-  },
-  {
-   "f": "bg34.jpg",
-   "t": "bg34s.jpg",
-   "n": "天坑光影",
-   "ns": "天坑光影",
-   "ne": "Cave Skylight",
-   "c": "scenery"
-  },
-  {
-   "f": "bg35.jpg",
-   "t": "bg35s.jpg",
-   "n": "鐘乳石湖",
-   "ns": "钟乳石湖",
-   "ne": "Crystal Cave Lake",
-   "c": "scenery"
-  },
-  {
-   "f": "bg36.jpg",
-   "t": "bg36s.jpg",
-   "n": "奇峰石林",
-   "ns": "奇峰石林",
-   "ne": "Stone Pinnacles",
-   "c": "scenery"
-  },
-  {
-   "f": "bg37.jpg",
-   "t": "bg37s.jpg",
-   "n": "彩色丘陵",
-   "ns": "彩色丘陵",
-   "ne": "Painted Hills",
-   "c": "scenery"
-  },
-  {
-   "f": "bg38.jpg",
-   "t": "bg38s.jpg",
-   "n": "天空之鏡",
-   "ns": "天空之镜",
-   "ne": "Mirror of the Sky",
-   "c": "scenery"
-  },
-  {
-   "f": "bg39.jpg",
-   "t": "bg39s.jpg",
-   "n": "沙漠枯樹",
-   "ns": "沙漠枯树",
-   "ne": "Desert Tree",
-   "c": "scenery"
-  },
-  {
-   "f": "bg40.jpg",
-   "t": "bg40s.jpg",
-   "n": "猴麵包樹",
-   "ns": "猴面包树",
-   "ne": "Baobab Sunset",
-   "c": "scenery"
-  },
-  {
-   "f": "bg41.jpg",
-   "t": "bg41s.jpg",
-   "n": "榕樹拱門",
-   "ns": "榕树拱门",
-   "ne": "Banyan Arch",
-   "c": "scenery"
-  },
-  {
-   "f": "bg42.jpg",
-   "t": "bg42s.jpg",
-   "n": "紅杉巨木",
-   "ns": "红杉巨木",
-   "ne": "Giant Redwood",
-   "c": "scenery"
-  },
-  {
-   "f": "bg43.jpg",
-   "t": "bg43s.jpg",
-   "n": "石楠花原",
-   "ns": "石楠花原",
-   "ne": "Heather Moor",
-   "c": "scenery"
-  },
-  {
-   "f": "bg44.jpg",
-   "t": "bg44s.jpg",
-   "n": "棉花草湖",
-   "ns": "棉花草湖",
-   "ne": "Cotton Grass Tarn",
-   "c": "scenery"
-  },
-  {
-   "f": "bg45.jpg",
-   "t": "bg45s.jpg",
-   "n": "晨露百合",
-   "ns": "晨露百合",
-   "ne": "Dewy Lily Meadow",
-   "c": "scenery"
+   "f": "bg224.jpg",
+   "t": "bg224s.jpg",
+   "c": "scenery",
+   "n": "雨林階梯瀑布",
+   "ns": "雨林阶梯瀑布",
+   "ne": "Rainforest Cascades"
   },
   {
    "f": "bg46.jpg",
