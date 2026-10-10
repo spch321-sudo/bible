@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.18.4';
+const VERSION = 'v2.18.5';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -2308,7 +2308,7 @@ const cardBorder = () => CARD_BORDERS.some(b => b[0] === state.cardBorder) ? sta
 const cardFs = () => Math.min(1.8, Math.max(.85, +state.cardFs || 1));
 
 /* ---- 相片（作背景／貼在卡片上）---- */
-let fullKind = 'verse', fullScale = 1.1, fullBless = '';   /* fullBless：小智依經文寫的一兩句祝福，附在經文下面 */   /* 整張原圖：文字用經文或問候語 */
+let fullKind = 'verse', fullScale = 1.1, fullBless = '', blessOwn = '';   /* blessOwn：使用者自己想說的話，小智依經文＋這段話寫祝福 */   /* fullBless：小智依經文寫的一兩句祝福，附在經文下面 */   /* 整張原圖：文字用經文或問候語 */
 let photoImg = null, photoMode = 'bg', suppressSticker = false, selfieLayout = false;
 /* v2.16.0：背景與貼紙各一張，可以同時存在。photoImg/photoBy＝背景；stkImg/stkBy＝貼在卡片上。
    photoMode 現在只代表「目前在編輯哪一張」，選相片時放進那一格。 */
@@ -4035,7 +4035,8 @@ async function blessWrite(){
     : state.lang === 'zs'
     ? '你是「小智」，国度321空中团契的属灵同伴。请照使用者给的这节经文，写一段温暖的关怀祝福，送给弟兄姊妹。要求：先用一两句点出这节经文里神的心意，再写一句贴近生活的祝福，最后用一句祝福收尾。总共三到四句、120 字以内，口语、温暖、不说教，不要标题、不要条列、不要引号、不要再抄一次经文。若结尾写成祷告，要用「奉主耶稣的名祷告，阿们」，不要用「奉耶稣的名求」。'
     : '你是「小智」，國度321空中團契的屬靈同伴。請照使用者給的這節經文，寫一段溫暖的關懷祝福，送給弟兄姊妹。要求：先用一兩句點出這節經文裡神的心意，再寫一句貼近生活的祝福，最後用一句祝福收尾。總共三到四句、120 字以內，口語、溫暖、不說教，不要標題、不要條列、不要引號、不要再抄一次經文。若結尾寫成禱告，要用「奉主耶穌的名禱告，阿們」，不要用「奉耶穌的名求」。';
-  const ask = L3('經文：', '经文：', 'Verse: ') + studioItem.t + ' (' + cardRef(studioItem) + ')' + whoLine() + AUD_WRITE();
+  const ask = L3('經文：', '经文：', 'Verse: ') + studioItem.t + ' (' + cardRef(studioItem) + ')' + whoLine() + AUD_WRITE()
+    + (blessOwn.trim() ? L3('\n\n使用者自己想說的話（請把這個意思自然融入祝福，仍要依經文來寫）：', '\n\n使用者自己想说的话（请把这个意思自然融入祝福，仍要依经文来写）：', '\n\nThe user\'s own words (weave this meaning naturally into the blessing, still grounded in the verse): ') + blessOwn.trim() : '');
   const rr_ = await aiOnce(sys, ask);
   const out = amenBang(amenOnly(rr_.out)), why = rr_.why;
   blessBusy = false;
@@ -4086,6 +4087,7 @@ async function viewStudio(v){
     <div class="section-title">${esc(L.cardText)}</div>
     <div class="card">
       <textarea class="hlsheet-ta" id="cardNote" placeholder="${esc(L.hlNote)}">${esc(studioNote != null ? studioNote : (studioItem.n || ''))}</textarea>
+      <input class="cardinput" id="blessOwn" value="${esc(blessOwn)}" style="margin-bottom:8px" placeholder="${esc(L3('自己說（選填）：想對他說什麼？例如：他最近工作很辛苦', '自己说（选填）：想对他说什么？例如：他最近工作很辛苦', 'Your own words (optional), e.g. he has been working very hard lately'))}">
       <div class="hlsheet-acts2">
         <button class="btn sm gold" id="blessBtn">✍️ ${esc(L.bless)}</button>
         <button class="btn sm gold" id="tweakBtn">${esc(tw_().btn)}</button>
@@ -4139,7 +4141,7 @@ async function viewStudio(v){
         <input type="range" id="fSz" min="50" max="250" step="5" value="${Math.round(fullScale * 100)}" style="width:100%">
         <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L3('文字內容', '文字内容', 'Text'))}</div>
         ${chips('pFk', [['verse', o3('經文', '经文', 'Verse')], ['greet', o3('問候語', '问候语', 'Greeting')]], fullKind, 'v')}
-        ${fullKind === 'verse' ? `<div class="hlsheet-acts2" style="margin-top:8px"><button class="btn sm gold" id="fBless">✍️ ${esc(L3('小智寫祝福（附在經文下面）', '小智写祝福（附在经文下面）', 'Xiaozhi writes a blessing (under the verse)'))}</button><button class="btn sm gold" id="fTweak">${esc(tw_().btn)}</button><button class="btn sm" id="fBlessClr">${esc(L3('清除祝福', '清除祝福', 'Clear'))}</button></div>
+        ${fullKind === 'verse' ? `<input class="cardinput" id="blessOwn" value="${esc(blessOwn)}" style="margin-top:8px" placeholder="${esc(L3('自己說（選填）：想對他說什麼？例如：他最近工作很辛苦', '自己说（选填）：想对他说什么？例如：他最近工作很辛苦', 'Your own words (optional), e.g. he has been working very hard lately'))}"><div class="hlsheet-acts2" style="margin-top:8px"><button class="btn sm gold" id="fBless">✍️ ${esc(L3('小智寫祝福（附在經文下面）', '小智写祝福（附在经文下面）', 'Xiaozhi writes a blessing (under the verse)'))}</button><button class="btn sm gold" id="fTweak">${esc(tw_().btn)}</button><button class="btn sm" id="fBlessClr">${esc(L3('清除祝福', '清除祝福', 'Clear'))}</button></div>
         <textarea class="hlsheet-ta" id="fullBless" style="margin-top:8px" placeholder="${esc(L3('按上面的鈕，小智會依這節經文寫一兩句短祝福；也可以自己寫。', '按上面的钮，小智会依这节经文写一两句短祝福；也可以自己写。', 'Tap the button for a one- or two-sentence blessing from this verse, or write your own.'))}">${esc(fullBless)}</textarea>` : ''}
         ${fullKind === 'greet' ? `<textarea class="hlsheet-ta" id="cardGreet" style="margin-top:8px" placeholder="${esc(L3('平安喜樂，主愛你！', '平安喜乐，主爱你！', 'Peace and joy to you!'))}">${esc(state.cardGreet || '')}</textarea>` : ''}
         <div class="hlsheet-acts2" style="margin-top:8px">
@@ -4308,6 +4310,7 @@ async function viewStudio(v){
   }
   const on_ = (id, fn) => { const e = $('#' + id); if (e) e.onclick = fn; };   /* 整張原圖模式沒有這些按鈕 */
   on_('blessBtn', blessWrite);
+  { const bo = $('#blessOwn'); if (bo) bo.oninput = () => { blessOwn = bo.value; }; }
   on_('fBless', blessWrite);
   on_('fTweak', openTweak);
   on_('fBlessClr', () => { fullBless = ''; studioRefresh(); });
@@ -4330,7 +4333,7 @@ async function viewStudio(v){
   bind('[data-sh]',   b => shareRec(b.dataset.sh));
   bind('[data-rm]',   b => rmRec(b.dataset.rm));
 }
-function openStudio(h){ studioItem = h; studioNote = h.n || ''; fullBless = ''; go('#/studio'); }
+function openStudio(h){ studioItem = h; studioNote = h.n || ''; fullBless = ''; blessOwn = ''; go('#/studio'); }
 
 /* ================================================================ 235 團隊
    兩個人成為屬靈同伴（2），三個人建立屬靈父母兒女的關係（3），
