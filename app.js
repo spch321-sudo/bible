@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.16.1';
+const VERSION = 'v2.16.2';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -389,7 +389,7 @@ const VOICES = {
 
 const DEFAULTS = { lang:'zh', font:0, theme:0, flow:false, shCh:true, shV:true, hidenote:false,
                    cardTpl:'navy', cardSize:'t', cardBorder:'classic', cardFs:1,
-                   cardTop:'', cardSign:'', cardTo:'',
+                   cardTop:'', cardSign:'', cardTo:'', cardGreet:'',
                    voice:{zh:0, zs:0, en:0}, ttsAutoNext:false, beauty:true, planRemindOn:false,
                    audience:'adult' };
 /* 「淨」鍵依序切換的四種組合：[整卷連讀?, 顯示章號?] */
@@ -2290,6 +2290,7 @@ const cardBorder = () => CARD_BORDERS.some(b => b[0] === state.cardBorder) ? sta
 const cardFs = () => Math.min(1.8, Math.max(.85, +state.cardFs || 1));
 
 /* ---- 相片（作背景／貼在卡片上）---- */
+let fullKind = 'verse';   /* 整張原圖：文字用經文或問候語 */
 let photoImg = null, photoMode = 'bg', suppressSticker = false, selfieLayout = false;
 let stkSize = 0.30, stkPos = 'br', stkShape = 'p';
 /* 原圖模式：相片完整呈現（不裁切），文字另外排在不蓋住相片的空位；
@@ -2495,7 +2496,100 @@ const CARD_SANS = () => isZS()
   : (isEN() ? '-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif'
             : '"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif');
 
+/* 整張原圖當整張卡片：只有 稱呼／經文或問候語／署名 三樣，排在相片上方最空的地方 */
+function drawFullCard(cv, h, W, H){
+  const ctx = cv.getContext('2d'); cv.width = W; cv.height = H;
+  ctx.drawImage(photoImg, 0, 0, W, H);
+  const S = Math.min(W, H) / 1080, sans = CARD_SANS(), serif = CARD_SERIF();
+  const toName = (state.cardTo || '').trim();
+  const sign = (state.cardSign || '').trim() || DEF_SIGN();
+  let body, ref = '';
+  if (fullKind === 'greet'){
+    body = (state.cardGreet || '').trim() || L3('平安喜樂，主愛你！', '平安喜乐，主爱你！', 'Peace and joy to you, the Lord loves you!');
+  } else {
+    const raw = (h.t || '').replace(/〔[^〕]*〕/g, '').replace(/\[[^\]]*\]/g, '')
+      .replace(/\s+/g, ' ').replace(/\s+([,.;:!?”’])/g, '$1').trim().replace(/[，、；：,;]+$/, '');
+    body = isEN()
+      ? ((/^[“"']/.test(raw) ? '' : '“') + raw + (/[”"']$/.test(raw) ? '' : '”'))
+      : ((/^[「『]/.test(raw) ? '' : '「') + raw + (/[」』]$/.test(raw) ? '' : '」'));
+    ref = cardRef(h);
+  }
+  const mg = Math.round(W * .07);
+  const tw = Math.min(W - mg * 2, Math.max(H * 1.05, W * .6));
+  const roomMax = H * .46;
+  const ts = Math.round(44 * S), ss = Math.round(26 * S);
+  /* 把相片縮小，算每一列的紋理（邊緣）多寡與亮度，用來找「最空」的一段 */
+  let row = null, rl = null; const sh = Math.max(24, Math.round(96 * H / W));
+  try{
+    const sw = 96, sc = document.createElement('canvas'); sc.width = sw; sc.height = sh;
+    const sx = sc.getContext('2d'); sx.drawImage(photoImg, 0, 0, sw, sh);
+    const d = sx.getImageData(0, 0, sw, sh).data, g = new Float32Array(sw * sh);
+    for (let i = 0; i < sw * sh; i++) g[i] = (d[i * 4] * .299 + d[i * 4 + 1] * .587 + d[i * 4 + 2] * .114);
+    const x0 = Math.floor((W - tw) / 2 / W * sw), x1 = Math.ceil((W + tw) / 2 / W * sw);
+    row = new Float32Array(sh); rl = new Float32Array(sh);
+    for (let y = 0; y < sh; y++){
+      let e = 0, l = 0, n = 0;
+      for (let x = x0; x < x1 - 1; x++){
+        e += Math.abs(g[y * sw + x + 1] - g[y * sw + x]) + (y + 1 < sh ? Math.abs(g[(y + 1) * sw + x] - g[y * sw + x]) : 0);
+        l += g[y * sw + x]; n++;
+      }
+      row[y] = e / Math.max(1, n); rl[y] = l / Math.max(1, n) / 255;
+    }
+  }catch(e){ row = null; }
+  /* 由大字試到小字：第一個「找得到夠空的位置」的字級就用它；都不夠空就用最空的那個 */
+  let vs = Math.round(58 * S), vl, rs, total, ty = mg, lum = .3, pick = null;
+  const vsMin = Math.round(22 * S);
+  while (true){
+    ctx.font = `600 ${vs}px ${serif}`; vl = wrapText(ctx, body, tw);
+    rs = Math.min(Math.round(30 * S), Math.round(vs * .8));
+    total = (toName ? ts * 1.9 : 0) + vl.length * vs * 1.5 + (ref ? rs * 2 : 0) + ss * 2.2;
+    let bestE = 0, bty = mg, blum = .3;
+    if (row){
+      const hh = Math.max(1, Math.round(total / H * sh)), y0 = Math.round(mg / H * sh);
+      const maxY = Math.max(y0, Math.min(sh - hh, Math.round(sh * .55)));
+      bestE = 1e9;
+      for (let y = y0; y <= maxY; y++){
+        let e = 0, l = 0;
+        for (let k = y; k < y + hh && k < sh; k++){ e += row[k]; l += rl[k]; }
+        const sc2 = e / hh + (y / sh) * 8;
+        if (sc2 < bestE){ bestE = sc2; bty = y / sh * H; blum = l / hh; }
+      }
+    }
+    const fits = total <= roomMax;
+    if (fits && (!pick || bestE < pick.e)) pick = { e:bestE, vs, vl, rs, total, ty:bty, lum:blum };
+    if ((fits && bestE <= 2.2) || vs <= vsMin) break;
+    vs -= Math.round(2 * S);
+  }
+  if (!pick) pick = { e:0, vs, vl, rs, total, ty:mg, lum:.3 };
+  ({ vs, vl, rs, total, ty, lum } = pick);
+  ty = Math.max(mg, Math.min(ty, H - mg - total));
+  /* 手動移動：整塊文字一起動，限制在卡片之內 */
+  const x1c = -(W - tw) / 2 + mg * .5, x2c = (W - tw) / 2 - mg * .5;
+  origDX = Math.max(x1c / W, Math.min(x2c / W, origDX));
+  origDY = Math.max(-(ty - mg) / H, Math.min((H - mg - (ty + total)) / H, origDY));
+  const dark = lum > .55;
+  const ink = dark ? '#2a2118' : '#ffffff', sub = dark ? 'rgba(42,33,24,.92)' : 'rgba(255,255,255,.95)';
+  /* 文字底下加很淡的柔光，亮字／暗字都看得清楚，又不遮住相片 */
+  ctx.save(); ctx.translate(origDX * W, origDY * H);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+  ctx.shadowColor = dark ? 'rgba(255,255,255,.65)' : 'rgba(0,0,0,.55)'; ctx.shadowBlur = Math.round(10 * S);
+  const cx = W / 2; let y = ty;
+  if (toName){
+    let t2 = ts; ctx.font = `600 ${t2}px ${serif}`;
+    while (t2 > Math.round(22 * S) && ctx.measureText(toName).width > tw){ t2 -= 2; ctx.font = `600 ${t2}px ${serif}`; }
+    ctx.fillStyle = ink; y += ts * 1.05; ctx.fillText(toName, cx, y); y += ts * .85;
+  }
+  ctx.fillStyle = ink; ctx.font = `600 ${vs}px ${serif}`;
+  y += vs * .1;
+  vl.forEach(l => { y += vs * 1.0; ctx.fillText(l, cx, y); y += vs * .5; });
+  if (ref){ ctx.font = `${rs}px ${sans}`; ctx.fillStyle = sub; y += rs * .6; ctx.fillText(ref, cx, y); y += rs * 1.4; }
+  let s2 = ss; ctx.font = `600 ${s2}px ${sans}`;
+  while (s2 > Math.round(14 * S) && ctx.measureText(sign).width > tw){ s2 -= 2; ctx.font = `600 ${s2}px ${sans}`; }
+  ctx.fillStyle = sub; y += ss * 1.1; ctx.fillText(sign, cx, y);
+  ctx.restore();
+}
 function drawVerseCard(cv, h, W, H){
+  if (photoImg && photoMode === 'full') return drawFullCard(cv, h, W, H);
   const ctx = cv.getContext('2d'); cv.width = W; cv.height = H;
   const T = CARD_TPL[cardTpl()];
   const F = W / 1080, pad = Math.round(W * .085), iw = W - pad * 2;
@@ -2718,8 +2812,17 @@ function cardBlob(url){
   for (let i = 0; i < b.length; i++) a[i] = b.charCodeAt(i);
   return new Blob([a], { type:'image/png' });
 }
+/* 卡片尺寸：「整張原圖」模式下，卡片就是相片本身的比例；其他模式照所選尺寸 */
+function cardDims(){
+  if (photoImg && photoMode === 'full'){
+    const pw = photoImg.width, ph = photoImg.height;
+    const long = Math.max(1080, Math.min(1920, Math.max(pw, ph))), k = long / Math.max(pw, ph);
+    return [Math.round(pw * k / 2) * 2, Math.round(ph * k / 2) * 2];
+  }
+  return CARD_SIZES[cardSize()];
+}
 function renderCard(h){
-  const [W, H] = CARD_SIZES[cardSize()];
+  const [W, H] = cardDims();
   const cv = document.createElement('canvas');
   drawVerseCard(cv, h, W, H);
   cardImg = cv.toDataURL('image/png');
@@ -2733,7 +2836,7 @@ function renderCardFast(){
   if (dragRaf) return;
   dragRaf = requestAnimationFrame(() => {
     dragRaf = 0;
-    const [W, H] = CARD_SIZES[cardSize()];
+    const [W, H] = cardDims();
     const cv = document.createElement('canvas');
     drawVerseCard(cv, studioItem, Math.round(W / 2), Math.round(H / 2));
     const img = $('#cardPv img'); if (img) img.src = cv.toDataURL('image/jpeg', .8);
@@ -2741,12 +2844,12 @@ function renderCardFast(){
 }
 /* 依「整塊／分開」與目前選的對象，決定位移要加到哪一組座標 */
 function origShift(dx, dy){
-  if (origSplit && origTarget === 'n'){ origNX += dx; origNY += dy; }
+  if (origSplit && origTarget === 'n' && photoMode !== 'full'){ origNX += dx; origNY += dy; }
   else { origDX += dx; origDY += dy; if (!origSplit){ origNX = origDX; origNY = origDY; } }
 }
 function attachOrigDrag(){
   const box = $('#cardPv'); if (!box) return;
-  const on = !!(photoImg && photoMode === 'orig' && origMove);
+  const on = !!(photoImg && (photoMode === 'orig' || photoMode === 'full') && origMove);
   box.style.touchAction = on ? 'none' : '';
   box.style.outline = on ? '2px dashed var(--gold)' : '';
   if (!on){ box.onpointerdown = null; return; }
@@ -3382,7 +3485,7 @@ async function toggleRec(){
   /* 按「只有聲音」就真的只錄聲音，不做影片 */
   if (recMode !== 'a' && canVideo()){
     try{
-      const [W, H] = CARD_SIZES[cardSize()];
+      const [W, H] = cardDims();
       const cv = liveCanvas(W, H, useSelfie);
       stream = new MediaStream([...cv.captureStream(24).getVideoTracks(), ...audioStream.getAudioTracks()]);
       kind = 'video'; mime = vidMime();
@@ -3439,7 +3542,7 @@ async function musicRec(){
     audioStream = dst.stream;
   }catch(e){ toast(t().bgmBad); return; }
 
-  const [W, H] = CARD_SIZES[cardSize()];
+  const [W, H] = cardDims();
   const cv = liveCanvas(W, H, false);
   const mime = vidMime();
   const stream = new MediaStream([...cv.captureStream(24).getVideoTracks(), ...audioStream.getAudioTracks()]);
@@ -3709,6 +3812,7 @@ async function viewStudio(v){
   if (!studioItem){ go('#/me'); return; }
   const works = wdb ? (await allRec()).sort((a, b) => b.ts - a.ts) : [];
   const vOK = canVideo();
+  const FULL = !!(photoImg && photoMode === 'full');
   v.innerHTML = `
     <div class="chtoolbar">
       <button class="chtb-btn" id="stBack">‹</button>
@@ -3722,6 +3826,7 @@ async function viewStudio(v){
     </div>
     <div class="hl-hint" style="margin:8px 0 18px">${esc(L.cardHint)}</div>
 
+    ${FULL ? '' : `
     <div class="section-title">${esc(L.cardText)}</div>
     <div class="card">
       <textarea class="hlsheet-ta" id="cardNote" placeholder="${esc(L.hlNote)}">${esc(studioNote != null ? studioNote : (studioItem.n || ''))}</textarea>
@@ -3735,20 +3840,22 @@ async function viewStudio(v){
       <div class="muted" style="font-size:12px;margin-top:4px">${esc(L3('寫給：', '写给：', 'Written for: '))}${AUD_ICON[state.audience]} ${esc(AUD_NAME()[state.audience])}${esc(L3('（到「小智」頁或「我的」設定可以更改）', '（到“小智”页或“我的”设置可以更改）', ' (change it on the Xiaozhi page or in Me → Settings)'))}</div>
     </div>
 
+    `}
     <div class="section-title">${esc(L.cardLines)}</div>
     <div class="card">
       <div class="muted" style="font-size:12px;margin-bottom:6px">${esc(L.cardToL)}</div>
       <input class="cardinput" id="cardTo" value="${esc(state.cardTo || '')}"
              placeholder="${esc(L.cardToPH)}">
-      <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.cardTopL)}</div>
+      ${FULL ? '' : `<div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.cardTopL)}</div>
       <input class="cardinput" id="cardTop" value="${esc(state.cardTop || '')}"
-             placeholder="${esc(DEF_TOP())}">
+             placeholder="${esc(DEF_TOP())}">`}
       <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.cardSignL)}</div>
       <input class="cardinput" id="cardSign" value="${esc(state.cardSign || '')}"
              placeholder="${esc(DEF_SIGN())}">
       <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.cardLinesHint)}</div>
     </div>
 
+    ${FULL ? '' : `
     <div class="section-title">${esc(L.cardStyle)}</div>
     ${chips('cTpl', CARD_ORDER.map(k => [k, CARD_TPL[k].n]), cardTpl(), 't')}
     <div class="section-title">${esc(L.cardBorder)}</div>
@@ -3758,10 +3865,23 @@ async function viewStudio(v){
     <div class="section-title">${esc(L.cardFsL)}</div>
     ${chips('cFs', CARD_FS, cardFs(), 'f')}
     <div class="muted" style="font-size:12px;margin-top:6px">${esc(L.cardFsHint)}</div>
+    `}
 
     <div class="section-title">${esc(L.photo)}</div>
     <div class="card">${photoImg ? `
-      ${chips('pMode', [['bg', L.photoBg], ['sticker', L.photoStk], ['orig', o3('原圖', '原图', 'Original')]], photoMode, 'm')}
+      ${chips('pMode', [['bg', L.photoBg], ['sticker', L.photoStk], ['orig', o3('原圖', '原图', 'Original')], ['full', o3('整張原圖', '整张原图', 'Full photo')]], photoMode, 'm')}
+      ${photoMode === 'full' ? `
+        <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L3('整張相片就是整張卡片，不加邊框；只留稱呼、經文（或問候語）與署名，自動排在相片上方最空的地方。', '整张相片就是整张卡片，不加边框；只留称呼、经文（或问候语）与署名，自动排在相片上方最空的地方。', 'The whole photo is the card, no frame. Only the greeting name, verse (or a greeting) and signature, placed in the emptiest spot at the top.'))}</div>
+        ${chips('pFk', [['verse', o3('經文', '经文', 'Verse')], ['greet', o3('問候語', '问候语', 'Greeting')]], fullKind, 'v')}
+        ${fullKind === 'greet' ? `<textarea class="hlsheet-ta" id="cardGreet" style="margin-top:8px" placeholder="${esc(L3('平安喜樂，主愛你！', '平安喜乐，主爱你！', 'Peace and joy to you!'))}">${esc(state.cardGreet || '')}</textarea>` : ''}
+        <div class="hlsheet-acts2" style="margin-top:8px">
+          <button class="btn sm ${origMove ? 'primary' : ''}" id="omTog">${esc(origMove ? L3('✋ 拖動中：點此鎖定', '✋ 拖动中：点此锁定', '✋ Dragging on — tap to lock') : L3('✋ 用手指拖動文字', '✋ 用手指拖动文字', '✋ Drag the text'))}</button>
+          <button class="btn sm" id="omReset">${esc(L3('↺ 回到自動位置', '↺ 回到自动位置', '↺ Auto position'))}</button>
+        </div>
+        <div class="hlsheet-acts2" style="margin-top:8px;justify-content:flex-start">
+          <button class="btn sm" data-nudge="-1,0">←</button><button class="btn sm" data-nudge="0,-1">↑</button>
+          <button class="btn sm" data-nudge="0,1">↓</button><button class="btn sm" data-nudge="1,0">→</button>
+        </div>` : ''}
       ${photoMode === 'orig' ? `
         <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L3('原圖完整呈現、不裁切，文字排在不蓋住相片的空位。', '原图完整呈现、不裁切，文字排在不盖住相片的空位。', 'The photo is shown whole and uncropped; the text sits in the free space beside it.'))}</div>
         <div class="muted" style="font-size:12px;margin:10px 0 6px">${esc(L3('相片大小', '相片大小', 'Photo size'))}</div>
@@ -3869,7 +3989,8 @@ async function viewStudio(v){
   bind('#cBrd button', b => { state.cardBorder = b.dataset.b; saveState(); studioRefresh(); });
   bind('#cSz  button', b => { state.cardSize = b.dataset.z; saveState(); studioRefresh(); });
   bind('#cFs  button', b => { state.cardFs = +b.dataset.f; saveState(); studioRefresh(); });
-  bind('#pMode button', b => { photoMode = b.dataset.m; if (photoMode !== 'orig') origMove = false; studioRefresh(); });
+  bind('#pMode button', b => { photoMode = b.dataset.m; if (photoMode !== 'orig' && photoMode !== 'full') origMove = false; origDX = origDY = origNX = origNY = 0; studioRefresh(); });
+  bind('#pFk button', b => { fullKind = b.dataset.v; studioRefresh(); });
   bind('#pShape button', b => { stkShape = b.dataset.v; if (stkShape === 'w' && stkSize < .38) stkSize = .46; studioRefresh(); });
   bind('#pSize button', b => { stkSize = +b.dataset.v; studioRefresh(); });
   bind('#pOSz button', b => { origScale = +b.dataset.v; origDX = origDY = origNX = origNY = 0; studioRefresh(); });
@@ -3898,16 +4019,18 @@ async function viewStudio(v){
     let tmr = null;
     nt.oninput = () => { clearTimeout(tmr); tmr = setTimeout(() => { studioNote = nt.value; renderCard(studioItem); }, 400); };
   }
-  $('#blessBtn').onclick = blessWrite;
-  $('#tweakBtn').onclick = openTweak;
-  $('#noteMine').onclick  = () => { studioNote = studioItem.n || ''; studioRefresh(); };
-  $('#noteClear').onclick = () => { studioNote = ''; studioRefresh(); };
+  const on_ = (id, fn) => { const e = $('#' + id); if (e) e.onclick = fn; };   /* 整張原圖模式沒有這些按鈕 */
+  on_('blessBtn', blessWrite);
+  on_('tweakBtn', openTweak);
+  on_('noteMine', () => { studioNote = studioItem.n || ''; studioRefresh(); });
+  on_('noteClear', () => { studioNote = ''; studioRefresh(); });
   const bindInput = (id, key) => {
     const e = $('#' + id); if (!e) return;
     let tm = null;
     e.oninput = () => { clearTimeout(tm); tm = setTimeout(() => { state[key] = e.value; saveState(); renderCard(studioItem); }, 400); };
   };
   bindInput('cardTo', 'cardTo');
+  bindInput('cardGreet', 'cardGreet');
   bindInput('cardTop', 'cardTop');
   bindInput('cardSign', 'cardSign');
   $('#recBtn').onclick = toggleRec;
