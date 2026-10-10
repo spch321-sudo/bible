@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.16.3';
+const VERSION = 'v2.17.2';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -105,7 +105,8 @@ const I18N = {
         holdT:'長按下面這張圖', holdS:'選「加入照片」或「儲存影像」，就會存進相簿。',
         photo:'加一張相片（選用）', photoPick:'從相簿選相片', photoSwap:'從相簿換一張', photoDel:'移除相片',
         photoBg:['作背景','作背景'], photoStk:['貼在卡片上','贴在卡片上'],
-        photoHint:'可以當卡片背景、像貼紙貼上去，或用「原圖」完整呈現，文字不會蓋到相片。',
+        photoHint:'可以當卡片背景，也可以像貼紙貼上去，大小與位置都能調。',
+        photoBgHint:'先選一張當卡片背景；之後可以再切到「貼在卡片上」加第二張。', photoStkHint:'背景之外，可以再貼一張相片在卡片上，底部署名會自動往上讓開。', photoUseBg:'把背景這張改貼在卡片上',
         photoBad:'這張相片讀不出來，換一張試試',
         stkShape:'相片形狀', stkSize:'相片大小', stkPos:'相片位置',
         bgm:'背景音樂（選用）', bgmPick:'從檔案選音樂', bgmSwap:'換一首', bgmDel:'移除音樂',
@@ -206,7 +207,8 @@ const I18N = {
         holdT:'长按下面这张图', holdS:'选“加入照片”或“存储图像”，就会存进相册。',
         photo:'加一张相片（选用）', photoPick:'从相册选相片', photoSwap:'从相册换一张', photoDel:'移除相片',
         photoBg:['作背景','作背景'], photoStk:['贴在卡片上','贴在卡片上'],
-        photoHint:'可以当卡片背景、像贴纸贴上去，或用“原图”完整呈现，文字不会盖到相片。',
+        photoHint:'可以当卡片背景，也可以像贴纸贴上去，大小与位置都能调。',
+        photoBgHint:'先选一张当卡片背景；之后可以再切到“贴在卡片上”加第二张。', photoStkHint:'背景之外，可以再贴一张相片在卡片上，底部署名会自动往上让开。', photoUseBg:'把背景这张改贴在卡片上',
         photoBad:'这张相片读不出来，换一张试试',
         stkShape:'相片形状', stkSize:'相片大小', stkPos:'相片位置',
         bgm:'背景音乐（选用）', bgmPick:'从文件选音乐', bgmSwap:'换一首', bgmDel:'移除音乐',
@@ -309,7 +311,8 @@ const I18N = {
         holdT:'Press and hold the image below', holdS:'Choose “Add to Photos” or “Save Image” to keep it.',
         photo:'Add a photo (optional)', photoPick:'Choose a photo', photoSwap:'Choose from album', photoDel:'Remove photo',
         photoBg:['As background','As background'], photoStk:['As a sticker','As a sticker'],
-        photoHint:'Use it as the card background, stick it on like a polaroid, or show the Original whole so the text never covers it.',
+        photoHint:'Use it as the card background, or stick it on like a polaroid. Size and position are adjustable.',
+        photoBgHint:'Pick a background photo first; then switch to “As a sticker” to add a second one.', photoStkHint:'On top of the background you can stick a second photo on the card — the signature moves up to make room.', photoUseBg:'Move the background photo onto the card',
         photoBad:"That photo could not be read — try another one",
         stkShape:'Photo shape', stkSize:'Photo size', stkPos:'Photo position',
         bgm:'Background music (optional)', bgmPick:'Choose music', bgmSwap:'Change music', bgmDel:'Remove music',
@@ -674,22 +677,22 @@ function intro321(){
   const T = (zh, zs, en) => esc(L3(zh, zs, en));
   const row = (ic, h, d) => `<div class="i321-row"><span class="i321-ic">${ic}</span><div><b>${h}</b><div class="i321-d">${d}</div></div></div>`;
   return `<div class="card i321">
-    <h3 style="margin:0 0 4px">${T('321 理念','321 理念','The 321 Vision')}</h3>
-    <div class="muted" style="font-size:13px;margin-bottom:10px">${T('改變觀念，就改變生命；改變生命，就改變生活。','改变观念，就改变生命；改变生命，就改变生活。','Change the mindset, and life is changed; change life, and living is changed.')}</div>
-    ${row('3', T('三個基礎','三个基础','Three foundations'),
-      T('耶穌是我的榜樣　聖經是我的準則　聖靈是我的引導','耶稣是我的榜样　圣经是我的准则　圣灵是我的引导','Jesus is my example · the Bible is my standard · the Holy Spirit is my guide'))}
-    ${row('2', T('兩個核心','两个核心','Two cores'),
-      T('讓耶穌作王　讓耶穌得著一切的榮耀','让耶稣作王　让耶稣得着一切的荣耀','Let Jesus be King · let Jesus have all the glory'))}
-    ${row('1', T('一個目的','一个目的','One purpose'),
-      T('建立屬神的體系，成就主禱文：願你的國降臨，願你的旨意行在地上如同行在天上','建立属神的体系，成就主祷文：愿你的国降临，愿你的旨意行在地上如同行在天上','Build God’s order, fulfilling the Lord’s Prayer: Your kingdom come, Your will be done on earth as in heaven'))}
+    <h3 style="margin:0 0 4px">${T('321 理念','321 理念','The 3-2-1 Ideology')}</h3>
+    <div class="muted" style="font-size:13px;margin-bottom:10px">${T('改變觀念，就改變生命；改變生命，就改變生活。','改变观念，就改变生命；改变生命，就改变生活。','Change your mindset, and your life is changed; change your life, and your living is changed.')}</div>
+    ${row('3', T('三個基礎','三个基础','The three foundations'),
+      T('耶穌是我的榜樣　聖經是我的準則　聖靈是我的引導','耶稣是我的榜样　圣经是我的准则　圣灵是我的引导','Jesus is my Role Model · The Bible is my Standard · The Holy Spirit is my Guide'))}
+    ${row('2', T('兩個核心','两个核心','The two core values'),
+      T('讓耶穌作王　讓耶穌得著一切的榮耀','让耶稣作王　让耶稣得着一切的荣耀','Let Jesus be King · Let Jesus receive all the glory'))}
+    ${row('1', T('一個目的','一个目的','The one purpose'),
+      T('建立屬神的體系，成就主禱文：願你的國降臨，願你的旨意行在地上如同行在天上','建立属神的体系，成就主祷文：愿你的国降临，愿你的旨意行在地上如同行在天上','To build God’s system — the fulfilment of the Lord’s Prayer: Your kingdom come, Your will be done on earth as it is in heaven'))}
     <details class="i321-more">
       <summary>${T('再多認識一點','再多认识一点','Learn a little more')}</summary>
       <p>${T('舊人有己，以自己為中心，驕傲、離開本位、想要代替神，這是問題的根源；耶穌的死解決我們的罪，耶穌的復活賜給我們新生命。「我已經與基督同釘十字架，現在活著的不再是我，乃是基督在我裡面活著。」（加拉太書 2:20）',
           '旧人有己，以自己为中心，骄傲、离开本位、想要代替神，这是问题的根源；耶稣的死解决我们的罪，耶稣的复活赐给我们新生命。“我已经与基督同钉十字架，现在活着的不再是我，乃是基督在我里面活着。”（加拉太书 2:20）',
-          'The old self centers on “me”: proud, leaving its place, trying to take God’s. Jesus’ death deals with our sin, and His resurrection gives us new life. “I have been crucified with Christ; and it is no longer I who live, but Christ lives in me.” (Galatians 2:20)')}</p>
+          'The old self is full of self (self-centredness): in pride it leaves its position and grasps at God’s authority, wanting to take His place — this is the root of the problem. Jesus’ death deals with our sin, and His resurrection gives us new life. “I have been crucified with Christ; and it is no longer I who live, but Christ lives in me.” (Galatians 2:20)')}</p>
       <p>${T('無己，不是沒有，乃是讓基督在裡面活，進入無限。由內而外五重的改變：觀念、生命、生活、關係、事工。謙卑戰勝驕傲，無己戰勝撒旦，一同成為得勝者。',
           '无己，不是没有，乃是让基督在里面活，进入无限。由内而外五重的改变：观念、生命、生活、关系、事工。谦卑战胜骄傲，无己战胜撒旦，一同成为得胜者。',
-          'Self-emptying is not losing, but letting Christ live in us. Change moves from the inside out: mindset, life, living, relationships, ministry. Humility overcomes pride, and together we become overcomers.')}</p>
+          'Selflessness (“self is absent”) is not emptiness — it is letting Christ live in us and entering the infinite. The five-fold change from the inside out: Mindset → Life → Living → Relationships → Ministry. Humility overcomes pride, selflessness overcomes Satan, and together we become victors.')}</p>
     </details>
   </div>`;
 }
@@ -915,7 +918,7 @@ function rwShow(id, replay){
   $('#rwShare', mask).onclick = async () => {
     clearTimeout(rwTimer);
     const home = location.origin + location.pathname.replace(/index\.html$/, '');
-    const text = '🏅 ' + l1 + '\n\n—— ' + (state.cardTop || L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Fellowship')) + '\n' + home;
+    const text = '🏅 ' + l1 + '\n\n—— ' + (state.cardTop || L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Online Fellowship')) + '\n' + home;
     if (navigator.share){ try{ await navigator.share({ title: t().app, text }); return; }catch(e){ if (e && e.name === 'AbortError') return; } }
     try{ await navigator.clipboard.writeText(text); toast(L3('已複製，可以貼到群組裡', '已复制，可以贴到群组里', 'Copied — paste it anywhere'), 3000); }catch(e){}
   };
@@ -1078,7 +1081,7 @@ function companionShareText(p, today){
   return L3('我們這一週一起讀', '我们这一周一起读', 'This week we are reading together') + C + cpL(w.t) + '\n'
     + L3('今天讀', '今天读', 'Today') + C + companionPassage(today) + '\n\n' + cpL(w.i) + '\n\n'
     + L3('一起聊聊', '一起聊聊', 'Talk about') + C + '\n' + qs + '\n\n🙏 ' + cpL(w.p)
-    + '\n\n—— ' + (state.cardTop || L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Fellowship'));
+    + '\n\n—— ' + (state.cardTop || L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Online Fellowship'));
 }
 function companionAsk(p, today){
   const w = p.weeks[today.week], who = p.id === 'seeker'
@@ -1962,10 +1965,9 @@ async function pxLoad(photo){
       i.onerror = () => rej(new Error('decode'));
       i.src = obj;
     });
-    photoImg = im; autoStkShape();
-    photoBy = photo.photographer || '';
     if (!photoMode) photoMode = 'bg';
-    plSave(im, photoBy);
+    setPhoto(im, photo.photographer || '');
+    plSave(im, photo.photographer || '');
     return true;
   }finally{ setTimeout(() => { try{ URL.revokeObjectURL(obj); }catch(_){} }, 30000); }
 }
@@ -2046,6 +2048,7 @@ const HYM_L = {
        e404a:'找不到 ', e404b:'（根目錄也找過了）　這個音檔還沒上傳到網站上',
        eNet:'連不到音檔（網路或離線）：', eEmpty:'　這個檔是空的，請重新上傳',
        eHtml:'　抓回來的不是音檔，是網頁（多半是 404 頁面）', again:'找到音檔了，請再按一次 ▶',
+       miss:'音檔還沒上傳到網站：',
        hint:'詩歌放在自己的網站上，錄影片時混得進去。下載與使用請遵守各詩歌的授權規定。' },
   zs:{ lib:'诗歌库', btn:'🎵 从诗歌库选', title:'诗歌库', ph:'找歌名…',
        loading:'载入中…', close:'关闭', all:'全部', play:'试听', stop:'停止',
@@ -2055,6 +2058,7 @@ const HYM_L = {
        e404a:'找不到 ', e404b:'（根目录也找过了）　这个音档还没上传到网站上',
        eNet:'连不到音档（网络或离线）：', eEmpty:'　这个档是空的，请重新上传',
        eHtml:'　抓回来的不是音档，是网页（多半是 404 页面）', again:'找到音档了，请再按一次 ▶',
+       miss:'音档还没上传到网站：',
        hint:'诗歌放在自己的网站上，录视频时混得进去。下载与使用请遵守各诗歌的授权规定。' },
   en:{ lib:'Hymn library', btn:'🎵 Pick a hymn', title:'Hymn library', ph:'Find a hymn…',
        loading:'Loading…', close:'Close', all:'All', play:'Preview', stop:'Stop',
@@ -2064,11 +2068,16 @@ const HYM_L = {
        e404a:'Not found: ', e404b:' (the site root was checked too) — this file has not been uploaded yet',
        eNet:'Cannot reach the audio file (offline?): ', eEmpty:' — the file is empty, please re-upload',
        eHtml:' — what came back is a web page, not audio (usually a 404 page)', again:'Found it — tap ▶ once more',
+       miss:'Not uploaded yet: ',
        hint:'Hymns are hosted on this site, so they mix into recordings properly. Please respect each hymn’s licence.' }
 };
 const hl_ = () => HYM_L[state.lang] || HYM_L.zh;
 /* 一首歌的顯示名稱（三語，沒填就用中文那個） */
 const songName = s => (isEN() ? (s.ne || s.n) : (isZS() ? (s.ns || s.n) : s.n)) || s.f || '';
+/* 出處與分類也跟著語言走（music.json 的 bs／be、ts／te；沒填就用中文那個） */
+const songBy  = s => (isEN() ? (s.be || s.by) : (isZS() ? (s.bs || s.by) : s.by)) || '';
+const tagName = (s, tg) => { const L = (hymnList || []).find(x => x.tag === tg) || s || {};
+  return (isEN() ? (L.te || tg) : (isZS() ? (L.ts || tg) : tg)) || ''; };
 
 let hymnList = null;          // null = 還沒抓過
 let bgmCredit = '';           // 「詩歌：〈歌名〉／出處」，會印在影片下緣
@@ -2092,20 +2101,24 @@ function hymnAudio(){
 /* 面板一打開就先確定音檔放在 music/ 還是根目錄，
    等到按下去才查就來不及了（查完手勢已經過期）。 */
 async function musicProbe(list){
-  if (musicBase !== null || !list || !list.length) return;
-  /* 只探第一首是不夠的：萬一那一首剛好還沒上傳，整份清單就都判成「找不到」，
-     連已經傳好的歌也跟著放不出來。所以從頭往下一首一首試，有一首通就算數
-     （HEAD 很輕，最多試十二首就停）。 */
-  const max = Math.min(list.length, 12);
-  for (let i = 0; i < max; i++){
-    const name = encodeURIComponent(list[i].f);
+  if (!list || !list.length) return;
+  /* v2.16.0：每一首各自探路（並行 HEAD），記在 songBase[檔名]。
+     以前只試前十二首、找到一邊就套用全部——結果 m01～m20 還沒上傳、
+     後面幾首又放在根目錄時，整份清單都判成「找不到」，一首也放不出來。
+     現在 music/ 與根目錄混放也沒關係，沒上傳的那幾首會清楚標示。 */
+  await Promise.all(list.map(async s => {
+    if (!s || !s.f || songBase[s.f] !== undefined) return;
+    const name = encodeURIComponent(s.f);
     for (const b of [MUSIC_DIR, '']){
       try{
-        const r = await fetch(b + name + '?v=' + VERSION, { method:'HEAD' });
-        if (r.ok){ musicBase = b; return; }
-      }catch(e){}
+        const r = await fetch(b + name + '?v=' + VERSION, { method:'HEAD', cache:'no-cache' });
+        if (r.ok && !/(^|,)\s*text\/html/.test(r.headers.get('content-type') || '')){
+          songBase[s.f] = b; if (musicBase === null) musicBase = b; return;
+        }
+      }catch(e){ return; }               /* 離線：不下結論，按的時候再查 */
     }
-  }
+    songBase[s.f] = false;
+  }));
 }
 
 
@@ -2127,9 +2140,11 @@ function hymnStopPrev(){
    掉在根目錄。與其叫人重傳，不如兩個地方都找——先找 music/，沒有就找根目錄，
    找到哪一邊就記起來，後面幾首不必再試。 */
 let musicBase = null;                      // null = 還沒試過
+const songBase = {};                       // 每首歌在哪裡：'music/'／''／false（沒上傳）
 async function hymnFetch(s){
   const name = encodeURIComponent(s.f);
-  const tries = (musicBase !== null) ? [musicBase] : [MUSIC_DIR, ''];
+  const sb = songBase[s.f];
+  const tries = (typeof sb === 'string') ? [sb] : [MUSIC_DIR, ''];
   let why = '';
   for (const b of tries){
     const path = b + name;
@@ -2141,7 +2156,7 @@ async function hymnFetch(s){
     const blob = await r.blob();
     if (!blob.size){ why = path + hl_().eEmpty; continue; }
     if (/(^|,)text\/html/.test(blob.type || '')){ why = path + hl_().eHtml; continue; }
-    musicBase = b;                          // 這一邊有，記下來
+    songBase[s.f] = b; if (musicBase === null) musicBase = b;   // 這一首在這一邊，記下來
     return blob;
   }
   throw new Error(why || hl_().bad);
@@ -2150,7 +2165,7 @@ async function hymnFetch(s){
 async function hymnPick(s){
   bgmBlob = await hymnFetch(s);
   bgmName = songName(s);
-  bgmCredit = hl_().credit + songName(s) + (s.by ? '／' + s.by : '');
+  bgmCredit = hl_().credit + songName(s) + (songBy(s) ? (isEN() ? ' / ' : '／') + songBy(s) : '');
 }
 
 function openHymns(){
@@ -2182,16 +2197,17 @@ function openHymns(){
     const list = (hymnList || []).filter(s => {
       if (tag && (s.tag || '') !== tag) return false;
       if (!q) return true;
-      return (songName(s) + ' ' + (s.n || '') + ' ' + (s.ne || '') + ' ' + (s.by || ''))
+      return (songName(s) + ' ' + (s.n || '') + ' ' + (s.ne || '') + ' ' + (s.by || '') + ' ' + tagName(s, s.tag || ''))
              .toLowerCase().indexOf(q) >= 0;
     });
     if (!list.length){ box.innerHTML = `<div class="empty">${esc(L.none)}</div>`; return; }
     box.innerHTML = list.map(function (s){
       const i = hymnList.indexOf(s);
-      return `<div class="hymnrow" data-i="${i}">
+      const miss = songBase[s.f] === false;
+      return `<div class="hymnrow${miss ? ' miss' : ''}" data-i="${i}"${miss ? ' style="opacity:.5"' : ''}>
         <button class="hymnplay" data-p="${i}">▶</button>
         <div class="meta"><div class="t">${esc(songName(s))}</div>
-        <div class="s">${esc([s.by, s.tag].filter(Boolean).join('　·　'))}</div></div>
+        <div class="s">${esc(miss ? L.miss + s.f : [songBy(s), s.tag ? tagName(s, s.tag) : ''].filter(Boolean).join(isEN() ? ' · ' : '　·　'))}</div></div>
         <div class="chev">›</div></div>`;
     }).join('');
     $$('.hymnrow', box).forEach(row => {
@@ -2210,7 +2226,8 @@ function openHymns(){
         hymnStopPrev();
         if (playing) return;
         const a = hymnAudio();
-        const src = (musicBase !== null ? musicBase : MUSIC_DIR) + encodeURIComponent(s.f);
+        const sb = songBase[s.f];
+        const src = (typeof sb === 'string' ? sb : (musicBase !== null ? musicBase : MUSIC_DIR)) + encodeURIComponent(s.f);
         try{ if (a.src && a.src.indexOf('blob:') === 0) URL.revokeObjectURL(a.src); }catch(e){}
         a.onended = hymnStopPrev;
         a.onerror = null;
@@ -2235,7 +2252,7 @@ function openHymns(){
     list.forEach(s => { if (s.tag && tags.indexOf(s.tag) < 0) tags.push(s.tag); });
     if (tags.length > 1){
       tagBox.innerHTML = `<button class="on" data-t="">${esc(L.all)}</button>`
-        + tags.map(x => `<button data-t="${esc(x)}">${esc(x)}</button>`).join('');
+        + tags.map(x => `<button data-t="${esc(x)}">${esc(tagName(null, x))}</button>`).join('');
       $$('#hyTags button', mask).forEach(b => b.onclick = () => {
         tag = b.dataset.t;
         $$('#hyTags button', mask).forEach(x => x.classList.toggle('on', x === b));
@@ -2254,36 +2271,36 @@ function openHymns(){
    作法與《321愛的關懷》相同：canvas 畫好 → navigator.share 傳檔，
    不支援就退回下載，讓使用者自己從相簿分享。 */
 const CARD_TPL = {
-  navy:  { n:['深藍聖夜','深蓝圣夜'], bg:['#123F92','#0D3988','#071A42'], glow:'rgba(212,166,91,.30)',
+  navy:  { n:['深藍聖夜','深蓝圣夜','Midnight Navy'], bg:['#123F92','#0D3988','#071A42'], glow:'rgba(212,166,91,.30)',
            ink:'#F2ECDD', accent:'#F7EFDC', gold:'#D4A65B', sub:'#BBA98A', frame:'rgba(212,166,91,.42)' },
-  paper: { n:['素樸信箋','素朴信笺'], bg:['#FBF8F1','#F4EFE3','#EDE6D6'], glow:'rgba(212,166,91,.45)',
+  paper: { n:['素樸信箋','素朴信笺','Plain Letter'], bg:['#FBF8F1','#F4EFE3','#EDE6D6'], glow:'rgba(212,166,91,.45)',
            ink:'#3A3122', accent:'#23211C', gold:'#A9762F', sub:'#8A7C63', frame:'rgba(169,118,47,.34)' },
-  dawn:  { n:['晨曦盼望','晨曦盼望'], bg:['#FFF6EC','#FBE9D2','#F6D9B8'], glow:'rgba(255,214,150,.6)',
+  dawn:  { n:['晨曦盼望','晨曦盼望','Dawn of Hope'], bg:['#FFF6EC','#FBE9D2','#F6D9B8'], glow:'rgba(255,214,150,.6)',
            ink:'#3A2A1A', accent:'#8A4B16', gold:'#C97A22', sub:'#8A6A4A', frame:'rgba(181,101,29,.30)' },
-  grace: { n:['青草安歇','青草安歇'], bg:['#F2F7F1','#E4EFE6','#D6E7DA'], glow:'rgba(160,200,170,.5)',
+  grace: { n:['青草安歇','青草安歇','Green Pastures'], bg:['#F2F7F1','#E4EFE6','#D6E7DA'], glow:'rgba(160,200,170,.5)',
            ink:'#1C2E26', accent:'#255943', gold:'#3C8A64', sub:'#5C7A6A', frame:'rgba(46,106,80,.28)' },
-  rose:  { n:['溫柔玫瑰','温柔玫瑰'], bg:['#FCF5F3','#F6E7E3','#EFD8D2'], glow:'rgba(220,160,150,.45)',
+  rose:  { n:['溫柔玫瑰','温柔玫瑰','Gentle Rose'], bg:['#FCF5F3','#F6E7E3','#EFD8D2'], glow:'rgba(220,160,150,.45)',
            ink:'#33221E', accent:'#8A3D2E', gold:'#B36A54', sub:'#8A6A62', frame:'rgba(154,74,58,.28)' },
-  sky:   { n:['平安晴空','平安晴空'], bg:['#F1F7FB','#DFEEF6','#CFE4F0'], glow:'rgba(150,200,230,.5)',
+  sky:   { n:['平安晴空','平安晴空','Peaceful Sky'], bg:['#F1F7FB','#DFEEF6','#CFE4F0'], glow:'rgba(150,200,230,.5)',
            ink:'#1B2A33', accent:'#1E5270', gold:'#2E7DA0', sub:'#5A7684', frame:'rgba(37,96,128,.28)' },
-  linen: { n:['素雅棉麻','素雅棉麻'], bg:['#F7F4EE','#EFEAE0','#E6DFD2'], glow:'rgba(200,190,170,.4)',
+  linen: { n:['素雅棉麻','素雅棉麻','Soft Linen'], bg:['#F7F4EE','#EFEAE0','#E6DFD2'], glow:'rgba(200,190,170,.4)',
            ink:'#2A2620', accent:'#4A4234', gold:'#8A7A5A', sub:'#7A7263', frame:'rgba(90,80,64,.26)' },
-  night: { n:['深夜星光','深夜星光'], bg:['#101E1B','#16302A','#0E2420'], glow:'rgba(232,201,122,.26)',
+  night: { n:['深夜星光','深夜星光','Starry Night'], bg:['#101E1B','#16302A','#0E2420'], glow:'rgba(232,201,122,.26)',
            ink:'#EDEAE0', accent:'#E8C97A', gold:'#E8C97A', sub:'#9FB0AA', frame:'rgba(232,201,122,.34)' },
-  plain: { n:['純白簡潔','纯白简洁'], bg:['#FFFFFF','#FFFFFF','#FFFFFF'], glow:'rgba(0,0,0,0)',
+  plain: { n:['純白簡潔','纯白简洁','Pure White'], bg:['#FFFFFF','#FFFFFF','#FFFFFF'], glow:'rgba(0,0,0,0)',
            ink:'#23211C', accent:'#0D3988', gold:'#A9762F', sub:'#6B6255', frame:'rgba(13,57,136,.22)' }
 };
 const CARD_ORDER = ['navy','paper','dawn','grace','rose','sky','linen','night','plain'];
-const CARD_SIZES = { p:[1080,1920,['直式 9:16','直式 9:16']],
-                     t:[1080,1350,['直式 4:5','直式 4:5']],
-                     s:[1080,1080,['方形','方形']],
-                     w:[1920,1080,['橫式 16:9','横式 16:9']],
-                     f:[1440,1080,['橫式 4:3','横式 4:3']] };
-const CARD_BORDERS = [ ['classic',['古典雙框','古典双框']], ['corner',['雅緻角飾','雅致角饰']],
-                       ['inline',['內斂細線','内敛细线']], ['dots',['珠鏈點框','珠链点框']],
-                       ['ornate',['華麗花角','华丽花角']], ['none',['無邊框','无边框']] ];
-const CARD_FS = [[0.9,['小一點','小一点']], [1,['標準','标准']], [1.2,['大','大']],
-                 [1.45,['特大','特大']], [1.7,['超大','超大']]];
+const CARD_SIZES = { p:[1080,1920,['直式 9:16','直式 9:16','Portrait 9:16']],
+                     t:[1080,1350,['直式 4:5','直式 4:5','Portrait 4:5']],
+                     s:[1080,1080,['方形','方形','Square']],
+                     w:[1920,1080,['橫式 16:9','横式 16:9','Landscape 16:9']],
+                     f:[1440,1080,['橫式 4:3','横式 4:3','Landscape 4:3']] };
+const CARD_BORDERS = [ ['classic',['古典雙框','古典双框','Classic Double']], ['corner',['雅緻角飾','雅致角饰','Elegant Corners']],
+                       ['inline',['內斂細線','内敛细线','Fine Line']], ['dots',['珠鏈點框','珠链点框','Beaded Dots']],
+                       ['ornate',['華麗花角','华丽花角','Ornate Corners']], ['none',['無邊框','无边框','No Border']] ];
+const CARD_FS = [[0.9,['小一點','小一点','Smaller']], [1,['標準','标准','Standard']], [1.2,['大','大','Large']],
+                 [1.45,['特大','特大','Extra Large']], [1.7,['超大','超大','Huge']]];
 let cardImg = null;
 const cardTpl = () => CARD_TPL[state.cardTpl] ? state.cardTpl : 'navy';
 const cardSize = () => CARD_SIZES[state.cardSize] ? state.cardSize : 't';
@@ -2293,17 +2310,18 @@ const cardFs = () => Math.min(1.8, Math.max(.85, +state.cardFs || 1));
 /* ---- 相片（作背景／貼在卡片上）---- */
 let fullKind = 'verse', fullScale = 1;   /* 整張原圖：文字用經文或問候語 */
 let photoImg = null, photoMode = 'bg', suppressSticker = false, selfieLayout = false;
+/* v2.16.0：背景與貼紙各一張，可以同時存在。photoImg/photoBy＝背景；stkImg/stkBy＝貼在卡片上。
+   photoMode 現在只代表「目前在編輯哪一張」，選相片時放進那一格。 */
+let stkImg = null, stkBy = '';
+function setPhoto(im, by){
+  if (photoMode === 'sticker'){ stkImg = im; stkBy = by || ''; }
+  else { photoImg = im; photoBy = by || ''; }
+}
 let stkSize = 0.30, stkPos = 'br', stkShape = 'p';
 /* 原圖模式：相片完整呈現（不裁切），文字另外排在不蓋住相片的空位；
    文字區塊可以拖動，位置存成佔整張卡片寬高的比例 */
 let origScale = 1, origDX = 0, origDY = 0, origMove = false;
 let origLay = 'auto', origSplit = false, origTarget = 'v', origNX = 0, origNY = 0;   /* 版面：自動／上下／左右；分開移動時 DX/DY 是經文、NX/NY 是領受 */
-const STK_SIZES  = [[0.22,['小張','小张']],[0.30,['中等','中等']],[0.38,['大張','大张']],
-                    [0.46,['滿版','满版']],[0.62,['超大','超大']],[0.84,['整排','整排']]];
-const STK_POS    = [['bl',['左下','左下']],['bc',['正下','正下']],['br',['右下','右下']],
-                    ['tl',['左上','左上']],['tr',['右上','右上']]];
-const STK_SHAPES = [['p',['直式','直式']],['w',['橫式 16:9','横式 16:9']],['s',['方形','方形']]];
-const stkRatio = () => stkShape === 'w' ? 0.72 : (stkShape === 's' ? 1.06 : 1.12);
 /* ── 我的相片庫：用過的相片自動留在手機裡（IndexedDB），下次直接挑，不用重找 ── */
 const PLIB_MAX = 40;
 let pdb = null, plRestored = false;
@@ -2337,15 +2355,15 @@ async function plSave(img, by){
     await plReq(db.transaction('p', 'readwrite').objectStore('p').put({ id, ts:Date.now(), blob, thumb, by:by || '', w:img.width, h:img.height }));
     const all = await plAll();
     for (const o of all.slice(PLIB_MAX)) await plReq(db.transaction('p', 'readwrite').objectStore('p').delete(o.id));
-    state.photoLast = id; state.photoMode = photoMode; saveState();
+    if (photoMode !== 'sticker'){ state.photoLast = id; state.photoMode = photoMode; saveState(); }
   }catch(e){ console.error('photo lib', e); }
 }
 async function plLoad(rec){
   const url = URL.createObjectURL(rec.blob);
   try{
     const im = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('decode')); i.src = url; });
-    photoImg = im; photoBy = rec.by || ''; autoStkShape();
-    state.photoLast = rec.id; saveState();
+    setPhoto(im, rec.by || '');
+    if (photoMode !== 'sticker'){ state.photoLast = rec.id; saveState(); }
     return true;
   }finally{ setTimeout(() => { try{ URL.revokeObjectURL(url); }catch(_){} }, 30000); }
 }
@@ -2356,7 +2374,7 @@ async function plRestore(){
   try{
     const db = await plOpen();
     const rec = await plReq(db.transaction('p').objectStore('p').get(state.photoLast));
-    if (rec){ await plLoad(rec); photoMode = state.photoMode || 'bg'; }
+    if (rec){ photoMode = state.photoMode || 'bg'; await plLoad(rec); }
   }catch(e){}
 }
 async function openPhotoLib(){
@@ -2385,12 +2403,78 @@ async function openPhotoLib(){
   };
   paint();
 }
+const STK_SIZES  = [[0.22,['小張','小张','Small']],[0.30,['中等','中等','Medium']],[0.38,['大張','大张','Large']],
+                    [0.46,['滿版','满版','Full']],[0.62,['超大','超大','Huge']],[0.84,['整排','整排','Full width']]];
+const STK_POS    = [['bl',['左下','左下','Bottom left']],['bc',['正下','正下','Bottom centre']],['br',['右下','右下','Bottom right']],
+                    ['tl',['左上','左上','Top left']],['tr',['右上','右上','Top right']]];
+const STK_SHAPES = [['p',['直式','直式','Portrait']],['w',['橫式 16:9','横式 16:9','Landscape 16:9']],['s',['方形','方形','Square']]];
+const stkRatio = () => stkShape === 'w' ? 0.72 : (stkShape === 's' ? 1.06 : 1.12);
+/* ---- v2.17.0 內建風景背景：清單在 bg.json，圖檔放根目錄或 bg/ 都可以 ---- */
+let bgList = null;
+async function bgLoadList(){
+  if (bgList) return bgList;
+  try{
+    const r = await fetch('bg.json?v=' + VERSION);
+    const d = r.ok ? await r.json() : {};
+    bgList = (d && Array.isArray(d.list)) ? d.list : [];
+  }catch(e){ bgList = []; }
+  return bgList;
+}
+const bgName = b => (isEN() ? (b.ne || b.n) : (isZS() ? (b.ns || b.n) : b.n)) || '';
+function bgImgLoad(file){
+  return new Promise((res, rej) => {
+    const tryAt = (bases) => {
+      if (!bases.length) return rej(new Error('missing'));
+      const im = new Image();
+      im.onload = () => res(im);
+      im.onerror = () => tryAt(bases.slice(1));
+      im.src = bases[0] + encodeURIComponent(file) + '?v=' + VERSION;
+    };
+    tryAt(['', 'bg/']);
+  });
+}
+async function fillBuiltins(){
+  const box = $('#pBuilt'); if (!box) return;
+  const list = await bgLoadList();
+  if (!list.length){ box.parentNode && (box.previousElementSibling.hidden = true); box.remove(); return; }
+  box.innerHTML = list.map((b, i) => `<button class="bgcell" data-i="${i}" title="${esc(bgName(b))}">
+      <img alt="" loading="lazy" src="${esc(b.t || b.f)}?v=${VERSION}" data-alt="${esc([b.f, 'bg/' + (b.t || b.f), 'bg/' + b.f].join('|'))}" onerror="bgThumbErr(this)">
+      <span>${esc(bgName(b))}</span></button>`).join('');
+  $$('.bgcell', box).forEach(btn => btn.onclick = async () => {
+    const b = list[+btn.dataset.i]; if (!b) return;
+    btn.classList.add('on'); toast(L3('載入背景中…','载入背景中…','Loading…'), 4000);
+    try{
+      const im = await bgImgLoad(b.f);
+      if (!photoMode) photoMode = 'bg';
+      setPhoto(im, '');
+      await studioRefresh();
+    }catch(e){ btn.classList.remove('on'); toast(L3('這張背景還沒上傳到網站：','这张背景还没上传到网站：','This background is not uploaded yet: ') + b.f, 6000); }
+  });
+}
+/* 縮圖沒上傳就改用大圖，再找 bg/ 資料夾；都沒有才把這格拿掉 */
+function bgThumbErr(img){
+  const alt = (img.dataset.alt || '').split('|').filter(Boolean);
+  if (!alt.length){ const c = img.closest('.bgcell'); if (c) c.remove(); return; }
+  img.dataset.alt = alt.slice(1).join('|');
+  img.src = alt[0] + '?v=' + VERSION;
+}
+window.bgThumbErr = bgThumbErr;
+function bgCss(){
+  if ($('#bgcss')) return;
+  const st = document.createElement('style'); st.id = 'bgcss';
+  st.textContent = '.bgstrip{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 8px;-webkit-overflow-scrolling:touch}'
+    + '.bgcell{flex:0 0 auto;width:64px;border:2px solid transparent;border-radius:10px;padding:0;background:none;cursor:pointer;text-align:center}'
+    + '.bgcell img{display:block;width:60px;height:96px;object-fit:cover;border-radius:8px}'
+    + '.bgcell span{display:block;font-size:10.5px;line-height:1.3;margin-top:3px;color:var(--muted,#6b6455);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
+    + '.bgcell.on{border-color:#A9762F}';
+  document.head.appendChild(st);
+}
 function pickPhoto(inp){
   const f = inp && inp.files && inp.files[0]; if (!f) return;
   const rd = new FileReader();
   rd.onload = () => {
     const im = new Image();
-    im.onload = () => { photoImg = im; photoBy = ''; if (!photoMode) photoMode = 'bg'; autoStkShape(); plSave(im, ''); studioRefresh(); };
+    im.onload = () => { if (!photoMode) photoMode = 'bg'; setPhoto(im, ''); plSave(im, ''); studioRefresh(); };
     im.onerror = () => toast(t().photoBad);
     im.src = rd.result;
   };
@@ -2414,7 +2498,28 @@ function coverDraw(ctx, img, x, y, w, h){
 
 /* ---- 背景音樂 ---- */
 let bgmBlob = null, bgmName = '', bgmVol = 0.22, mcLen = 30;
-const MC_LENS = [[15,['15 秒','15 秒']],[30,['30 秒','30 秒']],[60,['1 分鐘','1 分钟']],[0,['整首','整首']]];
+/* v2.17.1：選好的配樂可以先試聽（共用詩歌庫那個唯一的 <audio>，iPhone 才放得出聲） */
+let bgmPrevOn = false, bgmPrevURL = null;
+function bgmPrevStop(){
+  bgmPrevOn = false;
+  try{ if (hymnEl){ hymnEl.pause(); hymnEl.onended = null; } }catch(e){}
+  try{ if (bgmPrevURL) URL.revokeObjectURL(bgmPrevURL); }catch(e){}
+  bgmPrevURL = null;
+  const b = $('#bPrev'); if (b) b.textContent = L3('▶ 試聽','▶ 试听','▶ Preview');
+}
+function bgmPrevToggle(){
+  if (bgmPrevOn || !bgmBlob){ bgmPrevStop(); return; }
+  hymnStopPrev();
+  const a = hymnAudio();
+  bgmPrevURL = URL.createObjectURL(bgmBlob);
+  a.src = bgmPrevURL; a.volume = 1;
+  a.onended = bgmPrevStop;
+  bgmPrevOn = true;
+  const b = $('#bPrev'); if (b) b.textContent = L3('⏸ 停止試聽','⏸ 停止试听','⏸ Stop preview');
+  const q = a.play();                       /* 手勢裡同步呼叫 */
+  if (q && q.catch) q.catch(bgmPrevStop);
+}
+const MC_LENS = [[15,['15 秒','15 秒','15 sec']],[30,['30 秒','30 秒','30 sec']],[60,['1 分鐘','1 分钟','1 min']],[0,['整首','整首','Whole track']]];
 const BGM_VOLS = [[0.12,['小聲','小声']],[0.22,['適中','适中']],[0.38,['明顯','明显']]];
 const AUD_EXT = /\.(mp3|m4a|aac|wav|aif|aiff|caf|flac|ogg|opus|mp4|mov|webm|wma)$/i;
 function pickBgm(inp){
@@ -2425,7 +2530,7 @@ function pickBgm(inp){
   bgmBlob = f; bgmName = f.name || '背景音樂'; bgmCredit = ''; studioRefresh(); toast(t().bgmAdded);
 }
 
-const DEF_TOP  = () => L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Fellowship');
+const DEF_TOP  = () => L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Online Fellowship');
 const DEF_SIGN = () => isEN() ? '321 Interactive Bible　World English Bible'
                               : (t().app + '　' + L3('新標點和合本', '新标点和合本', ''));
 /* 詩篇用「篇」／Psalm，其餘用「章」／Chapter */
@@ -2527,7 +2632,7 @@ function drawCardBorder(ctx, W, H, pad, F, T){
 /* ---- 自拍圓框（錄影時合成到右下角）---- */
 function drawSelfieCircle(cx, vid, W, H, F){
   if (!vid || !vid.videoWidth) return;
-  const pad = Math.round(W * .085), R = Math.round(Math.min(W, H) * 0.115);
+  const pad = Math.round(Math.min(W, H) * .085), R = Math.round(Math.min(W, H) * 0.115);
   const cxx = W - pad - R + 4 * F, cyy = H - pad - R + 4 * F;
   cx.save();
   cx.shadowColor = 'rgba(0,0,0,.28)'; cx.shadowBlur = Math.round(22 * F); cx.shadowOffsetY = Math.round(8 * F);
@@ -2675,7 +2780,9 @@ function drawVerseCard(cv, h, W, H){
   if (photoImg && photoMode === 'full') return drawFullCard(cv, h, W, H);
   const ctx = cv.getContext('2d'); cv.width = W; cv.height = H;
   const T = CARD_TPL[cardTpl()];
-  const F = W / 1080, pad = Math.round(W * .085), iw = W - pad * 2;
+  const S = Math.min(W, H), F = S / 1080, pad = Math.round(S * .085), iw = W - pad * 2;   /* 比例用短邊算，橫式字才不會被放大 */
+  const wide = W > H * 1.2;
+  let colW = wide ? Math.min(iw, Math.round(H * 1.5)) : iw;   /* 橫式文字欄不拉滿全寬 */
   const sans = CARD_SANS(), serif = CARD_SERIF();
   const FB = cardFs();          /* 內文字級——團體名稱、稱呼、署名跟著這個縮放，經文本身維持不變 */
   /* 原圖模式：先切出「相片區」與「文字區」。橫的卡片左圖右字；直的／方的卡片上圖下字 */
@@ -2705,6 +2812,14 @@ function drawVerseCard(cv, h, W, H){
     pz = pickL.pz; TX = pickL.TX; TY = pickL.TY; TW = pickL.TW; TH = pickL.TH;
     TP = Math.round(W * .02);
   }
+  /* 貼紙（可與背景並存）；橫式貼在角落且左右夠寬時，文字欄收窄讓開，不必整段往上擠 */
+  const stkW = Math.round(S * stkSize);
+  const stkSideInfo = { has: !!(stkImg && !suppressSticker && !orig), side: false };
+  if (!orig){
+    const sideIw = W - 2 * (pad + stkW + Math.round(28 * F));
+    if (wide && stkSideInfo.has && stkPos !== 'bc' && sideIw >= W * .45){ stkSideInfo.side = true; colW = Math.min(colW, sideIw); }
+    TW = colW + 2 * pad; TX = Math.round((W - TW) / 2);
+  }
   const tiw = TW - TP * 2;
 
   /* 背景 */
@@ -2712,7 +2827,7 @@ function drawVerseCard(cv, h, W, H){
   g.addColorStop(0, T.bg[0]); g.addColorStop(.55, T.bg[1]); g.addColorStop(1, T.bg[2]);
   ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
   /* 相片當背景時鋪上半透明遮罩，字才看得清楚 */
-  if (photoImg && photoMode === 'bg'){
+  if (photoImg && !orig){
     coverDraw(ctx, photoImg, 0, 0, W, H);
     const hx = T.bg[1].replace('#', '');
     const R0 = parseInt(hx.slice(0, 2), 16), G0 = parseInt(hx.slice(2, 4), 16), B0 = parseInt(hx.slice(4, 6), 16);
@@ -2743,7 +2858,7 @@ function drawVerseCard(cv, h, W, H){
   }
   ctx.save(); ctx.translate(TX, TY);
 
-  const FT = (orig && W >= H * 1.2) ? H / 1080 : F;   /* 橫式卡片的文字區較矮，字級以高度為準 */
+  const FT = F;
   /* 團契名 */
   const grp = (state.cardTop || '').trim() || DEF_TOP();
   const grpSz = Math.round(27 * FT * FB), grpY = TP + Math.round(42 * FT);
@@ -2770,9 +2885,9 @@ function drawVerseCard(cv, h, W, H){
   }
 
   /* 版位：經文＋領受垂直置中 */
-  const hasSticker = photoImg && photoMode === 'sticker' && !suppressSticker;
-  const stkBottom = hasSticker && stkPos !== 'tl' && stkPos !== 'tr';
-  const liftRoom = stkBottom ? Math.round(W * stkSize * stkRatio()) + Math.round(30 * FT) : 0;
+  const hasSticker = stkSideInfo.has;
+  const stkBottom = hasSticker && !stkSideInfo.side && stkPos !== 'tl' && stkPos !== 'tr';
+  const liftRoom = stkBottom ? Math.round(stkW * stkRatio()) + Math.round(30 * FT) : 0;
   const topRoom = TP + Math.round((toName ? 176 : 100) * FT), botRoom = TP + Math.round(70 * FT) + liftRoom;
   const room = TH - topRoom - botRoom;
   /* 經文本身可能已經帶了引號（例如神說的話），不要再包一層 */
@@ -2810,6 +2925,16 @@ function drawVerseCard(cv, h, W, H){
     /* 原圖模式的文字區比較小：整塊放不下就把經文再縮一點，直到放得下 */
     if (!orig || total <= room || vs <= vsMin) break;
     vs -= Math.round(3 * FT);
+  }
+  /* 縮到最小還放不下：只留放得下的行，最後一行加「…」，絕不壓到署名 */
+  if (note && total > room + 1){
+    const fit = Math.max(1, Math.floor((room - fixed) / (ns * 1.76)));
+    if (nl.length > fit){
+      nl = nl.slice(0, fit); let last = nl[fit - 1]; ctx.font = `${ns}px ${sans}`;
+      while (last.length > 1 && ctx.measureText(last + '…').width > tiw) last = last.slice(0, -1);
+      nl[fit - 1] = last.replace(/[，。、；：,.;:\s]+$/, '') + '…';
+      total = fixed + nl.length * ns * 1.76;
+    }
   }
   let y = topRoom + Math.max(0, (room - total) / 2);
 
@@ -2860,7 +2985,7 @@ function drawVerseCard(cv, h, W, H){
   }
 
   /* 落款（貼紙或自拍佔住底部時往上讓開） */
-  const lift = stkBottom ? Math.round(W * stkSize * stkRatio()) + Math.round(16 * FT) : 0;
+  const lift = stkBottom ? Math.round(stkW * stkRatio()) + Math.round(16 * FT) : 0;
   ctx.textAlign = 'center'; ctx.fillStyle = T.sub; ctx.font = `600 ${Math.round(25 * FT * FB)}px ${sans}`;
   const sign = (state.cardSign || '').trim()
             || DEF_SIGN();
@@ -2871,7 +2996,7 @@ function drawVerseCard(cv, h, W, H){
 
   /* 相片貼紙（拍立得風格） */
   if (hasSticker){
-    const sw = Math.round(W * stkSize), sh = Math.round(sw * stkRatio());
+    const sw = stkW, sh = Math.round(sw * stkRatio());
     const top = stkPos === 'tl' || stkPos === 'tr';
     const bx = (stkPos === 'bl' || stkPos === 'tl') ? pad - 4 * F
              : (stkPos === 'bc') ? Math.round((W - sw) / 2)
@@ -2886,7 +3011,7 @@ function drawVerseCard(cv, h, W, H){
     ctx.shadowColor = 'transparent';
     const iw2 = sw - fr * 2, ih2 = sh - fr - pb;
     ctx.save(); rr(ctx, -sw / 2 + fr, -sh / 2 + fr, iw2, ih2, Math.round(4 * F)); ctx.clip();
-    coverDraw(ctx, photoImg, -sw / 2 + fr, -sh / 2 + fr, iw2, ih2); ctx.restore();
+    coverDraw(ctx, stkImg, -sw / 2 + fr, -sh / 2 + fr, iw2, ih2); ctx.restore();
     ctx.restore();
   }
 }
@@ -3385,7 +3510,7 @@ function liveCanvas(W, H, withSelfie){
   drawVerseCard(base, studioItem, W, H);
   selfieLayout = false; suppressSticker = false;
   const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
-  const cx = cv.getContext('2d'), t0 = performance.now(), F = W / 1080;
+  const cx = cv.getContext('2d'), t0 = performance.now(), F = Math.min(W, H) / 1080;
   const svid = $('#selfiePrev');
   const draw = () => {
     const el = (performance.now() - t0) / 1000;
@@ -3541,6 +3666,7 @@ function fadeIn(g, ac, to, sec){
 async function toggleRec(){
   if (mr && mr.state === 'recording'){ recStopNow(); return; }
   if (!studioItem) return;
+  bgmPrevStop();
   /* 上一次錄完相機就關了，再按一次自拍要重新開，不然只會錄到靜止的臉 */
   if (recMode === 's' && (!selfieStream || !selfieStream.active)){
     try{ selfieStream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'user' }, audio:false }); }
@@ -3626,6 +3752,7 @@ async function musicRec(){
   if (mr && mr.state === 'recording'){ recStopNow(); return; }
   if (!studioItem || !bgmBlob){ toast(t().bgmNeed); return; }
   if (!canVideo()){ toast(t().vidNo); return; }
+  bgmPrevStop();
   const jobItem = studioItem;
   mjAsk();
   let ac, bgmEl, bgmURL, audioStream;
@@ -3637,6 +3764,8 @@ async function musicRec(){
     const gain = ac.createGain(); gain.gain.value = 0.0001; __mcGain = gain;
     const dst = ac.createMediaStreamDestination();
     ac.createMediaElementSource(bgmEl).connect(gain).connect(dst);
+    /* 邊聽邊製作：同一路聲音也送到喇叭；音量跟著淡入淡出一起走 */
+    if (state.mcHear !== false) gain.connect(ac.destination);
     audioStream = dst.stream;
   }catch(e){ toast(t().bgmBad); return; }
 
@@ -3819,7 +3948,7 @@ async function noteRewrite(instr, mask){
   const go = mask && $('#twGo', mask);
   if (go){ go.disabled = true; go.textContent = tw_().busy; }
   const sys = isEN()
-    ? 'You are Xiaozhi from Kingdom 321 Fellowship. Rewrite the short blessing the user gives you, following their instruction. Return ONLY the rewritten text — no explanation, no heading, no bullet points, no quotation marks, and do not quote the verse again. Keep it warm and spoken, never preachy. Close with a short blessing ending in just "Amen" — do not write "in the name of Jesus we pray".'
+    ? 'You are Xiaozhi from Kingdom 321 Online Fellowship. Rewrite the short blessing the user gives you, following their instruction. Return ONLY the rewritten text — no explanation, no heading, no bullet points, no quotation marks, and do not quote the verse again. Keep it warm and spoken, never preachy. Close with a short blessing ending in just "Amen" — do not write "in the name of Jesus we pray".'
     : isZS()
     ? '你是「小智」，国度321空中团契的属灵同伴。请照使用者的要求，修改他给你的这段祝福。只回传改好的内文本身——不要解释、不要标题、不要条列、不要引号、不要再抄一次经文。保持温暖、口语、不说教。祝福结尾只用「阿们」，不要写「奉主耶稣的名祷告」。'
     : '你是「小智」，國度321空中團契的屬靈同伴。請照使用者的要求，修改他給你的這段祝福。只回傳改好的內文本身——不要解釋、不要標題、不要條列、不要引號、不要再抄一次經文。保持溫暖、口語、不說教。祝福結尾只用「阿們」，不要寫「奉主耶穌的名禱告」。';
@@ -3874,7 +4003,7 @@ async function blessWrite(){
   const btn = $('#blessBtn');
   if (btn){ btn.disabled = true; btn.textContent = t().blessing; }
   const sys = isEN()
-    ? 'You are Xiaozhi, a spiritual companion from Kingdom 321 Fellowship. From the verse the user gives you, write a short, warm word of encouragement for a brother or sister. First name in one or two sentences what this verse shows of God\'s heart, then one sentence that touches ordinary daily life, then close with a blessing. Three to four sentences, under 60 words. Warm and spoken, never preachy. No headings, no bullet points, no quotation marks, and do not quote the verse again. If it reads as a prayer, close it with "in the name of the Lord Jesus we pray, Amen" — never "in Jesus\' name we ask, Amen."'
+    ? 'You are Xiaozhi, a spiritual companion from Kingdom 321 Online Fellowship. From the verse the user gives you, write a short, warm word of encouragement for a brother or sister. First name in one or two sentences what this verse shows of God\'s heart, then one sentence that touches ordinary daily life, then close with a blessing. Three to four sentences, under 60 words. Warm and spoken, never preachy. No headings, no bullet points, no quotation marks, and do not quote the verse again. If it reads as a prayer, close it with "in the name of the Lord Jesus we pray, Amen" — never "in Jesus\' name we ask, Amen."'
     : state.lang === 'zs'
     ? '你是「小智」，国度321空中团契的属灵同伴。请照使用者给的这节经文，写一段温暖的关怀祝福，送给弟兄姊妹。要求：先用一两句点出这节经文里神的心意，再写一句贴近生活的祝福，最后用一句祝福收尾。总共三到四句、120 字以内，口语、温暖、不说教，不要标题、不要条列、不要引号、不要再抄一次经文。若结尾写成祷告，要用「奉主耶稣的名祷告，阿们」，不要用「奉耶稣的名求」。'
     : '你是「小智」，國度321空中團契的屬靈同伴。請照使用者給的這節經文，寫一段溫暖的關懷祝福，送給弟兄姊妹。要求：先用一兩句點出這節經文裡神的心意，再寫一句貼近生活的祝福，最後用一句祝福收尾。總共三到四句、120 字以內，口語、溫暖、不說教，不要標題、不要條列、不要引號、不要再抄一次經文。若結尾寫成禱告，要用「奉主耶穌的名禱告，阿們」，不要用「奉耶穌的名求」。';
@@ -3967,8 +4096,14 @@ async function viewStudio(v){
     `}
 
     <div class="section-title">${esc(L.photo)}</div>
-    <div class="card">${photoImg ? `
-      ${chips('pMode', [['bg', L.photoBg], ['sticker', L.photoStk], ['orig', o3('原圖', '原图', 'Original')], ['full', o3('整張原圖', '整张原图', 'Full photo')]], photoMode, 'm')}
+    <div class="card">${(() => {
+      const isStk = photoMode === 'sticker';
+      const cur = isStk ? stkImg : photoImg, by = isStk ? stkBy : photoBy;
+      const mark = (n, on) => on ? n.map(x => x + ' ✓') : n;
+      return `${chips('pMode', [['bg', mark(L.photoBg, !!photoImg)], ['sticker', mark(L.photoStk, !!stkImg)], ['orig', o3('原圖', '原图', 'Original')], ['full', o3('整張原圖', '整张原图', 'Full photo')]], photoMode, 'm')}
+      <div class="muted" style="font-size:12px;margin:12px 0 4px">${esc(L3('內建風景（點一下就套用）','内建风景（点一下就套用）','Built-in scenery (tap to use)'))}</div>
+      <div class="bgstrip" id="pBuilt"></div>
+      ${cur ? `
       ${photoMode === 'full' ? `
         <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L3('整張相片就是整張卡片，不加邊框；只留稱呼、經文（或問候語）與署名，自動排在相片上方最空的地方。', '整张相片就是整张卡片，不加边框；只留称呼、经文（或问候语）与署名，自动排在相片上方最空的地方。', 'The whole photo is the card, no frame. Only the greeting name, verse (or a greeting) and signature, placed in the emptiest spot at the top.'))}</div>
         <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L3('文字大小（也可以在預覽圖上用兩指捏合縮放）', '文字大小（也可以在预览图上用两指捏合缩放）', 'Text size (or pinch on the preview with two fingers)'))}　<b id="fSzV">${Math.round(fullScale * 100)}%</b></div>
@@ -4005,31 +4140,34 @@ async function viewStudio(v){
         <div class="muted" style="font-size:11.5px;margin-top:6px">${esc(origMove
           ? L3('現在手指在上方預覽圖拖一拖，文字就會跟著移動；移好後按「鎖定」才能再捲動頁面。', '现在手指在上方预览图拖一拖，文字就会跟着移动；移好后按“锁定”才能再滚动页面。', 'Drag on the preview above to move the text. Tap lock when done to scroll the page again.')
           : L3('文字內容可在上面「卡片內文」修改；也可以按方向鍵微調位置。', '文字内容可在上面“卡片内文”修改；也可以按方向键微调位置。', 'Edit the words in “Card text” above; the arrows nudge the position.'))}</div>` : ''}
-      ${photoMode === 'sticker' ? `
+      ${isStk ? `
         <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.stkShape)}</div>
         ${chips('pShape', STK_SHAPES, stkShape, 'v')}
         <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.stkSize)}</div>
         ${chips('pSize', STK_SIZES, stkSize, 'v')}
         <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.stkPos)}</div>
         ${chips('pPos', STK_POS, stkPos, 'v')}` : ''}
-      ${photoBy ? `<div class="muted" style="font-size:11.5px;margin-top:10px">${esc(pl().by + photoBy)}</div>` : ''}
+      ${by ? `<div class="muted" style="font-size:11.5px;margin-top:10px">${esc(pl().by + by)}</div>` : ''}
       <div class="hlsheet-acts2" style="margin-top:12px">
         <label class="btn sm" style="cursor:pointer">${esc(L.photoSwap)}<input type="file" accept="image/*" hidden id="pRe"></label>
         <button class="btn sm gold" id="pLib">${esc(pl().libBtn)}</button>
         <button class="btn sm" id="pMy">${esc(L3('📚 我的相片庫', '📚 我的相片库', '📚 My photos'))}</button>
         <button class="btn sm danger" id="pDel">${esc(L.photoDel)}</button>
       </div>` : `
-      <button class="btn block gold" id="pLib">${esc(pl().libBtn)}</button>
+      <button class="btn block gold" id="pLib" style="margin-top:12px">${esc(pl().libBtn)}</button>
       <button class="btn block" id="pMy" style="margin-top:8px">${esc(L3('📚 我的相片庫（用過的相片都在這裡）', '📚 我的相片库（用过的相片都在这里）', '📚 My photos (everything you used before)'))}</button>
       <label class="btn block" style="cursor:pointer;margin-top:8px">${esc(L.photoPick)}<input type="file" accept="image/*" hidden id="pNew"></label>
-      <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.photoHint)}</div>`}
+      ${isStk && photoImg ? `<button class="btn block" id="pUseBg" style="margin-top:8px">${esc(L.photoUseBg)}</button>` : ''}
+      <div class="muted" style="font-size:12px;margin-top:8px">${esc(isStk ? L.photoStkHint : (stkImg ? L.photoHint : L.photoBgHint))}</div>`}`;
+    })()}
     </div>
 
     <div class="section-title">${esc(L.bgm)}</div>
     <div class="card">${bgmBlob ? `
       <div style="font-weight:700;font-size:14px">♪ ${esc(bgmName)}</div>
       ${bgmCredit ? `<div class="muted" style="font-size:11.5px;margin-top:3px">${esc(bgmCredit)}</div>` : ''}
-      <div class="muted" style="font-size:12px;margin:4px 0 10px">${esc(L.bgmNote)}</div>
+      <button class="btn sm" id="bPrev" style="margin-top:8px">${esc(bgmPrevOn ? L3('⏸ 停止試聽','⏸ 停止试听','⏸ Stop preview') : L3('▶ 試聽','▶ 试听','▶ Preview'))}</button>
+      <div class="muted" style="font-size:12px;margin:8px 0 10px">${esc(L.bgmNote)}</div>
       <div class="muted" style="font-size:12px;margin-bottom:6px">${esc(L.bgmVol)}</div>
       ${chips('bVol', BGM_VOLS, bgmVol, 'v')}
       <div class="hlsheet-acts2" style="margin-top:12px">
@@ -4059,6 +4197,8 @@ async function viewStudio(v){
       ${(vOK && bgmBlob) ? `
         <div class="muted" style="font-size:12px;margin:14px 0 6px">${esc(L.mcLen)}</div>
         ${chips('mLen', MC_LENS, mcLen, 'v')}
+        <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L3('製作時','制作时','While making'))}</div>
+        ${chips('mHear', [[1, ['邊聽邊製作','边听边制作','Play aloud']], [0, ['靜音製作','静音制作','Silent']]], state.mcHear === false ? 0 : 1, 'v')}
         <button class="btn gold block" id="mcBtn" style="margin-top:10px">🎵 ${esc(L.mcStart)}</button>
         <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.mcHint)}</div>
         <div class="muted" style="font-size:12px;margin-top:6px">${esc(L3('可以先離開這頁去讀經或做別的事（請留在 App 裡、不要鎖屏），做好會通知你，並自動存進「我的作品」。', '可以先离开这页去读经或做别的事（请留在 App 里、不要锁屏），做好会通知你，并自动存进“我的作品”。', 'You can leave this page and keep reading (stay in the app, keep the screen on). You will be notified, and it is saved to My works automatically.'))}</div>` : ''}
@@ -4116,10 +4256,17 @@ async function viewStudio(v){
   bind('#mLen button', b => { mcLen = +b.dataset.v; studioRefresh(); });
   bind('#rBeauty button', b => { state.beauty = b.dataset.v === '1'; saveState(); studioRefresh(); });
   bind('#rMode button', b => setRecMode(b.dataset.s));
-  const pd = $('#pDel'); if (pd) pd.onclick = () => { photoImg = null; photoBy = ''; origMove = false; state.photoLast = ''; saveState(); studioRefresh(); };
+  const pd = $('#pDel'); if (pd) pd.onclick = () => {
+    if (photoMode === 'sticker'){ stkImg = null; stkBy = ''; }
+    else { photoImg = null; photoBy = ''; origMove = false; state.photoLast = ''; saveState(); }
+    studioRefresh(); };
+  const pub = $('#pUseBg'); if (pub) pub.onclick = () => { stkImg = photoImg; stkBy = photoBy; photoImg = null; photoBy = ''; studioRefresh(); };
   const pmy = $('#pMy'); if (pmy) pmy.onclick = openPhotoLib;
   const pl2 = $('#pLib'); if (pl2) pl2.onclick = openPexels;
-  const bd = $('#bDel'); if (bd) bd.onclick = () => { bgmBlob = null; bgmName = ''; bgmCredit = ''; studioRefresh(); };
+  bgCss(); fillBuiltins();
+  const bd = $('#bDel'); if (bd) bd.onclick = () => { bgmPrevStop(); bgmBlob = null; bgmName = ''; bgmCredit = ''; studioRefresh(); };
+  const bp = $('#bPrev'); if (bp) bp.onclick = bgmPrevToggle;
+  bind('#mHear button', b => { state.mcHear = b.dataset.v === '1'; saveState(); studioRefresh(); });
   const blb = $('#bLib'); if (blb) blb.onclick = openHymns;
   ['pNew','pRe'].forEach(id => { const e = $('#' + id); if (e) e.onchange = () => pickPhoto(e); });
   ['bNew','bRe'].forEach(id => { const e = $('#' + id); if (e) e.onchange = () => pickBgm(e); });
@@ -4843,7 +4990,7 @@ async function teamAIWrite(ta, btn, kind, verse){
   btn.disabled = true; btn.textContent = L.writing;
   const who = { share:'讀經分享', pray:'代禱事項', care:'關懷的話', witness:'見證' }[kind] || '分享';
   const sys = isEN()
-    ? 'You are Xiaozhi, a spiritual companion of Kingdom 321 Fellowship. Write a short, warm piece for a small group: three to four sentences, under 70 words, spoken and personal, never preachy. No headings, no bullets, no quotation marks.'
+    ? 'You are Xiaozhi, a spiritual companion of Kingdom 321 Online Fellowship. Write a short, warm piece for a small group: three to four sentences, under 70 words, spoken and personal, never preachy. No headings, no bullets, no quotation marks.'
     : `你是「小智」，國度321空中團契的屬靈同伴。請幫使用者寫一段要貼在小組裡的「${who}」，三到四句、120 字以內，口語、溫暖、不說教，不要標題、不要條列、不要引號。`;
   const ask = (verse ? L3('經文：', '经文：', 'Verse: ') + verse + '\n' : '')
             + L3(`請寫一段${who}。`, `请写一段${who}。`, `Please write a short ${kind} note.`)
@@ -5227,7 +5374,7 @@ async function chatShare(m){
   const head = p.verse ? (isEN() ? `“${p.verse}”` : `「${p.verse}」`) + (p.ref ? '\n—— ' + p.ref : '') + '\n\n' : '';
   /* 落款只留團契與網址——這是弟兄姊妹之間的分享，不必掛上是誰寫的 */
   const home = location.origin + location.pathname.replace(/index\.html$/, '');
-  const foot = '\n\n—— ' + (state.cardTop || L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Fellowship'))
+  const foot = '\n\n—— ' + (state.cardTop || L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Online Fellowship'))
              + '\n' + home;
   const text = head + p.ans + foot;
   if (navigator.share){
@@ -5445,7 +5592,7 @@ async function sendChat(text){
   chatLog.push({ role:'ai', text: t().thinking, src:srcNow }); paintChat();
   const b = RD.book ? BOOK[RD.book] : null;
   const sys = (isEN()
-    ? 'You are Xiaozhi, a Bible companion from Kingdom 321 Fellowship. Answer in the spirit of the 321 vision — Jesus is my example, Scripture is my standard, the Holy Spirit is my guide; let Jesus reign, let Jesus receive all the glory; build what belongs to God. Explain plainly, use everyday pictures, quote the World English Bible, and keep answers short.'
+    ? 'You are Xiaozhi, a Bible companion from Kingdom 321 Online Fellowship. Answer in the spirit of the 3-2-1 ideology — the three foundations: Jesus is my Role Model, the Bible is my Standard, the Holy Spirit is my Guide; the two core values: Let Jesus be King, Let Jesus receive all the glory; the one purpose: to build God’s system. Explain plainly, use everyday pictures, quote the World English Bible, and keep answers short.'
     : isZS()
     ? '你是「小智」，国度321空中团契的圣经陪读。以321理念（耶稣是我的榜样、圣经是我的准则、圣灵是我的引导；让耶稣作王、让耶稣得着一切的荣耀；建立属神的体系）回应，深入浅出、善用比喻，引用和合本圣经，回答简明。'
     : '你是「小智」，國度321空中團契的聖經陪讀。以321理念（耶穌是我的榜樣、聖經是我的準則、聖靈是我的引導；讓耶穌作王、讓耶穌得著一切的榮耀；建立屬神的體系）回應，深入淺出、善用比喻，引用和合本聖經，回答簡明。')
@@ -5926,7 +6073,7 @@ async function plShare(){
     + L3(`我在讀經樂${PL.mode === 'quiz' ? '測驗' : '猜謎'}「${bname(b)} ${chapLabel(PL.src.b, PL.src.ch)}」答對了 ${PL.right} / ${n}！`,
          `我在读经乐${PL.mode === 'quiz' ? '测验' : '猜谜'}“${bname(b)} ${chapLabel(PL.src.b, PL.src.ch)}”答对了 ${PL.right} / ${n}！`,
          `I got ${PL.right} / ${n} on the ${PL.mode === 'quiz' ? 'quiz' : 'riddles'} for ${bname(b)} ${chapLabel(PL.src.b, PL.src.ch)}!`)
-    + '\n\n—— ' + (state.cardTop || L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Fellowship')) + '\n' + home;
+    + '\n\n—— ' + (state.cardTop || L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Online Fellowship')) + '\n' + home;
   if (navigator.share){
     try{ await navigator.share({ title: t().app, text }); return; }
     catch(e){ if (e && e.name === 'AbortError') return; }
@@ -6086,7 +6233,7 @@ async function viewMe(v){
     </details>
 
     <div class="muted" style="text-align:center;margin:18px 0 8px">
-      ${esc(L.app)} ${VERSION}<br>和合本聖經屬公有領域，沒有版權限制</div>`;
+      ${esc(L.app)} ${VERSION}<br>${esc(L3('和合本聖經屬公有領域，沒有版權限制','和合本圣经属公有领域，没有版权限制','The Chinese Union Version and the World English Bible are in the public domain.'))}</div>`;
 
   $$('#setLang button', v).forEach(b => b.onclick = () => switchLang(b.dataset.l));
   const dg = $('#diagBtn', v); if (dg) dg.onclick = () => runDiag();
@@ -6789,7 +6936,7 @@ function msSet(){
     const b = RD.book ? BOOK[RD.book] : null;
     const title = b ? bname(b) + (RD.flow ? '' : ' ' + RD.ch) : t().app;
     navigator.mediaSession.metadata = new MediaMetadata({
-      title, artist: L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Fellowship'), album: t().app,
+      title, artist: L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Online Fellowship'), album: t().app,
       artwork: [{ src:'icon-512.png', sizes:'512x512', type:'image/png' }] });
     if (!msInit){
       msInit = true;
