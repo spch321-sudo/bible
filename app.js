@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.18.3';
+const VERSION = 'v2.18.4';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -2308,7 +2308,7 @@ const cardBorder = () => CARD_BORDERS.some(b => b[0] === state.cardBorder) ? sta
 const cardFs = () => Math.min(1.8, Math.max(.85, +state.cardFs || 1));
 
 /* ---- 相片（作背景／貼在卡片上）---- */
-let fullKind = 'verse', fullScale = 1.4, fullBless = '';   /* fullBless：小智依經文寫的一兩句祝福，附在經文下面 */   /* 整張原圖：文字用經文或問候語 */
+let fullKind = 'verse', fullScale = 1.1, fullBless = '';   /* fullBless：小智依經文寫的一兩句祝福，附在經文下面 */   /* 整張原圖：文字用經文或問候語 */
 let photoImg = null, photoMode = 'bg', suppressSticker = false, selfieLayout = false;
 /* v2.16.0：背景與貼紙各一張，可以同時存在。photoImg/photoBy＝背景；stkImg/stkBy＝貼在卡片上。
    photoMode 現在只代表「目前在編輯哪一張」，選相片時放進那一格。 */
@@ -3980,7 +3980,8 @@ async function noteRewrite(instr, mask){
   const r = await aiOnce(sys, ask);
   blessBusy = false;
   if (r.out){
-    if (isFullV()) fullBless = r.out.replace(/\s*\n+\s*/g, ''); else studioNote = r.out;
+    const ro = amenBang(r.out);
+    if (isFullV()) fullBless = ro.replace(/\s*\n+\s*/g, ''); else studioNote = ro;
     if (mask) mask.remove();
     await studioRefresh();
     toast(tw_().done);
@@ -4036,7 +4037,7 @@ async function blessWrite(){
     : '你是「小智」，國度321空中團契的屬靈同伴。請照使用者給的這節經文，寫一段溫暖的關懷祝福，送給弟兄姊妹。要求：先用一兩句點出這節經文裡神的心意，再寫一句貼近生活的祝福，最後用一句祝福收尾。總共三到四句、120 字以內，口語、溫暖、不說教，不要標題、不要條列、不要引號、不要再抄一次經文。若結尾寫成禱告，要用「奉主耶穌的名禱告，阿們」，不要用「奉耶穌的名求」。';
   const ask = L3('經文：', '经文：', 'Verse: ') + studioItem.t + ' (' + cardRef(studioItem) + ')' + whoLine() + AUD_WRITE();
   const rr_ = await aiOnce(sys, ask);
-  const out = amenOnly(rr_.out), why = rr_.why;
+  const out = amenBang(amenOnly(rr_.out)), why = rr_.why;
   blessBusy = false;
   if (out){
     if (full) fullBless = out.replace(/\s*\n+\s*/g, ''); else studioNote = out;
@@ -7018,6 +7019,10 @@ function dropRefParens(s){
 }
 
 /* ---------- 祝福結尾只留「阿們」 ---------- */
+/* 小智寫的祝福若以「阿們」收尾，一律寫成「阿們！」 */
+function amenBang(s){
+  return String(s || '').replace(/(阿們|阿们|Amen)\s*[。.！!]*\s*$/i, (m, a) => a + '！'.replace('！', /Amen/i.test(a) ? '!' : '！'));
+}
 function amenOnly(s){
   let x = String(s || '');
   x = x.replace(/[，,、]?\s*奉\s*(?:主\s*)?(?:耶穌|耶稣)\s*(?:基督\s*)?的\s*名\s*(?:禱告|祈禱|祈求|祷告|祈祷|求)\s*[，,]?\s*/g, m => /^[，,、]/.test(m) ? '。' : '');
