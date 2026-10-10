@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.18.1';
+const VERSION = 'v2.18.2';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -2308,7 +2308,7 @@ const cardBorder = () => CARD_BORDERS.some(b => b[0] === state.cardBorder) ? sta
 const cardFs = () => Math.min(1.8, Math.max(.85, +state.cardFs || 1));
 
 /* ---- 相片（作背景／貼在卡片上）---- */
-let fullKind = 'verse', fullScale = 1.4;   /* 整張原圖：文字用經文或問候語 */
+let fullKind = 'verse', fullScale = 1.4, fullBless = '';   /* fullBless：小智依經文寫的一兩句祝福，附在經文下面 */   /* 整張原圖：文字用經文或問候語 */
 let photoImg = null, photoMode = 'bg', suppressSticker = false, selfieLayout = false;
 /* v2.16.0：背景與貼紙各一張，可以同時存在。photoImg/photoBy＝背景；stkImg/stkBy＝貼在卡片上。
    photoMode 現在只代表「目前在編輯哪一張」，選相片時放進那一格。 */
@@ -2716,6 +2716,7 @@ function drawFullCard(cv, h, W, H){
       : ((/^[「『]/.test(raw) ? '' : '「') + raw + (/[」』]$/.test(raw) ? '' : '」'));
     ref = cardRef(h);
   }
+  const bless = (fullKind === 'verse' ? (fullBless || '') : '').trim();
   const mg = Math.round(W * .07);
   const tw = Math.min(W - mg * 2, Math.max(H * 1.05, W * .6));
   const roomMax = Math.min(H * .85, H * .46 * Math.max(1, fullScale || 1));
@@ -2740,12 +2741,14 @@ function drawFullCard(cv, h, W, H){
     }
   }catch(e){ row = null; }
   /* 由大字試到小字：第一個「找得到夠空的位置」的字級就用它；都不夠空就用最空的那個 */
-  let vs = Math.round(58 * S * FS), vl, rs, total, ty = mg, lum = .3, pick = null;
+  let vs = Math.round(58 * S * FS), vl, rs, bs = 0, bl = [], total, ty = mg, lum = .3, pick = null;
   const vsMin = FS !== 1 ? vs : Math.round(22 * S);   /* 使用者指定大小就不再自動縮小 */
   while (true){
     ctx.font = `600 ${vs}px ${serif}`; vl = wrapText(ctx, body, tw);
     rs = Math.min(Math.round(30 * S * FS), Math.round(vs * .8));
-    total = (toName ? ts * 1.9 : 0) + vl.length * vs * 1.5 + (ref ? rs * 2 : 0) + ss * 2.2;
+    bs = Math.round(vs * .66); bl = [];
+    if (bless){ ctx.font = `500 ${bs}px ${serif}`; bl = wrapText(ctx, bless, tw); }
+    total = (toName ? ts * 1.9 : 0) + vl.length * vs * 1.5 + (ref ? rs * 2 : 0) + (bl.length ? bs * .9 + bl.length * bs * 1.55 : 0) + ss * 2.2;
     let bestE = 0, bty = mg, blum = .3;
     if (row){
       const hh = Math.max(1, Math.round(total / H * sh)), y0 = Math.round(mg / H * sh);
@@ -2759,12 +2762,12 @@ function drawFullCard(cv, h, W, H){
       }
     }
     const fits = total <= roomMax;
-    if (fits && (!pick || bestE < pick.e)) pick = { e:bestE, vs, vl, rs, total, ty:bty, lum:blum };
+    if (fits && (!pick || bestE < pick.e)) pick = { e:bestE, vs, vl, rs, bs, bl, total, ty:bty, lum:blum };
     if ((fits && bestE <= 2.2) || vs <= vsMin) break;
     vs -= Math.round(2 * S);
   }
-  if (!pick) pick = { e:0, vs, vl, rs, total, ty:mg, lum:.3 };
-  ({ vs, vl, rs, total, ty, lum } = pick);
+  if (!pick) pick = { e:0, vs, vl, rs, bs, bl, total, ty:mg, lum:.3 };
+  ({ vs, vl, rs, bs, bl, total, ty, lum } = pick);
   ty = Math.max(mg, Math.min(ty, H - mg - total));
   /* 手動移動：整塊文字一起動，限制在卡片之內 */
   const x1c = -(W - tw) / 2 + mg * .5, x2c = (W - tw) / 2 - mg * .5;
@@ -2786,6 +2789,7 @@ function drawFullCard(cv, h, W, H){
   y += vs * .1;
   vl.forEach(l => { y += vs * 1.0; ctx.fillText(l, cx, y); y += vs * .5; });
   if (ref){ ctx.font = `${rs}px ${sans}`; ctx.fillStyle = sub; y += rs * .6; ctx.fillText(ref, cx, y); y += rs * 1.4; }
+  if (bl.length){ ctx.font = `500 ${bs}px ${serif}`; ctx.fillStyle = sub; y += bs * .3; bl.forEach(l => { y += bs * 1.1; ctx.fillText(l, cx, y); y += bs * .45; }); y += bs * .2; }
   let s2 = ss; ctx.font = `600 ${s2}px ${sans}`;
   while (s2 > Math.round(14 * S) && ctx.measureText(sign).width > tw){ s2 -= 2; ctx.font = `600 ${s2}px ${sans}`; }
   ctx.fillStyle = sub; y += ss * 1.1; ctx.fillText(sign, cx, y);
@@ -4015,9 +4019,15 @@ function openTweak(){
 async function blessWrite(){
   if (blessBusy || !studioItem) return;
   blessBusy = true;
-  const btn = $('#blessBtn');
+  const full = photoMode === 'full' && photoImg;
+  const btn = $(full ? '#fBless' : '#blessBtn');
   if (btn){ btn.disabled = true; btn.textContent = t().blessing; }
-  const sys = isEN()
+  const sysFull = isEN()
+    ? 'You are Xiaozhi, a spiritual companion from Kingdom 321 Online Fellowship. From the verse the user gives you, write a very short blessing for a brother or sister: one or two sentences, under 35 words, warm and spoken, drawn from what this verse says of God. No headings, no quotation marks, do not quote the verse again, no emoji. If it reads as a prayer, close it with "in the name of the Lord Jesus we pray, Amen".'
+    : state.lang === 'zs'
+    ? '你是“小智”，国度321空中团契的属灵同伴。请照使用者给的这节经文，写一两句很短的祝福送给弟兄姊妹：总共一到两句、50字以内，口语、温暖，从这节经文所显明的神的心意出发。不要标题、不要引号、不要再抄一次经文、不要表情符号。若结尾写成祷告，要用“奉主耶稣的名祷告，阿们”。'
+    : '你是「小智」，國度321空中團契的屬靈同伴。請照使用者給的這節經文，寫一兩句很短的祝福送給弟兄姊妹：總共一到兩句、50字以內，口語、溫暖，從這節經文所顯明的神的心意出發。不要標題、不要引號、不要再抄一次經文、不要表情符號。若結尾寫成禱告，要用「奉主耶穌的名禱告，阿們」。';
+  const sys = full ? sysFull : isEN()
     ? 'You are Xiaozhi, a spiritual companion from Kingdom 321 Online Fellowship. From the verse the user gives you, write a short, warm word of encouragement for a brother or sister. First name in one or two sentences what this verse shows of God\'s heart, then one sentence that touches ordinary daily life, then close with a blessing. Three to four sentences, under 60 words. Warm and spoken, never preachy. No headings, no bullet points, no quotation marks, and do not quote the verse again. If it reads as a prayer, close it with "in the name of the Lord Jesus we pray, Amen" — never "in Jesus\' name we ask, Amen."'
     : state.lang === 'zs'
     ? '你是「小智」，国度321空中团契的属灵同伴。请照使用者给的这节经文，写一段温暖的关怀祝福，送给弟兄姊妹。要求：先用一两句点出这节经文里神的心意，再写一句贴近生活的祝福，最后用一句祝福收尾。总共三到四句、120 字以内，口语、温暖、不说教，不要标题、不要条列、不要引号、不要再抄一次经文。若结尾写成祷告，要用「奉主耶稣的名祷告，阿们」，不要用「奉耶稣的名求」。'
@@ -4027,11 +4037,11 @@ async function blessWrite(){
   const out = amenOnly(rr_.out), why = rr_.why;
   blessBusy = false;
   if (out){
-    studioNote = out;
+    if (full) fullBless = out.replace(/\s*\n+\s*/g, ''); else studioNote = out;
     await studioRefresh();
     toast(t().blessDone);
   } else {
-    if (btn){ btn.disabled = false; btn.textContent = '✍️ ' + t().bless; }
+    if (btn){ btn.disabled = false; btn.textContent = full ? L3('✍️ 小智寫祝福（附在經文下面）', '✍️ 小智写祝福（附在经文下面）', '✍️ Xiaozhi writes a blessing') : '✍️ ' + t().bless; }
     toast(t().chatErr + (why ? '（' + why + '）' : ''), 4000);
   }
 }
@@ -4126,6 +4136,8 @@ async function viewStudio(v){
         <input type="range" id="fSz" min="50" max="250" step="5" value="${Math.round(fullScale * 100)}" style="width:100%">
         <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L3('文字內容', '文字内容', 'Text'))}</div>
         ${chips('pFk', [['verse', o3('經文', '经文', 'Verse')], ['greet', o3('問候語', '问候语', 'Greeting')]], fullKind, 'v')}
+        ${fullKind === 'verse' ? `<div class="hlsheet-acts2" style="margin-top:8px"><button class="btn sm gold" id="fBless">✍️ ${esc(L3('小智寫祝福（附在經文下面）', '小智写祝福（附在经文下面）', 'Xiaozhi writes a blessing (under the verse)'))}</button><button class="btn sm" id="fBlessClr">${esc(L3('清除祝福', '清除祝福', 'Clear'))}</button></div>
+        <textarea class="hlsheet-ta" id="fullBless" style="margin-top:8px" placeholder="${esc(L3('按上面的鈕，小智會依這節經文寫一兩句短祝福；也可以自己寫。', '按上面的钮，小智会依这节经文写一两句短祝福；也可以自己写。', 'Tap the button for a one- or two-sentence blessing from this verse, or write your own.'))}">${esc(fullBless)}</textarea>` : ''}
         ${fullKind === 'greet' ? `<textarea class="hlsheet-ta" id="cardGreet" style="margin-top:8px" placeholder="${esc(L3('平安喜樂，主愛你！', '平安喜乐，主爱你！', 'Peace and joy to you!'))}">${esc(state.cardGreet || '')}</textarea>` : ''}
         <div class="hlsheet-acts2" style="margin-top:8px">
           <button class="btn sm ${origMove ? 'primary' : ''}" id="omTog">${esc(origMove ? L3('✋ 拖動中：點此鎖定', '✋ 拖动中：点此锁定', '✋ Dragging on — tap to lock') : L3('✋ 用手指拖動文字', '✋ 用手指拖动文字', '✋ Drag the text'))}</button>
@@ -4293,6 +4305,9 @@ async function viewStudio(v){
   }
   const on_ = (id, fn) => { const e = $('#' + id); if (e) e.onclick = fn; };   /* 整張原圖模式沒有這些按鈕 */
   on_('blessBtn', blessWrite);
+  on_('fBless', blessWrite);
+  on_('fBlessClr', () => { fullBless = ''; studioRefresh(); });
+  { const fb = $('#fullBless'); if (fb){ let tm = null; fb.oninput = () => { fullBless = fb.value; clearTimeout(tm); tm = setTimeout(() => renderCard(studioItem), 400); }; } }
   on_('tweakBtn', openTweak);
   on_('noteMine', () => { studioNote = studioItem.n || ''; studioRefresh(); });
   on_('noteClear', () => { studioNote = ''; studioRefresh(); });
@@ -4311,7 +4326,7 @@ async function viewStudio(v){
   bind('[data-sh]',   b => shareRec(b.dataset.sh));
   bind('[data-rm]',   b => rmRec(b.dataset.rm));
 }
-function openStudio(h){ studioItem = h; studioNote = h.n || ''; go('#/studio'); }
+function openStudio(h){ studioItem = h; studioNote = h.n || ''; fullBless = ''; go('#/studio'); }
 
 /* ================================================================ 235 團隊
    兩個人成為屬靈同伴（2），三個人建立屬靈父母兒女的關係（3），
