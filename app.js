@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.18.19';
+const VERSION = 'v2.18.20';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -704,7 +704,7 @@ function currentRoute(){
 async function render(){
   const r = currentRoute();
   const tab = r[0] || 'today';
-  $$('#tabbar a').forEach(a => a.classList.toggle('active', a.dataset.tab === (tab === 'read' ? 'books' : ((tab === 'plan' || tab === 'play') ? 'today' : tab))));
+  $$('#tabbar a').forEach(a => a.classList.toggle('active', a.dataset.tab === (tab === 'read' ? 'books' : ((tab === 'plan' || tab === 'play' || tab === 'meet') ? 'today' : tab))));
   const v = $('#view');
   try{
     if (tab === 'today')          await viewToday(v);
@@ -717,6 +717,7 @@ async function render(){
     else if (tab === 'studio')    await viewStudio(v);
     else if (tab === 'plan')      await viewPlan(v);
     else if (tab === 'play')      await viewPlay(v);
+    else if (tab === 'meet')      await viewMeet(v);
     else { go('#/today'); return; }
   }catch(e){
     v.innerHTML = `<div class="empty">載入失敗：${esc(e.message || e)}</div>`;
@@ -731,6 +732,150 @@ async function render(){
   if (tab !== 'read' && tab !== 'studio') scrollToTop();
   if (tab === 'studio'){ mjDoneItem = null; mjRestore(); }
   mjPill();
+}
+
+
+/* ================================================================ 聚會與奉獻（複製自空中團契 App） */
+const MEET_TZ_OFFSET = 8;   /* 聚會時間以台北時間（UTC+8，無夏令時間）為準 */
+const MEET_URL = 'https://zoom.us/j/8193972372?pwd=o3tuX9k87Lyhb3UEV7hgRtSUYVyI1Q.1';
+const MEET_ID = '819 397 2372', MEET_PASS = '321';
+const YT_URL = 'https://www.youtube.com/@kingdom321air';
+const MEETINGS = [
+  { t: ['晨讀', '晨读', 'Morning Reading'], days: [1,2,3,4,5,6], s: '06:00', e: '07:00' },
+  { t: ['午修靈糧', '午修灵粮', 'Midday Manna'], days: [1,2,3,4,5], s: '12:10', e: '13:00' },
+  { t: ['晚禱', '晚祷', 'Evening Prayer'], days: [1,2,3,4,5], s: '21:00', e: '22:00' }
+];
+const OFFERING = [
+  { c: ['台灣', '台湾', 'Taiwan'], holder: '社團法人中華活力全人關懷協會', bank: '新光商業銀行 新埔分行', acct: '(103) 0338101013000' },
+  { c: ['馬來西亞', '马来西亚', 'Malaysia'], holder: '馬來西亞安提阿教會', bank: 'Public Bank', acct: '3178557627' },
+  { c: ['中國', '中国', 'China'], holder: '郭麗淑', bank: '貴陽銀行 成都武侯支行', acct: '6217359901008264673',
+    note: ['轉帳時請不要註明「國度」或「321」等文字。', '转帐时请不要注明“国度”或“321”等文字。', 'When transferring, please do not write “Kingdom”, “321” or similar wording in the remarks.'] },
+  { c: ['印尼', '印尼', 'Indonesia'], holder: 'Jonathan kifli or Martina', bank: 'Bank Central Asia', acct: '837920920' },
+  { c: ['紐西蘭', '纽西兰', 'New Zealand'], holder: 'Bin Lu', bank: 'ASB Bank Auckland Branch', acct: '12-3231-0055109-00' },
+  { c: ['新加坡', '新加坡', 'Singapore'], holder: 'Wong Seet Ting / Chong Ke Xin', bank: 'UOB Stash Account', acct: '785-370-036-7' }
+];
+const mtTitle = m => L3(m.t[0], m.t[1], m.t[2]);
+/* 找出某堂聚會「下一次（或正在進行中）」的起訖時間（UTC 毫秒） */
+function mtOccur(m, now){
+  now = now || Date.now();
+  const sp = m.s.split(':').map(Number), ep = m.e.split(':').map(Number);
+  const sh = new Date(now + MEET_TZ_OFFSET * 3600000);   /* 以台北時間的「日期」起算 */
+  const base = Date.UTC(sh.getUTCFullYear(), sh.getUTCMonth(), sh.getUTCDate());
+  for (let k = 0; k < 9; k++){
+    const day = new Date(base + k * 86400000);
+    if (!m.days.includes(day.getUTCDay())) continue;
+    const st = day.getTime() + (sp[0] - MEET_TZ_OFFSET) * 3600000 + sp[1] * 60000;
+    let en = day.getTime() + (ep[0] - MEET_TZ_OFFSET) * 3600000 + ep[1] * 60000;
+    if (en <= st) en += 86400000;
+    if (now < en) return { start: st, end: en, live: now >= st, m };
+  }
+  return null;
+}
+function mtNext(now){
+  let best = null;
+  for (const m of MEETINGS){
+    const o = mtOccur(m, now);
+    if (!o) continue;
+    if (o.live) return o;
+    if (!best || o.start < best.start) best = o;
+  }
+  return best;
+}
+const mtWd = d => L3('週' + '日一二三四五六'[d], '周' + '日一二三四五六'[d], ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d]);
+const mtHm = ts => { const d = new Date(ts); return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0'); };
+function mtUntil(ms){
+  const mins = Math.round(ms / 60000);
+  if (mins < 1) return L3('就要開始了', '就要开始了', 'Starting now');
+  if (mins < 60) return L3(`還有 ${mins} 分鐘`, `还有 ${mins} 分钟`, `in ${mins} min`);
+  const h = Math.floor(mins / 60), m = mins % 60;
+  if (h < 24) return L3(`還有 ${h} 小時${m ? ' ' + m + ' 分' : ''}`, `还有 ${h} 小时${m ? ' ' + m + ' 分' : ''}`, `in ${h} hr${m ? ' ' + m + ' min' : ''}`);
+  const d = Math.floor(h / 24), hh = h % 24;
+  return L3(`還有 ${d} 天${hh ? ' ' + hh + ' 小時' : ''}`, `还有 ${d} 天${hh ? ' ' + hh + ' 小时' : ''}`, `in ${d} day${d > 1 ? 's' : ''}${hh ? ' ' + hh + ' hr' : ''}`);
+}
+function meetCss(){
+  if (document.getElementById('meetcss')) return;
+  const st = document.createElement('style'); st.id = 'meetcss';
+  st.textContent = '.nextmtg{background:linear-gradient(160deg,#1d4a86,#0f2547);color:#fff;border-radius:16px;padding:18px;margin-bottom:12px}'
+   + '.nextmtg .nm-k{display:inline-block;background:rgba(255,255,255,.16);color:#e8c66a;border-radius:99px;padding:3px 12px;font-size:.8em;font-weight:700}'
+   + '.nextmtg h4{margin:10px 0 4px;font-size:1.35em}.nextmtg .nm-t{font-size:1em;opacity:.95}.nextmtg .nm-sub{font-size:.85em;opacity:.8;margin-top:2px}'
+   + '.nextmtg .mt-cd{color:#e8c66a;font-weight:700;margin:8px 0 12px;font-size:.95em}'
+   + '.nextmtg .btn{width:100%;background:#8d6700;border-color:#8d6700;color:#fff}'
+   + '.mtrow{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}.mtrow:last-child{border-bottom:none}'
+   + '.mttime{flex:0 0 auto;min-width:96px;background:#eaf0f9;color:#14233f;border-radius:12px;padding:8px 10px;text-align:center;font-size:.9em;line-height:1.5}'
+   + '.mttime b{display:block;font-size:1.02em}.mttime small{display:block;color:#5b6b85;font-size:.85em}'
+   + '.mtmid{flex:1;min-width:0}.mtmid .t{font-weight:700}.mtmid .s{font-size:.85em;color:var(--ink-faint)}.mtmid .cd{font-size:.85em;color:#1d4a86;font-weight:700}'
+   + '.offer{border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:10px}.offer .oc{display:inline-block;background:#14233f;color:#fff;border-radius:8px;padding:3px 10px;font-size:.8em;font-weight:700}'
+   + '.offer .oh{font-weight:800;margin:8px 0 2px;overflow-wrap:anywhere}.offer .od{color:var(--ink-faint);font-size:.92em}.offer .oa{font-family:ui-monospace,Menlo,monospace;font-size:1.05em;margin:6px 0 10px;overflow-wrap:anywhere}'
+   + '.offer .onote{background:#faf3e0;border:1px solid #ecd9a2;border-radius:10px;padding:8px 10px;font-size:.85em;margin-bottom:10px}';
+  document.head.appendChild(st);
+}
+function nextMeetCard(){
+  const o = mtNext();
+  if (!o) return '';
+  const sd = new Date(o.start);
+  const tp = new Date(o.start + MEET_TZ_OFFSET * 3600000);
+  const sameTz = (-new Date().getTimezoneOffset() / 60) === MEET_TZ_OFFSET;
+  return `<div class="nextmtg" data-s="${o.start}" data-e="${o.end}">
+    <span class="nm-k">${esc(o.live ? L3('正在聚會', '正在聚会', 'Live now') : L3('下一堂', '下一堂', 'Next'))}</span>
+    <h4>${esc(mtTitle(o.m))}</h4>
+    <div class="nm-t">${esc(L3('你的時間', '你的时间', 'Your time'))}　${esc(mtWd(sd.getDay()))} ${mtHm(o.start)}–${mtHm(o.end)}</div>
+    ${sameTz ? '' : `<div class="nm-sub">${esc(L3('台北時間', '台北时间', 'Taipei'))}　${esc(mtWd(tp.getUTCDay()))} ${o.m.s}–${o.m.e}</div>`}
+    <div class="mt-cd">${esc(o.live ? L3('進行中', '进行中', 'In progress') : mtUntil(o.start - Date.now()))}</div>
+    <a class="btn" href="${esc(MEET_URL)}" target="_blank" rel="noopener">${esc(o.live ? L3('立即加入', '立即加入', 'Join now') : L3('一鍵加入聚會', '一键加入聚会', 'Join the meeting'))}</a>
+  </div>`;
+}
+async function viewMeet(v){
+  meetCss();
+  const rows = MEETINGS.map(m => {
+    const o = mtOccur(m); if (!o) return '';
+    const sd = new Date(o.start);
+    return `<div class="mtrow"><div class="mttime"><b>${mtHm(o.start)}–${mtHm(o.end)}</b><small>${esc(mtWd(sd.getDay()))}</small><small>${esc(L3('你的時間', '你的时间', 'Your time'))}</small></div>
+      <div class="mtmid"><div class="t">${esc(mtTitle(m))}</div><div class="s">Zoom · ${esc(L3('台北', '台北', 'Taipei'))} ${m.s}–${m.e}</div><div class="cd">${esc(o.live ? L3('進行中', '进行中', 'In progress') : mtUntil(o.start - Date.now()))}</div></div>
+      <a class="btn primary sm" href="${esc(MEET_URL)}" target="_blank" rel="noopener">${esc(L3('加入', '加入', 'Join'))}</a></div>`;
+  }).join('');
+  const offs = OFFERING.map((a, i) => `<div class="offer"><span class="oc">${esc(L3(a.c[0], a.c[1], a.c[2]))}</span>
+      <div class="oh">${esc(a.holder)}</div><div class="od">${esc(a.bank)}</div><div class="oa">${esc(a.acct)}</div>
+      ${a.note ? `<div class="onote">ⓘ ${esc(L3(a.note[0], a.note[1], a.note[2]))}</div>` : ''}
+      <button class="btn" data-copy="${i}">📋 ${esc(L3('複製帳號', '复制帐号', 'Copy account number'))}</button></div>`).join('');
+  v.innerHTML = `
+    <div class="section-title">${esc(L3('永遠可用', '永远可用', 'ALWAYS HERE'))}</div>
+    <h2 style="margin:0 0 4px">${esc(L3('聚會與工具', '聚会与工具', 'Meet & Tools'))}</h2>
+    <div class="muted" style="margin-bottom:14px">${esc(L3('把最高頻的行動集中在這裡', '把最高频的行动集中在这里', 'Everything you reach for most, in one place'))}</div>
+    <div class="card"><h3 style="margin:0 0 10px">🎥 ${esc(L3('線上聚會 Zoom', '线上聚会 Zoom', 'Online Meeting · Zoom'))}</h3>
+      <a class="btn primary block" href="${esc(MEET_URL)}" target="_blank" rel="noopener">${esc(L3('一鍵加入聚會', '一键加入聚会', 'Join the meeting'))}</a>
+      <div class="muted" style="margin-top:10px;font-size:.92em">${esc(L3('會議號：', '会议号：', 'Meeting ID: '))}<b>${MEET_ID}</b>　${esc(L3('密碼：', '密码：', 'Passcode: '))}<b>${MEET_PASS}</b></div></div>
+    <div class="card"><h3 style="margin:0 0 10px">▶️ ${esc(L3('YouTube 頻道', 'YouTube 频道', 'YouTube Channel'))}</h3>
+      <a class="btn block" href="${esc(YT_URL)}" target="_blank" rel="noopener">${esc(L3('前往 YouTube 頻道', '前往 YouTube 频道', 'Go to the YouTube channel'))}</a></div>
+    <div class="section-title">${esc(L3('聚會時間表', '聚会时间表', 'MEETING SCHEDULE'))}</div>
+    <div id="mtNext">${nextMeetCard()}</div>
+    <div class="card" id="mtRows" style="padding:4px 16px">${rows}</div>
+    <div class="muted" style="text-align:center;font-size:.9em;margin-bottom:6px">${esc(L3('同一個 Zoom · 天天都在', '同一个 Zoom · 天天都在', 'One Zoom · every day'))}</div>
+    <div class="section-title">${esc(L3('奉獻支持', '奉献支持', 'GIVING'))}</div>
+    <div class="card"><h3 style="margin:0 0 6px">🎁 ${esc(L3('奉獻支持', '奉献支持', 'Giving'))}</h3>
+      <div class="muted" style="font-size:.92em">${esc(L3('奉獻是回應神的供應，出於甘心樂意（林後九7）。凡事謝恩，把榮耀歸給神。', '奉献是回应神的供应，出于甘心乐意（林后九7）。凡事谢恩，把荣耀归给神。', 'Giving is our response to God’s provision, offered cheerfully (2 Corinthians 9:7). Give thanks in everything, and give the glory to God.'))}</div>
+      ${offs}</div>`;
+  $$('[data-copy]', v).forEach(b => b.onclick = async () => {
+    const a = OFFERING[+b.dataset.copy].acct;
+    try{ await navigator.clipboard.writeText(a); toast(L3('已複製帳號', '已复制帐号', 'Account number copied')); }
+    catch(e){ const ta = document.createElement('textarea'); ta.value = a; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast(L3('已複製帳號', '已复制帐号', 'Account number copied')); }catch(_){ toast(a); } ta.remove(); }
+  });
+  /* 每 30 秒更新倒數；離開頁面就停 */
+  const tm = setInterval(() => {
+    if (!document.body.contains(v) || currentRoute()[0] !== 'meet'){ clearInterval(tm); return; }
+    const n = $('#mtNext', v); if (n) n.innerHTML = nextMeetCard();
+  }, 30000);
+}
+/* 團契簡介（今日頁） */
+function introAir(){
+  const T = (zh, zs, en) => esc(L3(zh, zs, en));
+  return `<div class="card">
+    <h3 style="margin:0 0 6px">${T('國度321空中團契', '国度321空中团契', 'Kingdom 321 Online Fellowship')}</h3>
+    <div class="muted" style="font-size:13px;margin-bottom:8px">${T('連結世界各國敬虔愛神的人，每天在線上一起讀經、一起得勝', '连结世界各国敬虔爱神的人，每天在线上一起读经、一起得胜', 'Godly believers from many nations, reading the Word and growing together online every day')}</div>
+    <p style="margin:0 0 8px;line-height:1.75;font-size:.95em">${T('我們是一個以「321理念」為核心的線上團契，連結台灣、馬來西亞、中國、印尼、新加坡、紐西蘭等地敬虔愛神的人，每天透過線上聚會一同學習聖經真理，操練活出基督的生命。', '我们是一个以“321理念”为核心的线上团契，连结台湾、马来西亚、中国、印尼、新加坡、纽西兰等地敬虔爱神的人，每天透过线上聚会一同学习圣经真理，操练活出基督的生命。', 'We are an online fellowship built on the 3-2-1 ideology, connecting godly believers in Taiwan, Malaysia, China, Indonesia, Singapore, New Zealand and beyond. Every day we meet online to learn the truth of Scripture and practise living out the life of Christ.')}</p>
+    <p style="margin:0 0 8px;line-height:1.75;font-size:.95em">${T('我們看見自己的問題——舊人有己、驕傲、想代替神；也看見神的恩典——耶穌的死解決我們的罪，耶穌的復活賜給我們新生命。我們一起操練「920」：每個與我們有關係的人是我們的「2」，活出無己的「0」，結出聖靈的九種果子；再發展「235」：屬靈同伴(2)、屬靈父母兒女(3)、屬靈戰友五重職份團隊(5)。', '我们看见自己的问题——旧人有己、骄傲、想代替神；也看见神的恩典——耶稣的死解决我们的罪，耶稣的复活赐给我们新生命。我们一起操练“920”：每个与我们有关系的人是我们的“2”，活出无己的“0”，结出圣灵的九种果子；再发展“235”：属灵同伴(2)、属灵父母儿女(3)、属灵战友五重职份团队(5)。', 'We see our problem — the old self-centred life, pride, wanting to take God’s place — and we see God’s grace: Jesus’ death deals with our sin, and His resurrection gives us new life. Together we practise “920” (everyone in relationship with us is our “2”; we live out selflessness, the “0”; and bear the nine-fold fruit of the Spirit) and grow “235” (spiritual companions, spiritual parents and children, and a five-fold team of co-workers).')}</p>
+    <p style="margin:0 0 12px;line-height:1.75;font-size:.95em">${T('建立屬神的體系，邁進末後的大復興，迎接主耶穌再來；陪伴每個人成為得勝者，將來在神國與基督同坐寶座、同作王直到永遠。', '建立属神的体系，迈进末后的大复兴，迎接主耶稣再来；陪伴每个人成为得胜者，将来在神国与基督同坐宝座、同作王直到永远。', 'We are building God’s system, moving into the final great revival and awaiting the Lord Jesus’ return, walking with everyone to become victors who will sit with Christ on His throne and reign forever.')}</p>
+    <a class="btn primary block" href="#/meet">${T('聚會時間與奉獻支持', '聚会时间与奉献支持', 'Meeting times & giving')}</a>
+  </div>`;
 }
 
 /* ================================================================ 今日 */
@@ -756,6 +901,10 @@ async function viewToday(v){
     <div class="hero-cover"><img src="${HERO_IMG}" alt="" loading="eager"></div>
 
     ${intro321()}
+
+    ${introAir()}
+
+    <div id="todayNext"></div>
 
     <div class="card">
       <div class="progwrap">
@@ -786,6 +935,8 @@ async function viewToday(v){
 
     <div class="section-title">${esc(L3('快速進入', '快速进入', 'Jump to'))}</div>
     <div class="card" style="padding:4px 16px">
+      <a class="rowlink" href="#/meet"><div class="meta"><div class="t">🎥 ${esc(L3('聚會與奉獻', '聚会与奉献', 'Meetings & Giving'))}</div>
+        <div class="s">${esc(L3('Zoom 連結、聚會時間表、奉獻帳號', 'Zoom 链接、聚会时间表、奉献帐号', 'Zoom link, schedule and giving accounts'))}</div></div><div class="chev">›</div></a>
       <a class="rowlink" href="#/play"><div class="meta"><div class="t">🎯 ${esc(L3('讀經樂：猜謎與測驗', '读经乐：猜谜与测验', 'Bible Fun: Riddles & Quiz'))}</div>
         <div class="s">${esc(L3('玩一玩，加深對經文的記憶', '玩一玩，加深对经文的记忆', 'Play to remember what you read'))}</div></div><div class="chev">›</div></a>
       <a class="rowlink" href="#/plan"><div class="meta"><div class="t">${esc(L.plan)}</div>
@@ -796,6 +947,7 @@ async function viewToday(v){
       <a class="rowlink" href="#/books"><div class="meta"><div class="t">${esc(L.books)}</div><div class="s">66 ${esc(L.bookUnit)}</div></div><div class="chev">›</div></a>
     </div>`;
 
+  meetCss(); { const tn = $('#todayNext', v); if (tn) tn.innerHTML = nextMeetCard(); }
   const rb = $('#resumeBtn', v);
   if (rb) rb.onclick = () => {
     if (last.a) jumpTo = last.a;
@@ -2546,7 +2698,7 @@ function pickBgm(inp){
   bgmBlob = f; bgmName = f.name || '背景音樂'; bgmCredit = ''; studioRefresh(); toast(t().bgmAdded);
 }
 
-const DEF_TOP  = () => L3('貴格會新埔教會', '贵格会新埔教会', 'Xinpu Friends Church');
+const DEF_TOP  = () => L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Online Fellowship');
 const DEF_SIGN = () => L3('願上帝賜福你！', '愿上帝赐福你！', 'God bless you!');
 /* 詩篇用「篇」／Psalm，其餘用「章」／Chapter */
 function chapLabel(bookId, n){
