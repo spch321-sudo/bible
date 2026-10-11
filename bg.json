@@ -606,33 +606,9 @@
    "ne": "Matcha Crepe Cake"
   },
   {
-   "f": "bg51.jpg",
-   "t": "bg51s.jpg",
-   "c": "pets",
-   "n": "柯基小狗",
-   "ns": "柯基小狗",
-   "ne": "Corgi Puppy"
-  },
-  {
-   "f": "bg52.jpg",
-   "t": "bg52s.jpg",
-   "c": "pets",
-   "n": "博美小狗",
-   "ns": "博美小狗",
-   "ne": "Pomeranian"
-  },
-  {
-   "f": "bg53.jpg",
-   "t": "bg53s.jpg",
-   "c": "pets",
-   "n": "貴賓小狗",
-   "ns": "贵宾小狗",
-   "ne": "Poodle"
-  },
-  {
    "f": "bg54.jpg",
    "t": "bg54s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "奶油小貓",
    "ns": "奶油小猫",
    "ne": "Cream Kitten"
@@ -640,7 +616,7 @@
   {
    "f": "bg55.jpg",
    "t": "bg55s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "橘白小貓",
    "ns": "橘白小猫",
    "ne": "Orange Kitten"
@@ -648,10 +624,34 @@
   {
    "f": "bg56.jpg",
    "t": "bg56s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "銀灰英短",
    "ns": "银灰英短",
    "ne": "Silver Shorthair"
+  },
+  {
+   "f": "bg135.jpg",
+   "t": "bg135s.jpg",
+   "c": "cats",
+   "n": "奶油布偶貓與玫瑰",
+   "ns": "奶油布偶猫与玫瑰",
+   "ne": "Cream Kitten & Roses"
+  },
+  {
+   "f": "bg136.jpg",
+   "t": "bg136s.jpg",
+   "c": "cats",
+   "n": "橘白小貓雛菊籃",
+   "ns": "橘白小猫雏菊篮",
+   "ne": "Orange Kitten in Daisies"
+  },
+  {
+   "f": "bg137.jpg",
+   "t": "bg137s.jpg",
+   "c": "cats",
+   "n": "三花貓與鬱金香",
+   "ns": "三花猫与郁金香",
+   "ne": "Calico & Tulips"
   },
   {
    "f": "bg57.jpg",
@@ -1118,193 +1118,9 @@
    "ne": "Golden Magnolia Gift"
   },
   {
-   "f": "bg115.jpg",
-   "t": "bg115s.jpg",
-   "c": "pets",
-   "n": "黃金獵犬幼犬與玫瑰",
-   "ns": "黄金猎犬幼犬与玫瑰",
-   "ne": "Golden Puppy & Roses"
-  },
-  {
-   "f": "bg116.jpg",
-   "t": "bg116s.jpg",
-   "c": "pets",
-   "n": "貴賓狗與薰衣草",
-   "ns": "贵宾狗与薰衣草",
-   "ne": "Poodle & Lavender"
-  },
-  {
-   "f": "bg117.jpg",
-   "t": "bg117s.jpg",
-   "c": "pets",
-   "n": "白博美與繡球",
-   "ns": "白博美与绣球",
-   "ne": "Pomeranian & Hydrangea"
-  },
-  {
-   "f": "bg118.jpg",
-   "t": "bg118s.jpg",
-   "c": "pets",
-   "n": "柯基與雛菊花籃",
-   "ns": "柯基与雏菊花篮",
-   "ne": "Corgi & Daisy Basket"
-  },
-  {
-   "f": "bg119.jpg",
-   "t": "bg119s.jpg",
-   "c": "pets",
-   "n": "柴犬與向日葵",
-   "ns": "柴犬与向日葵",
-   "ne": "Shiba & Sunflowers"
-  },
-  {
-   "f": "bg120.jpg",
-   "t": "bg120s.jpg",
-   "c": "pets",
-   "n": "雨窗小拉布拉多",
-   "ns": "雨窗小拉布拉多",
-   "ne": "Sleepy Labs by the Window"
-  },
-  {
-   "f": "bg121.jpg",
-   "t": "bg121s.jpg",
-   "c": "pets",
-   "n": "米格魯與鬱金香",
-   "ns": "米格鲁与郁金香",
-   "ne": "Beagle & Tulips"
-  },
-  {
-   "f": "bg122.jpg",
-   "t": "bg122s.jpg",
-   "c": "pets",
-   "n": "邊境牧羊犬湖畔",
-   "ns": "边境牧羊犬湖畔",
-   "ne": "Border Collie by the Lake"
-  },
-  {
-   "f": "bg123.jpg",
-   "t": "bg123s.jpg",
-   "c": "pets",
-   "n": "黑拉布拉多與白玫瑰",
-   "ns": "黑拉布拉多与白玫瑰",
-   "ne": "Black Lab & White Roses"
-  },
-  {
-   "f": "bg124.jpg",
-   "t": "bg124s.jpg",
-   "c": "pets",
-   "n": "約克夏與牡丹",
-   "ns": "约克夏与牡丹",
-   "ne": "Yorkie & Peonies"
-  },
-  {
-   "f": "bg125.jpg",
-   "t": "bg125s.jpg",
-   "c": "pets",
-   "n": "雙胞胎黃金獵犬與櫻花",
-   "ns": "双胞胎黄金猎犬与樱花",
-   "ne": "Golden Pups & Cherry Blossoms"
-  },
-  {
-   "f": "bg126.jpg",
-   "t": "bg126s.jpg",
-   "c": "pets",
-   "n": "薩摩耶與紅圍巾",
-   "ns": "萨摩耶与红围巾",
-   "ne": "Samoyed in Red Scarf"
-  },
-  {
-   "f": "bg127.jpg",
-   "t": "bg127s.jpg",
-   "c": "pets",
-   "n": "騎士查理王小獵犬秋日",
-   "ns": "骑士查理王小猎犬秋日",
-   "ne": "Cavalier in Autumn"
-  },
-  {
-   "f": "bg128.jpg",
-   "t": "bg128s.jpg",
-   "c": "pets",
-   "n": "瑪爾濟斯與雛菊田",
-   "ns": "玛尔济斯与雏菊田",
-   "ne": "Maltese in Daisies"
-  },
-  {
-   "f": "bg129.jpg",
-   "t": "bg129s.jpg",
-   "c": "pets",
-   "n": "臘腸狗與愛心",
-   "ns": "腊肠狗与爱心",
-   "ne": "Dachshund & Heart"
-  },
-  {
-   "f": "bg130.jpg",
-   "t": "bg130s.jpg",
-   "c": "pets",
-   "n": "哈士奇海岸",
-   "ns": "哈士奇海岸",
-   "ne": "Husky by the Sea"
-  },
-  {
-   "f": "bg131.jpg",
-   "t": "bg131s.jpg",
-   "c": "pets",
-   "n": "大狗與小狗玫瑰園",
-   "ns": "大狗与小狗玫瑰园",
-   "ne": "Big & Little Pup in Roses"
-  },
-  {
-   "f": "bg132.jpg",
-   "t": "bg132s.jpg",
-   "c": "pets",
-   "n": "比熊與紫花",
-   "ns": "比熊与紫花",
-   "ne": "Bichon & Purple Flowers"
-  },
-  {
-   "f": "bg133.jpg",
-   "t": "bg133s.jpg",
-   "c": "pets",
-   "n": "哈巴狗與書",
-   "ns": "哈巴狗与书",
-   "ne": "Pug & Book"
-  },
-  {
-   "f": "bg134.jpg",
-   "t": "bg134s.jpg",
-   "c": "pets",
-   "n": "可卡獵犬日落",
-   "ns": "可卡猎犬日落",
-   "ne": "Cocker Spaniel at Sunset"
-  },
-  {
-   "f": "bg135.jpg",
-   "t": "bg135s.jpg",
-   "c": "pets",
-   "n": "奶油布偶貓與玫瑰",
-   "ns": "奶油布偶猫与玫瑰",
-   "ne": "Cream Kitten & Roses"
-  },
-  {
-   "f": "bg136.jpg",
-   "t": "bg136s.jpg",
-   "c": "pets",
-   "n": "橘白小貓雛菊籃",
-   "ns": "橘白小猫雏菊篮",
-   "ne": "Orange Kitten in Daisies"
-  },
-  {
-   "f": "bg137.jpg",
-   "t": "bg137s.jpg",
-   "c": "pets",
-   "n": "三花貓與鬱金香",
-   "ns": "三花猫与郁金香",
-   "ne": "Calico & Tulips"
-  },
-  {
    "f": "bg138.jpg",
    "t": "bg138s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "白波斯貓薰衣草",
    "ns": "白波斯猫薰衣草",
    "ne": "White Persian & Lavender"
@@ -1312,7 +1128,7 @@
   {
    "f": "bg139.jpg",
    "t": "bg139s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "銀灰英短與繡球",
    "ns": "银灰英短与绣球",
    "ne": "British Shorthair & Hydrangea"
@@ -1320,7 +1136,7 @@
   {
    "f": "bg140.jpg",
    "t": "bg140s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "布偶貓與牡丹禮盒",
    "ns": "布偶猫与牡丹礼盒",
    "ne": "Ragdoll & Peonies"
@@ -1328,7 +1144,7 @@
   {
    "f": "bg141.jpg",
    "t": "bg141s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "虎斑貓與向日葵",
    "ns": "虎斑猫与向日葵",
    "ne": "Tabby & Sunflowers"
@@ -1336,7 +1152,7 @@
   {
    "f": "bg142.jpg",
    "t": "bg142s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "雨窗相擁小貓",
    "ns": "雨窗相拥小猫",
    "ne": "Cuddling Kittens by the Window"
@@ -1344,7 +1160,7 @@
   {
    "f": "bg143.jpg",
    "t": "bg143s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "橘貓秋日籃",
    "ns": "橘猫秋日篮",
    "ne": "Orange Kitten in Autumn"
@@ -1352,7 +1168,7 @@
   {
    "f": "bg144.jpg",
    "t": "bg144s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "暹羅貓湖畔",
    "ns": "暹罗猫湖畔",
    "ne": "Siamese by the Lake"
@@ -1360,7 +1176,7 @@
   {
    "f": "bg145.jpg",
    "t": "bg145s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "黑貓與白玫瑰珍珠",
    "ns": "黑猫与白玫瑰珍珠",
    "ne": "Black Cat & White Roses"
@@ -1368,7 +1184,7 @@
   {
    "f": "bg146.jpg",
    "t": "bg146s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "藍白長毛貓海岸",
    "ns": "蓝白长毛猫海岸",
    "ne": "Fluffy Cat by the Sea"
@@ -1376,7 +1192,7 @@
   {
    "f": "bg147.jpg",
    "t": "bg147s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "雙胞胎小貓與櫻花",
    "ns": "双胞胎小猫与樱花",
    "ne": "Twin Kittens & Cherry Blossoms"
@@ -1384,7 +1200,7 @@
   {
    "f": "bg148.jpg",
    "t": "bg148s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "紅圍巾小貓雪窗",
    "ns": "红围巾小猫雪窗",
    "ne": "Kitten in Red Scarf"
@@ -1392,7 +1208,7 @@
   {
    "f": "bg149.jpg",
    "t": "bg149s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "虎斑小貓與書",
    "ns": "虎斑小猫与书",
    "ne": "Tabby Kitten & Book"
@@ -1400,7 +1216,7 @@
   {
    "f": "bg150.jpg",
    "t": "bg150s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "三花小貓雛菊田",
    "ns": "三花小猫雏菊田",
    "ne": "Calico Kitten in Daisies"
@@ -1408,7 +1224,7 @@
   {
    "f": "bg151.jpg",
    "t": "bg151s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "橘白小貓與愛心",
    "ns": "橘白小猫与爱心",
    "ne": "Kitten & Heart"
@@ -1416,7 +1232,7 @@
   {
    "f": "bg152.jpg",
    "t": "bg152s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "布偶貓與風信子",
    "ns": "布偶猫与风信子",
    "ne": "Ragdoll & Hyacinths"
@@ -1424,7 +1240,7 @@
   {
    "f": "bg153.jpg",
    "t": "bg153s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "白貓媽媽與小貓玫瑰園",
    "ns": "白猫妈妈与小猫玫瑰园",
    "ne": "Mama Cat & Kitten in Roses"
@@ -1432,7 +1248,7 @@
   {
    "f": "bg154.jpg",
    "t": "bg154s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "金吉拉日出湖畔",
    "ns": "金吉拉日出湖畔",
    "ne": "Golden Cat at Sunrise"
@@ -1440,7 +1256,7 @@
   {
    "f": "bg245.jpg",
    "t": "bg245s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "西伯利亞貓與蘭花溫室",
    "ns": "西伯利亚猫与兰花温室",
    "ne": "Siberian Cat in Orchid Greenhouse"
@@ -1448,7 +1264,7 @@
   {
    "f": "bg246.jpg",
    "t": "bg246s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "阿比西尼亞貓與噴泉夕陽",
    "ns": "阿比西尼亚猫与喷泉夕阳",
    "ne": "Abyssinian at Fountain Sunset"
@@ -1456,7 +1272,7 @@
   {
    "f": "bg247.jpg",
    "t": "bg247s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "緬因貓與紫藤花架",
    "ns": "缅因猫与紫藤花架",
    "ne": "Maine Coon Under Wisteria"
@@ -1464,7 +1280,7 @@
   {
    "f": "bg248.jpg",
    "t": "bg248s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "挪威森林貓與湖畔晨曦",
    "ns": "挪威森林猫与湖畔晨曦",
    "ne": "Norwegian Forest Cat at Lake Dawn"
@@ -1472,7 +1288,7 @@
   {
    "f": "bg249.jpg",
    "t": "bg249s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "白貓與鬱金香花瓣",
    "ns": "白猫与郁金香花瓣",
    "ne": "White Cat & Tulip Petals"
@@ -1480,7 +1296,7 @@
   {
    "f": "bg250.jpg",
    "t": "bg250s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "俄羅斯藍貓與青花瓷窗景",
    "ns": "俄罗斯蓝猫与青花瓷窗景",
    "ne": "Russian Blue by the Harbor Window"
@@ -1488,7 +1304,7 @@
   {
    "f": "bg251.jpg",
    "t": "bg251s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "孟加拉貓雨林小橋",
    "ns": "孟加拉猫雨林小桥",
    "ne": "Bengal Cat on Rainforest Bridge"
@@ -1496,7 +1312,7 @@
   {
    "f": "bg252.jpg",
    "t": "bg252s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "埃及貓與蓮花池",
    "ns": "埃及猫与莲花池",
    "ne": "Egyptian Mau & Lotus Pond"
@@ -1504,7 +1320,7 @@
   {
    "f": "bg253.jpg",
    "t": "bg253s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "索馬利貓與紅岩峽谷",
    "ns": "索马里猫与红岩峡谷",
    "ne": "Somali Cat at Red Canyon"
@@ -1512,7 +1328,7 @@
   {
    "f": "bg254.jpg",
    "t": "bg254s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "土耳其梵貓與帆船夕陽",
    "ns": "土耳其梵猫与帆船夕阳",
    "ne": "Turkish Van on a Boat"
@@ -1520,7 +1336,7 @@
   {
    "f": "bg255.jpg",
    "t": "bg255s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "康沃爾捲毛貓與海港窗台",
    "ns": "康沃尔卷毛猫与海港窗台",
    "ne": "Cornish Rex at Harbor Window"
@@ -1528,7 +1344,7 @@
   {
    "f": "bg256.jpg",
    "t": "bg256s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "德文捲毛貓與星空望遠鏡",
    "ns": "德文卷毛猫与星空望远镜",
    "ne": "Devon Rex & Starry Telescope"
@@ -1536,7 +1352,7 @@
   {
    "f": "bg257.jpg",
    "t": "bg257s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "奧西貓與陶藝工坊",
    "ns": "奥西猫与陶艺工坊",
    "ne": "Ocicat in Pottery Studio"
@@ -1544,7 +1360,7 @@
   {
    "f": "bg258.jpg",
    "t": "bg258s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "緬甸貓與荷塘燈籠",
    "ns": "缅甸猫与荷塘灯笼",
    "ne": "Burmese at Lotus Pond"
@@ -1552,7 +1368,7 @@
   {
    "f": "bg259.jpg",
    "t": "bg259s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "新加坡貓與蘭花涼亭",
    "ns": "新加坡猫与兰花凉亭",
    "ne": "Singapura & Orchid Pavilion"
@@ -1560,7 +1376,7 @@
   {
    "f": "bg260.jpg",
    "t": "bg260s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "塞爾凱克捲毛貓與雲海",
    "ns": "塞尔凯克卷毛猫与云海",
    "ne": "Selkirk Rex Above the Clouds"
@@ -1568,7 +1384,7 @@
   {
    "f": "bg261.jpg",
    "t": "bg261s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "英短藍貓與香草花園",
    "ns": "英短蓝猫与香草花园",
    "ne": "British Blue & Herb Garden"
@@ -1576,7 +1392,7 @@
   {
    "f": "bg262.jpg",
    "t": "bg262s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "英短銀漸層與冰河窗景",
    "ns": "英短银渐层与冰河窗景",
    "ne": "Silver British Shorthair & Glacier"
@@ -1584,7 +1400,7 @@
   {
    "f": "bg263.jpg",
    "t": "bg263s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "日本短尾貓與楓紅庭園",
    "ns": "日本短尾猫与枫红庭园",
    "ne": "Japanese Bobtail & Maple Garden"
@@ -1592,15 +1408,199 @@
   {
    "f": "bg264.jpg",
    "t": "bg264s.jpg",
-   "c": "pets",
+   "c": "cats",
    "n": "美國捲耳貓與熱氣球",
    "ns": "美国卷耳猫与热气球",
    "ne": "American Curl & Balloons"
   },
   {
+   "f": "bg51.jpg",
+   "t": "bg51s.jpg",
+   "c": "dogs",
+   "n": "柯基小狗",
+   "ns": "柯基小狗",
+   "ne": "Corgi Puppy"
+  },
+  {
+   "f": "bg52.jpg",
+   "t": "bg52s.jpg",
+   "c": "dogs",
+   "n": "博美小狗",
+   "ns": "博美小狗",
+   "ne": "Pomeranian"
+  },
+  {
+   "f": "bg53.jpg",
+   "t": "bg53s.jpg",
+   "c": "dogs",
+   "n": "貴賓小狗",
+   "ns": "贵宾小狗",
+   "ne": "Poodle"
+  },
+  {
+   "f": "bg115.jpg",
+   "t": "bg115s.jpg",
+   "c": "dogs",
+   "n": "黃金獵犬幼犬與玫瑰",
+   "ns": "黄金猎犬幼犬与玫瑰",
+   "ne": "Golden Puppy & Roses"
+  },
+  {
+   "f": "bg116.jpg",
+   "t": "bg116s.jpg",
+   "c": "dogs",
+   "n": "貴賓狗與薰衣草",
+   "ns": "贵宾狗与薰衣草",
+   "ne": "Poodle & Lavender"
+  },
+  {
+   "f": "bg117.jpg",
+   "t": "bg117s.jpg",
+   "c": "dogs",
+   "n": "白博美與繡球",
+   "ns": "白博美与绣球",
+   "ne": "Pomeranian & Hydrangea"
+  },
+  {
+   "f": "bg118.jpg",
+   "t": "bg118s.jpg",
+   "c": "dogs",
+   "n": "柯基與雛菊花籃",
+   "ns": "柯基与雏菊花篮",
+   "ne": "Corgi & Daisy Basket"
+  },
+  {
+   "f": "bg119.jpg",
+   "t": "bg119s.jpg",
+   "c": "dogs",
+   "n": "柴犬與向日葵",
+   "ns": "柴犬与向日葵",
+   "ne": "Shiba & Sunflowers"
+  },
+  {
+   "f": "bg120.jpg",
+   "t": "bg120s.jpg",
+   "c": "dogs",
+   "n": "雨窗小拉布拉多",
+   "ns": "雨窗小拉布拉多",
+   "ne": "Sleepy Labs by the Window"
+  },
+  {
+   "f": "bg121.jpg",
+   "t": "bg121s.jpg",
+   "c": "dogs",
+   "n": "米格魯與鬱金香",
+   "ns": "米格鲁与郁金香",
+   "ne": "Beagle & Tulips"
+  },
+  {
+   "f": "bg122.jpg",
+   "t": "bg122s.jpg",
+   "c": "dogs",
+   "n": "邊境牧羊犬湖畔",
+   "ns": "边境牧羊犬湖畔",
+   "ne": "Border Collie by the Lake"
+  },
+  {
+   "f": "bg123.jpg",
+   "t": "bg123s.jpg",
+   "c": "dogs",
+   "n": "黑拉布拉多與白玫瑰",
+   "ns": "黑拉布拉多与白玫瑰",
+   "ne": "Black Lab & White Roses"
+  },
+  {
+   "f": "bg124.jpg",
+   "t": "bg124s.jpg",
+   "c": "dogs",
+   "n": "約克夏與牡丹",
+   "ns": "约克夏与牡丹",
+   "ne": "Yorkie & Peonies"
+  },
+  {
+   "f": "bg125.jpg",
+   "t": "bg125s.jpg",
+   "c": "dogs",
+   "n": "雙胞胎黃金獵犬與櫻花",
+   "ns": "双胞胎黄金猎犬与樱花",
+   "ne": "Golden Pups & Cherry Blossoms"
+  },
+  {
+   "f": "bg126.jpg",
+   "t": "bg126s.jpg",
+   "c": "dogs",
+   "n": "薩摩耶與紅圍巾",
+   "ns": "萨摩耶与红围巾",
+   "ne": "Samoyed in Red Scarf"
+  },
+  {
+   "f": "bg127.jpg",
+   "t": "bg127s.jpg",
+   "c": "dogs",
+   "n": "騎士查理王小獵犬秋日",
+   "ns": "骑士查理王小猎犬秋日",
+   "ne": "Cavalier in Autumn"
+  },
+  {
+   "f": "bg128.jpg",
+   "t": "bg128s.jpg",
+   "c": "dogs",
+   "n": "瑪爾濟斯與雛菊田",
+   "ns": "玛尔济斯与雏菊田",
+   "ne": "Maltese in Daisies"
+  },
+  {
+   "f": "bg129.jpg",
+   "t": "bg129s.jpg",
+   "c": "dogs",
+   "n": "臘腸狗與愛心",
+   "ns": "腊肠狗与爱心",
+   "ne": "Dachshund & Heart"
+  },
+  {
+   "f": "bg130.jpg",
+   "t": "bg130s.jpg",
+   "c": "dogs",
+   "n": "哈士奇海岸",
+   "ns": "哈士奇海岸",
+   "ne": "Husky by the Sea"
+  },
+  {
+   "f": "bg131.jpg",
+   "t": "bg131s.jpg",
+   "c": "dogs",
+   "n": "大狗與小狗玫瑰園",
+   "ns": "大狗与小狗玫瑰园",
+   "ne": "Big & Little Pup in Roses"
+  },
+  {
+   "f": "bg132.jpg",
+   "t": "bg132s.jpg",
+   "c": "dogs",
+   "n": "比熊與紫花",
+   "ns": "比熊与紫花",
+   "ne": "Bichon & Purple Flowers"
+  },
+  {
+   "f": "bg133.jpg",
+   "t": "bg133s.jpg",
+   "c": "dogs",
+   "n": "哈巴狗與書",
+   "ns": "哈巴狗与书",
+   "ne": "Pug & Book"
+  },
+  {
+   "f": "bg134.jpg",
+   "t": "bg134s.jpg",
+   "c": "dogs",
+   "n": "可卡獵犬日落",
+   "ns": "可卡猎犬日落",
+   "ne": "Cocker Spaniel at Sunset"
+  },
+  {
    "f": "bg265.jpg",
    "t": "bg265s.jpg",
-   "c": "pets",
+   "c": "dogs",
    "n": "斑點狗與聖島白屋",
    "ns": "斑点狗与圣岛白屋",
    "ne": "Dalmatian in Santorini"
@@ -1608,7 +1608,7 @@
   {
    "f": "bg266.jpg",
    "t": "bg266s.jpg",
-   "c": "pets",
+   "c": "dogs",
    "n": "愛爾蘭長毛獵犬與楓紅石橋",
    "ns": "爱尔兰长毛猎犬与枫红石桥",
    "ne": "Irish Setter & Maple Bridge"
@@ -1616,7 +1616,7 @@
   {
    "f": "bg267.jpg",
    "t": "bg267s.jpg",
-   "c": "pets",
+   "c": "dogs",
    "n": "義大利靈緹與托斯卡尼",
    "ns": "意大利灵缇与托斯卡尼",
    "ne": "Italian Greyhound in Tuscany"
@@ -1624,7 +1624,7 @@
   {
    "f": "bg268.jpg",
    "t": "bg268s.jpg",
-   "c": "pets",
+   "c": "dogs",
    "n": "蝴蝶犬與繡球花湖畔",
    "ns": "蝴蝶犬与绣球花湖畔",
    "ne": "Papillon & Hydrangeas"
@@ -1632,7 +1632,7 @@
   {
    "f": "bg269.jpg",
    "t": "bg269s.jpg",
-   "c": "pets",
+   "c": "dogs",
    "n": "凱利藍㹴與海崖花草",
    "ns": "凯利蓝㹴与海崖花草",
    "ne": "Kerry Blue Terrier on the Cliffs"
@@ -1640,7 +1640,7 @@
   {
    "f": "bg270.jpg",
    "t": "bg270s.jpg",
-   "c": "pets",
+   "c": "dogs",
    "n": "芬蘭拉普犬與極光",
    "ns": "芬兰拉普犬与极光",
    "ne": "Finnish Lapphund & Aurora"
@@ -1648,7 +1648,7 @@
   {
    "f": "bg271.jpg",
    "t": "bg271s.jpg",
-   "c": "pets",
+   "c": "dogs",
    "n": "秋田犬與銀杏古街",
    "ns": "秋田犬与银杏古街",
    "ne": "Akita & Ginkgo Street"
@@ -1656,7 +1656,7 @@
   {
    "f": "bg272.jpg",
    "t": "bg272s.jpg",
-   "c": "pets",
+   "c": "dogs",
    "n": "大白熊犬與薰衣草山城",
    "ns": "大白熊犬与薰衣草山城",
    "ne": "Great Pyrenees & Lavender"
@@ -1664,7 +1664,7 @@
   {
    "f": "bg273.jpg",
    "t": "bg273s.jpg",
-   "c": "pets",
+   "c": "dogs",
    "n": "紐芬蘭犬與湖畔碼頭",
    "ns": "纽芬兰犬与湖畔码头",
    "ne": "Newfoundland at the Dock"
@@ -1672,7 +1672,7 @@
   {
    "f": "bg274.jpg",
    "t": "bg274s.jpg",
-   "c": "pets",
+   "c": "dogs",
    "n": "古代牧羊犬與水車鳶尾",
    "ns": "古代牧羊犬与水车鸢尾",
    "ne": "Old English Sheepdog & Mill"
@@ -1680,7 +1680,7 @@
   {
    "f": "bg275.jpg",
    "t": "bg275s.jpg",
-   "c": "pets",
+   "c": "dogs",
    "n": "威瑪獵犬與白樺晨霧",
    "ns": "威玛猎犬与白桦晨雾",
    "ne": "Weimaraner in Birch Mist"
@@ -1688,7 +1688,7 @@
   {
    "f": "bg276.jpg",
    "t": "bg276s.jpg",
-   "c": "pets",
+   "c": "dogs",
    "n": "維茲拉犬與向日葵風車",
    "ns": "维兹拉犬与向日葵风车",
    "ne": "Vizsla & Sunflowers"
@@ -1696,7 +1696,7 @@
   {
    "f": "bg277.jpg",
    "t": "bg277s.jpg",
-   "c": "pets",
+   "c": "dogs",
    "n": "羅德西亞背脊犬與紅岩峽谷",
    "ns": "罗德西亚背脊犬与红岩峡谷",
    "ne": "Rhodesian Ridgeback & Canyon"
@@ -1704,7 +1704,7 @@
   {
    "f": "bg278.jpg",
    "t": "bg278s.jpg",
-   "c": "pets",
+   "c": "dogs",
    "n": "巴辛吉犬與非洲草原",
    "ns": "巴辛吉犬与非洲草原",
    "ne": "Basenji on the Savanna"
@@ -1712,7 +1712,7 @@
   {
    "f": "bg279.jpg",
    "t": "bg279s.jpg",
-   "c": "pets",
+   "c": "dogs",
    "n": "蘇格蘭㹴與書房古堡",
    "ns": "苏格兰㹴与书房古堡",
    "ne": "Scottish Terrier in the Library"
@@ -1720,7 +1720,7 @@
   {
    "f": "bg280.jpg",
    "t": "bg280s.jpg",
-   "c": "pets",
+   "c": "dogs",
    "n": "西高地白㹴與海港小屋",
    "ns": "西高地白㹴与海港小屋",
    "ne": "Westie at the Harbor"
@@ -1728,7 +1728,7 @@
   {
    "f": "bg281.jpg",
    "t": "bg281s.jpg",
-   "c": "pets",
+   "c": "dogs",
    "n": "伯恩山犬與阿爾卑斯花海",
    "ns": "伯恩山犬与阿尔卑斯花海",
    "ne": "Bernese in Alpine Meadow"
@@ -1736,7 +1736,7 @@
   {
    "f": "bg282.jpg",
    "t": "bg282s.jpg",
-   "c": "pets",
+   "c": "dogs",
    "n": "喜樂蒂牧羊犬與石楠城堡",
    "ns": "喜乐蒂牧羊犬与石楠城堡",
    "ne": "Sheltie & Heather Castle"
@@ -1744,7 +1744,7 @@
   {
    "f": "bg283.jpg",
    "t": "bg283s.jpg",
-   "c": "pets",
+   "c": "dogs",
    "n": "澳洲牧羊犬與秋日葡萄園",
    "ns": "澳洲牧羊犬与秋日葡萄园",
    "ne": "Aussie in Autumn Vineyard"
@@ -1752,7 +1752,7 @@
   {
    "f": "bg284.jpg",
    "t": "bg284s.jpg",
-   "c": "pets",
+   "c": "dogs",
    "n": "阿富汗獵犬與玫瑰露台",
    "ns": "阿富汗猎犬与玫瑰露台",
    "ne": "Afghan Hound & Roses"
@@ -1938,10 +1938,16 @@
    "ne": "Cross"
   },
   {
-   "id": "pets",
-   "n": "寵物",
-   "ns": "宠物",
-   "ne": "Pets"
+   "id": "cats",
+   "n": "貓咪",
+   "ns": "猫咪",
+   "ne": "Cats"
+  },
+  {
+   "id": "dogs",
+   "n": "狗狗",
+   "ns": "狗狗",
+   "ne": "Dogs"
   },
   {
    "id": "gifts",
