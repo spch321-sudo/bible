@@ -1598,6 +1598,166 @@
    "ne": "American Curl & Balloons"
   },
   {
+   "f": "bg265.jpg",
+   "t": "bg265s.jpg",
+   "c": "pets",
+   "n": "斑點狗與聖島白屋",
+   "ns": "斑点狗与圣岛白屋",
+   "ne": "Dalmatian in Santorini"
+  },
+  {
+   "f": "bg266.jpg",
+   "t": "bg266s.jpg",
+   "c": "pets",
+   "n": "愛爾蘭長毛獵犬與楓紅石橋",
+   "ns": "爱尔兰长毛猎犬与枫红石桥",
+   "ne": "Irish Setter & Maple Bridge"
+  },
+  {
+   "f": "bg267.jpg",
+   "t": "bg267s.jpg",
+   "c": "pets",
+   "n": "義大利靈緹與托斯卡尼",
+   "ns": "意大利灵缇与托斯卡尼",
+   "ne": "Italian Greyhound in Tuscany"
+  },
+  {
+   "f": "bg268.jpg",
+   "t": "bg268s.jpg",
+   "c": "pets",
+   "n": "蝴蝶犬與繡球花湖畔",
+   "ns": "蝴蝶犬与绣球花湖畔",
+   "ne": "Papillon & Hydrangeas"
+  },
+  {
+   "f": "bg269.jpg",
+   "t": "bg269s.jpg",
+   "c": "pets",
+   "n": "凱利藍㹴與海崖花草",
+   "ns": "凯利蓝㹴与海崖花草",
+   "ne": "Kerry Blue Terrier on the Cliffs"
+  },
+  {
+   "f": "bg270.jpg",
+   "t": "bg270s.jpg",
+   "c": "pets",
+   "n": "芬蘭拉普犬與極光",
+   "ns": "芬兰拉普犬与极光",
+   "ne": "Finnish Lapphund & Aurora"
+  },
+  {
+   "f": "bg271.jpg",
+   "t": "bg271s.jpg",
+   "c": "pets",
+   "n": "秋田犬與銀杏古街",
+   "ns": "秋田犬与银杏古街",
+   "ne": "Akita & Ginkgo Street"
+  },
+  {
+   "f": "bg272.jpg",
+   "t": "bg272s.jpg",
+   "c": "pets",
+   "n": "大白熊犬與薰衣草山城",
+   "ns": "大白熊犬与薰衣草山城",
+   "ne": "Great Pyrenees & Lavender"
+  },
+  {
+   "f": "bg273.jpg",
+   "t": "bg273s.jpg",
+   "c": "pets",
+   "n": "紐芬蘭犬與湖畔碼頭",
+   "ns": "纽芬兰犬与湖畔码头",
+   "ne": "Newfoundland at the Dock"
+  },
+  {
+   "f": "bg274.jpg",
+   "t": "bg274s.jpg",
+   "c": "pets",
+   "n": "古代牧羊犬與水車鳶尾",
+   "ns": "古代牧羊犬与水车鸢尾",
+   "ne": "Old English Sheepdog & Mill"
+  },
+  {
+   "f": "bg275.jpg",
+   "t": "bg275s.jpg",
+   "c": "pets",
+   "n": "威瑪獵犬與白樺晨霧",
+   "ns": "威玛猎犬与白桦晨雾",
+   "ne": "Weimaraner in Birch Mist"
+  },
+  {
+   "f": "bg276.jpg",
+   "t": "bg276s.jpg",
+   "c": "pets",
+   "n": "維茲拉犬與向日葵風車",
+   "ns": "维兹拉犬与向日葵风车",
+   "ne": "Vizsla & Sunflowers"
+  },
+  {
+   "f": "bg277.jpg",
+   "t": "bg277s.jpg",
+   "c": "pets",
+   "n": "羅德西亞背脊犬與紅岩峽谷",
+   "ns": "罗德西亚背脊犬与红岩峡谷",
+   "ne": "Rhodesian Ridgeback & Canyon"
+  },
+  {
+   "f": "bg278.jpg",
+   "t": "bg278s.jpg",
+   "c": "pets",
+   "n": "巴辛吉犬與非洲草原",
+   "ns": "巴辛吉犬与非洲草原",
+   "ne": "Basenji on the Savanna"
+  },
+  {
+   "f": "bg279.jpg",
+   "t": "bg279s.jpg",
+   "c": "pets",
+   "n": "蘇格蘭㹴與書房古堡",
+   "ns": "苏格兰㹴与书房古堡",
+   "ne": "Scottish Terrier in the Library"
+  },
+  {
+   "f": "bg280.jpg",
+   "t": "bg280s.jpg",
+   "c": "pets",
+   "n": "西高地白㹴與海港小屋",
+   "ns": "西高地白㹴与海港小屋",
+   "ne": "Westie at the Harbor"
+  },
+  {
+   "f": "bg281.jpg",
+   "t": "bg281s.jpg",
+   "c": "pets",
+   "n": "伯恩山犬與阿爾卑斯花海",
+   "ns": "伯恩山犬与阿尔卑斯花海",
+   "ne": "Bernese in Alpine Meadow"
+  },
+  {
+   "f": "bg282.jpg",
+   "t": "bg282s.jpg",
+   "c": "pets",
+   "n": "喜樂蒂牧羊犬與石楠城堡",
+   "ns": "喜乐蒂牧羊犬与石楠城堡",
+   "ne": "Sheltie & Heather Castle"
+  },
+  {
+   "f": "bg283.jpg",
+   "t": "bg283s.jpg",
+   "c": "pets",
+   "n": "澳洲牧羊犬與秋日葡萄園",
+   "ns": "澳洲牧羊犬与秋日葡萄园",
+   "ne": "Aussie in Autumn Vineyard"
+  },
+  {
+   "f": "bg284.jpg",
+   "t": "bg284s.jpg",
+   "c": "pets",
+   "n": "阿富汗獵犬與玫瑰露台",
+   "ns": "阿富汗猎犬与玫瑰露台",
+   "ne": "Afghan Hound & Roses"
+  },
+  {
    "f": "bg155.jpg",
    "t": "bg155s.jpg",
    "c": "gifts",
