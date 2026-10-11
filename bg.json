@@ -6,6 +6,166 @@
  ],
  "list": [
   {
+   "f": "bg225.jpg",
+   "t": "bg225s.jpg",
+   "c": "bible",
+   "n": "伊甸園",
+   "ns": "伊甸园",
+   "ne": "Garden of Eden"
+  },
+  {
+   "f": "bg226.jpg",
+   "t": "bg226s.jpg",
+   "c": "bible",
+   "n": "挪亞出方舟",
+   "ns": "挪亚出方舟",
+   "ne": "Noah and the Ark"
+  },
+  {
+   "f": "bg227.jpg",
+   "t": "bg227s.jpg",
+   "c": "bible",
+   "n": "約瑟解夢",
+   "ns": "约瑟解梦",
+   "ne": "Joseph Before Pharaoh"
+  },
+  {
+   "f": "bg228.jpg",
+   "t": "bg228s.jpg",
+   "c": "bible",
+   "n": "雅各的天梯",
+   "ns": "雅各的天梯",
+   "ne": "Jacob's Ladder"
+  },
+  {
+   "f": "bg229.jpg",
+   "t": "bg229s.jpg",
+   "c": "bible",
+   "n": "亞伯拉罕數星",
+   "ns": "亚伯拉罕数星",
+   "ne": "Abraham and the Stars"
+  },
+  {
+   "f": "bg230.jpg",
+   "t": "bg230s.jpg",
+   "c": "bible",
+   "n": "路得拾穗",
+   "ns": "路得拾穗",
+   "ne": "Ruth Gleaning"
+  },
+  {
+   "f": "bg231.jpg",
+   "t": "bg231s.jpg",
+   "c": "bible",
+   "n": "摩西過紅海",
+   "ns": "摩西过红海",
+   "ne": "Crossing the Red Sea"
+  },
+  {
+   "f": "bg232.jpg",
+   "t": "bg232s.jpg",
+   "c": "bible",
+   "n": "燃燒的荊棘",
+   "ns": "燃烧的荆棘",
+   "ne": "The Burning Bush"
+  },
+  {
+   "f": "bg233.jpg",
+   "t": "bg233s.jpg",
+   "c": "bible",
+   "n": "大衛戰歌利亞",
+   "ns": "大卫战歌利亚",
+   "ne": "David and Goliath"
+  },
+  {
+   "f": "bg234.jpg",
+   "t": "bg234s.jpg",
+   "c": "bible",
+   "n": "少年撒母耳蒙召",
+   "ns": "少年撒母耳蒙召",
+   "ne": "Young Samuel Called"
+  },
+  {
+   "f": "bg235.jpg",
+   "t": "bg235s.jpg",
+   "c": "bible",
+   "n": "烏鴉送餅給以利亞",
+   "ns": "乌鸦送饼给以利亚",
+   "ne": "Ravens Feed Elijah"
+  },
+  {
+   "f": "bg236.jpg",
+   "t": "bg236s.jpg",
+   "c": "bible",
+   "n": "但以理在獅子坑",
+   "ns": "但以理在狮子坑",
+   "ne": "Daniel in the Lions' Den"
+  },
+  {
+   "f": "bg237.jpg",
+   "t": "bg237s.jpg",
+   "c": "bible",
+   "n": "約拿上岸",
+   "ns": "约拿上岸",
+   "ne": "Jonah on the Shore"
+  },
+  {
+   "f": "bg238.jpg",
+   "t": "bg238s.jpg",
+   "c": "bible",
+   "n": "耶穌平靜風浪",
+   "ns": "耶稣平静风浪",
+   "ne": "Jesus Calms the Storm"
+  },
+  {
+   "f": "bg239.jpg",
+   "t": "bg239s.jpg",
+   "c": "bible",
+   "n": "耶穌受洗",
+   "ns": "耶稣受洗",
+   "ne": "Baptism of Jesus"
+  },
+  {
+   "f": "bg240.jpg",
+   "t": "bg240s.jpg",
+   "c": "bible",
+   "n": "耶穌降生",
+   "ns": "耶稣降生",
+   "ne": "The Nativity"
+  },
+  {
+   "f": "bg241.jpg",
+   "t": "bg241s.jpg",
+   "c": "bible",
+   "n": "浪子回頭",
+   "ns": "浪子回头",
+   "ne": "The Prodigal Son"
+  },
+  {
+   "f": "bg242.jpg",
+   "t": "bg242s.jpg",
+   "c": "bible",
+   "n": "好撒瑪利亞人",
+   "ns": "好撒玛利亚人",
+   "ne": "The Good Samaritan"
+  },
+  {
+   "f": "bg243.jpg",
+   "t": "bg243s.jpg",
+   "c": "bible",
+   "n": "五餅二魚",
+   "ns": "五饼二鱼",
+   "ne": "Five Loaves and Two Fish"
+  },
+  {
+   "f": "bg244.jpg",
+   "t": "bg244s.jpg",
+   "c": "bible",
+   "n": "復活的清晨",
+   "ns": "复活的清晨",
+   "ne": "Resurrection Morning"
+  },
+  {
    "f": "bg195.jpg",
    "t": "bg195s.jpg",
    "c": "scenery",
@@ -1278,6 +1438,166 @@
    "ne": "Golden Cat at Sunrise"
   },
   {
+   "f": "bg245.jpg",
+   "t": "bg245s.jpg",
+   "c": "pets",
+   "n": "西伯利亞貓與蘭花溫室",
+   "ns": "西伯利亚猫与兰花温室",
+   "ne": "Siberian Cat in Orchid Greenhouse"
+  },
+  {
+   "f": "bg246.jpg",
+   "t": "bg246s.jpg",
+   "c": "pets",
+   "n": "阿比西尼亞貓與噴泉夕陽",
+   "ns": "阿比西尼亚猫与喷泉夕阳",
+   "ne": "Abyssinian at Fountain Sunset"
+  },
+  {
+   "f": "bg247.jpg",
+   "t": "bg247s.jpg",
+   "c": "pets",
+   "n": "緬因貓與紫藤花架",
+   "ns": "缅因猫与紫藤花架",
+   "ne": "Maine Coon Under Wisteria"
+  },
+  {
+   "f": "bg248.jpg",
+   "t": "bg248s.jpg",
+   "c": "pets",
+   "n": "挪威森林貓與湖畔晨曦",
+   "ns": "挪威森林猫与湖畔晨曦",
+   "ne": "Norwegian Forest Cat at Lake Dawn"
+  },
+  {
+   "f": "bg249.jpg",
+   "t": "bg249s.jpg",
+   "c": "pets",
+   "n": "白貓與鬱金香花瓣",
+   "ns": "白猫与郁金香花瓣",
+   "ne": "White Cat & Tulip Petals"
+  },
+  {
+   "f": "bg250.jpg",
+   "t": "bg250s.jpg",
+   "c": "pets",
+   "n": "俄羅斯藍貓與青花瓷窗景",
+   "ns": "俄罗斯蓝猫与青花瓷窗景",
+   "ne": "Russian Blue by the Harbor Window"
+  },
+  {
+   "f": "bg251.jpg",
+   "t": "bg251s.jpg",
+   "c": "pets",
+   "n": "孟加拉貓雨林小橋",
+   "ns": "孟加拉猫雨林小桥",
+   "ne": "Bengal Cat on Rainforest Bridge"
+  },
+  {
+   "f": "bg252.jpg",
+   "t": "bg252s.jpg",
+   "c": "pets",
+   "n": "埃及貓與蓮花池",
+   "ns": "埃及猫与莲花池",
+   "ne": "Egyptian Mau & Lotus Pond"
+  },
+  {
+   "f": "bg253.jpg",
+   "t": "bg253s.jpg",
+   "c": "pets",
+   "n": "索馬利貓與紅岩峽谷",
+   "ns": "索马里猫与红岩峡谷",
+   "ne": "Somali Cat at Red Canyon"
+  },
+  {
+   "f": "bg254.jpg",
+   "t": "bg254s.jpg",
+   "c": "pets",
+   "n": "土耳其梵貓與帆船夕陽",
+   "ns": "土耳其梵猫与帆船夕阳",
+   "ne": "Turkish Van on a Boat"
+  },
+  {
+   "f": "bg255.jpg",
+   "t": "bg255s.jpg",
+   "c": "pets",
+   "n": "康沃爾捲毛貓與海港窗台",
+   "ns": "康沃尔卷毛猫与海港窗台",
+   "ne": "Cornish Rex at Harbor Window"
+  },
+  {
+   "f": "bg256.jpg",
+   "t": "bg256s.jpg",
+   "c": "pets",
+   "n": "德文捲毛貓與星空望遠鏡",
+   "ns": "德文卷毛猫与星空望远镜",
+   "ne": "Devon Rex & Starry Telescope"
+  },
+  {
+   "f": "bg257.jpg",
+   "t": "bg257s.jpg",
+   "c": "pets",
+   "n": "奧西貓與陶藝工坊",
+   "ns": "奥西猫与陶艺工坊",
+   "ne": "Ocicat in Pottery Studio"
+  },
+  {
+   "f": "bg258.jpg",
+   "t": "bg258s.jpg",
+   "c": "pets",
+   "n": "緬甸貓與荷塘燈籠",
+   "ns": "缅甸猫与荷塘灯笼",
+   "ne": "Burmese at Lotus Pond"
+  },
+  {
+   "f": "bg259.jpg",
+   "t": "bg259s.jpg",
+   "c": "pets",
+   "n": "新加坡貓與蘭花涼亭",
+   "ns": "新加坡猫与兰花凉亭",
+   "ne": "Singapura & Orchid Pavilion"
+  },
+  {
+   "f": "bg260.jpg",
+   "t": "bg260s.jpg",
+   "c": "pets",
+   "n": "塞爾凱克捲毛貓與雲海",
+   "ns": "塞尔凯克卷毛猫与云海",
+   "ne": "Selkirk Rex Above the Clouds"
+  },
+  {
+   "f": "bg261.jpg",
+   "t": "bg261s.jpg",
+   "c": "pets",
+   "n": "英短藍貓與香草花園",
+   "ns": "英短蓝猫与香草花园",
+   "ne": "British Blue & Herb Garden"
+  },
+  {
+   "f": "bg262.jpg",
+   "t": "bg262s.jpg",
+   "c": "pets",
+   "n": "英短銀漸層與冰河窗景",
+   "ns": "英短银渐层与冰河窗景",
+   "ne": "Silver British Shorthair & Glacier"
+  },
+  {
+   "f": "bg263.jpg",
+   "t": "bg263s.jpg",
+   "c": "pets",
+   "n": "日本短尾貓與楓紅庭園",
+   "ns": "日本短尾猫与枫红庭园",
+   "ne": "Japanese Bobtail & Maple Garden"
+  },
+  {
+   "f": "bg264.jpg",
+   "t": "bg264s.jpg",
+   "c": "pets",
+   "n": "美國捲耳貓與熱氣球",
+   "ns": "美国卷耳猫与热气球",
+   "ne": "American Curl & Balloons"
+  },
+  {
    "f": "bg155.jpg",
    "t": "bg155s.jpg",
    "c": "gifts",
@@ -1439,6 +1759,12 @@
   }
  ],
  "cats": [
+  {
+   "id": "bible",
+   "n": "聖經故事",
+   "ns": "圣经故事",
+   "ne": "Bible Stories"
+  },
   {
    "id": "scenery",
    "n": "風景",
