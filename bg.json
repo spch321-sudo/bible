@@ -1278,6 +1278,166 @@
    "ne": "Brass Cross & Magnolia"
   },
   {
+   "f": "bg345.jpg",
+   "t": "bg345s.jpg",
+   "c": "cross",
+   "n": "紅岩峽谷十字架",
+   "ns": "红岩峡谷十字架",
+   "ne": "Cross in the Red Canyon"
+  },
+  {
+   "f": "bg346.jpg",
+   "t": "bg346s.jpg",
+   "c": "cross",
+   "n": "冰川日落十字架",
+   "ns": "冰川日落十字架",
+   "ne": "Cross at Glacier Sunset"
+  },
+  {
+   "f": "bg347.jpg",
+   "t": "bg347s.jpg",
+   "c": "cross",
+   "n": "沙漠綠洲十字架",
+   "ns": "沙漠绿洲十字架",
+   "ne": "Cross Above the Desert Oasis"
+  },
+  {
+   "f": "bg348.jpg",
+   "t": "bg348s.jpg",
+   "c": "cross",
+   "n": "梯田晨霧十字架",
+   "ns": "梯田晨雾十字架",
+   "ne": "Cross over Misty Terraces"
+  },
+  {
+   "f": "bg349.jpg",
+   "t": "bg349s.jpg",
+   "c": "cross",
+   "n": "海浪礁岩十字架",
+   "ns": "海浪礁岩十字架",
+   "ne": "Cross by the Crashing Waves"
+  },
+  {
+   "f": "bg350.jpg",
+   "t": "bg350s.jpg",
+   "c": "cross",
+   "n": "高山花草十字架",
+   "ns": "高山花草十字架",
+   "ne": "Cross in the Alpine Meadow"
+  },
+  {
+   "f": "bg351.jpg",
+   "t": "bg351s.jpg",
+   "c": "cross",
+   "n": "紫色石楠花十字架",
+   "ns": "紫色石楠花十字架",
+   "ne": "Cross in the Heather"
+  },
+  {
+   "f": "bg352.jpg",
+   "t": "bg352s.jpg",
+   "c": "cross",
+   "n": "山水晨光十字架",
+   "ns": "山水晨光十字架",
+   "ne": "Cross by the Misty River"
+  },
+  {
+   "f": "bg353.jpg",
+   "t": "bg353s.jpg",
+   "c": "cross",
+   "n": "海岸日落十字架",
+   "ns": "海岸日落十字架",
+   "ne": "Cross at Coastal Sunset"
+  },
+  {
+   "f": "bg354.jpg",
+   "t": "bg354s.jpg",
+   "c": "cross",
+   "n": "森林溪流十字架",
+   "ns": "森林溪流十字架",
+   "ne": "Cross in the Forest Stream"
+  },
+  {
+   "f": "bg355.jpg",
+   "t": "bg355s.jpg",
+   "c": "cross",
+   "n": "鹽湖霞光十字架",
+   "ns": "盐湖霞光十字架",
+   "ne": "Cross on the Salt Flat"
+  },
+  {
+   "f": "bg356.jpg",
+   "t": "bg356s.jpg",
+   "c": "cross",
+   "n": "金秋山谷十字架",
+   "ns": "金秋山谷十字架",
+   "ne": "Cross in the Autumn Valley"
+  },
+  {
+   "f": "bg357.jpg",
+   "t": "bg357s.jpg",
+   "c": "cross",
+   "n": "白色溫泉梯池十字架",
+   "ns": "白色温泉梯池十字架",
+   "ne": "Cross at the White Terraces"
+  },
+  {
+   "f": "bg358.jpg",
+   "t": "bg358s.jpg",
+   "c": "cross",
+   "n": "峽灣十字架",
+   "ns": "峡湾十字架",
+   "ne": "Cross over the Fjord"
+  },
+  {
+   "f": "bg359.jpg",
+   "t": "bg359s.jpg",
+   "c": "cross",
+   "n": "荷花晨曦十字架",
+   "ns": "荷花晨曦十字架",
+   "ne": "Cross among the Lotus"
+  },
+  {
+   "f": "bg360.jpg",
+   "t": "bg360s.jpg",
+   "c": "cross",
+   "n": "白色懸崖雛菊十字架",
+   "ns": "白色悬崖雏菊十字架",
+   "ne": "Cross on the White Cliffs"
+  },
+  {
+   "f": "bg361.jpg",
+   "t": "bg361s.jpg",
+   "c": "cross",
+   "n": "火山湖十字架",
+   "ns": "火山湖十字架",
+   "ne": "Cross at the Crater Lake"
+  },
+  {
+   "f": "bg362.jpg",
+   "t": "bg362s.jpg",
+   "c": "cross",
+   "n": "雲海瀑布十字架",
+   "ns": "云海瀑布十字架",
+   "ne": "Cross above the Clouds and Falls"
+  },
+  {
+   "f": "bg363.jpg",
+   "t": "bg363s.jpg",
+   "c": "cross",
+   "n": "橄欖園日落十字架",
+   "ns": "橄榄园日落十字架",
+   "ne": "Cross in the Olive Grove"
+  },
+  {
+   "f": "bg364.jpg",
+   "t": "bg364s.jpg",
+   "c": "cross",
+   "n": "雪地樺林十字架",
+   "ns": "雪地桦林十字架",
+   "ne": "Cross in the Snowy Birch Forest"
+  },
+  {
    "f": "bg95.jpg",
    "t": "bg95s.jpg",
    "c": "gifts",
