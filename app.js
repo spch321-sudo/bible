@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.18.20';
+const VERSION = 'v2.18.22';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -748,11 +748,9 @@ const MEETINGS = [
 const OFFERING = [
   { c: ['台灣', '台湾', 'Taiwan'], holder: '社團法人中華活力全人關懷協會', bank: '新光商業銀行 新埔分行', acct: '(103) 0338101013000' },
   { c: ['馬來西亞', '马来西亚', 'Malaysia'], holder: '馬來西亞安提阿教會', bank: 'Public Bank', acct: '3178557627' },
-  { c: ['中國', '中国', 'China'], holder: '郭麗淑', bank: '貴陽銀行 成都武侯支行', acct: '6217359901008264673',
-    note: ['轉帳時請不要註明「國度」或「321」等文字。', '转帐时请不要注明“国度”或“321”等文字。', 'When transferring, please do not write “Kingdom”, “321” or similar wording in the remarks.'] },
-  { c: ['印尼', '印尼', 'Indonesia'], holder: 'Jonathan kifli or Martina', bank: 'Bank Central Asia', acct: '837920920' },
   { c: ['紐西蘭', '纽西兰', 'New Zealand'], holder: 'Bin Lu', bank: 'ASB Bank Auckland Branch', acct: '12-3231-0055109-00' },
-  { c: ['新加坡', '新加坡', 'Singapore'], holder: 'Wong Seet Ting / Chong Ke Xin', bank: 'UOB Stash Account', acct: '785-370-036-7' }
+  { c: ['新加坡', '新加坡', 'Singapore'], holder: 'LEE CHEW YONG', bank: 'DBS My Account', acct: '275-153637-9' },
+  { c: ['中國', '中国', 'China'], title: ['微信支付', '微信支付', 'WeChat Pay'], qr: 'wxpay.jpg', cap: '321祝福(**淑)' }
 ];
 const mtTitle = m => L3(m.t[0], m.t[1], m.t[2]);
 /* 找出某堂聚會「下一次（或正在進行中）」的起訖時間（UTC 毫秒） */
@@ -834,9 +832,8 @@ async function viewMeet(v){
       <a class="btn primary sm" href="${esc(MEET_URL)}" target="_blank" rel="noopener">${esc(L3('加入', '加入', 'Join'))}</a></div>`;
   }).join('');
   const offs = OFFERING.map((a, i) => `<div class="offer"><span class="oc">${esc(L3(a.c[0], a.c[1], a.c[2]))}</span>
-      <div class="oh">${esc(a.holder)}</div><div class="od">${esc(a.bank)}</div><div class="oa">${esc(a.acct)}</div>
-      ${a.note ? `<div class="onote">ⓘ ${esc(L3(a.note[0], a.note[1], a.note[2]))}</div>` : ''}
-      <button class="btn" data-copy="${i}">📋 ${esc(L3('複製帳號', '复制帐号', 'Copy account number'))}</button></div>`).join('');
+      ${a.qr ? `<div class="oh" style="text-align:center">${esc(L3(a.title[0], a.title[1], a.title[2]))}</div><img src="${a.qr}" alt="${esc(a.cap)}" style="display:block;width:100%;max-width:300px;margin:8px auto;border-radius:10px"><div class="od" style="text-align:center">${esc(a.cap)}</div></div>` : `<div class="oh">${esc(a.holder)}</div><div class="od">${esc(a.bank)}</div><div class="oa">${esc(a.acct)}</div>
+      <button class="btn" data-copy="${i}">📋 ${esc(L3('複製帳號', '复制帐号', 'Copy account number'))}</button></div>`}`).join('');
   v.innerHTML = `
     <div class="section-title">${esc(L3('永遠可用', '永远可用', 'ALWAYS HERE'))}</div>
     <h2 style="margin:0 0 4px">${esc(L3('聚會與工具', '聚会与工具', 'Meet & Tools'))}</h2>
@@ -871,7 +868,7 @@ function introAir(){
   return `<div class="card">
     <h3 style="margin:0 0 6px">${T('國度321空中團契', '国度321空中团契', 'Kingdom 321 Online Fellowship')}</h3>
     <div class="muted" style="font-size:13px;margin-bottom:8px">${T('連結世界各國敬虔愛神的人，每天在線上一起讀經、一起得勝', '连结世界各国敬虔爱神的人，每天在线上一起读经、一起得胜', 'Godly believers from many nations, reading the Word and growing together online every day')}</div>
-    <p style="margin:0 0 8px;line-height:1.75;font-size:.95em">${T('我們是一個以「321理念」為核心的線上團契，連結台灣、馬來西亞、中國、印尼、新加坡、紐西蘭等地敬虔愛神的人，每天透過線上聚會一同學習聖經真理，操練活出基督的生命。', '我们是一个以“321理念”为核心的线上团契，连结台湾、马来西亚、中国、印尼、新加坡、纽西兰等地敬虔爱神的人，每天透过线上聚会一同学习圣经真理，操练活出基督的生命。', 'We are an online fellowship built on the 3-2-1 ideology, connecting godly believers in Taiwan, Malaysia, China, Indonesia, Singapore, New Zealand and beyond. Every day we meet online to learn the truth of Scripture and practise living out the life of Christ.')}</p>
+    <p style="margin:0 0 8px;line-height:1.75;font-size:.95em">${T('我們是一個以「321理念」為核心的線上團契，連結台灣、馬來西亞、中國、印尼、新加坡、紐西蘭、澳洲、韓國、日本等多個國家敬虔愛神的人，每天透過線上聚會一同學習聖經真理，操練活出基督的生命。', '我们是一个以“321理念”为核心的线上团契，连结台湾、马来西亚、中国、印尼、新加坡、纽西兰、澳洲、韩国、日本等多个国家敬虔爱神的人，每天透过线上聚会一同学习圣经真理，操练活出基督的生命。', 'We are an online fellowship built on the 3-2-1 ideology, connecting godly believers in Taiwan, Malaysia, China, Indonesia, Singapore, New Zealand, Australia, Korea, Japan and many other countries. Every day we meet online to learn the truth of Scripture and practise living out the life of Christ.')}</p>
     <p style="margin:0 0 8px;line-height:1.75;font-size:.95em">${T('我們看見自己的問題——舊人有己、驕傲、想代替神；也看見神的恩典——耶穌的死解決我們的罪，耶穌的復活賜給我們新生命。我們一起操練「920」：每個與我們有關係的人是我們的「2」，活出無己的「0」，結出聖靈的九種果子；再發展「235」：屬靈同伴(2)、屬靈父母兒女(3)、屬靈戰友五重職份團隊(5)。', '我们看见自己的问题——旧人有己、骄傲、想代替神；也看见神的恩典——耶稣的死解决我们的罪，耶稣的复活赐给我们新生命。我们一起操练“920”：每个与我们有关系的人是我们的“2”，活出无己的“0”，结出圣灵的九种果子；再发展“235”：属灵同伴(2)、属灵父母儿女(3)、属灵战友五重职份团队(5)。', 'We see our problem — the old self-centred life, pride, wanting to take God’s place — and we see God’s grace: Jesus’ death deals with our sin, and His resurrection gives us new life. Together we practise “920” (everyone in relationship with us is our “2”; we live out selflessness, the “0”; and bear the nine-fold fruit of the Spirit) and grow “235” (spiritual companions, spiritual parents and children, and a five-fold team of co-workers).')}</p>
     <p style="margin:0 0 12px;line-height:1.75;font-size:.95em">${T('建立屬神的體系，邁進末後的大復興，迎接主耶穌再來；陪伴每個人成為得勝者，將來在神國與基督同坐寶座、同作王直到永遠。', '建立属神的体系，迈进末后的大复兴，迎接主耶稣再来；陪伴每个人成为得胜者，将来在神国与基督同坐宝座、同作王直到永远。', 'We are building God’s system, moving into the final great revival and awaiting the Lord Jesus’ return, walking with everyone to become victors who will sit with Christ on His throne and reign forever.')}</p>
     <a class="btn primary block" href="#/meet">${T('聚會時間與奉獻支持', '聚会时间与奉献支持', 'Meeting times & giving')}</a>
