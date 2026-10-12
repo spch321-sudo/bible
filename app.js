@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.18.27';
+const VERSION = 'v2.18.28';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -394,7 +394,7 @@ const DEFAULTS = { lang:'zh', font:0, theme:0, flow:false, shCh:true, shV:true, 
                    cardTpl:'plain', cardSize:'p', cardBorder:'none', cardFs:1.45,
                    cardTop:'', cardSign:'', cardTo:'親愛的家人：平安！', cardGreet:'', photoLast:'', photoMode:'full',
                    voice:{zh:0, zs:0, en:0}, ttsAutoNext:false, beauty:true, planRemindOn:false,
-                   audience:'adult' };
+                   audience:'adult', alen:'mid' };
 /* 「淨」鍵依序切換的四種組合：[整卷連讀?, 顯示章號?] */
 /* 「淨」鍵循環的四種常用讀法：[整卷連讀, 顯示章, 顯示節] */
 const VIEW_CYCLE = [[false, true, true], [false, true, false], [false, false, false], [true, false, false]];
@@ -421,6 +421,7 @@ function loadState(){
     delete state.chnum;
     state.flow = !!state.flow; state.shCh = !!state.shCh; state.shV = !!state.shV;
     if (!['adult','teen','kid','seeker','elder','single_parent','single','parent','couple','pastor'].includes(state.audience)) state.audience = 'adult';
+    if (!['brief','mid','full'].includes(state.alen)) state.alen = 'mid';
   }catch(e){ state = Object.assign({}, DEFAULTS); }
 }
 function saveState(){ try{ localStorage.setItem('ib_state', JSON.stringify(state)); }catch(e){} }
@@ -5493,6 +5494,7 @@ async function viewCompanion(v){
         <button class="qs-toggle" id="audBtn" style="margin:0"></button>
         <button class="qs-toggle" id="qsBtn" style="margin:0">💡 ${esc(L.examples)}</button>
       </div>
+      <div class="segbtns" id="lenSeg" style="justify-content:flex-start;align-items:center;margin:0 0 6px"></div>
       <div class="aud-panel" id="audPanel" hidden style="margin:0 0 6px">
         <div class="segbtns" id="audSeg" style="justify-content:flex-start"></div>
         <div class="muted" id="audHint" style="font-size:11.5px;line-height:1.6;margin:6px 0 0"></div>
@@ -5531,6 +5533,17 @@ async function viewCompanion(v){
   };
   paintAud(); paintQs();
   $('#qsBtn', v).onclick = () => { panel.hidden = !panel.hidden; if (!panel.hidden) $('#audPanel', v).hidden = true; };
+  const paintLen = () => {
+    const nm = LEN_NAME();
+    $('#lenSeg', v).innerHTML = `<span class="muted" style="font-size:12px;font-weight:700">${esc(L3('長度：', '长度：', 'Length: '))}</span>`
+      + LEN_KEYS.map(k => `<button class="${state.alen === k ? 'on' : ''}" data-k="${k}">${esc(nm[k])}</button>`).join('');
+    $$('#lenSeg button', v).forEach(b => b.onclick = () => {
+      if (state.alen === b.dataset.k) return;
+      state.alen = b.dataset.k; saveState(); paintLen();
+      toast(L3('回答長度：', '回答长度：', 'Answer length: ') + nm[state.alen], 1800);
+    });
+  };
+  paintLen();
   $('#audBtn', v).onclick = () => { const ap = $('#audPanel', v); ap.hidden = !ap.hidden; if (!ap.hidden) panel.hidden = true; };
   paintChat();
   $('#chatSend', v).onclick = () => sendChat($('#chatIn').value);
@@ -5696,6 +5709,22 @@ const AUD_HINT = () => ({
   couple: L3('夫妻同行：溝通、饒恕、同心與一起禱告', '夫妻同行：沟通、饶恕、同心与一起祷告', 'Walking together: talking, forgiving, unity and praying as a couple'),
   pastor: L3('同工口吻：牧養、講道預備、團隊與不倦怠', '同工口吻：牧养、讲道预备、团队与不倦怠', 'As a fellow worker: shepherding, sermon prep, team and avoiding burnout')
 });
+/* v2.18.28：小智回答長度——簡要／適中／詳細 */
+const LEN_KEYS = ['brief','mid','full'];
+const LEN_NAME = () => ({ brief:L3('簡要','简要','Brief'), mid:L3('適中','适中','Medium'), full:L3('詳細','详细','Detailed') });
+const LEN_SYS = () => {
+  const k = state.alen || 'mid';
+  if (k === 'mid') return '';
+  if (isEN()) return k === 'brief'
+    ? ' Length: BRIEF. Keep the whole answer to about 3–5 short sentences (roughly 120 words): the core answer, one key verse or picture, and a one-line prayer or step. No tables, no long lists.'
+    : ' Length: DETAILED. Give a fuller, well-organised answer (roughly 600–900 words): the passage context, the meaning of key words, cross-references, a clear 3-2-1 application, a practical step for this week, and a closing prayer. Short headings are welcome.';
+  if (isZS()) return k === 'brief'
+    ? ' 回答长度：简要。整段回答控制在 3～5 句话（约 150 字内）：直接给核心答案、一句关键经文或一个比喻，最后一句祷告或一个小步骤。不用表格、不列长清单。'
+    : ' 回答长度：详细。请完整、有条理地回答（约 800～1200 字）：说明经文脉络、关键字词的意思、相关经文对照、清楚的321应用、这星期可以操练的具体步骤，最后以祷告结束。可用简短小标题。';
+  return k === 'brief'
+    ? ' 回答長度：簡要。整段回答控制在 3～5 句話（約 150 字內）：直接給核心答案、一句關鍵經文或一個比喻，最後一句禱告或一個小步驟。不用表格、不列長清單。'
+    : ' 回答長度：詳細。請完整、有條理地回答（約 800～1200 字）：說明經文脈絡、關鍵字詞的意思、相關經文對照、清楚的321應用、這星期可以操練的具體步驟，最後以禱告結束。可用簡短小標題。';
+};
 const AUD_SYS = () => {
   const a = state.audience;
   if (a === 'seeker') return SK_SYS();
@@ -5833,7 +5862,7 @@ async function sendChat(text){
        表格在畫面上畫成真的表格、朗讀時會說成人話、分享時換成清單，
        所以放心用表格；重點用 > 標一句，那一句會被抓去做成美圖。 */
     + SYS_FMT()
-    + AUD_SYS()
+    + AUD_SYS() + LEN_SYS()
     + (b ? (isEN() ? ` (The reader is currently in ${bname(b)} ${RD.ch}.)`
           : isZS() ? `（读者目前在读：${bname(b)} 第 ${RD.ch} 章）`
                    : `（讀者目前在讀：${bname(b)} 第 ${RD.ch} 章）`) : '');
