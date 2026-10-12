@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.18.23';
+const VERSION = 'v2.18.25';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -729,11 +729,35 @@ async function render(){
   }
   if (tab !== 'read'){ bmMode = false; document.documentElement.classList.remove('bmmode'); }
   if (tab !== 'studio'){ stopSelfie(); if (recMode === 's') recMode = 'c'; }
+  addNavButtons(v, tab);
   if (tab !== 'read' && tab !== 'studio') scrollToTop();
   if (tab === 'studio'){ mjDoneItem = null; mjRestore(); }
   mjPill();
 }
 
+
+/* 每一頁都有「上一頁／首頁／經卷」：沒有自己頂部工具列的頁面，在最上面補一條；有工具列的（閱讀器、章節、美圖）把按鈕併進去 */
+function addNavButtons(v, tab){
+  try{
+    if (!v || tab === 'today') return;
+    const goBack = () => { if (history.length > 1) history.back(); else go('#/today'); };
+    const mk = (txt, title, fn) => { const b = document.createElement('button'); b.className = 'chtb-btn gnavb'; b.textContent = txt; b.title = title; b.setAttribute('aria-label', title); b.onclick = fn; return b; };
+    const tHome = L3('回首頁', '回首页', 'Home'), tBooks = L3('經卷', '经卷', 'Books'), tBack = L3('上一頁', '上一页', 'Back');
+    const home = () => mk('🏠', tHome, () => go('#/today')), books = () => mk('📖', tBooks, () => go('#/books'));
+    const first = v.firstElementChild;
+    if (first && first.classList.contains('chtoolbar')){
+      if (tab === 'read'){ first.insertBefore(home(), first.firstChild); first.insertBefore(books(), first.firstChild); }
+      else first.insertBefore(home(), first.children[1] || null);
+      return;
+    }
+    const bar = document.createElement('div');
+    bar.className = 'chtoolbar gnav';
+    const bb = mk('‹ ' + tBack, tBack, goBack); bb.style.padding = '0 14px'; bar.appendChild(bb);
+    bar.appendChild(home());
+    if (tab !== 'books') bar.appendChild(books());
+    v.insertBefore(bar, v.firstChild);
+  }catch(e){ console.error(e); }
+}
 
 /* ================================================================ 聚會與奉獻（複製自空中團契 App） */
 const MEET_TZ_OFFSET = 8;   /* 聚會時間以台北時間（UTC+8，無夏令時間）為準 */
@@ -2696,6 +2720,8 @@ function pickBgm(inp){
 }
 
 const DEF_TOP  = () => L3('國度321空中團契', '国度321空中团契', 'Kingdom 321 Online Fellowship');
+const DEF_TO = () => L3('親愛的家人：平安！', '亲爱的家人：平安！', 'Dear family, peace be with you!');
+const cardToVal = () => { const v = (state.cardTo || '').trim(); return (v === '親愛的家人：平安！' || v === '亲爱的家人：平安！' || v === 'Dear family, peace be with you!') ? DEF_TO() : v; };
 const DEF_SIGN = () => L3('願上帝賜福你！', '愿上帝赐福你！', 'God bless you!');
 /* 詩篇用「篇」／Psalm，其餘用「章」／Chapter */
 function chapLabel(bookId, n){
@@ -2852,7 +2878,7 @@ function drawFullCard(cv, h, W, H){
   const ctx = cv.getContext('2d'); cv.width = W; cv.height = H;
   ctx.drawImage(photoImg, 0, 0, W, H);
   const S = Math.min(W, H) / 1080, sans = CARD_SANS(), serif = CARD_SERIF();
-  const toName = (state.cardTo || '').trim();
+  const toName = cardToVal();
   const sign = (state.cardSign || '').trim() || DEF_SIGN();
   let body, ref = '';
   if (fullKind === 'greet'){
@@ -3039,7 +3065,7 @@ function drawVerseCard(cv, h, W, H){
   });
 
   /* 稱呼（若有）畫在團契名底下、經文上面，像一封信的開頭——使用者要求改黑色 */
-  const toName = (state.cardTo || '').trim();
+  const toName = cardToVal();
   if (toName){
     let ts2 = Math.round(40 * FT * FB);
     ctx.textAlign = 'center'; ctx.fillStyle = T.ink;
@@ -4084,7 +4110,7 @@ const AUD_WRITE = () => {
 };
 /* 寫給誰——祝福與改內文都要帶上 */
 function whoLine(){
-  const who = (state.cardTo || '').trim();
+  const who = cardToVal();
   return who ? L3(`\n這段話是寫給「${who}」的，請直接對他說話，但不要再寫一次稱呼。`,
                   `\n这段话是写给“${who}”的，请直接对他说话，但不要再写一次称呼。`,
                   `\nThis is written for "${who}" — speak directly to them, but do not repeat the greeting.`) : '';
@@ -4251,7 +4277,7 @@ async function viewStudio(v){
     <div class="section-title">${esc(L.cardLines)}</div>
     <div class="card">
       <div class="muted" style="font-size:12px;margin-bottom:6px">${esc(L.cardToL)}</div>
-      <input class="cardinput" id="cardTo" value="${esc(state.cardTo || '')}"
+      <input class="cardinput" id="cardTo" value="${esc(cardToVal())}"
              placeholder="${esc(L.cardToPH)}">
       ${FULL ? '' : `<div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.cardTopL)}</div>
       <input class="cardinput" id="cardTop" value="${esc(state.cardTop || '')}"
