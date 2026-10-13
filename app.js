@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.18.29';
+const VERSION = 'v2.18.30';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -6727,11 +6727,133 @@ function ttsRef(x){
 /* 表情符號不要唸出來——語音引擎會把它唸成「笑臉」「祈禱的手」，很突兀 */
 const EMOJI_RE = /[\u{1F000}-\u{1FAFF}\u{2190}-\u{21FF}\u{2300}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE00}-\u{FE0F}\u{1F1E6}-\u{1F1FF}\u{200D}\u{20E3}]/gu;
 const noEmoji = x => String(x || '').replace(EMOJI_RE, '').replace(/[ \t]{2,}/g, ' ');
+
+/* ═══════════════════════════════════════════════════════════════════
+   PRON321 · 真人朗讀發音修正（依技能 321-reading-pronunciation）
+   只改「送去語音的文字」，畫面、分享、美圖的字一個都不動。
+   · SHARED：兩版共用的指定讀音（繁、简兩種寫法都列）
+   · TW：臺灣版（繁體介面）卻用了大陸口音語音（zh-CN）時才套
+   · CN：大陸版（简体介面）卻用了臺灣口音語音（zh-TW）時才套
+   規則一律帶上下文、長詞先；每條替代字只有一個讀音，套兩次也不會變（可重複套用）。
+   ═══════════════════════════════════════════════════════════════════ */
+var PRON321 = (function () {
+  'use strict';
+  var NUM = '[〇零一二三四五六七八九十百千萬万兩两幾几]+';
+  var UNIT = '(?:肘|尺|丈|寸|虎口|竿|掌|里|步)';
+  function R(s) { return new RegExp(s, 'g'); }
+  /* [pattern, 替代] —— 繁、简各一條（同形的只寫一次） */
+  var SHARED = [
+    /* 重 chóng／zhòng */
+    [R('重生'), '蟲生'], [R('重新'), '蟲新'], [R('重建'), '蟲建'],
+    [R('重擔'), '眾擔'], [R('重担'), '众担'],
+    /* 長 zhǎng：職稱、成長；長＋數字＋度量衡 cháng */
+    [R('長(?=' + NUM + UNIT + ')'), '常'], [R('长(?=' + NUM + UNIT + ')'), '常'],
+    [R('長(老|子|大|進|輩|執)'), '掌$1'],
+    [R('长(老|子|大|进|辈|执)'), '掌$1'],
+    [R('(成|生|年|家|族|官|兄|師|师|首|牧|夫|組|组|團|团|校|部|區|区|社)(長|长)(?![久遠远存期])'), '$1掌'],
+    /* 差 chāi */
+    [R('差(遣|派|役)'), '拆$1'],
+    [R('([主神祂他我])差(?=[人你我他門门使])'), '$1拆'],
+    /* 得著 dé zhuó */
+    [R('得[著着](?![急涼凉迷火慌])'), '得酌'],
+    /* 為 wèi：為主而活、為人禱告…（「成為」「以…為主」不在這些組合裡） */
+    [R('(^|[^成作行認认稱称以視视])([為为])(?=(?:主|神|祂|基督|耶穌|耶稣)(?:而活|而死|作工|做工|擺上|摆上|受苦|犧牲|牺牲|捨命|舍命|捨己|舍己|發熱心|发热心))'), '$1衛'],
+    [R('([為为])(?=(?:人|別人|别人|眾人|众人|你|你們|你们|我們|我们|他們|他们|弟兄姊妹)(?:禱告|祷告|代禱|代祷|代求|捨命|舍命))'), '衛'],
+    /* 給 jǐ */
+    [R('(供|補|补)[給给]'), '$1己'], [R('[給给]予'), '己予'],
+    /* 應 yìng／yīng */
+    [R('應許'), '映許'], [R('应许'), '映许'], [R('應驗'), '映驗'], [R('应验'), '映验'],
+    [R('應當'), '英當'], [R('应当'), '英当'],
+    /* 傳 chuán／zhuàn */
+    [R('傳道'), '船道'], [R('传道'), '船道'],
+    [R('(行|自)傳'), '$1賺'], [R('(行|自)传'), '$1赚'], [R('傳記'), '賺記'], [R('传记'), '赚记'],
+    /* 專名與聖經特殊詞 */
+    [R('沒藥'), '莫藥'], [R('没药'), '莫药'],
+    [R('嗎哪'), '馬哪'], [R('吗哪'), '马哪'],
+    [R('撒種'), '撒腫'], [R('撒种'), '撒肿'],
+    [R('撒但'), '仨但'],
+    [R('數一數'), '鼠一鼠'], [R('数一数'), '鼠一鼠'],
+    [R('數(點|算)'), '鼠$1'], [R('数(点|算)'), '鼠$1'],
+    [R('參孫'), '餐孫'], [R('参孙'), '餐孙'],
+    [R('阿們'), '阿門'], [R('阿们'), '阿门'],
+    [R('冠冕'), '官冕'],
+    [R('朝(見|拜)'), '潮$1'], [R('朝(见|拜)'), '潮$1'],
+    [R('背(起|負|负)'), '揹$1'],
+    [R('看守'), '刊守'],
+    [R('說客'), '稅客'], [R('说客'), '税客'],
+    [R('年少'), '年紹'], [R('(^|[^多不減减缺很太至最])少年'), '$1紹年'],
+    [R('盛(滿|满)'), '成$1'],
+    [R('([一兩两三那這这])宿(?![舍])'), '$1朽'],
+    [R('乾(?!坤)'), '甘'],
+    [R('鴿'), '哥']
+  ];
+  /* 臺灣國語（繁體介面＋大陸口音語音） */
+  var TW = [
+    [R('[說说]服'), '稅服'], [R('[遊游][說说]'), '遊稅'],
+    [R('期'), '奇'], [R('企'), '器'],
+    [R('[危微]'), '圍'], [R('寂'), '疾'],
+    [R('(^|[^人])[質质]'), '$1直'],
+    [R('[暫暂]'), '站'], [R('[攜携]'), '西'], [R('曝'), '瀑'],
+    [R('垃圾'), '樂色'], [R('[蝸蜗]'), '瓜'],
+    [R('[結结]果子'), '節果子']
+  ];
+  /* 普通話（简体介面＋臺灣口音語音）——講義 App 在简体模式送出的可能仍是繁體原文，所以兩種字形都要認 */
+  var CN = [
+    [R('期'), '七'], [R('企'), '起'],
+    [R('[危微]'), '威'], [R('寂'), '寄'],
+    [R('(^|[^人])[质質]'), '$1至'],
+    [R('[暂暫]'), '赞'], [R('[携攜]'), '鞋'], [R('曝光'), '爆光'],
+    [R('垃圾'), '拉鸡'], [R('[蜗蝸]'), '窝']
+  ];
+  function run(list, s) {
+    for (var i = 0; i < list.length; i++) s = s.replace(list[i][0], list[i][1]);
+    return s;
+  }
+  /* std：'tw'（臺灣國語）或 'cn'（普通話）；voice：語音名稱（zh-TW-… / zh-CN-…）或語系 */
+  function fix(s, std, voice) {
+    s = String(s == null ? '' : s);
+    if (!/[㐀-鿿]/.test(s)) return s;            // 英文不動
+    s = run(SHARED, s);
+    var v = String(voice || '');
+    var vTW = /zh[-_]TW|zh[-_]HK/i.test(v), vCN = /zh[-_]CN|cmn/i.test(v);
+    if (std === 'tw' && vCN) s = run(TW, s);
+    else if (std === 'cn' && vTW) s = run(CN, s);
+    return s;
+  }
+  /* 裝置內建語音（speechSynthesis）也走同一套 */
+  var stdNow = function () { return 'tw'; };
+  function hookNative(getStd) {
+    if (getStd) stdNow = getStd;
+    try {
+      var ss = window.speechSynthesis;
+      if (!ss || ss.__pron) return;
+      var sp = ss.speak.bind(ss);
+      ss.speak = function (u) {
+        try { if (u && u.text) u.text = fix(u.text, stdNow(), u.lang || ''); } catch (e) {}
+        return sp(u);
+      };
+      ss.__pron = 1;
+    } catch (e) {}
+  }
+  /* 只做兩岸差異那一段（給已經自己套過共用規則的引擎用，例如創世記的 TTS321） */
+  function fixDiff(s, std, voice) {
+    s = String(s == null ? '' : s);
+    var v = String(voice || '');
+    if (std === 'tw' && /zh[-_]CN|cmn/i.test(v)) return run(TW, s);
+    if (std === 'cn' && /zh[-_]TW|zh[-_]HK/i.test(v)) return run(CN, s);
+    return s;
+  }
+  return { fix: fix, fixDiff: fixDiff, hookNative: hookNative, SHARED: SHARED, TW: TW, CN: CN };
+})();
+
+PRON321.hookNative(() => isZS() ? 'cn' : 'tw');
 function ttsPrep(s){
   let x = noEmoji(ttsRef(dropRefParens(s)));
   x = x.replace(/〔[^〕]*〕/g, '').replace(/\[[^\]]*\]/g, '');   // 譯者註不朗讀
   if (isEN()) return x.replace(/\s+/g, ' ').trim();                  // 英文不做破音字修正
   x = x.replace(/[「」『』（）]/g, '');
+  /* 真人朗讀發音（技能 321-reading-pronunciation）：先套共用指定讀音與兩岸差異，再套下面的舊表 */
+  x = PRON321.fix(x, isZS() ? 'cn' : 'tw', ((VOICES[state.lang] || [])[state.voice[state.lang]] || {}).v || '');
   TTS_FIX.forEach(([re, to]) => { x = x.replace(re, to); });
   x = ttsDiFix(x);
   x = ttsChangFix(x);
