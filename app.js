@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.18.28';
+const VERSION = 'v2.18.29';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -5540,6 +5540,15 @@ async function viewCompanion(v){
     $$('#lenSeg button', v).forEach(b => b.onclick = () => {
       if (state.alen === b.dataset.k) return;
       state.alen = b.dataset.k; saveState(); paintLen();
+      /* 換長度＝用新的長度把最後一個問題重新回答一次（舊的那組問答換掉） */
+      let ui = -1; chatLog.forEach((m, i) => { if (m.role === 'user') ui = i; });
+      if (!chatBusy && ui >= 0 && chatLog.length > ui + 1){
+        const q = chatLog[ui];
+        chatLog.splice(ui); chatSrc = q.src || null;
+        toast(L3('已改成「', '已改成“', 'Switched to “') + nm[state.alen] + L3('」，重新回答中…', '”，重新回答中…', '” — answering again…'), 2200);
+        sendChat(q.text);
+        return;
+      }
       toast(L3('回答長度：', '回答长度：', 'Answer length: ') + nm[state.alen], 1800);
     });
   };
