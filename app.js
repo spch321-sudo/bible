@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.18.30';
+const VERSION = 'v2.18.31';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -4251,6 +4251,63 @@ async function studioRefresh(){
 }
 function curTab(){ return (location.hash || '').indexOf('#/studio') === 0 ? 'studio' : ''; }
 
+
+/* ── 美圖工作室分頁（v2.18.31，照聖經講義與生活操練 App）：
+   上面預覽與分享，下面分「文字／相片／版面／配樂與錄製」四頁；選過的分頁會記住 ── */
+let studioTabSel = '';
+function studioTabs(v, L){
+  try {
+    if (!document.getElementById('stTabCss')){
+      const st = document.createElement('style'); st.id = 'stTabCss';
+      st.textContent = `.sttabs{position:sticky;top:110px;z-index:14;display:flex;background:var(--bg);border-bottom:1px solid var(--border);margin:6px -4px 4px;padding:0 4px}
+.sttabs button{flex:1;border:0;background:none;padding:12px 2px 10px;font:inherit;font-size:15px;color:var(--ink-soft);border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+.sttabs button.on{color:var(--ink);font-weight:700;border-bottom-color:var(--accent)}
+.stpane{padding-top:6px}.stpane[hidden]{display:none}
+.stpane > .section-title:first-child{margin-top:14px}`;
+      document.head.appendChild(st);
+    }
+    const grp = (txt) => {
+      txt = String(txt || '');
+      if (txt === L.cardText || txt === L.cardLines) return 'text';
+      if (txt === L.cardStyle || txt === L.cardBorder || txt === L.cardSize || txt === L.cardFsL) return 'lay';
+      if (txt === L.photo) return 'photo';
+      if (txt === L.bgm || txt === L.recSec || txt.indexOf(L.works) === 0) return 'rec';
+      return '';
+    };
+    const kids = Array.prototype.slice.call(v.children);
+    const first = kids.findIndex(e => e.classList && e.classList.contains('section-title'));
+    if (first < 0) return;
+    const panes = { text: [], photo: [], lay: [], rec: [] };
+    let cur = '';
+    for (let i = first; i < kids.length; i++){
+      const e = kids[i];
+      if (e.classList && e.classList.contains('section-title')){ const g = grp(e.textContent); if (g) cur = g; }
+      if (cur) panes[cur].push(e);
+    }
+    const TABS = [['text', L3('文字', '文字', 'Text')], ['photo', L3('相片', '相片', 'Photo')], ['lay', L3('版面', '版面', 'Layout')], ['rec', L3('配樂與錄製', '配乐与录制', 'Music & record')]]
+      .filter(x => panes[x[0]].length);
+    if (!TABS.length) return;
+    if (!studioTabSel || !panes[studioTabSel] || !panes[studioTabSel].length) studioTabSel = panes.photo.length ? 'photo' : TABS[0][0];
+    const bar = document.createElement('div'); bar.className = 'sttabs';
+    bar.innerHTML = TABS.map(x => `<button data-st="${x[0]}" class="${x[0] === studioTabSel ? 'on' : ''}">${esc(x[1])}</button>`).join('');
+    v.insertBefore(bar, kids[first]);
+    const topPx = () => { const h = document.querySelector('header.topbar'), t = v.querySelector('.chtoolbar'); return Math.round((h ? h.getBoundingClientRect().height : 56) + (t ? t.getBoundingClientRect().height : 0)); };
+    bar.style.top = topPx() + 'px';
+    const boxes = {};
+    TABS.forEach(x => {
+      const d = document.createElement('div'); d.className = 'stpane'; d.setAttribute('data-sp', x[0]);
+      if (x[0] !== studioTabSel) d.hidden = true;
+      panes[x[0]].forEach(e => d.appendChild(e));
+      v.appendChild(d); boxes[x[0]] = d;
+    });
+    bar.querySelectorAll('button').forEach(b => b.onclick = () => {
+      studioTabSel = b.getAttribute('data-st');
+      bar.querySelectorAll('button').forEach(o => o.classList.toggle('on', o === b));
+      Object.keys(boxes).forEach(k => { boxes[k].hidden = k !== studioTabSel; });
+      const tp = topPx(); bar.style.top = tp + 'px'; const r = bar.getBoundingClientRect(); if (r.top > innerHeight * 0.6) window.scrollBy(0, r.top - tp);
+    });
+  } catch (e) { console.warn('studioTabs', e); }
+}
 async function viewStudio(v){
   const L = t();
   if (!studioItem){ go('#/me'); return; }
@@ -4444,6 +4501,7 @@ async function viewStudio(v){
       </div>`).join('') : `<div class="empty">${esc(L.noWorks)}</div>`}</div>`;
 
   renderCard(studioItem);
+  studioTabs(v, L);
   if (isSelfie()) setTimeout(attachSelfie, 60);
 
   $('#stBack').onclick = () => history.back();
