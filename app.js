@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.18.31';
+const VERSION = 'v2.18.32';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -394,7 +394,7 @@ const DEFAULTS = { lang:'zh', font:0, theme:0, flow:false, shCh:true, shV:true, 
                    cardTpl:'plain', cardSize:'p', cardBorder:'none', cardFs:1.45,
                    cardTop:'', cardSign:'', cardTo:'親愛的家人：平安！', cardGreet:'', photoLast:'', photoMode:'full',
                    voice:{zh:0, zs:0, en:0}, ttsAutoNext:false, beauty:true, planRemindOn:false,
-                   audience:'adult', alen:'mid' };
+                   audience:'adult', alen:'mid', skbg:'none' };
 /* 「淨」鍵依序切換的四種組合：[整卷連讀?, 顯示章號?] */
 /* 「淨」鍵循環的四種常用讀法：[整卷連讀, 顯示章, 顯示節] */
 const VIEW_CYCLE = [[false, true, true], [false, true, false], [false, false, false], [true, false, false]];
@@ -422,6 +422,7 @@ function loadState(){
     state.flow = !!state.flow; state.shCh = !!state.shCh; state.shV = !!state.shV;
     if (!['adult','teen','kid','seeker','elder','single_parent','single','parent','couple','pastor'].includes(state.audience)) state.audience = 'adult';
     if (!['brief','mid','full'].includes(state.alen)) state.alen = 'mid';
+    if (!['none','buddhism','folk','yiguandao','muslim','atheist'].includes(state.skbg)) state.skbg = 'none';
   }catch(e){ state = Object.assign({}, DEFAULTS); }
 }
 function saveState(){ try{ localStorage.setItem('ib_state', JSON.stringify(state)); }catch(e){} }
@@ -5542,6 +5543,16 @@ function mdToHtml(s){
   h = h.replace(/(<li>[\s\S]*?<\/li>)(?!\s*<li>)/g, m => '<ul>' + m + '</ul>');
   return h.split(/\n{2,}/).map(p => /^<(h\d|ul|blockquote|hr|table)/.test(p.trim()) ? p : '<p>' + p.replace(/\n/g, '<br>') + '</p>').join('');
 }
+/* 換長度／換信仰背景＝用新設定把最後一個問題重新回答（舊的那組問答換掉）；成功重答回傳 true */
+function reAnswerLast(msg){
+  let ui = -1; chatLog.forEach((m, i) => { if (m.role === 'user') ui = i; });
+  if (chatBusy || ui < 0 || chatLog.length <= ui + 1) return false;
+  const q = chatLog[ui];
+  chatLog.splice(ui); chatSrc = q.src || null;
+  toast(msg, 2200);
+  sendChat(q.text);
+  return true;
+}
 async function viewCompanion(v){
   const L = t();
   const b = RD.book ? BOOK[RD.book] : null;
@@ -5553,6 +5564,7 @@ async function viewCompanion(v){
         <button class="qs-toggle" id="qsBtn" style="margin:0">💡 ${esc(L.examples)}</button>
       </div>
       <div class="segbtns" id="lenSeg" style="justify-content:flex-start;align-items:center;margin:0 0 6px"></div>
+      <div class="segbtns" id="bgSeg" hidden style="justify-content:flex-start;align-items:center;margin:0 0 6px"></div>
       <div class="aud-panel" id="audPanel" hidden style="margin:0 0 6px">
         <div class="segbtns" id="audSeg" style="justify-content:flex-start"></div>
         <div class="muted" id="audHint" style="font-size:11.5px;line-height:1.6;margin:6px 0 0"></div>
@@ -5585,7 +5597,7 @@ async function viewCompanion(v){
     $$('#audSeg button', v).forEach(b => b.onclick = () => {
       if (state.audience === b.dataset.k) return;
       state.audience = b.dataset.k; saveState();
-      paintAud(); paintQs(); $('#audPanel', v).hidden = true;
+      paintAud(); paintQs(); paintBg(); $('#audPanel', v).hidden = true;
       toast(L3('回答對象：', '回答对象：', 'Answering for: ') + AUD_NAME()[state.audience], 2000);
     });
   };
@@ -5598,19 +5610,26 @@ async function viewCompanion(v){
     $$('#lenSeg button', v).forEach(b => b.onclick = () => {
       if (state.alen === b.dataset.k) return;
       state.alen = b.dataset.k; saveState(); paintLen();
-      /* 換長度＝用新的長度把最後一個問題重新回答一次（舊的那組問答換掉） */
-      let ui = -1; chatLog.forEach((m, i) => { if (m.role === 'user') ui = i; });
-      if (!chatBusy && ui >= 0 && chatLog.length > ui + 1){
-        const q = chatLog[ui];
-        chatLog.splice(ui); chatSrc = q.src || null;
-        toast(L3('已改成「', '已改成“', 'Switched to “') + nm[state.alen] + L3('」，重新回答中…', '”，重新回答中…', '” — answering again…'), 2200);
-        sendChat(q.text);
-        return;
-      }
+      if (reAnswerLast(L3('已改成「', '已改成“', 'Switched to “') + nm[state.alen] + L3('」，重新回答中…', '”，重新回答中…', '” — answering again…'))) return;
       toast(L3('回答長度：', '回答长度：', 'Answer length: ') + nm[state.alen], 1800);
     });
   };
   paintLen();
+  function paintBg(){
+    const el = $('#bgSeg', v); if (!el) return;
+    el.hidden = state.audience !== 'seeker';
+    if (el.hidden) return;
+    const nm = SKBG_NAME();
+    el.innerHTML = `<span class="muted" style="font-size:12px;font-weight:700">${esc(L3('信仰背景：', '信仰背景：', 'Background: '))}</span>`
+      + SKBG_KEYS.map(k => `<button class="${state.skbg === k ? 'on' : ''}" data-k="${k}">${SKBG_ICON[k]} ${esc(nm[k])}</button>`).join('');
+    $$('#bgSeg button', v).forEach(b => b.onclick = () => {
+      if (state.skbg === b.dataset.k) return;
+      state.skbg = b.dataset.k; saveState(); paintBg();
+      if (reAnswerLast(L3('已改成「', '已改成“', 'Switched to “') + nm[state.skbg] + L3('」背景，重新回答中…', '”背景，重新回答中…', '” background — answering again…'))) return;
+      toast(L3('信仰背景：', '信仰背景：', 'Background: ') + nm[state.skbg], 1800);
+    });
+  }
+  paintBg();
   $('#audBtn', v).onclick = () => { const ap = $('#audPanel', v); ap.hidden = !ap.hidden; if (!ap.hidden) panel.hidden = true; };
   paintChat();
   $('#chatSend', v).onclick = () => sendChat($('#chatIn').value);
@@ -5776,6 +5795,22 @@ const AUD_HINT = () => ({
   couple: L3('夫妻同行：溝通、饒恕、同心與一起禱告', '夫妻同行：沟通、饶恕、同心与一起祷告', 'Walking together: talking, forgiving, unity and praying as a couple'),
   pastor: L3('同工口吻：牧養、講道預備、團隊與不倦怠', '同工口吻：牧养、讲道预备、团队与不倦怠', 'As a fellow worker: shepherding, sermon prep, team and avoiding burnout')
 });
+/* v2.18.30：慕道友的信仰背景——小智依對方背景調整說法（只在回答對象＝慕道友時使用） */
+const SKBG_KEYS = ['none','buddhism','folk','yiguandao','muslim','atheist'];
+const SKBG_ICON = { none:'🌱', buddhism:'☸️', folk:'🏮', yiguandao:'🕯️', muslim:'☪️', atheist:'🔬' };
+const SKBG_NAME = () => ({
+  none: L3('沒有信仰','没有信仰','No faith'), buddhism: L3('佛教','佛教','Buddhism'),
+  folk: L3('民間信仰','民间信仰','Folk religion'), yiguandao: L3('一貫道','一贯道','Yiguandao'),
+  muslim: L3('穆斯林','穆斯林','Muslim'), atheist: L3('無神論','无神论','Atheist') });
+const SKBG_TXT = {"none": {"zh": "回答對象的信仰背景：沒有信仰。對方沒有特定宗教，可能從未接觸過聖經或教會。不預設他懂任何宗教詞彙，從他的生活處境與真實疑問出發；對信仰的好奇、猶豫或不確定都不評論對錯，用一個簡單的比喻說明，每次只講一個重點，不施壓、不催決志。", "en": "The seeker's faith background: no religious faith. They follow no particular religion and may never have met the Bible or a church. Assume no religious vocabulary; start from their real life situation and questions. Never judge curiosity, hesitation or uncertainty; explain with one simple picture, one main point at a time, with no pressure and no rush to decide.", "zs": "回答对象的信仰背景：没有信仰。对方没有特定宗教，可能从未接触过圣经或教会。不预设他懂任何宗教词汇，从他的生活处境与真实疑问出发；对信仰的好奇、犹豫或不确定都不评论对错，用一个简单的比喻说明，每次只讲一个重点，不施压、不催决志。"}, "buddhism": {"zh": "回答對象的信仰背景：佛教。請全程尊重，不貶低佛陀、佛教或他的修行，不用「拜偶像」「迷信」這類帶責備的字眼。先肯定共同關心的課題（苦、無常、慈悲、放下、心的平安），再溫和說明聖經的觀點：宇宙有位有位格的創造主，神主動愛人；救恩是白白的恩典，不是靠自己累積功德；人有一世的生命，死後要面對神，而不是輪迴。不要亂用佛教專有名詞；不確定他的宗派或想法時，先請他說說自己怎麼理解。", "en": "The seeker's faith background: Buddhism. Be respectful throughout; never belittle the Buddha, Buddhism or their practice, and avoid accusing words such as 'idolatry' or 'superstition'. First affirm what you share — suffering, impermanence, compassion, letting go, peace of heart — then gently explain the Bible's view: a personal Creator who takes the initiative to love people; salvation as a free gift of grace, not merit we accumulate; one life, then facing God, rather than rebirth. Do not misuse Buddhist terms; if unsure of their school or understanding, ask them to share it first.", "zs": "回答对象的信仰背景：佛教。请全程尊重，不贬低佛陀、佛教或他的修行，不用“拜偶像”“迷信”这类带责备的字眼。先肯定共同关心的课题（苦、无常、慈悲、放下、心的平安），再温和说明圣经的观点：宇宙有位有位格的创造主，神主动爱人；救恩是白白的恩典，不是靠自己累积功德；人有一世的生命，死后要面对神，而不是轮回。不要乱用佛教专有名词；不确定他的宗派或想法时，先请他说说自己怎么理解。"}, "folk": {"zh": "回答對象的信仰背景：民間信仰（拜拜、祭祖、神明、媽祖、風水、算命等）。請尊重他對家人、祖先與神明的敬重與孝心，不嘲笑、不恐嚇。先肯定聖經本來就教導孝敬父母，再溫和說明：敬拜只歸給創造天地的獨一真神；並關心他拜拜背後真正的需要，像是平安、保佑、被關愛、對未來的不安。用生活化的例子，回答他實際的疑惑（例如祭祖與追思的差別），不要要求他立刻改變家人的習慣。", "en": "The seeker's faith background: folk religion (temple offerings, ancestor rites, local deities such as Mazu, feng shui, fortune-telling). Honour their respect for family, ancestors and the gods, and their filial devotion; never mock or frighten. First affirm that the Bible itself teaches honouring parents, then gently explain that worship belongs to the one true God who made heaven and earth; care about the real need behind the offerings — peace, protection, being loved, anxiety about the future. Use everyday examples, answer their practical questions (for example, ancestor rites versus remembrance), and do not ask them to change the family's customs at once.", "zs": "回答对象的信仰背景：民间信仰（拜拜、祭祖、神明、妈祖、风水、算命等）。请尊重他对家人、祖先与神明的敬重与孝心，不嘲笑、不恐吓。先肯定圣经本来就教导孝敬父母，再温和说明：敬拜只归给创造天地的独一真神；并关心他拜拜背后真正的需要，像是平安、保佑、被关爱、对未来的不安。用生活化的例子，回答他实际的疑惑（例如祭祖与追思的差别），不要要求他立刻改变家人的习惯。"}, "yiguandao": {"zh": "回答對象的信仰背景：一貫道。請尊重他吃素、重倫理道德、修身行善的認真，不批評他的師尊、道場或儀式。他多半敬畏「天」或「上帝」，也聽過「五教同源、萬教歸一」，可以從這份對天的敬畏與向善的心談起。對一貫道的教義細節（如無極老母、三期末劫、道場規矩）不要自己推斷或批評；不確定時請他說說自己的理解。再溫和、誠實地說明聖經的核心：神是有位格的創造主，藉著耶穌基督主動來到人間；耶穌說：「我就是道路、真理、生命」（約翰福音 14:6），救恩是白白的恩典。", "en": "The seeker's faith background: Yiguandao (Way of Pervading Unity). Respect their vegetarianism, their seriousness about ethics and self-cultivation, and their good deeds; never criticise their teachers, halls or rituals. They typically revere Heaven or the Supreme Lord and have heard 'five religions share one source'; begin from that reverence and desire to do good. Do not guess at or criticise doctrinal details (such as the Eternal Mother, the three ages, hall rules); if unsure, ask them to explain their understanding. Then, gently and honestly, state the Bible's heart: a personal Creator who came to us in Jesus Christ; Jesus said, 'I am the way, the truth and the life' (John 14:6); salvation is a free gift of grace.", "zs": "回答对象的信仰背景：一贯道。请尊重他吃素、重伦理道德、修身行善的认真，不批评他的师尊、道场或仪式。他多半敬畏“天”或“上帝”，也听过“五教同源、万教归一”，可以从这份对天的敬畏与向善的心谈起。对一贯道的教义细节（如无极老母、三期末劫、道场规矩）不要自己推断或批评；不确定时请他说说自己的理解。再温和、诚实地说明圣经的核心：神是有位格的创造主，借着耶稣基督主动来到人间；耶稣说：“我就是道路、真理、生命”（约翰福音 14:6），救恩是白白的恩典。"}, "muslim": {"zh": "回答對象的信仰背景：穆斯林。請以最大的敬意對待他的信仰、古蘭經與先知，不辱罵、不嘲諷、不貶低，也不要用施壓或「勸你改教」的口氣；他可能要為此付出家庭與社群的代價，要體貼。先肯定共同點：信獨一的神，也尊敬亞伯拉罕、摩西、大衛，以及童女所生的先知爾薩（耶穌）。只引用聖經，說明聖經如何看耶穌（神的道成了肉身，是神的兒子），並清楚說明基督徒信的是獨一真神，不是三個神；也溫和比較「靠行為得救」與「靠恩典得救」的不同。避免用豬肉、酒、圖像這類容易冒犯的比喻。不確定他的教派或想法時，先請他分享。", "en": "The seeker's faith background: Muslim. Treat their faith, the Qur'an and the Prophet with the highest respect; never insult, mock or belittle, and never press or urge them to convert — they may pay a heavy price in family and community, so be considerate. First affirm common ground: belief in one God, and respect for Abraham, Moses, David and the virgin-born prophet Isa (Jesus). Quote only the Bible, explain how it sees Jesus (the Word made flesh, the Son of God), make clear that Christians worship the one true God, not three gods, and gently contrast salvation by works with salvation by grace. Avoid illustrations involving pork, alcohol or images that easily offend. If unsure of their tradition or views, ask them to share first.", "zs": "回答对象的信仰背景：穆斯林。请以最大的敬意对待他的信仰、古兰经与先知，不辱骂、不嘲讽、不贬低，也不要用施压或“劝你改教”的口气；他可能要为此付出家庭与社群的代价，要体贴。先肯定共同点：信独一的神，也尊敬亚伯拉罕、摩西、大卫，以及童女所生的先知尔萨（耶稣）。只引用圣经，说明圣经如何看耶稣（神的道成了肉身，是神的儿子），并清楚说明基督徒信的是独一真神，不是三个神；也温和比较“靠行为得救”与“靠恩典得救”的不同。避免用猪肉、酒、图像这类容易冒犯的比喻。不确定他的教派或想法时，先请他分享。"}, "atheist": {"zh": "回答對象的信仰背景：無神論者。請尊重他靠理性、證據與誠實思考的態度，不說教，不說「你只要相信就好」。不把無神論說成稻草人，也不說科學與信仰一定對立。誠實承認哪些質疑很有力（如苦難、惡、宗教歷史上的錯誤），哪些事無法用科學證明，不誇大也不迴避；可以從道德直覺、生命的意義、宇宙的秩序與耶穌的歷史記載談起，引用聖經時也說明它的背景。語氣平等、好奇、不防衛，邀請他一起探索，而不是要他認輸。", "en": "The seeker's faith background: atheist. Respect their reliance on reason, evidence and honest thinking; do not preach or say 'just believe'. Do not caricature atheism or claim science and faith must be at war. Honestly admit which objections are strong (suffering, evil, historical failures of religion) and which things science cannot prove, without exaggerating or dodging; you may start from moral intuition, meaning, the order of the universe and the historical records of Jesus, and explain the background when you cite the Bible. Keep the tone equal, curious and undefensive, inviting them to explore together rather than to concede.", "zs": "回答对象的信仰背景：无神论者。请尊重他靠理性、证据与诚实思考的态度，不说教，不说“你只要相信就好”。不把无神论说成稻草人，也不说科学与信仰一定对立。诚实承认哪些质疑很有力（如苦难、恶、宗教历史上的错误），哪些事无法用科学证明，不夸大也不回避；可以从道德直觉、生命的意义、宇宙的秩序与耶稣的历史记载谈起，引用圣经时也说明他的背景。语气平等、好奇、不防卫，邀请他一起探索，而不是要他认输。"}};
+const SKBG_SYS = () => {
+  if (state.audience !== 'seeker') return '';
+  const t = SKBG_TXT[state.skbg] || SKBG_TXT.none;
+  return ' ' + (isEN() ? t.en : isZS() ? t.zs : t.zh) + (isEN()
+    ? ' Always speak with respect and love, never mock any belief, never put them under pressure; state Christian convictions honestly but gently, and answer their actual question first.'
+    : isZS() ? ' 一律带着尊重与爱心，不嘲笑任何信仰、不施压；诚实而温和地说明基督信仰的立场，并先回答他真正的问题。'
+    : ' 一律帶著尊重與愛心，不嘲笑任何信仰、不施壓；誠實而溫和地說明基督信仰的立場，並先回答他真正的問題。');
+};
 /* v2.18.28：小智回答長度——簡要／適中／詳細 */
 const LEN_KEYS = ['brief','mid','full'];
 const LEN_NAME = () => ({ brief:L3('簡要','简要','Brief'), mid:L3('適中','适中','Medium'), full:L3('詳細','详细','Detailed') });
@@ -5929,7 +5964,7 @@ async function sendChat(text){
        表格在畫面上畫成真的表格、朗讀時會說成人話、分享時換成清單，
        所以放心用表格；重點用 > 標一句，那一句會被抓去做成美圖。 */
     + SYS_FMT()
-    + AUD_SYS() + LEN_SYS()
+    + AUD_SYS() + SKBG_SYS() + LEN_SYS()
     + (b ? (isEN() ? ` (The reader is currently in ${bname(b)} ${RD.ch}.)`
           : isZS() ? `（读者目前在读：${bname(b)} 第 ${RD.ch} 章）`
                    : `（讀者目前在讀：${bname(b)} 第 ${RD.ch} 章）`) : '');
