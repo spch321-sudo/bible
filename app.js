@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.18.32';
+const VERSION = 'v2.18.33';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -5553,11 +5553,14 @@ function reAnswerLast(msg){
   sendChat(q.text);
   return true;
 }
+let xzOptsOpen = true, xzResize = null;
 async function viewCompanion(v){
   const L = t();
   const b = RD.book ? BOOK[RD.book] : null;
   v.innerHTML = `<div class="chatwrap">
       <div class="xz-head"><button class="xz-back" id="xzBack" title="${esc(L.back || '返回')}">‹</button><img src="icon-72.png" alt=""><span>${esc(L.companionFull)}</span><button class="xz-fold" id="xzFold">${esc(L3('收合', '收合', 'Fold'))}</button></div>
+      <button class="xz-sum" id="xzSum"></button>
+      <div id="xzOpts">
       <div class="xz-bar" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 6px">
         ${b ? `<span class="chatctx" style="margin:0">${esc(L.ctx(bname(b), RD.ch))}</span>` : ''}
         <button class="qs-toggle" id="audBtn" style="margin:0"></button>
@@ -5570,6 +5573,7 @@ async function viewCompanion(v){
         <div class="muted" id="audHint" style="font-size:11.5px;line-height:1.6;margin:6px 0 0"></div>
       </div>
       <div class="qs-panel" id="qsPanel" hidden></div>
+      </div>
       <div class="chatlog" id="chatlog"></div>
       <div class="chatinput">
         <textarea id="chatIn" rows="1" placeholder="${esc(L.chatPH)}"></textarea>
@@ -5630,6 +5634,44 @@ async function viewCompanion(v){
     });
   }
   paintBg();
+  /* v2.18.33：上面的選項欄可以收合；往上滑看回答時自動收起，回答區變大 */
+  (function(){
+    if (!document.getElementById('xzcCss')){
+      const st = document.createElement('style'); st.id = 'xzcCss';
+      st.textContent = '.xz-sum{display:block;width:100%;text-align:left;border:1px solid var(--border);background:var(--surface-alt);color:var(--ink);border-radius:10px;padding:8px 12px;font:inherit;font-size:13.5px;font-weight:600;margin:0 0 6px;cursor:pointer}'
+        + '.chtoolbar.gnav:has(~ .chatwrap.xzc){display:none}';
+      document.head.appendChild(st);
+    }
+    const wrap = $('.chatwrap', v), optsEl = $('#xzOpts', v), sumEl = $('#xzSum', v), cl = $('#chatlog', v);
+    if (!wrap || !optsEl || !sumEl || !cl) return;
+    const sumTxt = () => AUD_ICON[state.audience] + ' ' + AUD_NAME()[state.audience]
+      + (state.audience === 'seeker' ? ' · ' + SKBG_NAME()[state.skbg] : '') + ' · ' + LEN_NAME()[state.alen];
+    const fit = () => {
+      const tb = document.querySelector('nav.tabbar');
+      const tbh = tb ? tb.getBoundingClientRect().height : 70;
+      const abs = wrap.getBoundingClientRect().top + (window.pageYOffset || 0);
+      wrap.style.height = Math.max(240, Math.floor(innerHeight - abs - tbh - 6)) + 'px';
+    };
+    const paint = () => { sumEl.textContent = '⚙ ' + sumTxt() + (xzOptsOpen ? '　▴' : '　▾'); };
+    const setOpts = (open) => {
+      xzOptsOpen = open; optsEl.hidden = !open;
+      wrap.classList.toggle('xzc', !open);
+      paint(); window.scrollTo(0, 0); fit();
+    };
+    sumEl.onclick = () => setOpts(!xzOptsOpen);
+    optsEl.addEventListener('click', () => setTimeout(paint, 0));
+    setOpts(xzOptsOpen);
+    setTimeout(fit, 60); setTimeout(fit, 400);
+    if (xzResize) window.removeEventListener('resize', xzResize);
+    xzResize = () => { if (document.body.contains(wrap)) fit(); };
+    window.addEventListener('resize', xzResize);
+    let touching = 0;
+    const mark = () => { touching = Date.now(); };
+    cl.addEventListener('touchmove', mark, { passive:true }); cl.addEventListener('wheel', mark, { passive:true });
+    cl.addEventListener('scroll', () => { if (xzOptsOpen && Date.now() - touching < 600 && cl.scrollTop > 30) setOpts(false); }, { passive:true });
+    const sendB = $('#chatSend', v); if (sendB) sendB.addEventListener('click', () => { if (xzOptsOpen) setOpts(false); });
+    const inB = $('#chatIn', v); if (inB) inB.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && xzOptsOpen) setOpts(false); });
+  })();
   $('#audBtn', v).onclick = () => { const ap = $('#audPanel', v); ap.hidden = !ap.hidden; if (!ap.hidden) panel.hidden = true; };
   paintChat();
   $('#chatSend', v).onclick = () => sendChat($('#chatIn').value);
