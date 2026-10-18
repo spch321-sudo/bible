@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.19.5';
+const VERSION = 'v2.19.6';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -3026,14 +3026,30 @@ const CARD_FONTS = [['auto',['自動','自动','Auto']],['mingti',['明體','明
 const CARD_INKS = [['',['自動','自动','Auto']],['#FFFFFF',['白','白','White']],['#1F1B16',['黑','黑','Black']],['#D4A65B',['金','金','Gold']],['#123F92',['深藍','深蓝','Navy']],['#6B4423',['咖啡','咖啡','Brown']],['#8A2D2D',['酒紅','酒红','Wine']],['#255943',['深綠','深绿','Green']],['#E8A0B4',['粉紅','粉红','Pink']]];
 const cardFontKey = () => CARD_FONTS.some(x => x[0] === state.cardFont) ? state.cardFont : 'auto';
 const cardInkVal = () => /^#[0-9a-fA-F]{6}$/.test(state.cardInk || '') ? state.cardInk : '';
+/* 楷體、圓體：手機不一定有，所以 App 自帶字體（霞鶩文楷、粉圓，皆為開源字體，只含經文用字）；
+   第一次選用時才下載，載完自動重畫卡片 */
+const IBF = {};
+function ensureIBFont(name, url){
+  if (IBF[name] || !window.FontFace) return;
+  IBF[name] = 'loading';
+  try{
+    const ff = new FontFace(name, 'url(' + url + ')');
+    ff.load().then(f => {
+      document.fonts.add(f); IBF[name] = 'ok';
+      if (curTab() === 'studio' && !(mr && mr.state === 'recording')) studioRefresh();
+    }).catch(() => { IBF[name] = 'fail'; });
+  }catch(e){ IBF[name] = 'fail'; }
+}
 function cardFontStack(){
   const k = cardFontKey();
+  if (!isEN() && k === 'kai') ensureIBFont('IBKai', 'fonts/kai.woff');
+  if (!isEN() && k === 'yuan') ensureIBFont('IBYuan', 'fonts/yuan.woff');
   if (k === 'mingti') return CARD_SERIF0();
   if (k === 'hei') return CARD_SANS0();
-  if (k === 'kai') return isZS() ? '"Kaiti SC","STKaiti","KaiTi","楷体",serif'
-    : (isEN() ? '"Snell Roundhand","Apple Chancery","Brush Script MT",cursive' : '"Kaiti TC","BiauKai","DFKai-SB","STKaiti","KaiTi",serif');
-  if (k === 'yuan') return isZS() ? '"Yuanti SC","PingFang SC","Noto Sans SC",sans-serif'
-    : (isEN() ? '"Avenir Next Rounded","Nunito","Trebuchet MS",sans-serif' : '"Yuanti TC","PingFang TC","Noto Sans TC",sans-serif');
+  if (k === 'kai') return isZS() ? '"IBKai","Kaiti SC","STKaiti","KaiTi","楷体",serif'
+    : (isEN() ? '"Snell Roundhand","Apple Chancery","Brush Script MT",cursive' : '"IBKai","Kaiti TC","BiauKai","DFKai-SB","STKaiti","KaiTi",serif');
+  if (k === 'yuan') return isZS() ? '"IBYuan","Yuanti SC","PingFang SC","Noto Sans SC",sans-serif'
+    : (isEN() ? '"Avenir Next Rounded","Nunito","Trebuchet MS",sans-serif' : '"IBYuan","Yuanti TC","PingFang TC","Noto Sans TC",sans-serif');
   return '';
 }
 const CARD_SERIF = () => cardFontStack() || CARD_SERIF0();
@@ -4555,7 +4571,7 @@ async function viewStudio(v){
       <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L3('文字顏色', '文字颜色', 'Text colour'))}</div>
       <div class="cardchips" id="cInk">${CARD_INKS.map(([c, n]) => `<button data-c="${c}" class="${cardInkVal().toLowerCase() === c.toLowerCase() ? 'on' : ''}">${c ? `<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${c};border:1px solid rgba(0,0,0,.25);margin-right:5px;vertical-align:-1px"></span>` : ''}${esc(pick2(n))}</button>`).join('')}</div>
       <label class="btn sm" style="margin-top:10px;display:inline-flex;gap:8px;align-items:center;cursor:pointer">${esc(L3('🎨 自選顏色', '🎨 自选颜色', '🎨 Pick a colour'))}<input type="color" id="cInkC" value="${esc(cardInkVal() || '#123F92')}" style="width:34px;height:26px;border:0;padding:0;background:none"></label>
-      <div class="muted" style="font-size:12px;margin-top:8px">${esc(L3('選了字體，整張卡片都會用同一種字體；有些字體要看手機有沒有安裝，沒有的會自動換回預設。文字顏色選「自動」就會依版型或相片自動配色。', '选了字体，整张卡片都会用同一种字体；有些字体要看手机有没有安装，没有的会自动换回默认。文字颜色选“自动”就会依版型或相片自动配色。', 'The chosen font is used across the whole card; if your phone does not have it, the default is used instead. “Auto” colour follows the style or photo.'))}</div>
+      <div class="muted" style="font-size:12px;margin-top:8px">${esc(L3('選了字體，整張卡片都會用同一種字體；楷體與圓體第一次選用時會下載字體（約 1–2 MB），稍等一下卡片就會換上。文字顏色選「自動」就會依版型或相片自動配色。', '选了字体，整张卡片都会用同一种字体；楷体与圆体第一次选用时会下载字体（约 1–2 MB），稍等一下卡片就会换上。文字颜色选“自动”就会依版型或相片自动配色。', 'The chosen font is used across the whole card; Kai and Round download a font the first time (about 1–2 MB), so the card updates after a moment. “Auto” colour follows the style or photo.'))}</div>
     </div>
 
     <div class="section-title">${esc(L.cardLines)}</div>
