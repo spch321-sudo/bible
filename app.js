@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.19.4';
+const VERSION = 'v2.19.5';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -3862,7 +3862,11 @@ function camFail(e){
   const n = (e && e.name) || '';
   const noAPI = !(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
   let why;
-  if (noAPI || inAppBrowser()) why = L3('這個畫面是在 LINE／內嵌瀏覽器裡開的，相機被擋住了。請點右上角「用瀏覽器開啟」（Safari／Chrome），或把 App 加到主畫面再開。',
+  let framed = false; try{ framed = window.top !== window.self; }catch(_){ framed = true; }
+  if (framed) why = L3('目前是在團契 App 內嵌的視窗裡開的，系統不給內嵌視窗用相機。請點上方「瀏覽器開啟」改用 Safari 開這個 App，就能用自拍。',
+    '目前是在团契 App 内嵌的窗口里开的，系统不给内嵌窗口用相机。请点上方“浏览器打开”改用 Safari 开这个 App，就能用自拍。',
+    'This app is open inside an embedded view, where the system blocks the camera. Tap “Open in browser” above to use Safari instead.');
+  else if (noAPI || inAppBrowser()) why = L3('這個畫面是在 LINE／內嵌瀏覽器裡開的，相機被擋住了。請點右上角「用瀏覽器開啟」（Safari／Chrome），或把 App 加到主畫面再開。',
     '这个画面是在 LINE／内嵌浏览器里开的，相机被挡住了。请点右上角“用浏览器打开”（Safari／Chrome），或把 App 加到主屏幕再开。',
     'This page is open inside an in-app browser (e.g. LINE) which blocks the camera. Tap “Open in browser” (Safari/Chrome) or add the app to your Home Screen.');
   else if (n === 'NotAllowedError' || n === 'SecurityError') why = L3('相機權限被拒絕。iPhone：設定 › Safari › 相機 選「允許」，或網址列左邊 AA › 網站設定 › 相機 › 允許，再回來按自拍。',
