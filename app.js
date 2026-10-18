@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.19.6';
+const VERSION = 'v2.19.7';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -2182,7 +2182,18 @@ let aigSt = 'sc', aigSh = 'p', aigNote = '', aigResumePrompt = '';
 function aiResumeSave(prompt){
   try{ localStorage.setItem('ib_ai_resume', JSON.stringify({ ts:Date.now(), item:studioItem, note:studioNote, st:aigSt, sh:aigSh, sc:aigNote, pr:prompt || '' })); }catch(e){}
 }
+function camResumeBoot(){
+  let o = null;
+  try{ o = JSON.parse(localStorage.getItem('ib_cam_resume') || 'null'); localStorage.removeItem('ib_cam_resume'); }catch(e){}
+  let framed = false; try{ framed = window.top !== window.self; }catch(_){ framed = true; }
+  if (!o || !o.item || framed || Date.now() - o.ts > 10 * 60 * 1000) return false;
+  studioItem = o.item; studioNote = o.note || '';
+  location.hash = '#/studio';
+  setTimeout(() => { if (studioItem && curTab() === 'studio') setRecMode('s'); }, 1200);
+  return true;
+}
 function aiResumeBoot(){
+  if (camResumeBoot()) return;
   let o = null;
   try{ o = JSON.parse(localStorage.getItem('ib_ai_resume') || 'null'); localStorage.removeItem('ib_ai_resume'); }catch(e){}
   if (!o || !o.item || Date.now() - o.ts > 12 * 3600 * 1000) return;
@@ -3029,21 +3040,32 @@ const cardInkVal = () => /^#[0-9a-fA-F]{6}$/.test(state.cardInk || '') ? state.c
 /* 楷體、圓體：手機不一定有，所以 App 自帶字體（霞鶩文楷、粉圓，皆為開源字體，只含經文用字）；
    第一次選用時才下載，載完自動重畫卡片 */
 const IBF = {};
+function fontStatText(){
+  const k = cardFontKey();
+  if (isEN() || (k !== 'kai' && k !== 'yuan')) return '';
+  const st = IBF[k === 'kai' ? 'IBKai' : 'IBYuan'];
+  if (!st) return L3('字體準備中…','字体准备中…','Preparing font…');
+  if (st === 'loading') return L3('⏳ 字體下載中（約 1–2 MB），請稍候…','⏳ 字体下载中（约 1–2 MB），请稍候…','⏳ Downloading font (1–2 MB)…');
+  if (st === 'ok') return L3('✓ 字體已載入','✓ 字体已载入','✓ Font loaded');
+  return L3('✗ 字體載入失敗（' + st + '）。請確認網路後，再按一次字體按鈕重試。','✗ 字体载入失败（' + st + '）。请确认网络后，再按一次字体按钮重试。','✗ Font failed to load (' + st + '). Check the network and tap the font button again.');
+}
+function fontStatShow(){ const el = $('#fontSt'); if (el) el.textContent = fontStatText(); }
 function ensureIBFont(name, url){
-  if (IBF[name] || !window.FontFace) return;
+  if (IBF[name]) return;
+  if (!window.FontFace){ IBF[name] = 'no FontFace'; return; }
   IBF[name] = 'loading';
   try{
     const ff = new FontFace(name, 'url(' + url + ')');
     ff.load().then(f => {
       document.fonts.add(f); IBF[name] = 'ok';
       if (curTab() === 'studio' && !(mr && mr.state === 'recording')) studioRefresh();
-    }).catch(() => { IBF[name] = 'fail'; });
-  }catch(e){ IBF[name] = 'fail'; }
+    }).catch(e => { IBF[name] = String((e && e.message) || e || 'error').slice(0, 60); fontStatShow(); });
+  }catch(e){ IBF[name] = String((e && e.message) || e).slice(0, 60); fontStatShow(); }
 }
 function cardFontStack(){
   const k = cardFontKey();
-  if (!isEN() && k === 'kai') ensureIBFont('IBKai', 'fonts/kai.woff');
-  if (!isEN() && k === 'yuan') ensureIBFont('IBYuan', 'fonts/yuan.woff');
+  if (!isEN() && k === 'kai') ensureIBFont('IBKai', 'fonts/kai2.woff');
+  if (!isEN() && k === 'yuan') ensureIBFont('IBYuan', 'fonts/yuan2.woff');
   if (k === 'mingti') return CARD_SERIF0();
   if (k === 'hei') return CARD_SANS0();
   if (k === 'kai') return isZS() ? '"IBKai","Kaiti SC","STKaiti","KaiTi","楷体",serif'
@@ -3879,9 +3901,9 @@ function camFail(e){
   const noAPI = !(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
   let why;
   let framed = false; try{ framed = window.top !== window.self; }catch(_){ framed = true; }
-  if (framed) why = L3('目前是在團契 App 內嵌的視窗裡開的，系統不給內嵌視窗用相機。請點上方「瀏覽器開啟」改用 Safari 開這個 App，就能用自拍。',
-    '目前是在团契 App 内嵌的窗口里开的，系统不给内嵌窗口用相机。请点上方“浏览器打开”改用 Safari 开这个 App，就能用自拍。',
-    'This app is open inside an embedded view, where the system blocks the camera. Tap “Open in browser” above to use Safari instead.');
+  if (framed) why = L3('目前是在團契 App 內嵌的視窗裡開的，系統不給內嵌視窗用相機。請按下面「用瀏覽器開啟並允許相機」，會用 Safari 開這個 App，並自動回到這節經文的自拍。',
+    '目前是在团契 App 内嵌的窗口里开的，系统不给内嵌窗口用相机。请按下面“用浏览器打开并允许相机”，会用 Safari 开这个 App，并自动回到这节经文的自拍。',
+    'This app is open inside an embedded view, where the system blocks the camera. Tap “Open in browser and allow the camera” below to continue in Safari.');
   else if (noAPI || inAppBrowser()) why = L3('這個畫面是在 LINE／內嵌瀏覽器裡開的，相機被擋住了。請點右上角「用瀏覽器開啟」（Safari／Chrome），或把 App 加到主畫面再開。',
     '这个画面是在 LINE／内嵌浏览器里开的，相机被挡住了。请点右上角“用浏览器打开”（Safari／Chrome），或把 App 加到主屏幕再开。',
     'This page is open inside an in-app browser (e.g. LINE) which blocks the camera. Tap “Open in browser” (Safari/Chrome) or add the app to your Home Screen.');
@@ -3896,11 +3918,20 @@ function camFail(e){
     <div class="hlsheet-title">${esc(L3('📷 自拍相機打不開','📷 自拍相机打不开','📷 Camera unavailable'))}</div>
     <div style="font-size:14px;line-height:1.7;margin:6px 0 10px">${esc(why)}</div>
     <div class="muted" style="font-size:12.5px;line-height:1.6;margin-bottom:8px">${esc(L3('不想改設定也可以：用手機內建相機直接錄一段自拍影片，錄完會存進「我的作品」。','不想改设置也可以：用手机内建相机直接录一段自拍视频，录完会存进“我的作品”。','Or record a selfie video with the phone’s own camera — it is saved to My works.'))}</div>
-    <label class="btn primary block" style="cursor:pointer">${esc(L3('📱 用手機內建相機錄自拍','📱 用手机内建相机录自拍','📱 Record with the phone camera'))}<input type="file" accept="video/*" capture="user" hidden id="camNative"></label>
+    ${framed ? `<button class="btn primary block" id="camTop" style="margin-bottom:8px">${esc(L3('🔓 用瀏覽器開啟並允許相機','🔓 用浏览器打开并允许相机','🔓 Open in browser and allow the camera'))}</button>` : ''}
+    <label class="btn ${framed ? '' : 'primary '}block" style="cursor:pointer">${esc(L3('📱 用手機內建相機錄自拍','📱 用手机内建相机录自拍','📱 Record with the phone camera'))}<input type="file" accept="video/*" capture="user" hidden id="camNative"></label>
     <div class="hlsheet-acts2" style="margin-top:10px"><button class="btn sm" id="camClose">${esc(t().close)}</button></div></div>`;
   document.body.appendChild(mask);
   mask.onclick = ev => { if (ev.target === mask) mask.remove(); };
   $('#camClose', mask).onclick = () => mask.remove();
+  const ct = $('#camTop', mask);
+  if (ct) ct.onclick = () => {
+    try{ localStorage.setItem('ib_cam_resume', JSON.stringify({ ts:Date.now(), item:studioItem, note:studioNote })); }catch(_){}
+    const u = location.origin + location.pathname + '?cam=1#/studio';
+    let w = null; try{ w = window.open(u, '_blank'); }catch(_){}
+    if (!w){ try{ window.top.location.href = u; }catch(_){ location.href = u; } }
+    mask.remove();
+  };
   $('#camNative', mask).onchange = async ev => {
     const f = ev.target.files && ev.target.files[0]; if (!f) return;
     mask.remove();
@@ -4571,6 +4602,7 @@ async function viewStudio(v){
       <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L3('文字顏色', '文字颜色', 'Text colour'))}</div>
       <div class="cardchips" id="cInk">${CARD_INKS.map(([c, n]) => `<button data-c="${c}" class="${cardInkVal().toLowerCase() === c.toLowerCase() ? 'on' : ''}">${c ? `<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${c};border:1px solid rgba(0,0,0,.25);margin-right:5px;vertical-align:-1px"></span>` : ''}${esc(pick2(n))}</button>`).join('')}</div>
       <label class="btn sm" style="margin-top:10px;display:inline-flex;gap:8px;align-items:center;cursor:pointer">${esc(L3('🎨 自選顏色', '🎨 自选颜色', '🎨 Pick a colour'))}<input type="color" id="cInkC" value="${esc(cardInkVal() || '#123F92')}" style="width:34px;height:26px;border:0;padding:0;background:none"></label>
+      <div class="muted" id="fontSt" style="font-size:13px;margin-top:8px;color:var(--navy,#123F92);font-weight:600">${esc(fontStatText())}</div>
       <div class="muted" style="font-size:12px;margin-top:8px">${esc(L3('選了字體，整張卡片都會用同一種字體；楷體與圓體第一次選用時會下載字體（約 1–2 MB），稍等一下卡片就會換上。文字顏色選「自動」就會依版型或相片自動配色。', '选了字体，整张卡片都会用同一种字体；楷体与圆体第一次选用时会下载字体（约 1–2 MB），稍等一下卡片就会换上。文字颜色选“自动”就会依版型或相片自动配色。', 'The chosen font is used across the whole card; Kai and Round download a font the first time (about 1–2 MB), so the card updates after a moment. “Auto” colour follows the style or photo.'))}</div>
     </div>
 
@@ -4743,7 +4775,7 @@ async function viewStudio(v){
   bind('#cTpl button', b => { state.cardTpl = b.dataset.t; saveState(); studioRefresh(); });
   bind('#cBrd button', b => { state.cardBorder = b.dataset.b; saveState(); studioRefresh(); });
   bind('#cSz  button', b => { state.cardSize = b.dataset.z; saveState(); studioRefresh(); });
-  bind('#cFont button', b => { state.cardFont = b.dataset.f; saveState(); studioRefresh(); });
+  bind('#cFont button', b => { Object.keys(IBF).forEach(k => { if (IBF[k] !== 'ok' && IBF[k] !== 'loading') delete IBF[k]; }); state.cardFont = b.dataset.f; saveState(); studioRefresh(); });
   bind('#cInk button', b => { state.cardInk = b.dataset.c; saveState(); studioRefresh(); });
   const cic = $('#cInkC'); if (cic){
     cic.oninput = () => { state.cardInk = cic.value; renderCardFast(); };
