@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.18.36';
+const VERSION = 'v2.19.0';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -2157,6 +2157,118 @@ async function pxLoad(photo){
     plSave(im, photo.photographer || '');
     return true;
   }finally{ setTimeout(() => { try{ URL.revokeObjectURL(obj); }catch(_){} }, 30000); }
+}
+
+/* ================================================================ v2.19.0 AI 生圖：用文字自己生成美圖
+   依目前這節經文自動寫好提示詞（可改）→ 複製到免費 AI 生圖工具，或直接在 App 內用 Pollinations 免費生成。
+   生成的圖當作相片放進美圖，也會存進「我的相片庫」。 */
+const AIG_STYLES = [
+  ['sc', ['風景','风景','Landscape'], 'majestic natural landscape, golden hour light, soft clouds, serene and peaceful'],
+  ['wc', ['水彩','水彩','Watercolor'], 'soft watercolor painting, gentle pastel colors, dreamy and hopeful'],
+  ['oil',['油畫','油画','Oil painting'], 'classic oil painting, rich warm colors, reverent atmosphere'],
+  ['lt', ['光影','光影','Heavenly light'], 'rays of heavenly light breaking through clouds, cinematic, glowing, holy atmosphere'],
+  ['nt', ['星空','星空','Starry night'], 'peaceful starry night sky, deep blue and gold, calm and awe-inspiring'],
+  ['fl', ['花草','花草','Flowers'], 'lush flowers and green pastures, morning dew, soft sunlight, gentle and fresh']
+];
+const AIG_SHAPES = [['p',['直式 9:16','直式 9:16','Portrait 9:16'],576,1024,'9:16'],['w',['橫式 16:9','横式 16:9','Landscape 16:9'],1024,576,'16:9'],['s',['方形','方形','Square'],1024,1024,'1:1']];
+const AIG_TOOLS = [
+  ['https://www.bing.com/images/create', 'Microsoft Bing Image Creator', ['免費、需微軟帳號','免费、需微软账号','Free, Microsoft account']],
+  ['https://gemini.google.com/app', 'Google Gemini', ['免費、需 Google 帳號','免费、需 Google 账号','Free, Google account']],
+  ['https://www.meta.ai/', 'Meta AI', ['免費','免费','Free']],
+  ['https://pollinations.ai/', 'Pollinations', ['免費、免註冊','免费、免注册','Free, no sign-up']]
+];
+let aigSt = 'sc', aigSh = 'p', aigNote = '';
+function aigPrompt(){
+  const st = AIG_STYLES.find(x => x[0] === aigSt) || AIG_STYLES[0];
+  const sh = AIG_SHAPES.find(x => x[0] === aigSh) || AIG_SHAPES[0];
+  const verse = studioItem ? String(studioItem.t || '').replace(/\s+/g, ' ').trim().slice(0, 160) : '';
+  const theme = (aigNote || '').trim();
+  return 'A beautiful, uplifting Christian inspirational background image, ' + st[2] + '. '
+    + (theme ? 'Scene: ' + theme + '. ' : '')
+    + (verse ? 'Mood inspired by this Bible verse: "' + verse + '". ' : '')
+    + 'No text, no letters, no words, no watermark, no people\'s faces; leave calm open space for verse text. Aspect ratio ' + sh[4] + ', high quality.';
+}
+function openAiGen(){
+  if (!studioItem) return;
+  const L = {
+    title: L3('✨ 用 AI 生成美圖','✨ 用 AI 生成美图','✨ Make a picture with AI'),
+    intro: L3('不用找圖：用文字描述想要的畫面，免費 AI 工具幫你畫。已依這節經文寫好提示詞，可以直接用，也可以改。',
+              '不用找图：用文字描述想要的画面，免费 AI 工具帮你画。已依这节经文写好提示词，可以直接用，也可以改。',
+              'No need to search: describe the scene and a free AI tool draws it. A prompt based on this verse is ready — use it or edit it.'),
+    style: L3('畫風','画风','Style'), shape: L3('尺寸','尺寸','Shape'),
+    scene: L3('想要的畫面（選填，可用中文或英文）','想要的画面（选填，可用中文或英文）','Scene you want (optional)'),
+    scenePh: L3('例如：清晨的湖邊、牧羊人與羊群、橄欖樹下的光','例如：清晨的湖边、牧羊人与羊群、橄榄树下的光','e.g. a quiet lake at dawn, a shepherd and sheep'),
+    pr: L3('提示詞（可修改）','提示词（可修改）','Prompt (editable)'),
+    gen: L3('⚡ 在 App 內直接生成（免費）','⚡ 在 App 内直接生成（免费）','⚡ Generate here (free)'),
+    copy: L3('📋 複製提示詞','📋 复制提示词','📋 Copy prompt'),
+    copied: L3('已複製，到下面任一工具貼上就能生成','已复制，到下面任一工具贴上就能生成','Copied — paste it into any tool below'),
+    tools: L3('或到這些免費工具貼上提示詞','或到这些免费工具贴上提示词','Or paste it into these free tools'),
+    after: L3('生成後把圖存到相簿，再回到美圖按「從相簿選相片」就能用。','生成后把图存到相册，再回到美图按“从相册选相片”就能用。','Save the result to your album, then choose it with “Choose a photo”.'),
+    wait: L3('AI 正在畫圖，約 10–40 秒，請稍候…','AI 正在画图，约 10–40 秒，请稍候…','Drawing… about 10–40 seconds'),
+    fail: L3('這次沒有生成成功（免費服務有時很忙）。可以再按一次，或複製提示詞到下面的工具。','这次没有生成成功（免费服务有时很忙）。可以再按一次，或复制提示词到下面的工具。','Could not generate this time (the free service is sometimes busy). Try again or copy the prompt to a tool below.'),
+    ok: L3('已放進美圖','已放进美图','Added to your picture'),
+    note: L3('AI 生成的圖每次都不同；圖上不要有字，經文由 App 排上去。','AI 生成的图每次都不同；图上不要有字，经文由 App 排上去。','Each result is different. The picture has no text — the app adds the verse.')
+  };
+  const mask = document.createElement('div'); mask.className = 'hlsheet-mask';
+  const chipRow = (id, arr, cur) => `<div class="cardchips" id="${id}">` + arr.map(x => `<button data-v="${x[0]}" class="${x[0] === cur ? 'on' : ''}">${esc(L3(x[1][0], x[1][1], x[1][2]))}</button>`).join('') + '</div>';
+  mask.innerHTML = `<div class="hlsheet-card pxsheet" style="max-height:92vh;overflow:auto">
+    <div class="hlsheet-title">${esc(L.title)}</div>
+    <div class="muted" style="font-size:13px;line-height:1.6;margin-bottom:8px">${esc(L.intro)}</div>
+    <div class="muted" style="font-size:12px;margin:8px 0 6px">${esc(L.style)}</div>${chipRow('aigSt', AIG_STYLES, aigSt)}
+    <div class="muted" style="font-size:12px;margin:10px 0 6px">${esc(L.shape)}</div>${chipRow('aigSh', AIG_SHAPES, aigSh)}
+    <div class="muted" style="font-size:12px;margin:10px 0 6px">${esc(L.scene)}</div>
+    <input class="cardinput" id="aigScene" placeholder="${esc(L.scenePh)}" value="${esc(aigNote)}">
+    <div class="muted" style="font-size:12px;margin:10px 0 6px">${esc(L.pr)}</div>
+    <textarea class="cardinput" id="aigPr" rows="8" style="width:100%;font-size:13px;line-height:1.5"></textarea>
+    <div class="hlsheet-acts2" style="margin-top:10px">
+      <button class="btn primary" id="aigGen">${esc(L.gen)}</button>
+      <button class="btn" id="aigCopy">${esc(L.copy)}</button>
+    </div>
+    <div class="muted" id="aigMsg" style="font-size:12.5px;margin-top:8px;min-height:18px"></div>
+    <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.tools)}</div>
+    ${AIG_TOOLS.map(x => `<a class="btn block" style="margin-top:6px;text-align:left;text-decoration:none" target="_blank" rel="noopener" href="${x[0]}">${esc(x[1])}<span class="muted" style="font-size:11.5px;margin-left:8px">${esc(L3(x[2][0], x[2][1], x[2][2]))}</span></a>`).join('')}
+    <div class="muted" style="font-size:12px;margin-top:10px;line-height:1.6">${esc(L.after)}<br>${esc(L.note)}</div>
+    <div class="hlsheet-acts2" style="margin-top:12px"><button class="btn sm" id="aigClose">${esc(t().close)}</button></div>
+  </div>`;
+  document.body.appendChild(mask);
+  const pr = $('#aigPr', mask), msg = $('#aigMsg', mask);
+  let edited = false;
+  const fill = () => { if (!edited) pr.value = aigPrompt(); };
+  fill(); pr.oninput = () => { edited = true; };
+  mask.onclick = e => { if (e.target === mask) mask.remove(); };
+  $('#aigClose', mask).onclick = () => mask.remove();
+  const chips = (id, set) => $$('#' + id + ' button', mask).forEach(b => b.onclick = () => {
+    set(b.dataset.v); edited = false; fill();
+    $$('#' + id + ' button', mask).forEach(o => o.classList.toggle('on', o === b));
+  });
+  chips('aigSt', v => { aigSt = v; }); chips('aigSh', v => { aigSh = v; });
+  const sc = $('#aigScene', mask); sc.oninput = () => { aigNote = sc.value; edited = false; fill(); };
+  $('#aigCopy', mask).onclick = async () => {
+    try{ await navigator.clipboard.writeText(pr.value); }
+    catch(e){ pr.focus(); pr.select(); try{ document.execCommand('copy'); }catch(_){} }
+    msg.textContent = L.copied;
+  };
+  let busy = false;
+  $('#aigGen', mask).onclick = async () => {
+    if (busy) return; busy = true;
+    const sh = AIG_SHAPES.find(x => x[0] === aigSh) || AIG_SHAPES[0];
+    const url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(pr.value) + '?width=' + sh[2] + '&height=' + sh[3]
+      + '&nologo=true&model=flux&seed=' + Math.floor(Math.random() * 1e6);
+    msg.textContent = L.wait;
+    try{
+      const ctl = new AbortController(); const tm = setTimeout(() => ctl.abort(), 90000);
+      const r = await fetch(url, { mode:'cors', signal: ctl.signal }); clearTimeout(tm);
+      if (!r.ok) throw new Error('http ' + r.status);
+      const blob = await r.blob();
+      if (!/^image\//.test(blob.type)) throw new Error('type');
+      const obj = URL.createObjectURL(blob);
+      const im = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('decode')); i.src = obj; });
+      if (!photoMode) photoMode = 'full';
+      setPhoto(im, 'AI'); plSave(im, 'AI');
+      mask.remove(); toast(L.ok); await studioRefresh();
+    }catch(e){ msg.textContent = L.fail; }
+    busy = false;
+  };
 }
 
 function openPexels(){
@@ -4431,9 +4543,11 @@ async function viewStudio(v){
         <label class="btn sm" style="cursor:pointer">${esc(L.photoSwap)}<input type="file" accept="image/*" hidden id="pRe"></label>
         <button class="btn sm gold" id="pLib">${esc(pl().libBtn)}</button>
         <button class="btn sm" id="pMy">${esc(L3('📚 我的相片庫', '📚 我的相片库', '📚 My photos'))}</button>
+        <button class="btn sm" id="pAi">${esc(L3('✨ AI 生成美圖', '✨ AI 生成美图', '✨ Make with AI'))}</button>
         <button class="btn sm danger" id="pDel">${esc(L.photoDel)}</button>
       </div>` : `
       <button class="btn block gold" id="pLib" style="margin-top:12px">${esc(pl().libBtn)}</button>
+      <button class="btn block gold" id="pAi" style="margin-top:8px">${esc(L3('✨ 用 AI 生成美圖（輸入文字就能畫）', '✨ 用 AI 生成美图（输入文字就能画）', '✨ Make a picture with AI (just describe it)'))}</button>
       <button class="btn block" id="pMy" style="margin-top:8px">${esc(L3('📚 我的相片庫（用過的相片都在這裡）', '📚 我的相片库（用过的相片都在这里）', '📚 My photos (everything you used before)'))}</button>
       <label class="btn block" style="cursor:pointer;margin-top:8px">${esc(L.photoPick)}<input type="file" accept="image/*" hidden id="pNew"></label>
       ${isStk && photoImg ? `<button class="btn block" id="pUseBg" style="margin-top:8px">${esc(L.photoUseBg)}</button>` : ''}
@@ -4543,6 +4657,7 @@ async function viewStudio(v){
   const pub = $('#pUseBg'); if (pub) pub.onclick = () => { stkImg = photoImg; stkBy = photoBy; photoImg = null; photoBy = ''; studioRefresh(); };
   const pmy = $('#pMy'); if (pmy) pmy.onclick = openPhotoLib;
   const pl2 = $('#pLib'); if (pl2) pl2.onclick = openPexels;
+  const pai = $('#pAi'); if (pai) pai.onclick = openAiGen;
   bgCss(); fillBuiltins();
   const bd = $('#bDel'); if (bd) bd.onclick = () => { bgmPrevStop(); bgmBlob = null; bgmName = ''; bgmCredit = ''; studioRefresh(); };
   const bp = $('#bPrev'); if (bp) bp.onclick = bgmPrevToggle;
