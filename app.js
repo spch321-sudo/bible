@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.19.2';
+const VERSION = 'v2.19.3';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -2159,7 +2159,7 @@ async function pxLoad(photo){
   }finally{ setTimeout(() => { try{ URL.revokeObjectURL(obj); }catch(_){} }, 30000); }
 }
 
-/* ================================================================ v2.19.2 AI 生圖：用文字自己生成美圖
+/* ================================================================ v2.19.3 AI 生圖：用文字自己生成美圖
    依目前這節經文自動寫好提示詞（可改）→ 複製到免費 AI 生圖工具，或直接在 App 內用 Pollinations 免費生成。
    生成的圖當作相片放進美圖，也會存進「我的相片庫」。 */
 const AIG_STYLES = [
@@ -2172,11 +2172,9 @@ const AIG_STYLES = [
 ];
 const AIG_SHAPES = [['p',['直式 9:16','直式 9:16','Portrait 9:16'],576,1024,'9:16'],['w',['橫式 16:9','横式 16:9','Landscape 16:9'],1024,576,'16:9'],['s',['方形','方形','Square'],1024,1024,'1:1']];
 const AIG_TOOLS = () => [
-  ['https://www.bing.com/images/create', 'Microsoft Bing Image Creator', ['免費、需微軟帳號','免费、需微软账号','Free, Microsoft account']],
   ['https://gemini.google.com/app', 'Google Gemini', ['免費、需 Google 帳號','免费、需 Google 账号','Free, Google account']],
   ['https://chatgpt.com/', 'ChatGPT', ['免費版有每日張數限制、需登入','免费版有每日张数限制、需登录','Free tier has a daily limit, sign-in']],
   ['https://www.doubao.com/chat/', L3('豆包 Doubao','豆包 Doubao','Doubao (豆包)'), ['免費、中文提示詞很好用（中國大陸常用）','免费、中文提示词很好用（中国大陆常用）','Free; works well with Chinese prompts']],
-  ['https://www.meta.ai/', 'Meta AI', ['免費','免费','Free']],
   ['https://pollinations.ai/', 'Pollinations', ['免費、免註冊','免费、免注册','Free, no sign-up']]
 ];
 let aigSt = 'sc', aigSh = 'p', aigNote = '';
@@ -3002,7 +3000,7 @@ const CARD_SANS0 = () => isZS()
   : (isEN() ? '-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif'
             : '"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif');
 
-/* v2.19.2 卡片字體與文字顏色：state.cardFont（auto／mingti／hei／kai／yuan）、state.cardInk（空＝自動，或 #RRGGBB）。
+/* v2.19.3 卡片字體與文字顏色：state.cardFont（auto／mingti／hei／kai／yuan）、state.cardInk（空＝自動，或 #RRGGBB）。
    選了字體，整張卡片（稱呼、經文、內文、署名）都用同一種字體；字體有沒有要看手機裝了什麼，沒有的會退回預設。 */
 const CARD_FONTS = [['auto',['自動','自动','Auto']],['mingti',['明體','明体','Serif']],['hei',['黑體','黑体','Sans']],['kai',['楷體','楷体','Script']],['yuan',['圓體','圆体','Rounded']]];
 const CARD_INKS = [['',['自動','自动','Auto']],['#FFFFFF',['白','白','White']],['#1F1B16',['黑','黑','Black']],['#D4A65B',['金','金','Gold']],['#123F92',['深藍','深蓝','Navy']],['#6B4423',['咖啡','咖啡','Brown']],['#8A2D2D',['酒紅','酒红','Wine']],['#255943',['深綠','深绿','Green']],['#E8A0B4',['粉紅','粉红','Pink']]];
@@ -3888,7 +3886,7 @@ function liveCanvas(W, H, withSelfie, stopBtn){
   if (lb){
     cv.style.cssText = 'width:auto;max-width:100%;max-height:50vh;border-radius:14px;display:block;margin:0 auto;box-shadow:0 6px 20px rgba(0,0,0,.14)';
     lb.innerHTML = ''; lb.appendChild(cv); lb.hidden = false;
-    /* v2.19.2 預覽正下方就有停止鍵，錄的時候不必再捲動頁面；開始錄就自動捲到預覽置中 */
+    /* v2.19.3 預覽正下方就有停止鍵，錄的時候不必再捲動頁面；開始錄就自動捲到預覽置中 */
     if (stopBtn){
       const sb = document.createElement('button');
       sb.className = 'btn primary block danger'; sb.id = 'recStop2'; sb.style.marginTop = '10px';
