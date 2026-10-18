@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.20.0';
+const VERSION = 'v2.21.0';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -2195,6 +2195,7 @@ function camResumeBoot(){
 function aiResumeBoot(){
   if (camResumeBoot()) return;
   if (aimResumeBoot()) return;
+  if (aivResumeBoot()) return;
   let o = null;
   try{ o = JSON.parse(localStorage.getItem('ib_ai_resume') || 'null'); localStorage.removeItem('ib_ai_resume'); }catch(e){}
   if (!o || !o.item || Date.now() - o.ts > 12 * 3600 * 1000) return;
@@ -2417,6 +2418,135 @@ function openAiMusic(){
   }));
   const back = $('#aimBack', mask);
   back.onchange = () => { const f = back.files && back.files[0]; if (!f) return; mask.remove(); pickBgm(back); };
+}
+
+/* ================================================================ AI 影片：把美圖交給免費 AI 影片工具讓畫面動起來，再把影片選回來存進「我的作品」 */
+const AIV_TITLE = () => L3('AI 影片（讓美圖動起來）','AI 视频（让美图动起来）','AI video (bring the picture to life)');
+const AIV_MOTIONS = [
+  ['zi', ['緩慢推近','缓慢推近','Slow zoom in'], 'a very slow, smooth camera push-in'],
+  ['pn', ['左右平移','左右平移','Gentle pan'], 'a slow, gentle sideways camera pan'],
+  ['cl', ['雲與光流動','云与光流动','Drifting clouds & light'], 'clouds drifting slowly, soft rays of light shifting across the scene'],
+  ['wt', ['水波與微風','水波与微风','Water & breeze'], 'water rippling softly, leaves and grass swaying in a light breeze'],
+  ['gl', ['光點飄動','光点飘动','Floating light'], 'tiny golden light particles floating slowly upward, warm glow gently pulsing']
+];
+const AIV_TOOLS = () => [
+  ['https://klingai.com/', 'Kling AI（可靈）', ['每天有免費點數、圖生影片效果好','每天有免费点数、图生视频效果好','Daily free credits, strong image-to-video']],
+  ['https://hailuoai.video/', 'Hailuo AI（海螺）', ['有免費額度、上傳圖片就能生成','有免费额度、上传图片就能生成','Free credits, upload an image to animate']],
+  ['https://lumalabs.ai/dream-machine', 'Luma Dream Machine', ['有免費額度、英文提示詞','有免费额度、英文提示词','Free credits, English prompts']],
+  ['https://jimeng.jianying.com/', L3('即夢 Jimeng','即梦 Jimeng','Jimeng (即夢)'), ['免費額度、中文很好用（中國大陸常用）','免费额度、中文很好用（中国大陆常用）','Free credits; good with Chinese (popular in mainland China)']]
+];
+let aivMo = 'zi', aivNote = '', aivResumePrompt = '';
+function aivPrompt(){
+  const mo = AIV_MOTIONS.find(x => x[0] === aivMo) || AIV_MOTIONS[0];
+  const theme = (aivNote || '').trim();
+  return 'Animate this still image into a calm, cinematic 5-second video: ' + mo[2] + '. '
+    + (theme ? 'Also: ' + theme + '. ' : '')
+    + 'Keep the composition, colors and any text exactly as they are. Peaceful and reverent mood, smooth slow motion, no sudden changes, no new people or objects, no flicker.';
+}
+function aivResumeSave(prompt){
+  try{ localStorage.setItem('ib_av_resume', JSON.stringify({ ts:Date.now(), item:studioItem, note:studioNote, mo:aivMo, sc:aivNote, pr:prompt || '' })); }catch(e){}
+}
+function aivResumeBoot(){
+  let o = null;
+  try{ o = JSON.parse(localStorage.getItem('ib_av_resume') || 'null'); localStorage.removeItem('ib_av_resume'); }catch(e){}
+  if (!o || !o.item || Date.now() - o.ts > 12 * 3600 * 1000) return false;
+  studioItem = o.item; studioNote = o.note || ''; aivMo = o.mo || aivMo; aivNote = o.sc || ''; aivResumePrompt = o.pr || '';
+  location.hash = '#/studio';
+  setTimeout(() => { if (studioItem && curTab() === 'studio') openAiVideo(); }, 900);
+  return true;
+}
+/* 只存相片本身（沒有經文）：交給 AI 影片工具時，畫面乾淨、效果通常比較好 */
+async function savePhotoOnly(){
+  if (!photoImg) return;
+  const cv = document.createElement('canvas'); cv.width = photoImg.width; cv.height = photoImg.height;
+  cv.getContext('2d').drawImage(photoImg, 0, 0);
+  const blob = await new Promise(r => cv.toBlob(r, 'image/png'));
+  const f = new File([blob], '321bible-photo.png', { type:'image/png' });
+  if (navigator.canShare && navigator.canShare({ files:[f] })){
+    try{ await navigator.share({ files:[f], title: t().app }); return; }
+    catch(e){ if (e && e.name === 'AbortError') return; }
+  }
+  const u = URL.createObjectURL(blob), a = document.createElement('a');
+  a.href = u; a.download = f.name; a.click(); setTimeout(() => URL.revokeObjectURL(u), 6000);
+}
+function openAiVideo(){
+  if (!studioItem) return;
+  const L = {
+    title: L3('🎬 讓美圖變成 AI 影片','🎬 让美图变成 AI 视频','🎬 Turn the picture into an AI video'),
+    intro: L3('三步驟：①把圖存到手機　②到免費 AI 影片工具上傳這張圖、貼上動作提示詞　③把做好的影片選回來，存進「我的作品」。',
+              '三步骤：①把图存到手机　②到免费 AI 视频工具上传这张图、贴上动作提示词　③把做好的视频选回来，存进“我的作品”。',
+              'Three steps: ① save the picture ② upload it to a free AI video tool with the motion prompt ③ choose the finished video to keep it in My works.'),
+    s1: L3('① 先把圖存起來','① 先把图存起来','① Save the picture'),
+    saveCard: L3('💾 存這張美圖（含經文）','💾 存这张美图（含经文）','💾 Save this card (with verse)'),
+    savePhoto: L3('🖼 只存相片（沒有文字，動起來更自然）','🖼 只存相片（没有文字，动起来更自然）','🖼 Save the photo only (no text, animates better)'),
+    s2: L3('② 選動作、貼提示詞','② 选动作、贴提示词','② Pick the motion, paste the prompt'),
+    scene: L3('想加的效果（選填，英文最好）','想加的效果（选填，英文最好）','Extra effect (optional, English works best)'),
+    scenePh: L3('例如：sunrise slowly brightening','例如：sunrise slowly brightening','e.g. sunrise slowly brightening'),
+    pr: L3('動作提示詞（可修改）','动作提示词（可修改）','Motion prompt (editable)'),
+    copy: L3('📋 複製提示詞','📋 复制提示词','📋 Copy prompt'),
+    copied: L3('已複製，到下面工具上傳圖片後貼上','已复制，到下面工具上传图片后贴上','Copied — upload the picture in a tool below and paste'),
+    tools: L3('到這些免費工具（點進去會自動複製提示詞）','到这些免费工具（点进去会自动复制提示词）','Free tools (tapping copies the prompt)'),
+    back: L3('🎬 影片做好了：從相簿／檔案選影片','🎬 视频做好了：从相册／文件选视频','🎬 Video ready: choose it from Photos / Files'),
+    saved: L3('已存進「我的作品」','已存进“我的作品”','Saved to My works'),
+    after: L3('影片通常 5–10 秒；做好後在工具裡下載，再回來按上面的按鈕選它。想配音樂，可以回到「配樂」加音樂後用「卡片畫面」重錄，或直接把這支影片分享出去。',
+              '视频通常 5–10 秒；做好后在工具里下载，再回来按上面的按钮选它。想配音乐，可以回到“配乐”加音乐后用“卡片画面”重录，或直接把这支视频分享出去。',
+              'Clips are usually 5–10 s. Download it in the tool, then choose it with the button above.'),
+    note: L3('免費額度與使用條款常變動，免費影片多半有浮水印、限非商業使用；公開發布前請先看該工具的條款。',
+             '免费额度与使用条款常变动，免费视频多半有水印、限非商业使用；公开发布前请先看该工具的条款。',
+             'Free quotas and terms change; free clips often carry a watermark and are non-commercial. Check the tool’s terms before publishing.')
+  };
+  const mask = document.createElement('div'); mask.className = 'hlsheet-mask';
+  mask.innerHTML = `<div class="hlsheet-card pxsheet" style="max-height:92vh;overflow:auto">
+    <div class="hlsheet-title">${esc(L.title)}</div>
+    <div class="muted" style="font-size:13px;line-height:1.6;margin-bottom:8px">${esc(L.intro)}</div>
+    <div class="muted" style="font-size:12px;margin:8px 0 6px;font-weight:700">${esc(L.s1)}</div>
+    <button class="btn block" id="aivCard">${esc(L.saveCard)}</button>
+    ${photoImg ? `<button class="btn block" id="aivPhoto" style="margin-top:6px">${esc(L.savePhoto)}</button>` : ''}
+    <div class="muted" style="font-size:12px;margin:12px 0 6px;font-weight:700">${esc(L.s2)}</div>
+    <div class="cardchips" id="aivMo">${AIV_MOTIONS.map(x => `<button data-v="${x[0]}" class="${x[0] === aivMo ? 'on' : ''}">${esc(L3(x[1][0], x[1][1], x[1][2]))}</button>`).join('')}</div>
+    <div class="muted" style="font-size:12px;margin:10px 0 6px">${esc(L.scene)}</div>
+    <input class="cardinput" id="aivScene" placeholder="${esc(L.scenePh)}" value="${esc(aivNote)}">
+    <div class="muted" style="font-size:12px;margin:10px 0 6px">${esc(L.pr)}</div>
+    <textarea class="cardinput" id="aivPr" rows="6" style="width:100%;font-size:13px;line-height:1.5"></textarea>
+    <div class="hlsheet-acts2" style="margin-top:10px"><button class="btn primary" id="aivCopy">${esc(L.copy)}</button></div>
+    <div class="muted" id="aivMsg" style="font-size:12.5px;margin-top:8px;min-height:18px"></div>
+    <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.tools)}</div>
+    ${AIV_TOOLS().map(x => `<a class="btn block" data-aivtool="1" style="margin-top:6px;text-align:left;text-decoration:none" target="_blank" rel="noopener" href="${x[0]}">${esc(x[1])}<span class="muted" style="font-size:11.5px;margin-left:8px">${esc(L3(x[2][0], x[2][1], x[2][2]))}</span></a>`).join('')}
+    <label class="btn primary block" style="cursor:pointer;margin-top:12px">${esc(L.back)}<input type="file" accept="video/*" hidden id="aivBack"></label>
+    <div class="muted" style="font-size:12px;margin-top:10px;line-height:1.6">${esc(L.after)}<br>${esc(L.note)}</div>
+    <div class="hlsheet-acts2" style="margin-top:12px"><button class="btn sm" id="aivClose">${esc(t().close)}</button></div>
+  </div>`;
+  document.body.appendChild(mask);
+  const pr = $('#aivPr', mask), msg = $('#aivMsg', mask);
+  let edited = false;
+  const fill = () => { if (!edited) pr.value = aivPrompt(); };
+  fill(); if (aivResumePrompt){ pr.value = aivResumePrompt; edited = true; aivResumePrompt = ''; }
+  pr.oninput = () => { edited = true; };
+  mask.onclick = e => { if (e.target === mask) mask.remove(); };
+  $('#aivClose', mask).onclick = () => mask.remove();
+  $('#aivCard', mask).onclick = () => { aivResumeSave(pr.value); cardDownload(); };
+  const ph = $('#aivPhoto', mask); if (ph) ph.onclick = () => { aivResumeSave(pr.value); savePhotoOnly(); };
+  $$('#aivMo button', mask).forEach(b => b.onclick = () => {
+    aivMo = b.dataset.v; edited = false; fill();
+    $$('#aivMo button', mask).forEach(o => o.classList.toggle('on', o === b));
+  });
+  const sc = $('#aivScene', mask); sc.oninput = () => { aivNote = sc.value; edited = false; fill(); };
+  $('#aivCopy', mask).onclick = async () => {
+    try{ await navigator.clipboard.writeText(pr.value); }
+    catch(e){ pr.focus(); pr.select(); try{ document.execCommand('copy'); }catch(_){} }
+    aivResumeSave(pr.value); msg.textContent = L.copied;
+  };
+  $$('a[data-aivtool]', mask).forEach(a => a.addEventListener('click', () => {
+    aivResumeSave(pr.value);
+    try{ const q = navigator.clipboard.writeText(pr.value); if (q && q.catch) q.catch(() => {}); }catch(e){}
+  }));
+  const back = $('#aivBack', mask);
+  back.onchange = async () => {
+    const f = back.files && back.files[0]; if (!f) return;
+    if (f.type && f.type.indexOf('video') !== 0){ toast(L3('這不是影片檔','这不是视频文件','That is not a video file')); return; }
+    mask.remove();
+    await saveWork(f, f.type || 'video/mp4', 'video', 0, studioItem);
+  };
 }
 
 function openPexels(){
@@ -4638,7 +4768,7 @@ function studioTabs(v, L){
       if (txt === L.cardText || txt === L.cardLines || txt === CARD_FONT_TITLE()) return 'text';
       if (txt === L.cardStyle || txt === L.cardBorder || txt === L.cardSize || txt === L.cardFsL) return 'lay';
       if (txt === L.photo) return 'photo';
-      if (txt === L.bgm || txt === L.recSec || txt.indexOf(L.works) === 0) return 'rec';
+      if (txt === L.bgm || txt === L.recSec || txt === AIV_TITLE() || txt.indexOf(L.works) === 0) return 'rec';
       return '';
     };
     const kids = Array.prototype.slice.call(v.children);
@@ -4841,6 +4971,12 @@ async function viewStudio(v){
       <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.bgmHint)}</div>`}
     </div>
 
+    <div class="section-title">${esc(AIV_TITLE())}</div>
+    <div class="card">
+      <div class="muted" style="font-size:12.5px;line-height:1.6;margin-bottom:10px">${esc(L3('把這張美圖交給免費 AI 影片工具，讓雲、光、水、微風動起來，做好的影片再選回來存進「我的作品」。','把这张美图交给免费 AI 视频工具，让云、光、水、微风动起来，做好的视频再选回来存进“我的作品”。','Hand this picture to a free AI video tool to make clouds, light and water move; then bring the clip back into My works.'))}</div>
+      <button class="btn block gold" id="aivBtn">${esc(L3('🎬 用 AI 把美圖變成影片（免費）','🎬 用 AI 把美图变成视频（免费）','🎬 Make an AI video from this picture (free)'))}</button>
+    </div>
+
     <div class="section-title">${esc(L.recSec)}</div>
     <div class="card" style="text-align:center">
       <div class="muted" style="font-size:12.5px;text-align:left;margin-bottom:10px">${esc(vOK ? L.recIntro : L.recIntroA)}</div>
@@ -4938,6 +5074,7 @@ async function viewStudio(v){
   bind('#mHear button', b => { state.mcHear = b.dataset.v === '1'; saveState(); studioRefresh(); });
   const blb = $('#bLib'); if (blb) blb.onclick = openHymns;
   const bai = $('#bAi'); if (bai) bai.onclick = openAiMusic;
+  const avb = $('#aivBtn'); if (avb) avb.onclick = openAiVideo;
   ['pNew','pRe'].forEach(id => { const e = $('#' + id); if (e) e.onchange = () => pickPhoto(e); });
   ['bNew','bRe'].forEach(id => { const e = $('#' + id); if (e) e.onchange = () => pickBgm(e); });
   const nt = $('#cardNote');
