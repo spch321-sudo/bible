@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.19.3';
+const VERSION = 'v2.19.4';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -2177,7 +2177,19 @@ const AIG_TOOLS = () => [
   ['https://www.doubao.com/chat/', L3('豆包 Doubao','豆包 Doubao','Doubao (豆包)'), ['免費、中文提示詞很好用（中國大陸常用）','免费、中文提示词很好用（中国大陆常用）','Free; works well with Chinese prompts']],
   ['https://pollinations.ai/', 'Pollinations', ['免費、免註冊','免费、免注册','Free, no sign-up']]
 ];
-let aigSt = 'sc', aigSh = 'p', aigNote = '';
+let aigSt = 'sc', aigSh = 'p', aigNote = '', aigResumePrompt = '';
+/* 去 ChatGPT／Gemini 畫圖時 App 可能被系統收掉重載；先記下經文與提示詞，回來自動接回原位 */
+function aiResumeSave(prompt){
+  try{ localStorage.setItem('ib_ai_resume', JSON.stringify({ ts:Date.now(), item:studioItem, note:studioNote, st:aigSt, sh:aigSh, sc:aigNote, pr:prompt || '' })); }catch(e){}
+}
+function aiResumeBoot(){
+  let o = null;
+  try{ o = JSON.parse(localStorage.getItem('ib_ai_resume') || 'null'); localStorage.removeItem('ib_ai_resume'); }catch(e){}
+  if (!o || !o.item || Date.now() - o.ts > 12 * 3600 * 1000) return;
+  studioItem = o.item; studioNote = o.note || ''; aigSt = o.st || aigSt; aigSh = o.sh || aigSh; aigNote = o.sc || ''; aigResumePrompt = o.pr || '';
+  location.hash = '#/studio';
+  setTimeout(() => { if (studioItem && curTab() === 'studio') openAiGen(); }, 900);
+}
 function aigPrompt(){
   const st = AIG_STYLES.find(x => x[0] === aigSt) || AIG_STYLES[0];
   const sh = AIG_SHAPES.find(x => x[0] === aigSh) || AIG_SHAPES[0];
@@ -2226,7 +2238,8 @@ function openAiGen(){
     </div>
     <div class="muted" id="aigMsg" style="font-size:12.5px;margin-top:8px;min-height:18px"></div>
     <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.tools)}</div>
-    ${AIG_TOOLS().map(x => `<a class="btn block" style="margin-top:6px;text-align:left;text-decoration:none" target="_blank" rel="noopener" href="${x[0]}">${esc(x[1])}<span class="muted" style="font-size:11.5px;margin-left:8px">${esc(L3(x[2][0], x[2][1], x[2][2]))}</span></a>`).join('')}
+    ${AIG_TOOLS().map(x => `<a class="btn block" data-aitool="1" style="margin-top:6px;text-align:left;text-decoration:none" target="_blank" rel="noopener" href="${x[0]}">${esc(x[1])}<span class="muted" style="font-size:11.5px;margin-left:8px">${esc(L3(x[2][0], x[2][1], x[2][2]))}</span></a>`).join('')}
+    <label class="btn primary block" style="cursor:pointer;margin-top:12px">${esc(L3('🖼 圖畫好了：從相簿選這張圖','🖼 图画好了：从相册选这张图','🖼 Picture ready: choose it from Photos'))}<input type="file" accept="image/*" hidden id="aigBack"></label>
     <div class="muted" style="font-size:12px;margin-top:10px;line-height:1.6">${esc(L.after)}<br>${esc(L.note)}</div>
     <div class="hlsheet-acts2" style="margin-top:12px"><button class="btn sm" id="aigClose">${esc(t().close)}</button></div>
   </div>`;
@@ -2234,7 +2247,8 @@ function openAiGen(){
   const pr = $('#aigPr', mask), msg = $('#aigMsg', mask);
   let edited = false;
   const fill = () => { if (!edited) pr.value = aigPrompt(); };
-  fill(); pr.oninput = () => { edited = true; };
+  fill(); if (aigResumePrompt){ pr.value = aigResumePrompt; edited = true; aigResumePrompt = ''; }
+  pr.oninput = () => { edited = true; };
   mask.onclick = e => { if (e.target === mask) mask.remove(); };
   $('#aigClose', mask).onclick = () => mask.remove();
   const chips = (id, set) => $$('#' + id + ' button', mask).forEach(b => b.onclick = () => {
@@ -2246,8 +2260,14 @@ function openAiGen(){
   $('#aigCopy', mask).onclick = async () => {
     try{ await navigator.clipboard.writeText(pr.value); }
     catch(e){ pr.focus(); pr.select(); try{ document.execCommand('copy'); }catch(_){} }
-    msg.textContent = L.copied;
+    aiResumeSave(pr.value); msg.textContent = L.copied;
   };
+  $$('a[data-aitool]', mask).forEach(a => a.addEventListener('click', () => {
+    aiResumeSave(pr.value);
+    try{ const q = navigator.clipboard.writeText(pr.value); if (q && q.catch) q.catch(() => {}); }catch(e){}
+  }));
+  const back = $('#aigBack', mask);
+  if (back) back.onchange = () => { const f = back.files && back.files[0]; if (!f) return; mask.remove(); pickPhoto(back); };
   let busy = false;
   $('#aigGen', mask).onclick = async () => {
     if (busy) return; busy = true;
@@ -3835,13 +3855,45 @@ function stopSelfie(){
   if (el){ try{ el.pause(); }catch(e){} el.srcObject = null; }
   selfieStream = null;
 }
+
+/* 相機打不開：說清楚原因與辦法；內嵌瀏覽器（LINE、FB 等）常直接擋相機，給「用手機內建相機錄」的備案 */
+const inAppBrowser = () => /Line\/|FBAN|FBAV|Instagram|MicroMessenger|Messenger|Telegram|MQQBrowser|Snapchat|TikTok|WhatsApp/i.test(navigator.userAgent || '');
+function camFail(e){
+  const n = (e && e.name) || '';
+  const noAPI = !(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+  let why;
+  if (noAPI || inAppBrowser()) why = L3('這個畫面是在 LINE／內嵌瀏覽器裡開的，相機被擋住了。請點右上角「用瀏覽器開啟」（Safari／Chrome），或把 App 加到主畫面再開。',
+    '这个画面是在 LINE／内嵌浏览器里开的，相机被挡住了。请点右上角“用浏览器打开”（Safari／Chrome），或把 App 加到主屏幕再开。',
+    'This page is open inside an in-app browser (e.g. LINE) which blocks the camera. Tap “Open in browser” (Safari/Chrome) or add the app to your Home Screen.');
+  else if (n === 'NotAllowedError' || n === 'SecurityError') why = L3('相機權限被拒絕。iPhone：設定 › Safari › 相機 選「允許」，或網址列左邊 AA › 網站設定 › 相機 › 允許，再回來按自拍。',
+    '相机权限被拒绝。iPhone：设置 › Safari › 相机 选“允许”，或地址栏左边 AA › 网站设置 › 相机 › 允许，再回来按自拍。',
+    'Camera permission was denied. On iPhone: Settings › Safari › Camera › Allow, then try Selfie again.');
+  else if (n === 'NotReadableError' || n === 'AbortError') why = L3('相機正被其他 App 使用（例如視訊通話），請先關掉再試。','相机正被其他 App 使用（例如视频通话），请先关掉再试。','The camera is in use by another app. Close it and try again.');
+  else if (n === 'NotFoundError' || n === 'OverconstrainedError') why = L3('找不到前鏡頭。','找不到前镜头。','No front camera found.');
+  else why = L3('相機打不開（' + (n || '未知原因') + '）。','相机打不开（' + (n || '未知原因') + '）。','Could not open the camera (' + (n || 'unknown') + ').');
+  const mask = document.createElement('div'); mask.className = 'hlsheet-mask';
+  mask.innerHTML = `<div class="hlsheet-card" style="max-height:90vh;overflow:auto">
+    <div class="hlsheet-title">${esc(L3('📷 自拍相機打不開','📷 自拍相机打不开','📷 Camera unavailable'))}</div>
+    <div style="font-size:14px;line-height:1.7;margin:6px 0 10px">${esc(why)}</div>
+    <div class="muted" style="font-size:12.5px;line-height:1.6;margin-bottom:8px">${esc(L3('不想改設定也可以：用手機內建相機直接錄一段自拍影片，錄完會存進「我的作品」。','不想改设置也可以：用手机内建相机直接录一段自拍视频，录完会存进“我的作品”。','Or record a selfie video with the phone’s own camera — it is saved to My works.'))}</div>
+    <label class="btn primary block" style="cursor:pointer">${esc(L3('📱 用手機內建相機錄自拍','📱 用手机内建相机录自拍','📱 Record with the phone camera'))}<input type="file" accept="video/*" capture="user" hidden id="camNative"></label>
+    <div class="hlsheet-acts2" style="margin-top:10px"><button class="btn sm" id="camClose">${esc(t().close)}</button></div></div>`;
+  document.body.appendChild(mask);
+  mask.onclick = ev => { if (ev.target === mask) mask.remove(); };
+  $('#camClose', mask).onclick = () => mask.remove();
+  $('#camNative', mask).onchange = async ev => {
+    const f = ev.target.files && ev.target.files[0]; if (!f) return;
+    mask.remove();
+    await saveWork(f, f.type || 'video/mp4', 'video', 0, studioItem);
+  };
+}
 async function setRecMode(m){
   if (mr && mr.state === 'recording'){ toast(L3('錄製中不能換，先按「停止並完成」','录制中不能换，先按“停止并完成”','Stop the recording first'), 2400); return; }
   recMode = m;
   if (m !== 's'){ stopSelfie(); await studioRefresh(); toast(t()[m === 'a' ? 'recVoiceD' : 'recCardD'], 2200); return; }
   try{
     selfieStream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'user' }, audio:false });
-  }catch(e){ recMode = 'c'; toast(t().camDeny); }
+  }catch(e){ recMode = 'c'; camFail(e); }
   await studioRefresh();
   if (recMode === 's'){
     setTimeout(attachSelfie, 60); toast(t().recSelfieD, 2200);
@@ -4024,7 +4076,7 @@ async function toggleRec(){
   /* 上一次錄完相機就關了，再按一次自拍要重新開，不然只會錄到靜止的臉 */
   if (recMode === 's' && (!selfieStream || !selfieStream.active)){
     try{ selfieStream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'user' }, audio:false }); }
-    catch(e){ recMode = 'c'; toast(t().camDeny); await studioRefresh(); }
+    catch(e){ recMode = 'c'; camFail(e); await studioRefresh(); }
     if (recMode === 's'){ attachSelfie(); await new Promise(r => setTimeout(r, 500)); }
   }
   let mic;
@@ -8038,6 +8090,7 @@ async function boot(){
   clearTimeout(diagTimer);
   const b = $('#boot'); if (b) b.remove();
   window.addEventListener('hashchange', () => { ttsStop(); render(); });
+  aiResumeBoot();
   window.addEventListener('resize', syncHeaderH);
   window.addEventListener('orientationchange', () => setTimeout(syncHeaderH, 200));
   if ('serviceWorker' in navigator){
