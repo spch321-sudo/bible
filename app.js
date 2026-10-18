@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.19.1';
+const VERSION = 'v2.19.2';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -391,7 +391,7 @@ const VOICES = {
 };
 
 const DEFAULTS = { lang:'zh', font:0, theme:0, flow:false, shCh:true, shV:true, hidenote:false,
-                   cardTpl:'plain', cardSize:'p', cardBorder:'none', cardFs:1.45,
+                   cardTpl:'plain', cardSize:'p', cardBorder:'none', cardFs:1.45, cardFont:'auto', cardInk:'',
                    cardTop:'', cardSign:'', cardTo:'親愛的家人：平安！', cardGreet:'', photoLast:'', photoMode:'full',
                    voice:{zh:0, zs:0, en:0}, ttsAutoNext:false, beauty:true, planRemindOn:false,
                    audience:'adult', alen:'mid', skbg:'none' };
@@ -2159,7 +2159,7 @@ async function pxLoad(photo){
   }finally{ setTimeout(() => { try{ URL.revokeObjectURL(obj); }catch(_){} }, 30000); }
 }
 
-/* ================================================================ v2.19.1 AI 生圖：用文字自己生成美圖
+/* ================================================================ v2.19.2 AI 生圖：用文字自己生成美圖
    依目前這節經文自動寫好提示詞（可改）→ 複製到免費 AI 生圖工具，或直接在 App 內用 Pollinations 免費生成。
    生成的圖當作相片放進美圖，也會存進「我的相片庫」。 */
 const AIG_STYLES = [
@@ -2600,6 +2600,7 @@ const CARD_SIZES = { p:[1080,1920,['直式 9:16','直式 9:16','Portrait 9:16']]
 const CARD_BORDERS = [ ['classic',['古典雙框','古典双框','Classic Double']], ['corner',['雅緻角飾','雅致角饰','Elegant Corners']],
                        ['inline',['內斂細線','内敛细线','Fine Line']], ['dots',['珠鏈點框','珠链点框','Beaded Dots']],
                        ['ornate',['華麗花角','华丽花角','Ornate Corners']], ['none',['無邊框','无边框','No Border']] ];
+const CARD_FONT_TITLE = () => L3('字體與文字顏色','字体与文字颜色','Font and text colour');
 const CARD_FS = [[0.9,['小一點','小一点','Smaller']], [1,['標準','标准','Standard']], [1.2,['大','大','Large']],
                  [1.45,['特大','特大','Extra Large']], [1.7,['超大','超大','Huge']]];
 let cardImg = null;
@@ -2992,14 +2993,34 @@ function drawBeautyFace(cx, vid, sx, sy, side, R){
 /* 畫布上的字型也要分語言。Noto Serif TC／Sans TC 裡沒有簡體才有的字
    （创、虚、灵、运、开、诸、将、这、结、发、类、树…），canvas 會一個字一個字
    換字型頂替，頂到黑體，卡片上就變成一句話裡粗細不一。 */
-const CARD_SERIF = () => isZS()
+const CARD_SERIF0 = () => isZS()
   ? '"Noto Serif SC","Source Han Serif SC","Songti SC","STSong","SimSun",Georgia,serif'
   : (isEN() ? 'Georgia,"Times New Roman",serif'
             : '"Noto Serif TC","Songti TC","STSong","PMingLiU",Georgia,serif');
-const CARD_SANS = () => isZS()
+const CARD_SANS0 = () => isZS()
   ? '"Noto Sans SC","PingFang SC","Microsoft YaHei","Heiti SC",sans-serif'
   : (isEN() ? '-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif'
             : '"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif');
+
+/* v2.19.2 卡片字體與文字顏色：state.cardFont（auto／mingti／hei／kai／yuan）、state.cardInk（空＝自動，或 #RRGGBB）。
+   選了字體，整張卡片（稱呼、經文、內文、署名）都用同一種字體；字體有沒有要看手機裝了什麼，沒有的會退回預設。 */
+const CARD_FONTS = [['auto',['自動','自动','Auto']],['mingti',['明體','明体','Serif']],['hei',['黑體','黑体','Sans']],['kai',['楷體','楷体','Script']],['yuan',['圓體','圆体','Rounded']]];
+const CARD_INKS = [['',['自動','自动','Auto']],['#FFFFFF',['白','白','White']],['#1F1B16',['黑','黑','Black']],['#D4A65B',['金','金','Gold']],['#123F92',['深藍','深蓝','Navy']],['#6B4423',['咖啡','咖啡','Brown']],['#8A2D2D',['酒紅','酒红','Wine']],['#255943',['深綠','深绿','Green']],['#E8A0B4',['粉紅','粉红','Pink']]];
+const cardFontKey = () => CARD_FONTS.some(x => x[0] === state.cardFont) ? state.cardFont : 'auto';
+const cardInkVal = () => /^#[0-9a-fA-F]{6}$/.test(state.cardInk || '') ? state.cardInk : '';
+function cardFontStack(){
+  const k = cardFontKey();
+  if (k === 'mingti') return CARD_SERIF0();
+  if (k === 'hei') return CARD_SANS0();
+  if (k === 'kai') return isZS() ? '"Kaiti SC","STKaiti","KaiTi","楷体",serif'
+    : (isEN() ? '"Snell Roundhand","Apple Chancery","Brush Script MT",cursive' : '"Kaiti TC","BiauKai","DFKai-SB","STKaiti","KaiTi",serif');
+  if (k === 'yuan') return isZS() ? '"Yuanti SC","PingFang SC","Noto Sans SC",sans-serif'
+    : (isEN() ? '"Avenir Next Rounded","Nunito","Trebuchet MS",sans-serif' : '"Yuanti TC","PingFang TC","Noto Sans TC",sans-serif');
+  return '';
+}
+const CARD_SERIF = () => cardFontStack() || CARD_SERIF0();
+const CARD_SANS = () => cardFontStack() || CARD_SANS0();
+const cardInkT = T => { const c = cardInkVal(); return c ? Object.assign({}, T, { ink:c, accent:c, sub:c }) : T; };
 
 /* 整張原圖當整張卡片：只有 稱呼／經文或問候語／署名 三樣，排在相片上方最空的地方 */
 function drawFullCard(cv, h, W, H){
@@ -3077,7 +3098,8 @@ function drawFullCard(cv, h, W, H){
   origDX = Math.max(x1c / W, Math.min(x2c / W, origDX));
   origDY = Math.max(-(ty - mg) / H, Math.min((H - mg - (ty + total)) / H, origDY));
   const dark = lum > .55;
-  const ink = dark ? '#2a2118' : '#ffffff', sub = dark ? 'rgba(42,33,24,.92)' : 'rgba(255,255,255,.95)';
+  let ink = dark ? '#2a2118' : '#ffffff', sub = dark ? 'rgba(42,33,24,.92)' : 'rgba(255,255,255,.95)';
+  { const ci = cardInkVal(); if (ci){ ink = ci; sub = ci; } }
   /* 文字底下加很淡的柔光，亮字／暗字都看得清楚，又不遮住相片 */
   ctx.save(); ctx.translate(origDX * W, origDY * H);
   ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
@@ -3101,7 +3123,7 @@ function drawFullCard(cv, h, W, H){
 function drawVerseCard(cv, h, W, H){
   if (photoImg && photoMode === 'full') return drawFullCard(cv, h, W, H);
   const ctx = cv.getContext('2d'); cv.width = W; cv.height = H;
-  const T = CARD_TPL[cardTpl()];
+  const T = cardInkT(CARD_TPL[cardTpl()]);
   const S = Math.min(W, H), F = S / 1080, pad = Math.round(S * .085), iw = W - pad * 2;   /* 比例用短邊算，橫式字才不會被放大 */
   const wide = W > H * 1.2;
   let colW = wide ? Math.min(iw, Math.round(H * 1.5)) : iw;   /* 橫式文字欄不拉滿全寬 */
@@ -3823,10 +3845,13 @@ async function setRecMode(m){
     selfieStream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'user' }, audio:false });
   }catch(e){ recMode = 'c'; toast(t().camDeny); }
   await studioRefresh();
-  if (recMode === 's'){ setTimeout(attachSelfie, 60); toast(t().recSelfieD, 2200); }
+  if (recMode === 's'){
+    setTimeout(attachSelfie, 60); toast(t().recSelfieD, 2200);
+    setTimeout(() => { const sw = $('#selfieWrap'); if (sw){ try{ sw.scrollIntoView({ block:'center', behavior:'smooth' }); }catch(e){ sw.scrollIntoView(); } } }, 200);
+  }
 }
 /* 卡片＋緩慢掃過的光暈；錄影就是把這張動態畫面錄下來 */
-function liveCanvas(W, H, withSelfie){
+function liveCanvas(W, H, withSelfie, stopBtn){
   const base = document.createElement('canvas');
   selfieLayout = !!withSelfie; suppressSticker = !!withSelfie;
   drawVerseCard(base, studioItem, W, H);
@@ -3861,8 +3886,17 @@ function liveCanvas(W, H, withSelfie){
   }, 500);
   const lb = $('#liveBox');
   if (lb){
-    cv.style.cssText = 'width:100%;max-width:300px;border-radius:14px;display:block;margin:0 auto;box-shadow:0 6px 20px rgba(0,0,0,.14)';
+    cv.style.cssText = 'width:auto;max-width:100%;max-height:50vh;border-radius:14px;display:block;margin:0 auto;box-shadow:0 6px 20px rgba(0,0,0,.14)';
     lb.innerHTML = ''; lb.appendChild(cv); lb.hidden = false;
+    /* v2.19.2 預覽正下方就有停止鍵，錄的時候不必再捲動頁面；開始錄就自動捲到預覽置中 */
+    if (stopBtn){
+      const sb = document.createElement('button');
+      sb.className = 'btn primary block danger'; sb.id = 'recStop2'; sb.style.marginTop = '10px';
+      sb.textContent = '⏹ ' + t().recStop;
+      sb.onclick = () => { if (mr && mr.state === 'recording') recStopNow(); };
+      lb.appendChild(sb);
+      setTimeout(() => { try{ lb.scrollIntoView({ block:'center', behavior:'smooth' }); }catch(e){ lb.scrollIntoView(); } }, 120);
+    }
     /* 自拍時千萬不能把這個 <video> 設成 display:none —— iPhone 一旦把影片元素
        藏起來就停止送畫面，畫布上的臉會凍在那一格。縮到看不見、但還在版面上，
        它才會繼續跑，錄下來的臉才是動的。 */
@@ -4032,7 +4066,7 @@ async function toggleRec(){
   if (recMode !== 'a' && canVideo()){
     try{
       const [W, H] = cardDims();
-      const cv = liveCanvas(W, H, useSelfie);
+      const cv = liveCanvas(W, H, useSelfie, true);
       stream = new MediaStream([...cv.captureStream(24).getVideoTracks(), ...audioStream.getAudioTracks()]);
       kind = 'video'; mime = vidMime();
     }catch(e){ cancelAnimationFrame(recAnim); stream = mic; kind = 'audio'; mime = audMime(); }
@@ -4383,7 +4417,7 @@ function studioTabs(v, L){
     }
     const grp = (txt) => {
       txt = String(txt || '');
-      if (txt === L.cardText || txt === L.cardLines) return 'text';
+      if (txt === L.cardText || txt === L.cardLines || txt === CARD_FONT_TITLE()) return 'text';
       if (txt === L.cardStyle || txt === L.cardBorder || txt === L.cardSize || txt === L.cardFsL) return 'lay';
       if (txt === L.photo) return 'photo';
       if (txt === L.bgm || txt === L.recSec || txt.indexOf(L.works) === 0) return 'rec';
@@ -4459,6 +4493,17 @@ async function viewStudio(v){
     </div>
 
     `}
+
+    <div class="section-title">${esc(CARD_FONT_TITLE())}</div>
+    <div class="card">
+      <div class="muted" style="font-size:12px;margin-bottom:6px">${esc(L3('字體', '字体', 'Font'))}</div>
+      ${chips('cFont', CARD_FONTS, cardFontKey(), 'f')}
+      <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L3('文字顏色', '文字颜色', 'Text colour'))}</div>
+      <div class="cardchips" id="cInk">${CARD_INKS.map(([c, n]) => `<button data-c="${c}" class="${cardInkVal().toLowerCase() === c.toLowerCase() ? 'on' : ''}">${c ? `<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${c};border:1px solid rgba(0,0,0,.25);margin-right:5px;vertical-align:-1px"></span>` : ''}${esc(pick2(n))}</button>`).join('')}</div>
+      <label class="btn sm" style="margin-top:10px;display:inline-flex;gap:8px;align-items:center;cursor:pointer">${esc(L3('🎨 自選顏色', '🎨 自选颜色', '🎨 Pick a colour'))}<input type="color" id="cInkC" value="${esc(cardInkVal() || '#123F92')}" style="width:34px;height:26px;border:0;padding:0;background:none"></label>
+      <div class="muted" style="font-size:12px;margin-top:8px">${esc(L3('選了字體，整張卡片都會用同一種字體；有些字體要看手機有沒有安裝，沒有的會自動換回預設。文字顏色選「自動」就會依版型或相片自動配色。', '选了字体，整张卡片都会用同一种字体；有些字体要看手机有没有安装，没有的会自动换回默认。文字颜色选“自动”就会依版型或相片自动配色。', 'The chosen font is used across the whole card; if your phone does not have it, the default is used instead. “Auto” colour follows the style or photo.'))}</div>
+    </div>
+
     <div class="section-title">${esc(L.cardLines)}</div>
     <div class="card">
       <div class="muted" style="font-size:12px;margin-bottom:6px">${esc(L.cardToL)}</div>
@@ -4628,6 +4673,12 @@ async function viewStudio(v){
   bind('#cTpl button', b => { state.cardTpl = b.dataset.t; saveState(); studioRefresh(); });
   bind('#cBrd button', b => { state.cardBorder = b.dataset.b; saveState(); studioRefresh(); });
   bind('#cSz  button', b => { state.cardSize = b.dataset.z; saveState(); studioRefresh(); });
+  bind('#cFont button', b => { state.cardFont = b.dataset.f; saveState(); studioRefresh(); });
+  bind('#cInk button', b => { state.cardInk = b.dataset.c; saveState(); studioRefresh(); });
+  const cic = $('#cInkC'); if (cic){
+    cic.oninput = () => { state.cardInk = cic.value; renderCardFast(); };
+    cic.onchange = () => { state.cardInk = cic.value; saveState(); studioRefresh(); };
+  }
   bind('#cFs  button', b => { state.cardFs = +b.dataset.f; saveState(); studioRefresh(); });
   bind('#pMode button', b => { photoMode = b.dataset.m; if (photoMode !== 'orig' && photoMode !== 'full') origMove = false; origDX = origDY = origNX = origNY = 0; studioRefresh(); });
   const fsz = $('#fSz'); if (fsz){
