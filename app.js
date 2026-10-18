@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.19.7';
+const VERSION = 'v2.20.0';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -2194,6 +2194,7 @@ function camResumeBoot(){
 }
 function aiResumeBoot(){
   if (camResumeBoot()) return;
+  if (aimResumeBoot()) return;
   let o = null;
   try{ o = JSON.parse(localStorage.getItem('ib_ai_resume') || 'null'); localStorage.removeItem('ib_ai_resume'); }catch(e){}
   if (!o || !o.item || Date.now() - o.ts > 12 * 3600 * 1000) return;
@@ -2300,6 +2301,122 @@ function openAiGen(){
     }catch(e){ msg.textContent = L.fail; }
     busy = false;
   };
+}
+
+/* ================================================================ AI 配樂：依經文寫好提示詞，到免費 AI 音樂工具生成，再把音樂檔選回來 */
+const AIM_STYLES = [
+  ['pi', ['鋼琴','钢琴','Piano'], 'solo piano, soft and warm, gentle arpeggios'],
+  ['st', ['弦樂','弦乐','Strings'], 'warm string ensemble with soft piano, cinematic and tender'],
+  ['gt', ['木吉他','木吉他','Guitar'], 'fingerstyle acoustic guitar with light ambient pads'],
+  ['am', ['空靈','空灵','Ambient'], 'ethereal ambient pads, slow evolving texture, spacious reverb'],
+  ['wh', ['敬拜','敬拜','Worship'], 'contemporary worship instrumental, piano, soft drums, warm synth pad, building gently'],
+  ['hy', ['聖詩','圣诗','Hymn'], 'reverent hymn-like instrumental, pipe organ and strings, unhurried']
+];
+const AIM_MOODS = [
+  ['pe', ['平安','平安','Peace'], 'peaceful and calm'],
+  ['hp', ['盼望','盼望','Hope'], 'hopeful and uplifting'],
+  ['jy', ['喜樂','喜乐','Joy'], 'joyful and bright'],
+  ['cm', ['安慰','安慰','Comfort'], 'tender and comforting'],
+  ['md', ['默想','默想','Meditative'], 'quiet and meditative'],
+  ['pr', ['讚美','赞美','Praise'], 'grateful and celebratory']
+];
+const AIM_LENS = [['30', ['約 30 秒','约 30 秒','~30 sec'], 'about 30 seconds'], ['60', ['約 1 分鐘','约 1 分钟','~1 min'], 'about 1 minute'], ['120', ['約 2 分鐘','约 2 分钟','~2 min'], 'about 2 minutes']];
+const AIM_TOOLS = () => [
+  ['https://suno.com/', 'Suno', ['每天有免費額度、可下載 MP3（免費方案多半限非商業）','每天有免费额度、可下载 MP3（免费方案多半限非商业）','Daily free credits, MP3 download (free plan is usually non-commercial)']],
+  ['https://labs.google/fx/tools/music-fx', 'Google MusicFX', ['免費、需 Google 帳號、英文提示詞、約 70 秒','免费、需 Google 账号、英文提示词、约 70 秒','Free, Google account, English prompts, ~70 s']],
+  ['https://stableaudio.com/', 'Stable Audio', ['有免費額度、可下載、適合純音樂','有免费额度、可下载、适合纯音乐','Free credits, download, good for instrumentals']]
+];
+let aimSt = 'pi', aimMd = 'pe', aimLn = '60', aimNote = '', aimResumePrompt = '';
+function aimPrompt(){
+  const st = AIM_STYLES.find(x => x[0] === aimSt) || AIM_STYLES[0];
+  const md = AIM_MOODS.find(x => x[0] === aimMd) || AIM_MOODS[0];
+  const ln = AIM_LENS.find(x => x[0] === aimLn) || AIM_LENS[1];
+  const verse = studioItem ? String(studioItem.t || '').replace(/\s+/g, ' ').trim().slice(0, 100) : '';
+  const theme = (aimNote || '').trim();
+  return 'Instrumental only, no vocals, no lyrics. Gentle Christian worship background music, ' + st[2] + '. Mood: ' + md[2] + '. '
+    + (theme ? 'Imagery: ' + theme + '. ' : '')
+    + (verse ? 'Inspired by this Bible verse: "' + verse + '". ' : '')
+    + 'Slow to medium tempo, soft intro and gentle ending, easy to loop, ' + ln[2] + '.';
+}
+function aimResumeSave(prompt){
+  try{ localStorage.setItem('ib_mu_resume', JSON.stringify({ ts:Date.now(), item:studioItem, note:studioNote, st:aimSt, md:aimMd, ln:aimLn, sc:aimNote, pr:prompt || '' })); }catch(e){}
+}
+function aimResumeBoot(){
+  let o = null;
+  try{ o = JSON.parse(localStorage.getItem('ib_mu_resume') || 'null'); localStorage.removeItem('ib_mu_resume'); }catch(e){}
+  if (!o || !o.item || Date.now() - o.ts > 12 * 3600 * 1000) return false;
+  studioItem = o.item; studioNote = o.note || ''; aimSt = o.st || aimSt; aimMd = o.md || aimMd; aimLn = o.ln || aimLn; aimNote = o.sc || ''; aimResumePrompt = o.pr || '';
+  location.hash = '#/studio';
+  setTimeout(() => { if (studioItem && curTab() === 'studio') openAiMusic(); }, 900);
+  return true;
+}
+function openAiMusic(){
+  if (!studioItem) return;
+  const L = {
+    title: L3('🎵 用 AI 生成配樂','🎵 用 AI 生成配乐','🎵 Make music with AI'),
+    intro: L3('不用找音樂：選曲風與心情，App 依這節經文寫好提示詞，貼到免費 AI 音樂工具，幾十秒就生成一首純音樂。',
+              '不用找音乐：选曲风与心情，App 依这节经文写好提示词，贴到免费 AI 音乐工具，几十秒就生成一首纯音乐。',
+              'No need to hunt for music: pick a style and mood, the app writes a prompt from this verse; paste it into a free AI music tool and get an instrumental in under a minute.'),
+    style: L3('曲風','曲风','Style'), mood: L3('心情','心情','Mood'), len: L3('長度','长度','Length'),
+    scene: L3('想要的畫面或感覺（選填，中英文都可以）','想要的画面或感觉（选填，中英文都可以）','Imagery or feeling (optional)'),
+    scenePh: L3('例如：清晨的湖邊、慢慢升起的陽光','例如：清晨的湖边、慢慢升起的阳光','e.g. a quiet lake at dawn, slowly rising sunlight'),
+    pr: L3('提示詞（可修改，英文效果最好）','提示词（可修改，英文效果最好）','Prompt (editable)'),
+    copy: L3('📋 複製提示詞','📋 复制提示词','📋 Copy prompt'),
+    copied: L3('已複製，到下面任一工具貼上就能生成','已复制，到下面任一工具贴上就能生成','Copied — paste it into a tool below'),
+    tools: L3('到這些免費工具貼上提示詞（點進去會自動複製）','到这些免费工具贴上提示词（点进去会自动复制）','Paste it into these free tools (tapping copies the prompt)'),
+    back: L3('🎵 音樂做好了：從檔案選這首','🎵 音乐做好了：从文件选这首','🎵 Music ready: choose the file'),
+    after: L3('在工具裡把音樂下載（MP3），存到「檔案」，回到這裡按上面的按鈕選它，就會成為這張美圖的配樂，錄影時自動混進去。',
+              '在工具里把音乐下载（MP3），存到“文件”，回到这里按上面的按钮选它，就会成为这张美图的配乐，录影时自动混进去。',
+              'Download the MP3 in the tool, save it to Files, then choose it with the button above. It becomes the background music when you record.'),
+    note: L3('各工具的免費額度與使用條款會變動；AI 生成的音樂若要公開發布或商用，請先看該工具的條款。',
+             '各工具的免费额度与使用条款会变动；AI 生成的音乐若要公开发布或商用，请先看该工具的条款。',
+             'Free quotas and terms change. Check each tool’s terms before publishing or commercial use.')
+  };
+  const mask = document.createElement('div'); mask.className = 'hlsheet-mask';
+  const chipRow = (id, arr, cur) => `<div class="cardchips" id="${id}">` + arr.map(x => `<button data-v="${x[0]}" class="${x[0] === cur ? 'on' : ''}">${esc(L3(x[1][0], x[1][1], x[1][2]))}</button>`).join('') + '</div>';
+  mask.innerHTML = `<div class="hlsheet-card pxsheet" style="max-height:92vh;overflow:auto">
+    <div class="hlsheet-title">${esc(L.title)}</div>
+    <div class="muted" style="font-size:13px;line-height:1.6;margin-bottom:8px">${esc(L.intro)}</div>
+    <div class="muted" style="font-size:12px;margin:8px 0 6px">${esc(L.style)}</div>${chipRow('aimSt', AIM_STYLES, aimSt)}
+    <div class="muted" style="font-size:12px;margin:10px 0 6px">${esc(L.mood)}</div>${chipRow('aimMd', AIM_MOODS, aimMd)}
+    <div class="muted" style="font-size:12px;margin:10px 0 6px">${esc(L.len)}</div>${chipRow('aimLn', AIM_LENS, aimLn)}
+    <div class="muted" style="font-size:12px;margin:10px 0 6px">${esc(L.scene)}</div>
+    <input class="cardinput" id="aimScene" placeholder="${esc(L.scenePh)}" value="${esc(aimNote)}">
+    <div class="muted" style="font-size:12px;margin:10px 0 6px">${esc(L.pr)}</div>
+    <textarea class="cardinput" id="aimPr" rows="7" style="width:100%;font-size:13px;line-height:1.5"></textarea>
+    <div class="hlsheet-acts2" style="margin-top:10px"><button class="btn primary" id="aimCopy">${esc(L.copy)}</button></div>
+    <div class="muted" id="aimMsg" style="font-size:12.5px;margin-top:8px;min-height:18px"></div>
+    <div class="muted" style="font-size:12px;margin:12px 0 6px">${esc(L.tools)}</div>
+    ${AIM_TOOLS().map(x => `<a class="btn block" data-aimtool="1" style="margin-top:6px;text-align:left;text-decoration:none" target="_blank" rel="noopener" href="${x[0]}">${esc(x[1])}<span class="muted" style="font-size:11.5px;margin-left:8px">${esc(L3(x[2][0], x[2][1], x[2][2]))}</span></a>`).join('')}
+    <label class="btn primary block" style="cursor:pointer;margin-top:12px">${esc(L.back)}<input type="file" accept="audio/*,.mp3,.m4a,.wav" hidden id="aimBack"></label>
+    <div class="muted" style="font-size:12px;margin-top:10px;line-height:1.6">${esc(L.after)}<br>${esc(L.note)}</div>
+    <div class="hlsheet-acts2" style="margin-top:12px"><button class="btn sm" id="aimClose">${esc(t().close)}</button></div>
+  </div>`;
+  document.body.appendChild(mask);
+  const pr = $('#aimPr', mask), msg = $('#aimMsg', mask);
+  let edited = false;
+  const fill = () => { if (!edited) pr.value = aimPrompt(); };
+  fill(); if (aimResumePrompt){ pr.value = aimResumePrompt; edited = true; aimResumePrompt = ''; }
+  pr.oninput = () => { edited = true; };
+  mask.onclick = e => { if (e.target === mask) mask.remove(); };
+  $('#aimClose', mask).onclick = () => mask.remove();
+  const chips = (id, set) => $$('#' + id + ' button', mask).forEach(b => b.onclick = () => {
+    set(b.dataset.v); edited = false; fill();
+    $$('#' + id + ' button', mask).forEach(o => o.classList.toggle('on', o === b));
+  });
+  chips('aimSt', v => { aimSt = v; }); chips('aimMd', v => { aimMd = v; }); chips('aimLn', v => { aimLn = v; });
+  const sc = $('#aimScene', mask); sc.oninput = () => { aimNote = sc.value; edited = false; fill(); };
+  $('#aimCopy', mask).onclick = async () => {
+    try{ await navigator.clipboard.writeText(pr.value); }
+    catch(e){ pr.focus(); pr.select(); try{ document.execCommand('copy'); }catch(_){} }
+    aimResumeSave(pr.value); msg.textContent = L.copied;
+  };
+  $$('a[data-aimtool]', mask).forEach(a => a.addEventListener('click', () => {
+    aimResumeSave(pr.value);
+    try{ const q = navigator.clipboard.writeText(pr.value); if (q && q.catch) q.catch(() => {}); }catch(e){}
+  }));
+  const back = $('#aimBack', mask);
+  back.onchange = () => { const f = back.files && back.files[0]; if (!f) return; mask.remove(); pickBgm(back); };
 }
 
 function openPexels(){
@@ -4712,12 +4829,14 @@ async function viewStudio(v){
       <div class="muted" style="font-size:12px;margin:8px 0 10px">${esc(L.bgmNote)}</div>
       <div class="muted" style="font-size:12px;margin-bottom:6px">${esc(L.bgmVol)}</div>
       ${chips('bVol', BGM_VOLS, bgmVol, 'v')}
-      <div class="hlsheet-acts2" style="margin-top:12px">
+      <button class="btn block" id="bAi" style="margin-top:12px">${esc(L3('🤖 用 AI 自動生成配樂（免費）','🤖 用 AI 自动生成配乐（免费）','🤖 Make music with AI (free)'))}</button>
+      <div class="hlsheet-acts2" style="margin-top:8px">
         <button class="btn sm gold" id="bLib">${esc(hl_().btn)}</button>
         <label class="btn sm" style="cursor:pointer">${esc(L.bgmSwap)}<input type="file" hidden id="bRe"></label>
         <button class="btn sm danger" id="bDel">${esc(L.bgmDel)}</button>
       </div>` : `
-      <button class="btn block gold" id="bLib">${esc(hl_().btn)}</button>
+      <button class="btn block gold" id="bAi">${esc(L3('🤖 用 AI 自動生成配樂（免費）','🤖 用 AI 自动生成配乐（免费）','🤖 Make music with AI (free)'))}</button>
+      <button class="btn block gold" id="bLib" style="margin-top:8px">${esc(hl_().btn)}</button>
       <label class="btn block" style="cursor:pointer;margin-top:8px">${esc(L.bgmPick)}<input type="file" hidden id="bNew"></label>
       <div class="muted" style="font-size:12px;margin-top:8px">${esc(L.bgmHint)}</div>`}
     </div>
@@ -4818,6 +4937,7 @@ async function viewStudio(v){
   const bp = $('#bPrev'); if (bp) bp.onclick = bgmPrevToggle;
   bind('#mHear button', b => { state.mcHear = b.dataset.v === '1'; saveState(); studioRefresh(); });
   const blb = $('#bLib'); if (blb) blb.onclick = openHymns;
+  const bai = $('#bAi'); if (bai) bai.onclick = openAiMusic;
   ['pNew','pRe'].forEach(id => { const e = $('#' + id); if (e) e.onchange = () => pickPhoto(e); });
   ['bNew','bRe'].forEach(id => { const e = $('#' + id); if (e) e.onchange = () => pickBgm(e); });
   const nt = $('#cardNote');
