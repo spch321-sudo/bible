@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.21.1';
+const VERSION = 'v2.22.0';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -706,6 +706,7 @@ function currentRoute(){
 async function render(){
   const r = currentRoute();
   const tab = r[0] || 'today';
+  if (EMBED && tab !== 'studio'){ if (studioItem) location.hash = '#/studio'; else embedClose(); return; }
   $$('#tabbar a').forEach(a => a.classList.toggle('active', a.dataset.tab === (tab === 'read' ? 'books' : ((tab === 'plan' || tab === 'play' || tab === 'meet') ? 'today' : tab))));
   const v = $('#view');
   try{
@@ -3004,6 +3005,7 @@ function chapLabel(bookId, n){
   return t().chapter(n);
 }
 function cardRef(h){
+  if (h && !h.b && h.ref != null) return String(h.ref);   /* 從團契 App 等傳進來的金句：直接用它自己的出處 */
   const b = BOOK[h.b];
   const nm = b ? bname(b) : h.b;
   const vv = (h.v2 && h.v2 > h.v) ? `${h.v}-${h.v2}` : h.v;   // 畫線跨節就寫成 3:16-17
@@ -4635,7 +4637,7 @@ function studioTabs(v, L){
     }
     const grp = (txt) => {
       txt = String(txt || '');
-      if (txt === L.cardText || txt === L.cardLines || txt === CARD_FONT_TITLE()) return 'text';
+      if (txt === L.cardText || txt === L.cardLines || txt === CARD_FONT_TITLE() || txt === EMB_T()) return 'text';
       if (txt === L.cardStyle || txt === L.cardBorder || txt === L.cardSize || txt === L.cardFsL) return 'lay';
       if (txt === L.photo) return 'photo';
       if (txt === L.bgm || txt === L.recSec || txt.indexOf(L.works) === 0) return 'rec';
@@ -4694,6 +4696,13 @@ async function viewStudio(v){
       <button class="btn" id="btSave">${esc(L.cardSave)}</button>
     </div>
     <div class="hl-hint" style="margin:8px 0 18px">${esc(L.cardHint)}</div>
+    ${EMBED ? `
+    <div class="section-title">${esc(EMB_T())}</div>
+    <div class="card">
+      <textarea class="hlsheet-ta" id="eT">${esc(studioItem.t || '')}</textarea>
+      <div class="muted" style="font-size:12px;margin:10px 0 6px">${esc(L3('出處', '出处', 'Reference'))}</div>
+      <input class="cardinput" id="eRef" value="${esc(studioItem.ref || '')}">
+    </div>` : ''}
 
     ${FULL ? '' : `
     <div class="section-title">${esc(L.cardText)}</div>
@@ -4887,7 +4896,9 @@ async function viewStudio(v){
   studioTabs(v, L);
   if (isSelfie()) setTimeout(attachSelfie, 60);
 
-  $('#stBack').onclick = () => history.back();
+  $('#stBack').onclick = () => { if (EMBED) embedClose(); else history.back(); };
+  ['eT', 'eRef'].forEach(id => { const e = $('#' + id); if (!e) return; let tm = null;
+    e.oninput = () => { clearTimeout(tm); tm = setTimeout(() => { studioItem[id === 'eT' ? 't' : 'ref'] = e.value; renderCard(studioItem); }, 350); }; });
   $('#btShare').onclick = cardShare;
   $('#btSave').onclick = cardDownload;
   const bind = (sel, fn) => $$(sel, v).forEach(b => b.onclick = () => { fn(b); });
@@ -8229,6 +8240,38 @@ async function checkForUpdate(manual){
 }
 
 /* ================================================================ 啟動 */
+/* ===== 嵌入模式：國度321空中團契等 App 用 iframe 開「經文美圖工作室」（?embed=studio，iframe name=k321studio） =====
+   ‧ 外層 App 先把 {ts,item:{t,ref,n},lang} 存進 localStorage['ib_card_in']（同一個網域），再開這一頁
+   ‧ 只顯示美圖工作室：隱藏頂列、分頁列、導覽鈕；「‹」或離開工作室 → postMessage 通知外層關閉 */
+const EMBED = (() => { try{ return new URLSearchParams(location.search).get('embed') === 'studio' || window.name === 'k321studio'; }catch(e){ return false; } })();
+const EMB_T = () => L3('經文／金句', '经文／金句', 'Verse / quote');
+function embedClose(){ try{ parent.postMessage({ k321:'studioClose' }, '*'); }catch(e){} }
+function embedBoot(){
+  if (!EMBED) return false;
+  try{ window.name = 'k321studio'; }catch(e){}
+  document.documentElement.classList.add('embed');
+  const st = document.createElement('style');
+  st.textContent = '.embed header.topbar,.embed nav.tabbar,.embed .gnavb,.embed #langswitch{display:none!important}'
+    + '.embed body{padding-bottom:env(safe-area-inset-bottom)!important}.embed main#view{padding-top:8px;padding-bottom:40px}'
+    + '.embed .chtoolbar{top:0!important}';
+  document.head.appendChild(st);
+  let o = null; try{ o = JSON.parse(localStorage.getItem('ib_card_in') || 'null'); }catch(e){}
+  if (o && o.item){
+    const it = o.item;
+    studioItem = { b:'', ch:0, v:0, t:String(it.t || ''), ref:String(it.ref || ''), n:String(it.n || ''), x:1 };
+    studioNote = studioItem.n; fullBless = ''; blessOwn = '';
+    if (['zh', 'zs', 'en'].includes(o.lang) && state.lang !== o.lang){ state.lang = o.lang; saveState(); applyChrome(); }
+  }
+  /* 外層換了文字來源（經文／亮光／宣告…）就直接換，不重新載入 */
+  window.addEventListener('message', e => {
+    const d = e.data; if (!d || d.k321 !== 'studioItem' || !d.item || e.origin !== location.origin) return;
+    studioItem = { b:'', ch:0, v:0, t:String(d.item.t || ''), ref:String(d.item.ref || ''), n:String(d.item.n || ''), x:1 };
+    studioNote = studioItem.n; fullBless = '';
+    if (curTab() === 'studio') studioRefresh();
+  });
+  location.hash = '#/studio';
+  return true;
+}
 async function switchLang(l){
   if (l === state.lang) return;
   ttsStop();
@@ -8252,6 +8295,7 @@ async function boot(){
   try{
     await loadTOC();
     openWDB();                       // 作品庫（不擋開機）
+    embedBoot();
     if (!location.hash) location.hash = '#/today';
     await render();
   }catch(e){
