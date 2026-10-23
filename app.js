@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.22.0';
+const VERSION = 'v2.22.1';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -4981,7 +4981,8 @@ async function viewStudio(v){
   bind('[data-sh]',   b => shareRec(b.dataset.sh));
   bind('[data-rm]',   b => rmRec(b.dataset.rm));
 }
-function openStudio(h){ studioItem = h; studioNote = h.n || ''; fullBless = ''; blessOwn = ''; go('#/studio'); }
+function openStudio(h){ studioItem = h; studioNote = h.n || ''; fullBless = ''; blessOwn = ''; go('#/studio');
+  setTimeout(() => { try{ document.body.scrollTop = 0; document.documentElement.scrollTop = 0; window.scrollTo(0, 0); }catch(e){} }, 60); }
 
 /* ================================================================ 235 團隊
    兩個人成為屬靈同伴（2），三個人建立屬靈父母兒女的關係（3），
@@ -5954,7 +5955,7 @@ function reAnswerLast(msg){
   sendChat(q.text);
   return true;
 }
-let xzOptsOpen = true, xzResize = null;
+let xzOptsOpen = true, xzResize = null, xzScrollFn = null;
 async function viewCompanion(v){
   const L = t();
   const b = RD.book ? BOOK[RD.book] : null;
@@ -6047,17 +6048,27 @@ async function viewCompanion(v){
     if (!wrap || !optsEl || !sumEl || !cl) return;
     const sumTxt = () => AUD_ICON[state.audience] + ' ' + AUD_NAME()[state.audience]
       + (state.audience === 'seeker' ? ' · ' + SKBG_NAME()[state.skbg] : '') + ' · ' + LEN_NAME()[state.alen];
+    /* v2.22.1：回答區不再是固定高度的小框（在團契 App 內嵌視窗、iPhone 上常常滑不動），改成整頁一起捲；
+       輸入框黏在分頁列上方，畫面空的時候也撐滿一頁 */
+    if (!document.getElementById('xzPageCss')){
+      const st2 = document.createElement('style'); st2.id = 'xzPageCss';
+      st2.textContent = '.chatwrap{height:auto!important}.chatlog{flex:1 0 auto;overflow:visible!important}'
+        + '.chatinput{position:sticky;bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom));z-index:6}'
+        + '.chatlog .msg{scroll-margin-top:calc(var(--header-h,56px) + 12px);scroll-margin-bottom:calc(var(--tabbar-h) + 96px)}';
+      document.head.appendChild(st2);
+    }
     const fit = () => {
       const tb = document.querySelector('nav.tabbar');
-      const tbh = tb ? tb.getBoundingClientRect().height : 70;
-      const abs = wrap.getBoundingClientRect().top + (window.pageYOffset || 0);
-      wrap.style.height = Math.max(240, Math.floor(innerHeight - abs - tbh - 6)) + 'px';
+      const tbh = tb && getComputedStyle(tb).display !== 'none' ? tb.getBoundingClientRect().height : 0;
+      const abs = wrap.getBoundingClientRect().top + (document.body.scrollTop || window.pageYOffset || 0);
+      wrap.style.height = '';
+      wrap.style.minHeight = Math.max(240, Math.floor(innerHeight - abs - tbh - 6)) + 'px';
     };
     const paint = () => { sumEl.textContent = '⚙ ' + sumTxt() + (xzOptsOpen ? '　▴' : '　▾'); };
     const setOpts = (open) => {
       xzOptsOpen = open; optsEl.hidden = !open;
       wrap.classList.toggle('xzc', !open);
-      paint(); window.scrollTo(0, 0); fit();
+      paint(); fit();
     };
     sumEl.onclick = () => setOpts(!xzOptsOpen);
     optsEl.addEventListener('click', () => setTimeout(paint, 0));
@@ -6068,8 +6079,11 @@ async function viewCompanion(v){
     window.addEventListener('resize', xzResize);
     let touching = 0;
     const mark = () => { touching = Date.now(); };
-    cl.addEventListener('touchmove', mark, { passive:true }); cl.addEventListener('wheel', mark, { passive:true });
-    cl.addEventListener('scroll', () => { if (xzOptsOpen && Date.now() - touching < 600 && cl.scrollTop > 30) setOpts(false); }, { passive:true });
+    wrap.addEventListener('touchmove', mark, { passive:true }); wrap.addEventListener('wheel', mark, { passive:true });
+    const y0 = () => document.body.scrollTop || window.pageYOffset || 0;
+    if (xzScrollFn) document.removeEventListener('scroll', xzScrollFn, true);
+    xzScrollFn = () => { if (!document.body.contains(wrap)) return; if (xzOptsOpen && Date.now() - touching < 600 && y0() > 30) setOpts(false); };
+    document.addEventListener('scroll', xzScrollFn, { capture:true, passive:true });
     const sendB = $('#chatSend', v); if (sendB) sendB.addEventListener('click', () => { if (xzOptsOpen) setOpts(false); });
     const inB = $('#chatIn', v); if (inB) inB.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && xzOptsOpen) setOpts(false); });
   })();
@@ -6131,7 +6145,9 @@ function paintChat(){
     else if (b.dataset.a === 'share'){ chatShare(m); }
     else if (b.dataset.a === 'card'){ chatCard(m); }
   });
-  log.scrollTop = log.scrollHeight;
+  /* 整頁一起捲：新的回答從開頭給你看；自己的問題、「思想中」就捲到最下面 */
+  const last = log.lastElementChild;
+  if (last) setTimeout(() => { try{ last.scrollIntoView({ block: last.classList.contains('ai') && last.querySelector('.msg-actions:not([hidden])') ? 'start' : 'end' }); }catch(e){} }, 30);
 }
 /* 小智的回答要分享出去時，經文與答案一起帶走——單看答案，別人不知道在講哪一節 */
 function chatPack(m){
@@ -6178,16 +6194,85 @@ function cardText(md){
   }
   return (out || body.slice(0, LIMIT)).trim() + (out.length < body.length ? '…' : '');
 }
+/* v2.22.1：從小智的回答裡找出最合適的經文——「>」引言裡帶章節的優先，其次是回答裡第一個帶章節的經文 */
+let REF_RE = null, REF_MAP = null;
+function refRegex(){
+  if (REF_RE) return REF_RE;
+  REF_MAP = {};
+  const RAW = [];
+  const add = (n, id) => { const raw = String(n || '').trim(); n = raw.replace(/\s+/g, '').toLowerCase(); if (n && !REF_MAP[n]){ REF_MAP[n] = id; RAW.push(raw); } };
+  TOC.forEach(b => { [b.zh, b.zs, b.en, b.azh, b.azs, b.aen].forEach(n => add(n, b.id)); });
+  add('Psalm', 'Psalms'); add('Song of Songs', 'SongofSolomon'); add('詩', 'Psalms'); add('诗', 'Psalms');
+  const names = RAW.sort((a, b) => b.length - a.length).map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/ /g, '\\s*').replace(/^(\d)(?=[A-Za-z])/, '$1\\s*'));
+  REF_RE = new RegExp('(' + names.join('|') + ')\\s*(\\d{1,3})\\s*(?:[:：]|[章篇]\\s*(?:第\\s*)?)\\s*(\\d{1,3})\\s*[節节]?(?:\\s*[-–—~～至到]\\s*(\\d{1,3}))?', 'gi');
+  return REF_RE;
+}
+function findRefs(text){
+  const re = refRegex(), out = [];
+  if (!REF_MAP) return out;
+  String(text || '').split('\n').forEach((line, li) => {
+    re.lastIndex = 0; let m;
+    while ((m = re.exec(line))){
+      const id = REF_MAP[m[1].replace(/\s+/g, '').toLowerCase()];
+      const b = id && BOOK[id]; if (!b) continue;
+      const ch = +m[2], v = +m[3], v2 = m[4] ? +m[4] : 0;
+      if (!ch || ch > b.ch || !v) continue;
+      out.push({ b:id, ch, v, v2:(v2 > v && v2 - v <= 6) ? v2 : 0, q:/^\s*(&gt;|>)/.test(line), at:li });
+    }
+  });
+  return out;
+}
+async function verseTextOf(id, ch, v, v2){
+  const arr = await getChapter(id, ch); if (!arr) return '';
+  const hi = v2 || v, parts = [];
+  let cur = 0;
+  arr.forEach(seg => {
+    if (!Array.isArray(seg)) return;
+    for (let i = 1; i + 1 < seg.length; i += 2){
+      if (+seg[i] > 0) cur = +seg[i];
+      if (cur >= v && cur <= hi && seg[i + 1]) parts.push(String(seg[i + 1]));
+    }
+  });
+  let t = parts.join(isEN() ? ' ' : '').replace(/〔[^〕]*〕/g, '').replace(/\s+/g, ' ').trim();
+  /* 從段落中間取出的經文，常帶著前後文的引號（例如『願耶和華賜福給你…）：沒配對的就拿掉 */
+  [['「', '」'], ['『', '』'], ['“', '”'], ['‘', '’']].forEach(([o, c]) => {
+    const no = t.split(o).length - 1, nc = t.split(c).length - 1;
+    if (no > nc) for (let k = no - nc; k > 0 && t.indexOf(o) >= 0; k--) t = t.replace(o, '');
+    else if (nc > no) for (let k = nc - no; k > 0 && t.lastIndexOf(c) >= 0; k--){ const i = t.lastIndexOf(c); t = t.slice(0, i) + t.slice(i + 1); }
+  });
+  return t.trim();
+}
+async function pickVerse(md){
+  try{ await loadTOC(); }catch(e){}
+  const refs = findRefs(md);
+  if (!refs.length) return null;
+  const order = refs.filter(r => r.q).concat(refs.filter(r => !r.q));
+  for (const r of order){
+    const t = await verseTextOf(r.b, r.ch, r.v, r.v2).catch(() => '');
+    if (t) return Object.assign(r, { t });
+  }
+  return null;
+}
 /* 直接送進美圖工作室：版型、相片、配樂、錄影全部沿用 */
-function chatCard(m){
+async function chatCard(m){
   const p = chatPack(m);
   const src = p.src;
-  openStudio({
-    t : p.verse || (isEN() ? 'A word from the Word' : L3('與小智的默想', '与小智的默想', '')),
-    n : cardText(m.text),
-    b : src ? src.b : RD.book, ch : src ? src.ch : RD.ch,
-    v : src ? src.v : 0, v2 : src ? src.v2 : 0, c:'gold', ts: Date.now()
-  });
+  if (src){
+    openStudio({ t:p.verse, n:cardText(m.text), b:src.b, ch:src.ch, v:src.v, v2:src.v2 || 0, c:'gold', ts:Date.now() });
+    toast(L3('已取回答的重點放進卡片，可以直接改；整篇請用「分享」傳文字',
+                   '已取回答的重点放进卡片，可以直接改；整篇请用「分享」传文字',
+                   'The key line is on the card — edit it freely; use Share to send the full answer'), 4600);
+    return;
+  }
+  /* 自己問的問題（例如「祝福朋友生日的合適經文」）：把回答裡最合適的那一節經文放上美圖，出處寫章節 */
+  const r = await pickVerse(m.text);
+  if (r){
+    const it = { b:r.b, ch:r.ch, v:r.v, v2:r.v2 || 0 };
+    openStudio({ t:r.t, n:'', b:r.b, ch:r.ch, v:r.v, v2:r.v2 || 0, c:'gold', ts:Date.now() });
+    toast(L3('已把回答裡最合適的經文放進美圖：', '已把回答里最合适的经文放进美图：', 'The best verse from the answer is on the card: ') + cardRef(it), 4200);
+    return;
+  }
+  openStudio({ t:cardText(m.text), n:'', b:'', ref:'', ch:0, v:0, c:'gold', ts:Date.now() });
   toast(L3('已取回答的重點放進卡片，可以直接改；整篇請用「分享」傳文字',
                  '已取回答的重点放进卡片，可以直接改；整篇请用「分享」传文字',
                  'The key line is on the card — edit it freely; use Share to send the full answer'), 4600);
