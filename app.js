@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.22.1';
+const VERSION = 'v2.22.2';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -6053,7 +6053,8 @@ async function viewCompanion(v){
     if (!document.getElementById('xzPageCss')){
       const st2 = document.createElement('style'); st2.id = 'xzPageCss';
       st2.textContent = '.chatwrap{height:auto!important}.chatlog{flex:1 0 auto;overflow:visible!important}'
-        + '.chatinput{position:sticky;bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom));z-index:6}'
+        + '.chatinput{position:fixed;left:0;right:0;margin:0 auto;max-width:640px;bottom:var(--xztb,calc(var(--tabbar-h) + env(safe-area-inset-bottom)));z-index:25;padding:10px 16px 10px!important;box-shadow:0 -6px 14px rgba(0,0,0,.06)}'
+        + '.chatwrap{padding-bottom:var(--xzib,84px)}'
         + '.chatlog .msg{scroll-margin-top:calc(var(--header-h,56px) + 12px);scroll-margin-bottom:calc(var(--tabbar-h) + 96px)}';
       document.head.appendChild(st2);
     }
@@ -6063,6 +6064,10 @@ async function viewCompanion(v){
       const abs = wrap.getBoundingClientRect().top + (document.body.scrollTop || window.pageYOffset || 0);
       wrap.style.height = '';
       wrap.style.minHeight = Math.max(240, Math.floor(innerHeight - abs - tbh - 6)) + 'px';
+      /* v2.22.2：問句欄固定在畫面最底下（分頁列上方），回答區底部留出同樣高度，最後一段不會被蓋住 */
+      const ci = wrap.querySelector('.chatinput');
+      document.documentElement.style.setProperty('--xztb', tbh ? (tbh + 'px') : 'env(safe-area-inset-bottom)');
+      if (ci) document.documentElement.style.setProperty('--xzib', (Math.ceil(ci.getBoundingClientRect().height) + 16) + 'px');
     };
     const paint = () => { sumEl.textContent = '⚙ ' + sumTxt() + (xzOptsOpen ? '　▴' : '　▾'); };
     const setOpts = (open) => {
