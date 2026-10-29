@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.22.3';
+const VERSION = 'v2.22.4';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -1309,13 +1309,31 @@ function bindCompanionGuide(v, p, today){
    不另外架伺服器：每個人目前的計畫進度摘要放進 myStat().plan，跟著原本的 235 團隊同步一起送出去，
    夥伴在自己的計畫頁就能看到。user.plan.pair[計畫id] = 團隊代碼 記下「這個計畫跟哪個團隊同步」。
    摘要只有計畫id、已讀天數、第幾天、今天的經文（書卷id＋章範圍）與時間，不含任何個人內容。 */
+/* v2.22.4：
+   ① 每個讀過的計畫都記一份摘要（user.plan.sums），不只「目前選的」那一個——
+     夥伴手機上選的是別的計畫、或換過計畫，原本就整個看不到，一律顯示「還沒開始」。
+   ② 打勾後 1.5 秒就送出（原本等 20 秒，打完勾就關 App 的人永遠送不出去）；
+     App 切到背景時若還有沒送出的進度，立刻送。 */
+function planSumOf(p){
+  const idx = planTodayIndex(p), d = p.days[idx - 1] || p.days[0];
+  return { id:p.id, done:planDoneCount(p.id), total:p.totalDays, day:idx,
+           b:d.book, s:d.start, e:d.end, ts:Date.now() };
+}
 function planSumUpdate(p, pushNow){
-  if (!p || !user.plan.active || user.plan.active !== p.id) return;
-  const idx = planTodayIndex(p), d = p.days[idx - 1];
-  user.plan.sum = { id:p.id, done:planDoneCount(p.id), total:p.totalDays, day:idx,
-                    b:d.book, s:d.start, e:d.end, ts:Date.now() };
+  if (!p) return;
+  user.plan.sums = user.plan.sums || {};
+  const sum = planSumOf(p);
+  if (sum.done > 0 || user.plan.starts[p.id]) user.plan.sums[p.id] = sum;
+  if (user.plan.active === p.id) user.plan.sum = sum;
   saveUser();
-  if ((user.teams || []).length) teamPingSoon();
+  if ((user.teams || []).length) teamPingSoon(1500);
+}
+/* 某位夥伴在某個計畫的摘要：先看他目前的計畫，再看 all（其他計畫） */
+function pairSumOf(m, pid){
+  const pl = m.stat && m.stat.plan;
+  if (!pl) return null;
+  if (pl.id === pid) return pl;
+  return (pl.all && pl.all[pid]) || null;
 }
 /* 「陪讀夥伴」卡：連結一個團隊，看夥伴在同一個計畫走到哪裡 */
 function pairAgo(ts){
@@ -1346,9 +1364,14 @@ function paintPair(v, p, today){
   const others = tm ? memberList(tm).filter(m => m.uid !== user.uid) : [];
   const mine = user.plan.sum && user.plan.sum.id === pid ? user.plan.sum : null;
   const rows = others.map(m => {
-    const s = m.stat && m.stat.plan && m.stat.plan.id === pid ? m.stat.plan : null;
-    if (!s) return `<div class="pairrow"><div class="tmavatar">${esc((m.nick || '?').slice(0, 1))}</div><div class="meta"><div class="t">${esc(m.nick || '?')}</div>
-        <div class="s">${esc(L3('還沒開始這個計畫，或尚未同步', '还没开始这个计划，或尚未同步', 'Has not started this plan, or not synced yet'))}</div></div></div>`;
+    const s = pairSumOf(m, pid);
+    if (!s){
+      const op = m.stat && m.stat.plan && m.stat.plan.id && PLANS && PLANS[m.stat.plan.id];
+      const why = op ? L3('正在讀「' + planTitle(op) + '」，還沒開始這個計畫', '正在读“' + planTitle(op) + '”，还没开始这个计划', 'Reading “' + planTitle(op) + '”; has not started this plan')
+        : L3('還沒開始這個計畫，或尚未同步（請對方更新到最新版並打開一次）', '还没开始这个计划，或尚未同步（请对方更新到最新版并打开一次）', 'Has not started this plan, or not synced yet (ask them to update the app and open it once)');
+      return `<div class="pairrow"><div class="tmavatar">${esc((m.nick || '?').slice(0, 1))}</div><div class="meta"><div class="t">${esc(m.nick || '?')}</div>
+        <div class="s">${esc(why)}</div>${m.stat && m.stat.lastTs ? `<div class="s">${esc(L3('最近一次讀經', '最近一次读经', 'Last read'))}：${esc(pairAgo(m.stat.lastTs))}</div>` : ''}</div></div>`;
+    }
     const pc = Math.round(s.done / s.total * 100);
     const diff = mine ? s.done - mine.done : 0;
     const note = !mine ? '' : diff === 0 ? L3('你們讀到同樣的進度，一起往前！', '你们读到同样的进度，一起往前！', 'You are at the same place. Keep going together!')
@@ -1366,11 +1389,19 @@ function paintPair(v, p, today){
   $('#pairSync', box).onclick = () => pairPull(v, p, today, true);
   $('#pairOff', box).onclick = () => { delete user.plan.pair[pid]; saveUser(); paintPair(v, p, today); };
 }
+let PAIR_NOW = null;   // 目前畫面上的陪讀夥伴卡，回到 App 時自動重新同步
 async function pairPull(v, p, today, loud){
   const code = user.plan.pair[p.id]; if (!code) return;
+  PAIR_NOW = { v, p, today };
   try{ await teamPull(code); }catch(e){ if (loud) toast(L3('同步失敗，稍後再試', '同步失败，稍后再试', 'Sync failed — try again later'), 2600); return; }
+  if (loud) toast(L3('已同步', '已同步', 'Synced'), 1600);
   if (document.body.contains(v) && $('#pairBox', v)) paintPair(v, p, today);
 }
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden'){ if (teamPingTimer){ clearTimeout(teamPingTimer); teamPingTimer = null; teamPingNow(); } return; }
+  const x = PAIR_NOW;
+  if (x && document.body.contains(x.v) && $('#pairBox', x.v)) pairPull(x.v, x.p, x.today);
+});
 function planRowHtml(d, pid, todayIdx){
   const b = BOOK[d.book];
   const done = !!user.plan.done[planDayKey(pid, d.day)];
@@ -5156,8 +5187,20 @@ function myStat(){
     days: Object.keys(byDay).length, streak, chs: vals.length, today: byDay[today] || 0,
     last: lb ? `${bname(lb)} ${user.last.ch}` : '', lastTs,
     acts: user.acts || {}, goalN: 0,
-    plan: (user.plan && user.plan.active && user.plan.sum && user.plan.sum.id === user.plan.active) ? user.plan.sum : null   // v2.15.0 陪讀同步
+    plan: myPlanStat()   // v2.15.0 陪讀同步；v2.22.4 起另附 all＝每個計畫的摘要
   };
+}
+function myPlanStat(){
+  const P = user.plan || {};
+  const all = {};
+  /* 讀經計畫資料已載入就現算（最準），否則用上次記下的摘要 */
+  if (PLANS) PLAN_IDS.forEach(id => { const p = PLANS[id]; if (p && (planDoneCount(id) > 0 || (P.starts && P.starts[id]))) all[id] = planSumOf(p); });
+  else Object.assign(all, P.sums || {});
+  const cur = (P.active && (all[P.active] || (P.sum && P.sum.id === P.active && P.sum))) || null;
+  if (!cur && !Object.keys(all).length) return null;
+  const base = cur ? Object.assign({}, cur) : { id:'' };
+  base.all = all;
+  return base;
 }
 function myPts(){
   const s = myStat(), a = user.acts || {};
@@ -5216,7 +5259,7 @@ function goalTitle(goal){
 async function teamApi(op, extra){
   const body = Object.assign({ op, uid:user.uid, nick:(user.nick || '').trim() }, extra || {});
   let r;
-  try{ r = await fetch(API.team, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }); }
+  try{ r = await fetch(API.team, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body), keepalive:true }); }
   catch(e){ throw new Error(tl().err); }
   let j = null;
   try{ j = await r.json(); }catch(e){}
@@ -5256,10 +5299,10 @@ const defNick = () => (user.nick || '').trim();
 /* 讀完一章就悄悄把進度送給隊友（延遲合併，不要一章一次請求）。
    失敗就算了——讀經本身絕不能被團隊功能拖住。 */
 let teamPingTimer = null;
-function teamPingSoon(){
+function teamPingSoon(ms){
   if (!(user.teams || []).length) return;
   clearTimeout(teamPingTimer);
-  teamPingTimer = setTimeout(teamPingNow, 20000);
+  teamPingTimer = setTimeout(() => { teamPingTimer = null; teamPingNow(); }, ms || 20000);
 }
 async function teamPingNow(){
   for (const x of (user.teams || []).slice(0, 8)){
