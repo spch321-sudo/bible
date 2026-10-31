@@ -23,7 +23,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.29.0';
+const VERSION = 'v2.29.1';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -6554,8 +6554,8 @@ const PF_FIELDS = [
   { k:'study', t:['在學','在学','Studying'], o:[['preK','幼兒園','幼儿园','Kindergarten'],['primary','小學','小学','Primary school'],['junior','初中','初中','Junior high'],['senior','高中','高中','Senior high'],['univ','大學','大学','University'],['grad','研究所','研究生','Graduate school']] },
   { k:'faith', t:['信仰','信仰','Faith'], o:[['pastor','牧者','牧者','Pastor'],['coworker','同工','同工','Church worker'],['disciple','門徒','门徒','Disciple'],['newbeliever','初信','初信','New believer'],['seeker','慕道','慕道','Seeker'],['unbeliever','未信','未信','Not a believer']] }
 ];
-const pfOpt = (f, k) => { const o = f.o.find(x => x[0] === k); return o ? (isEP() ? o[3] : isZS() ? o[2] : o[1]) : ''; };
-const pfLabel = f => isEP() ? f.t[2] : isZS() ? f.t[1] : f.t[0];
+const pfOpt = (f, k) => { const o = f.o.find(x => x[0] === k); return o ? L3(o[1], o[2], o[3]) : ''; };
+const pfLabel = f => L3(f.t[0], f.t[1], f.t[2]);
 const pfGet = () => { const p = state.profile; return (p && typeof p === 'object') ? p : {}; };
 const pfAny = () => { const p = pfGet(); return !!(p.nick || p.gender || p.age || p.marital || p.work || p.study || p.faith || p.note); };
 const pfNick = () => { const p = pfGet(); return (p.nick || '').trim(); };
