@@ -21,7 +21,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.26.0';
+const VERSION = 'v2.26.1';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -7299,7 +7299,8 @@ async function viewMe(v){
 async function probe(url, body){
   const t0 = Date.now();
   try{
-    const r = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    const ac = new AbortController(); const tm = setTimeout(() => ac.abort(), 20000);
+    const r = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body), signal: ac.signal }).finally(() => clearTimeout(tm));
     const ct = r.headers.get('content-type') || '?';
     let snip = '';
     try{
@@ -7308,7 +7309,7 @@ async function probe(url, body){
     }catch(e){ snip = '(讀不到內容)'; }
     return `HTTP ${r.status} · ${ct} · ${Date.now() - t0}ms\n${snip}`;
   }catch(e){
-    return `連不到（${(e && e.message) || 'network'}）· ${Date.now() - t0}ms`;
+    return `連不到／逾時（${(e && e.message) || 'network'}）· ${Date.now() - t0}ms`;
   }
 }
 async function runDiag(){
@@ -7765,7 +7766,8 @@ async function ttsFetch(text, voice){
   const body = JSON.stringify({ voice, rate: TTS_RATE, sil: TTS_SIL, silc: TTS_SILC, sile: TTS_SILE, text });
   for (let a = 0; a <= TTS_RETRY.length; a++){
     try{
-      const r = await fetch(API.tts, { method:'POST', headers:{'Content-Type':'application/json'}, body });
+      const ac = new AbortController(); const tm = setTimeout(() => ac.abort(), 15000);
+      const r = await fetch(API.tts, { method:'POST', headers:{'Content-Type':'application/json'}, body, signal: ac.signal }).finally(() => clearTimeout(tm));
       if (!r.ok) throw new Error('http ' + r.status);
       const buf = await r.arrayBuffer();
       if (!buf || buf.byteLength < 128) throw new Error('empty audio');
