@@ -24,7 +24,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.31.0';
+const VERSION = 'v2.31.1';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -6557,7 +6557,7 @@ const LEN_SYS = () => {
 /* ===== v2.29.0：讀者資料——小智依暱稱、性別、年齡、身分、就職、在學、信仰與目前處境量身回答 ===== */
 const PF_FIELDS = [
   { k:'gender', t:['性別','性别','Gender'], o:[['m','男','男','Male'],['f','女','女','Female']] },
-  { k:'marital', t:['身分','身份','Status'], o:[['couple','夫妻（已婚）','夫妻（已婚）','Married couple'],['unmarried','未婚','未婚','Not yet married'],['single','單身（離異／喪偶）','单身（离异／丧偶）','Single (divorced / widowed)'],['single_parent','單親','单亲','Single parent']] },
+  { k:'marital', t:['身分','身份','Status'], o:[['couple','夫妻（已婚）','夫妻（已婚）','Married couple'],['unmarried','未婚','未婚','Not yet married'],['dating','戀愛中（男女朋友）','恋爱中（男女朋友）','In a relationship (dating)'],['single','單身（離異／喪偶）','单身（离异／丧偶）','Single (divorced / widowed)'],['single_parent','單親','单亲','Single parent']] },
   { k:'work', t:['就職','就职','Work'], o:[['boss','老闆','老板','Business owner'],['manager','主管','主管','Manager'],['employee','員工','员工','Employee'],['homemaker','家管','家管','Homemaker'],['selfemp','自僱／自由工作','自雇／自由职业','Self-employed'],['retired','退休','退休','Retired'],['jobless','待業','待业','Between jobs']] },
   { k:'study', t:['在學','在学','Studying'], o:[['preK','幼兒園','幼儿园','Kindergarten'],['primary','小學','小学','Primary school'],['junior','初中','初中','Junior high'],['senior','高中','高中','Senior high'],['univ','大學','大学','University'],['grad','研究所','研究生','Graduate school']] },
   { k:'faith', t:['信仰','信仰','Faith'], o:[['pastor','牧者','牧者','Pastor'],['coworker','同工','同工','Church worker'],['disciple','門徒','门徒','Disciple'],['newbeliever','初信','初信','New believer'],['seeker','慕道','慕道','Seeker'],['unbeliever','未信','未信','Not a believer']] }
@@ -6592,7 +6592,7 @@ const pfSuggestAud = p => {
   if (p.marital === 'single_parent') return 'single_parent';
   if (p.marital === 'couple') return 'couple';
   if (age >= 65) return 'elder';
-  if (p.marital === 'unmarried' || p.marital === 'single') return 'single';
+  if (p.marital === 'unmarried' || p.marital === 'single' || p.marital === 'dating') return 'single';
   return 'adult';
 };
 const PF_GUIDE = {
@@ -6604,13 +6604,13 @@ const PF_GUIDE = {
     seeker:'a seeker exploring faith: use everyday language, no jargon, no pressure, answer the real question first',
     unbeliever:'not a believer: be respectful and gentle, avoid insider words, begin from their life and honest questions, never pressure'
   },
-  marital:{ couple:'married: include marriage/family scenes where natural', unmarried:'not yet married: relationships, calling and waiting where natural', single:'single (divorced or widowed): be tender, never assume they are looking to remarry, speak of belonging and healing', single_parent:'a single parent: acknowledge exhaustion, give very practical small steps, no guilt' },
+  marital:{ couple:'married: include marriage/family scenes where natural', unmarried:'not yet married: relationships, calling and waiting where natural', dating:'in a dating relationship (boyfriend/girlfriend): speak of honest love, purity, boundaries, communication and discerning marriage; no pressure and never assume it will end in marriage', single:'single (divorced or widowed): be tender, never assume they are looking to remarry, speak of belonging and healing', single_parent:'a single parent: acknowledge exhaustion, give very practical small steps, no guilt' },
   work:{ boss:'a business owner: decisions, responsibility, stewardship, integrity, loneliness of leading', manager:'a manager: leading a team, pressure from above and below, fairness', employee:'an employee: workplace relationships, boss, calling at work, fatigue', homemaker:'a homemaker: dignity and value of home work, ordinary-day examples', selfemp:'self-employed: income uncertainty, discipline, trust', retired:'retired: purpose, legacy, health, grandchildren', jobless:'between jobs: be gentle, hope, identity beyond work, practical encouragement' },
   study:{ preK:'kindergarten age: extremely simple, tiny sentences, stories', primary:'primary-school age: simple words, concrete stories and games', junior:'junior-high age: real, relatable, no talking down', senior:'senior-high age: exams, future, identity, friendships', univ:'a university student: independence, major/career choices, relationships, doubts', grad:'a graduate student: research pressure, advisors, deeper reasoning' }
 };
 const PF_ZH = {
   faith:{ pastor:'牧者：以同工平輩口吻，不必解釋基本觀念，可連結牧養、講道與倦怠', coworker:'教會同工：連結服事、團隊、帶小組與保持靈命新鮮', disciple:'門徒：可更深入，重實踐，並鼓勵他栽培別人（繁殖）', newbeliever:'初信者：根基清楚、鼓勵為主，教會用語要簡單解釋，給小步驟', seeker:'慕道友：用日常語言，不用術語、不施壓，先回答他真正的問題', unbeliever:'尚未信主：尊重溫和，避免教會內部詞彙，從他的生活與真實疑問出發，絕不施壓' },
-  marital:{ couple:'已婚：自然時可帶入夫妻與家庭情境', unmarried:'未婚：自然時可談交往、呼召與等候', single:'單身（離異或喪偶）：語氣溫柔，不預設他想再婚，談歸屬與醫治', single_parent:'單親：先體恤疲憊，給非常實際的小步驟，不加重愧疚' },
+  marital:{ couple:'已婚：自然時可帶入夫妻與家庭情境', unmarried:'未婚：自然時可談交往、呼召與等候', dating:'戀愛中（有男女朋友）：自然時談真誠的愛、聖潔、界線、溝通與分辨婚姻；不施壓，不預設一定走入婚姻', single:'單身（離異或喪偶）：語氣溫柔，不預設他想再婚，談歸屬與醫治', single_parent:'單親：先體恤疲憊，給非常實際的小步驟，不加重愧疚' },
   work:{ boss:'老闆：決策、責任、管家職分、誠信、領導的孤單', manager:'主管：帶團隊、上下夾擊的壓力、公平', employee:'員工：職場人際、上司、職場呼召、疲憊', homemaker:'家管：家務的價值與尊嚴，用日常生活舉例', selfemp:'自僱：收入不穩、自律、信靠', retired:'退休：生命意義、傳承、健康、含飴弄孫', jobless:'待業：溫柔、盼望、工作之外的身分、實際的鼓勵' },
   study:{ preK:'幼兒園年紀：非常簡單的短句、用故事', primary:'小學年紀：淺白用字、具體故事與遊戲', junior:'初中年紀：真實、貼近、不居高臨下', senior:'高中年紀：考試、未來、自我認同、友誼', univ:'大學生：獨立、選系與職涯、感情、疑問', grad:'研究生：研究壓力、指導教授、較深的推理' }
 };
