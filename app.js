@@ -23,7 +23,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.30.0';
+const VERSION = 'v2.30.1';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -6557,6 +6557,8 @@ const PF_FIELDS = [
   { k:'study', t:['在學','在学','Studying'], o:[['preK','幼兒園','幼儿园','Kindergarten'],['primary','小學','小学','Primary school'],['junior','初中','初中','Junior high'],['senior','高中','高中','Senior high'],['univ','大學','大学','University'],['grad','研究所','研究生','Graduate school']] },
   { k:'faith', t:['信仰','信仰','Faith'], o:[['pastor','牧者','牧者','Pastor'],['coworker','同工','同工','Church worker'],['disciple','門徒','门徒','Disciple'],['newbeliever','初信','初信','New believer'],['seeker','慕道','慕道','Seeker'],['unbeliever','未信','未信','Not a believer']] }
 ];
+const PF_REL = { k:'religion', t:['宗教背景','宗教背景','Religious background'], o:[['buddhism','佛教','佛教','Buddhism'],['taoism','道教','道教','Taoism'],['folk','民間信仰','民间信仰','Folk religion'],['confucian','儒家','儒家','Confucianism'],['yiguandao','一貫道','一贯道','Yiguandao'],['tantric','密宗','密宗','Esoteric / Tibetan Buddhism'],['soka','創價學會','创价学会','Soka Gakkai'],['muslim','穆斯林','穆斯林','Muslim'],['hindu','印度教','印度教','Hinduism'],['atheist','無神論','无神论','Atheism']] };
+const pfSeeking = p => p.faith === 'seeker' || p.faith === 'unbeliever';
 const pfOpt = (f, k) => { const o = f.o.find(x => x[0] === k); return o ? L3(o[1], o[2], o[3]) : ''; };
 const pfLabel = f => L3(f.t[0], f.t[1], f.t[2]);
 /* 多個資料檔（家人共用一支手機）：state.profiles 陣列＋state.pfIdx；舊版單一 state.profile 自動轉入 */
@@ -6640,6 +6642,7 @@ const PROFILE_SYS = () => {
   if (p.gender) L.push((en ? 'Gender: ' : '性別：') + pfOpt(PF_FIELDS[0], p.gender));
   if (+p.age) L.push((en ? 'Age: ' : '年齡：') + (+p.age));
   ['marital', 'work', 'study', 'faith'].forEach(k => { if (p[k] && G[k] && G[k][p[k]]) L.push((en ? PF_FIELDS.find(f => f.k === k).t[2] : PF_FIELDS.find(f => f.k === k).t[0]) + ' → ' + G[k][p[k]]); });
+  if (pfSeeking(p) && p.religion) L.push((en ? 'Religious background: ' : '宗教背景：') + pfOpt(PF_REL, p.religion) + (en ? ' → respect it; find common ground and honest questions first, never attack or mock their tradition, and explain Christian terms simply' : ' → 尊重其背景；先找共同點與他真實的疑問，絕不攻擊或嘲笑他的傳統，基督教用語要簡單解釋'));
   if (p.note) L.push((en ? 'What they most want help with right now: ' : '目前最想得到幫助的事：') + String(p.note).slice(0, 160));
   const tone = PF_TONE[p.tone] ? (en ? PF_TONE[p.tone].en : PF_TONE[p.tone].zh) : '';
   const ctx = (p.ctx !== false) ? pfContext() : '';
@@ -6673,7 +6676,7 @@ function openProfile(after){
       <div style="margin:12px 0 4px;font-weight:700;font-size:13px">${esc(L3('年齡', '年龄', 'Age'))}</div>
       <input id="pfAge" type="number" inputmode="numeric" min="3" max="110" value="${esc(p.age || '')}" style="width:120px;${inp}">
       ${kid ? `<div class="muted" style="font-size:12.5px;line-height:1.7;margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--surface-alt)">🧸 ${esc(L3('12 歲以下的孩子：只會把暱稱傳給 AI，其他資料、讀經紀錄與畫線一律不傳；小智會用適合孩子的方式回答。', '12 岁以下的孩子：只会把昵称传给 AI，其他资料、读经记录与画线一律不传；小智会用适合孩子的方式回答。', 'For children under 12, only the nickname is shared with the AI. Nothing else — details, reading history or highlights — is sent. Xiaozhi answers in a child-friendly way.'))}</div>`
-      : `${sg(PF_FIELDS[0])}${PF_FIELDS.slice(1).map(sg).join('')}
+      : `${sg(PF_FIELDS[0])}${PF_FIELDS.slice(1).map(sg).join('')}${pfSeeking(p) ? sg(PF_REL) : ''}
       <div style="margin:12px 0 4px;font-weight:700;font-size:13px">${esc(L3('目前最想得到幫助的事（選填）', '目前最想得到帮助的事（选填）', 'What I most want help with now (optional)'))}</div>
       <textarea id="pfNote" rows="2" maxlength="160" placeholder="${esc(L3('例：工作壓力大、和孩子溝通、想建立靈修習慣…', '例：工作压力大、和孩子沟通、想建立灵修习惯…', 'e.g. work stress, talking with my kids, building a devotional habit…'))}" style="width:100%;box-sizing:border-box;${inp}">${esc(p.note || '')}</textarea>
       <div style="margin:12px 0 4px;font-weight:700;font-size:13px">${esc(L3('語氣偏好', '语气偏好', 'Tone'))}</div>
