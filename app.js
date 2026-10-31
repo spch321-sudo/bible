@@ -7,7 +7,8 @@
    ========================================================================== */
 /* 韓文模式：不管系統提示是哪一種語言，一律要求小智用韓文回答（含經文引用與用語） */
 const KO_DIRECTIVE = '\n\nIMPORTANT — LANGUAGE (this overrides any earlier instruction about reply language): write your entire reply in natural, warm, elegant Korean (한국어), using the vocabulary of the Korean Protestant church (하나님, 예수 그리스도, 성령님, 은혜, 구원, 기도). When you quote Scripture, use the wording of the 개역한글 (Korean Revised Version, 1961) and give references with Korean book names, for example 요한복음 3:16. Do not answer in English or Chinese unless the user explicitly asks. Wherever this prompt mentions the reader\'s language, script or Chinese/English wording, it means Korean.';
-const koSys = x => (state.lang === 'ko') ? String(x == null ? '' : x) + KO_DIRECTIVE : x;
+const JA_DIRECTIVE = '\n\nIMPORTANT — LANGUAGE (this overrides any earlier instruction about reply language): write your entire reply in natural, warm, elegant Japanese (日本語, polite です・ます style), using the vocabulary of the Japanese Protestant church (神, 主イエス・キリスト, 聖霊, 恵み, 救い, 祈り, 福音). When you quote Scripture, use the wording of the 口語訳聖書 (Japanese Colloquial Bible, 1955) and give references with Japanese book names, for example ヨハネによる福音書 3:16. Do not answer in English or Chinese unless the user explicitly asks. Wherever this prompt mentions the reader\'s language, script or Chinese/English wording, it means Japanese.';
+const koSys = x => (state.lang === 'ko') ? String(x == null ? '' : x) + KO_DIRECTIVE : (state.lang === 'ja') ? String(x == null ? '' : x) + JA_DIRECTIVE : x;
 const API = {
   chat: 'https://xiaozhi-proxy.spch321.workers.dev',   // {system, messages:[{role,content}]}
   tts : 'https://azure-tts.spch321.workers.dev',       // {voice, rate, sil, silc, sile, text}
@@ -19,7 +20,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.24.0';
+const VERSION = 'v2.25.0';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -370,13 +371,18 @@ const I18N = {
 };
 const t = () => I18N[state.lang] || I18N.zh;
 const isKO = () => state.lang === 'ko';
+const isJA = () => state.lang === 'ja';
+/* 「語言包」語言（韓、日）：UI 文字先查 lang-xx.js 對照表（英文原句→該語言），查不到就維持英文 */
+const isX = () => state.lang === 'ko' || state.lang === 'ja';
+/* 提示詞／內容底稿用英文的語言（英、韓、日）；排版仍各走各的（日文走 CJK 排版） */
+const isEP = () => state.lang === 'en' || state.lang === 'ko' || state.lang === 'ja';
 /* 「西文排版」：斷句、空白、標點、量詞都走英文那一套——韓文（有空格、句點結尾）也走這一條 */
 const isEN = () => state.lang === 'en' || state.lang === 'ko';
 /* 韓文 UI 字串：先查 lang-ko.js 的對照表（英文原句→韓文），查不到就維持英文 */
-const koT = (zh, en) => { const P = window.KO_PACK; return (P && typeof en === 'string') ? P.t(zh, en) : en; };
+const koT = (zh, en) => { const P = state.lang === 'ja' ? window.JA_PACK : window.KO_PACK; return (P && typeof en === 'string') ? P.t(zh, en) : en; };
 const isZS = () => state.lang === 'zs';
 /* 三語挑字：L3(繁, 简, 英) */
-const L3 = (zh, zs, en) => isKO() ? koT(zh, en) : (isEN() ? en : (isZS() ? zs : zh));
+const L3 = (zh, zs, en) => isX() ? koT(zh, en) : (isEN() ? en : (isZS() ? zs : zh));
 
 /* ---------------------------------------------------------------- 狀態 */
 const FONT_CLASS = ['', 'fs-lg', 'fs-xl', 'fs-xxl'];
@@ -386,6 +392,9 @@ const HL_SWATCH = {gold:'#D9B168', green:'#6FAE71', blue:'#6C93D1', pink:'#E58FA
                    purple:'#A48AC9', maroon:'#8C4A4E', brown:'#8A6740', charcoal:'#54534E'};
 /* 與姊妹App共用的 Azure 真人語音；順序＝預設值在最前（zh 雲哲、zs 云帆） */
 const VOICES = {
+  ja: [{n:'ケイタ', v:'ja-JP-KeitaNeural'},
+       {n:'ナナミ', v:'ja-JP-NanamiNeural'},
+       {n:'ダイチ', v:'ja-JP-DaichiNeural'}],
   ko: [{n:'인준', v:'ko-KR-InJoonNeural'},
        {n:'선희', v:'ko-KR-SunHiNeural'},
        {n:'현수', v:'ko-KR-HyunsuMultilingualNeural'}],
@@ -470,7 +479,7 @@ function applyChrome(){
   h.classList.toggle('bmmode', bmMode);
   const th = THEMES[state.theme] || 'auto';
   if (th === 'auto') h.removeAttribute('data-theme'); else h.setAttribute('data-theme', th);
-  h.setAttribute('lang', isKO() ? 'ko' : (isEN() ? 'en' : (isZS() ? 'zh-Hans' : 'zh-Hant')));
+  h.setAttribute('lang', isJA() ? 'ja' : isKO() ? 'ko' : (isEN() ? 'en' : (isZS() ? 'zh-Hans' : 'zh-Hant')));
   h.setAttribute('data-lang', state.lang);
   $('#brandName').textContent = t().app;
   document.title = t().app;
@@ -523,7 +532,8 @@ async function loadTOC(){
   if (TOC.length) return;
   TOC = await fetchJSON('toc.json');
   TOC.forEach((b, i) => { b.i = i; BOOK[b.id] = b;
-    const kb = window.KO_PACK && KO_PACK.books[b.id]; if (kb){ b.ko = kb.ko; b.ako = kb.ako; } });
+    const kb = window.KO_PACK && KO_PACK.books[b.id]; if (kb){ b.ko = kb.ko; b.ako = kb.ako; }
+    const jb = window.JA_PACK && JA_PACK.books[b.id]; if (jb){ b.ja = jb.ja; b.aja = jb.aja; } });
 }
 async function loadShard(lang, shard){
   const key = lang + '|' + shard;
@@ -542,8 +552,8 @@ async function getChapter(bookId, ch){
   const arr = d[bookId]; if (!arr || !arr[ch - 1]) return null;
   return arr[ch - 1];
 }
-const bname = b => isKO() ? (b.ko || b.en || b.zh) : (isEN() ? (b.en || b.zh) : (isZS() ? b.zs : b.zh));
-const babbr = b => isKO() ? (b.ako || b.aen || b.azh) : (isEN() ? (b.aen || b.azh) : (isZS() ? b.azs : b.azh));
+const bname = b => isJA() ? (b.ja || b.en || b.zh) : isKO() ? (b.ko || b.en || b.zh) : (isEN() ? (b.en || b.zh) : (isZS() ? b.zs : b.zh));
+const babbr = b => isJA() ? (b.aja || b.aen || b.azh) : isKO() ? (b.ako || b.aen || b.azh) : (isEN() ? (b.aen || b.azh) : (isZS() ? b.azs : b.azh));
 
 const GROUPS = [
   { zh:'摩西五經',   zs:'摩西五经',   en:'The Law',              a:0,  b:5  },
@@ -556,7 +566,7 @@ const GROUPS = [
   { zh:'一般書信',   zs:'一般书信',   en:'General Letters',      a:57, b:65 },
   { zh:'啟示錄',     zs:'启示录',     en:'Revelation',           a:65, b:66 }
 ];
-const gname = g => isKO() ? (g.ko || g.en) : (isEN() ? g.en : (isZS() ? g.zs : g.zh));
+const gname = g => isJA() ? (g.ja || g.en) : isKO() ? (g.ko || g.en) : (isEN() ? g.en : (isZS() ? g.zs : g.zh));
 
 /* 今日默想輪替的經卷章（皆為歷代信徒所愛的篇章） */
 const DAILY = [
@@ -1246,8 +1256,8 @@ async function loadPlans(){
   PLANS = await fetchJSON('plans.json');
   return PLANS;
 }
-const planTitle = p => (p.title[state.lang] || (isKO() && p.title.en) || p.title.zh);
-const planSubtitle = p => (p.subtitle[state.lang] || (isKO() && p.subtitle.en) || p.subtitle.zh);
+const planTitle = p => (p.title[state.lang] || (isX() && p.title.en) || p.title.zh);
+const planSubtitle = p => (p.subtitle[state.lang] || (isX() && p.subtitle.en) || p.subtitle.zh);
 const planDayKey = (pid, day) => pid + '-' + day;
 function planDoneCount(pid){
   let n = 0; const pfx = pid + '-';
@@ -1308,7 +1318,7 @@ function togglePlanDone(pid, day){
    weeks[週] = { t:本週主題, i:陪讀者的提醒, q:[三個一起聊的問題], p:一句禱告 }，每一欄都是 {zh,zs,en}。
    進度、打勾、提醒都跟其他計畫共用；差別只有：每週指引卡、請小智幫忙預備、分享本週給對方，
    而且不發經卷獎章（只讀部分章節）。 */
-const cpL = o => (o && (o[state.lang] || (isKO() && o.en) || o.zh)) || '';
+const cpL = o => (o && (o[state.lang] || (isX() && o.en) || o.zh)) || '';
 function companionPassage(d){ return bname(BOOK[d.book]) + ' ' + planRangeLabel(d.book, d.start, d.end); }
 function companionShareText(p, today){
   const w = p.weeks[today.week], C = isEN() ? ': ' : '：';
@@ -2140,7 +2150,7 @@ function openHlSheet(el){
       h.c = color; h.n = ta.value.trim(); saveUser(); mask.remove();
       /* 記下這一題是從哪一節來的，答完才分享得出「經文＋答案」 */
       chatSrc = { t:h.t, b:RD.book, ch:cno, v:h.v || 0, v2:h.v2 || 0 };
-      chatPending = isKO() ? `이 말씀으로 묵상하도록 도와주세요: “${h.t}”` : isEN() ? `Help me meditate on this verse: “${h.t}”`
+      chatPending = isJA() ? `この箇所を黙想できるよう助けてください：「${h.t}」` : isKO() ? `이 말씀으로 묵상하도록 도와주세요: “${h.t}”` : isEN() ? `Help me meditate on this verse: “${h.t}”`
                 : `${isZS() ? '请就这句经文帮助我默想：' : '請就這句經文幫助我默想：'}「${h.t}」`;
       go('#/companion');
     }
@@ -2192,7 +2202,7 @@ const PIC_L = {
                 ['Path','path'],['Wheat','wheat field'],['Water','calm water'],['Clouds','clouds'],
                 ['Mist','morning mist'],['Stars','starry sky'],['Church','church'],['Cross','cross']] }
 };
-const pl = () => PIC_L[state.lang] || (isKO() ? PIC_L.en : PIC_L.zh);
+const pl = () => PIC_L[state.lang] || (isX() ? PIC_L.en : PIC_L.zh);
 
 let pxState = { q:'', page:1, items:[], busy:false, end:false };
 let photoBy = '';                      // 這張照片的攝影師，掛在挑選畫面上
@@ -2607,13 +2617,13 @@ const HYM_L = {
        miss:'Not uploaded yet: ',
        hint:'Hymns are hosted on this site, so they mix into recordings properly. Please respect each hymn’s licence.' }
 };
-const hl_ = () => HYM_L[state.lang] || (isKO() ? HYM_L.en : HYM_L.zh);
+const hl_ = () => HYM_L[state.lang] || (isX() ? HYM_L.en : HYM_L.zh);
 /* 一首歌的顯示名稱（三語，沒填就用中文那個） */
-const songName = s => (isKO() ? (s.nk || s.ne || s.n) : isEN() ? (s.ne || s.n) : (isZS() ? (s.ns || s.n) : s.n)) || s.f || '';
+const songName = s => (isJA() ? (s.nj || s.ne || s.n) : isKO() ? (s.nk || s.ne || s.n) : isEN() ? (s.ne || s.n) : (isZS() ? (s.ns || s.n) : s.n)) || s.f || '';
 /* 出處與分類也跟著語言走（music.json 的 bs／be、ts／te；沒填就用中文那個） */
-const songBy  = s => (isKO() ? (s.bk || s.be || s.by) : isEN() ? (s.be || s.by) : (isZS() ? (s.bs || s.by) : s.by)) || '';
+const songBy  = s => (isJA() ? (s.bj || s.be || s.by) : isKO() ? (s.bk || s.be || s.by) : isEN() ? (s.be || s.by) : (isZS() ? (s.bs || s.by) : s.by)) || '';
 const tagName = (s, tg) => { const L = (hymnList || []).find(x => x.tag === tg) || s || {};
-  return (isKO() ? (L.tk || L.te || tg) : isEN() ? (L.te || tg) : (isZS() ? (L.ts || tg) : tg)) || ''; };
+  return (isJA() ? (L.tj || L.te || tg) : isKO() ? (L.tk || L.te || tg) : isEN() ? (L.te || tg) : (isZS() ? (L.ts || tg) : tg)) || ''; };
 
 let hymnList = null;          // null = 還沒抓過
 let bgmCredit = '';           // 「詩歌：〈歌名〉／出處」，會印在影片下緣
@@ -2958,8 +2968,8 @@ async function bgLoadList(){
   }catch(e){ bgList = []; bgCats = []; }
   return bgList;
 }
-const bgCatName = c => (isKO() ? (c.nk || c.ne || c.n) : isEN() ? (c.ne || c.n) : (isZS() ? (c.ns || c.n) : c.n)) || '';
-const bgName = b => (isKO() ? (b.nk || b.ne || b.n) : isEN() ? (b.ne || b.n) : (isZS() ? (b.ns || b.n) : b.n)) || '';
+const bgCatName = c => (isJA() ? (c.nj || c.ne || c.n) : isKO() ? (c.nk || c.ne || c.n) : isEN() ? (c.ne || c.n) : (isZS() ? (c.ns || c.n) : c.n)) || '';
+const bgName = b => (isJA() ? (b.nj || b.ne || b.n) : isKO() ? (b.nk || b.ne || b.n) : isEN() ? (b.ne || b.n) : (isZS() ? (b.ns || b.n) : b.n)) || '';
 function bgImgLoad(file){
   return new Promise((res, rej) => {
     const tryAt = (bases) => {
@@ -3089,7 +3099,7 @@ const cardToVal = () => { const v = (state.cardTo || '').trim(); return (v === '
 const DEF_SIGN = () => L3('願上帝賜福你！', '愿上帝赐福你！', 'God bless you!');
 /* 詩篇用「篇」／Psalm，其餘用「章」／Chapter */
 function chapLabel(bookId, n){
-  if (bookId === 'Psalms') return isKO() ? `${n}편` : isEN() ? `Psalm ${n}` : L3(`第 ${n} 篇`, `第 ${n} 篇`, '');
+  if (bookId === 'Psalms') return isJA() ? `第${n}篇` : isKO() ? `${n}편` : isEN() ? `Psalm ${n}` : L3(`第 ${n} 篇`, `第 ${n} 篇`, '');
   return t().chapter(n);
 }
 function cardRef(h){
@@ -3231,11 +3241,11 @@ function drawBeautyFace(cx, vid, sx, sy, side, R){
    換字型頂替，頂到黑體，卡片上就變成一句話裡粗細不一。 */
 const CARD_SERIF0 = () => isZS()
   ? '"Noto Serif SC","Source Han Serif SC","Songti SC","STSong","SimSun",Georgia,serif'
-  : (isKO() ? '"Noto Serif KR","Nanum Myeongjo","AppleMyungjo","Batang",Georgia,serif' : isEN() ? 'Georgia,"Times New Roman",serif'
+  : (isJA() ? '"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho","YuMincho","MS PMincho",serif' : isKO() ? '"Noto Serif KR","Nanum Myeongjo","AppleMyungjo","Batang",Georgia,serif' : isEN() ? 'Georgia,"Times New Roman",serif'
             : '"Noto Serif TC","Songti TC","STSong","PMingLiU",Georgia,serif');
 const CARD_SANS0 = () => isZS()
   ? '"Noto Sans SC","PingFang SC","Microsoft YaHei","Heiti SC",sans-serif'
-  : (isKO() ? '"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif' : isEN() ? '-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif'
+  : (isJA() ? '"Noto Sans JP","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif' : isKO() ? '"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif' : isEN() ? '-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif'
             : '"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif');
 
 /* v2.19.3 卡片字體與文字顏色：state.cardFont（auto／mingti／hei／kai／yuan）、state.cardInk（空＝自動，或 #RRGGBB）。
@@ -3249,7 +3259,7 @@ const cardInkVal = () => /^#[0-9a-fA-F]{6}$/.test(state.cardInk || '') ? state.c
 const IBF = {};
 function fontStatText(){
   const k = cardFontKey();
-  if (isEN() || (k !== 'kai' && k !== 'yuan')) return '';
+  if (isEP() || (k !== 'kai' && k !== 'yuan')) return '';
   const st = IBF[k === 'kai' ? 'IBKai' : 'IBYuan'];
   if (!st) return L3('字體準備中…','字体准备中…','Preparing font…');
   if (st === 'loading') return L3('⏳ 字體下載中（約 1–2 MB），請稍候…','⏳ 字体下载中（约 1–2 MB），请稍候…','⏳ Downloading font (1–2 MB)…');
@@ -3271,10 +3281,12 @@ function ensureIBFont(name, url){
 }
 function cardFontStack(){
   const k = cardFontKey();
-  if (!isEN() && k === 'kai') ensureIBFont('IBKai', 'fonts/kai2.woff');
-  if (!isEN() && k === 'yuan') ensureIBFont('IBYuan', 'fonts/yuan2.woff');
+  if (!isEP() && k === 'kai') ensureIBFont('IBKai', 'fonts/kai2.woff');
+  if (!isEP() && k === 'yuan') ensureIBFont('IBYuan', 'fonts/yuan2.woff');
   if (k === 'mingti') return CARD_SERIF0();
   if (k === 'hei') return CARD_SANS0();
+  if (isJA() && k === 'kai') return '"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif';
+  if (isJA() && k === 'yuan') return '"Hiragino Maru Gothic ProN","Yu Gothic","Noto Sans JP",sans-serif';
   if (k === 'kai') return isZS() ? '"IBKai","Kaiti SC","STKaiti","KaiTi","楷体",serif'
     : (isEN() ? '"Snell Roundhand","Apple Chancery","Brush Script MT",cursive' : '"IBKai","Kaiti TC","BiauKai","DFKai-SB","STKaiti","KaiTi",serif');
   if (k === 'yuan') return isZS() ? '"IBYuan","Yuanti SC","PingFang SC","Noto Sans SC",sans-serif'
@@ -4562,7 +4574,7 @@ const AUD_WRITE = () => {
   const a = state.audience;
   if (a === 'seeker') return SK_WRITE();
   { const x2 = A2(); if (x2) return x2.write; }
-  if (isEN()) return {
+  if (isEP()) return {
     adult:'\nThe reader is an adult: mature, warm and sincere.',
     teen :'\nThe reader is a teenager: light, witty, like a friend chatting; a little humour is fine, but never preachy, flippant, or joking about God or Scripture. No emoji.',
     kid  :'\nThe reader is a young child: very simple words and short sentences, like telling a story, one idea per sentence, no hard terms. No emoji.'
@@ -4600,7 +4612,7 @@ const TWEAK_L = {
        need:'The card text is still empty — write something first, or ask Xiaozhi to write it.',
        picks:['Shorter','Longer','Warmer','More everyday','Stronger','Say it another way'] }
 };
-const tw_ = () => TWEAK_L[state.lang] || (isKO() ? TWEAK_L.en : TWEAK_L.zh);
+const tw_ = () => TWEAK_L[state.lang] || (isX() ? TWEAK_L.en : TWEAK_L.zh);
 const isFullV = () => !!(photoImg && photoMode === 'full' && fullKind === 'verse');   /* 整張原圖＋經文：要改的是附在經文下面的祝福 */
 function curNote(){
   if (isFullV()) return String(fullBless || '').trim();
@@ -4613,7 +4625,7 @@ async function noteRewrite(instr, mask){
   blessBusy = true;
   const go = mask && $('#twGo', mask);
   if (go){ go.disabled = true; go.textContent = tw_().busy; }
-  const sys = isEN()
+  const sys = isEP()
     ? 'You are Xiaozhi from Kingdom 321 Online Fellowship. Rewrite the short blessing the user gives you, following their instruction. Return ONLY the rewritten text — no explanation, no heading, no bullet points, no quotation marks, and do not quote the verse again. Keep it warm and spoken, never preachy. Close with a short blessing ending in just "Amen" — do not write "in the name of Jesus we pray".'
     : isZS()
     ? '你是「小智」，国度321空中团契的属灵同伴。请照使用者的要求，修改他给你的这段祝福。只回传改好的内文本身——不要解释、不要标题、不要条列、不要引号、不要再抄一次经文。保持温暖、口语、不说教。祝福结尾只用「阿们」，不要写「奉主耶稣的名祷告」。'
@@ -4670,12 +4682,12 @@ async function blessWrite(){
   const full = photoMode === 'full' && photoImg;
   const btn = $(full ? '#fBless' : '#blessBtn');
   if (btn){ btn.disabled = true; btn.textContent = t().blessing; }
-  const sysFull = isEN()
+  const sysFull = isEP()
     ? 'You are Xiaozhi, a spiritual companion from Kingdom 321 Online Fellowship. From the verse the user gives you, write a very short blessing for a brother or sister: one or two sentences, under 35 words, warm and spoken, drawn from what this verse says of God. No headings, no quotation marks, do not quote the verse again, no emoji. If it reads as a prayer, close it with "in the name of the Lord Jesus we pray, Amen".'
     : state.lang === 'zs'
     ? '你是“小智”，国度321空中团契的属灵同伴。请照使用者给的这节经文，写一两句很短的祝福送给弟兄姊妹：总共一到两句、50字以内，口语、温暖，从这节经文所显明的神的心意出发。不要标题、不要引号、不要再抄一次经文、不要表情符号。若结尾写成祷告，要用“奉主耶稣的名祷告，阿们”。'
     : '你是「小智」，國度321空中團契的屬靈同伴。請照使用者給的這節經文，寫一兩句很短的祝福送給弟兄姊妹：總共一到兩句、50字以內，口語、溫暖，從這節經文所顯明的神的心意出發。不要標題、不要引號、不要再抄一次經文、不要表情符號。若結尾寫成禱告，要用「奉主耶穌的名禱告，阿們」。';
-  const sys = full ? sysFull : isEN()
+  const sys = full ? sysFull : isEP()
     ? 'You are Xiaozhi, a spiritual companion from Kingdom 321 Online Fellowship. From the verse the user gives you, write a short, warm word of encouragement for a brother or sister. First name in one or two sentences what this verse shows of God\'s heart, then one sentence that touches ordinary daily life, then close with a blessing. Three to four sentences, under 60 words. Warm and spoken, never preachy. No headings, no bullet points, no quotation marks, and do not quote the verse again. If it reads as a prayer, close it with "in the name of the Lord Jesus we pray, Amen" — never "in Jesus\' name we ask, Amen."'
     : state.lang === 'zs'
     ? '你是「小智」，国度321空中团契的属灵同伴。请照使用者给的这节经文，写一段温暖的关怀祝福，送给弟兄姊妹。要求：先用一两句点出这节经文里神的心意，再写一句贴近生活的祝福，最后用一句祝福收尾。总共三到四句、120 字以内，口语、温暖、不说教，不要标题、不要条列、不要引号、不要再抄一次经文。若结尾写成祷告，要用「奉主耶稣的名祷告，阿们」，不要用「奉耶稣的名求」。'
@@ -4694,7 +4706,7 @@ async function blessWrite(){
     toast(t().chatErr + (why ? '（' + why + '）' : ''), 4000);
   }
 }
-const pick2 = a => isKO() ? (a.length > 2 ? koT(a[0], a[2]) : a[0]) : a[isEN() ? (a.length > 2 ? 2 : 0) : (isZS() ? 1 : 0)];
+const pick2 = a => isX() ? (a.length > 2 ? koT(a[0], a[2]) : a[0]) : a[isEN() ? (a.length > 2 ? 2 : 0) : (isZS() ? 1 : 0)];
 function chips(id, items, cur, attr){
   return `<div class="cardchips" id="${id}">${items.map(([v, n]) =>
     `<button class="${String(cur) === String(v) ? 'on' : ''}" data-${attr}="${v}">${esc(pick2(n))}</button>`).join('')}</div>`;
@@ -5202,7 +5214,7 @@ const TEAM_L = {
     verseFrom:'Attach the verse', refresh:'Refresh', shareInvite:'Invite'
   }
 };
-const tl = () => TEAM_L[state.lang] || (isKO() ? TEAM_L.en : TEAM_L.zh);
+const tl = () => TEAM_L[state.lang] || (isX() ? TEAM_L.en : TEAM_L.zh);
 
 /* 積分：讀經最重，分享代禱關懷次之。全部由紀錄算出來，不另外累加，才不會算錯。 */
 const PT = { ch:2, share:5, pray:3, care:3, witness:8 };
@@ -5219,7 +5231,7 @@ const BADGES = [
   { id:'ca10',  i:'🤝', n:['彼此關懷','彼此关怀','Ten Cares'],   f:s => (s.acts.care || 0) >= 10 },
   { id:'wi1',   i:'✨', n:['第一個見證','第一个见证','First Testimony'], f:s => (s.acts.witness || 0) >= 1 }
 ];
-const badgeName = b => isKO() ? koT(b.n[0], b.n[2]) : isEN() ? b.n[2] : (isZS() ? b.n[1] : b.n[0]);
+const badgeName = b => isX() ? koT(b.n[0], b.n[2]) : isEN() ? b.n[2] : (isZS() ? b.n[1] : b.n[0]);
 
 let TEAM = { code:null, data:null, err:'', busy:false, sub:'feed' };
 
@@ -5776,7 +5788,7 @@ async function teamAIWrite(ta, btn, kind, verse){
   const old = btn.textContent;
   btn.disabled = true; btn.textContent = L.writing;
   const who = { share:'讀經分享', pray:'代禱事項', care:'關懷的話', witness:'見證' }[kind] || '分享';
-  const sys = isEN()
+  const sys = isEP()
     ? 'You are Xiaozhi, a spiritual companion of Kingdom 321 Online Fellowship. Write a short, warm piece for a small group: three to four sentences, under 70 words, spoken and personal, never preachy. No headings, no bullets, no quotation marks.'
     : `你是「小智」，國度321空中團契的屬靈同伴。請幫使用者寫一段要貼在小組裡的「${who}」，三到四句、120 字以內，口語、溫暖、不說教，不要標題、不要條列、不要引號。`;
   const ask = (verse ? L3('經文：', '经文：', 'Verse: ') + verse + '\n' : '')
@@ -6201,7 +6213,7 @@ async function viewCompanion(v){
 /* ---- 小智回答後的「追問」（v2.11.0）：不同方向一鍵追問，把剛才的回答用到婚姻、家庭、職場、生活…
    方向隨「回答對象」換；點下去等於替使用者送出一句完整的追問，不必再打字。 */
 const FU_BANK = {"zh": {"adult": [["💍", "婚姻", "請針對你剛才的回答，說明怎麼把它應用在夫妻關係與婚姻裡，並給我一個這個星期可以做的具體小步驟。"], ["👨‍👩‍👧", "家庭", "請針對你剛才的回答，說明怎麼把它應用在家庭與教養孩子（或與父母相處）上，並給我一個這個星期可以做的具體小步驟。"], ["💼", "職場", "請針對你剛才的回答，說明怎麼把它應用在工作與職場上（同事、主管、壓力、誠信），並給我一個這個星期可以做的具體小步驟。"], ["🏡", "日常", "請針對你剛才的回答，說明怎麼把它應用在日常生活的小事上（時間、金錢、習慣），並給我一個這個星期可以做的具體小步驟。"], ["💭", "內心", "請針對你剛才的回答，說明怎麼把它應用在面對內心的情緒與軟弱上（焦慮、憤怒、驕傲），並給我一個這個星期可以做的具體小步驟。"], ["🙏", "禱告", "請把你剛才說的重點，寫成一段簡短、真誠的禱告，讓我可以拿來禱告。"]], "teen": [["🏫", "學校", "用你剛才講的，幫我想想怎麼用在學校與課業上，給我一個今天就能試的小招。"], ["🤝", "朋友", "用你剛才講的，幫我想想怎麼用在朋友相處上，給我一個今天就能試的小招。"], ["🏠", "家人", "用你剛才講的，幫我想想怎麼用在跟爸媽、家人的相處上，給我一個今天就能試的小招。"], ["📱", "手機網路", "用你剛才講的，幫我想想怎麼用在手機、網路與社群上，給我一個今天就能試的小招。"], ["💭", "壓力", "用你剛才講的，幫我想想怎麼用在壓力和情緒上，給我一個今天就能試的小招。"], ["🌟", "未來", "用你剛才講的，幫我想想怎麼用在未來和夢想上，給我一個今天就能試的小招。"], ["🎯", "今天挑戰", "請給我一個跟剛才有關、今天就能完成的小挑戰，要具體、有點好玩。"]], "kid": [["🏠", "在家", "剛剛講的，我在家裡可以怎麼做呢？請用簡單的話告訴我。"], ["🏫", "在學校", "剛剛講的，我在學校可以怎麼做呢？請用簡單的話告訴我。"], ["🤝", "跟朋友", "剛剛講的，我在跟好朋友相處時可以怎麼做呢？請用簡單的話告訴我。"], ["🙏", "小禱告", "請教我一個很短的小禱告，我可以跟耶穌說。"], ["📖", "小故事", "可以再講一個跟這個有關的小故事給我聽嗎？"]], "seeker": [["🤝", "人際", "剛才說的放在人際關係裡（家人、朋友、同事），對一個還不是基督徒的人有什麼實際的幫助？請舉一個生活的例子。"], ["💍", "婚姻家庭", "剛才說的放在婚姻與家庭裡，對一個還不是基督徒的人有什麼實際的幫助？請舉一個生活的例子。"], ["💼", "工作", "剛才說的放在工作與職場裡，對一個還不是基督徒的人有什麼實際的幫助？請舉一個生活的例子。"], ["😟", "壓力焦慮", "剛才說的放在壓力與焦慮裡，對一個還不是基督徒的人有什麼實際的幫助？請舉一個生活的例子。"], ["🌍", "人生意義", "剛才說的放在尋找人生的意義與方向裡，對一個還不是基督徒的人有什麼實際的幫助？請舉一個生活的例子。"], ["❓", "我的疑問", "我心裡還有疑問，請誠實告訴我：信耶穌對一個人的生活到底有什麼實際的幫助？也請告訴我可以怎麼自己去查證。"], ["🌱", "下一步", "如果我想進一步了解，下一步可以做什麼？請給我一兩個不會有壓力的建議。"]]}, "zs": {"adult": [["💍", "婚姻", "请针对你刚才的回答，说明怎么把他应用在夫妻关系与婚姻里，并给我一个这个星期可以做的具体小步驟。"], ["👨‍👩‍👧", "家庭", "请针对你刚才的回答，说明怎么把他应用在家庭与教养孩子（或与父母相处）上，并给我一个这个星期可以做的具体小步驟。"], ["💼", "职场", "请针对你刚才的回答，说明怎么把他应用在工作与职场上（同事、主管、压力、诚信），并给我一个这个星期可以做的具体小步驟。"], ["🏡", "日常", "请针对你刚才的回答，说明怎么把他应用在日常生活的小事上（时间、金钱、习惯），并给我一个这个星期可以做的具体小步驟。"], ["💭", "内心", "请针对你刚才的回答，说明怎么把他应用在面对内心的情緒与软弱上（焦虑、愤怒、骄傲），并给我一个这个星期可以做的具体小步驟。"], ["🙏", "祷告", "请把你刚才说的重点，写成一段簡短、真诚的祷告，让我可以拿来祷告。"]], "teen": [["🏫", "学校", "用你刚才讲的，帮我想想怎么用在学校与课业上，给我一个今天就能试的小招。"], ["🤝", "朋友", "用你刚才讲的，帮我想想怎么用在朋友相处上，给我一个今天就能试的小招。"], ["🏠", "家人", "用你刚才讲的，帮我想想怎么用在跟爸妈、家人的相处上，给我一个今天就能试的小招。"], ["📱", "手机网路", "用你刚才讲的，帮我想想怎么用在手机、网路与社群上，给我一个今天就能试的小招。"], ["💭", "压力", "用你刚才讲的，帮我想想怎么用在压力和情緒上，给我一个今天就能试的小招。"], ["🌟", "未来", "用你刚才讲的，帮我想想怎么用在未来和梦想上，给我一个今天就能试的小招。"], ["🎯", "今天挑战", "请给我一个跟刚才有关、今天就能完成的小挑战，要具体、有点好玩。"]], "kid": [["🏠", "在家", "刚刚讲的，我在家里可以怎么做呢？请用簡单的话告诉我。"], ["🏫", "在学校", "刚刚讲的，我在学校可以怎么做呢？请用簡单的话告诉我。"], ["🤝", "跟朋友", "刚刚讲的，我在跟好朋友相处时可以怎么做呢？请用簡单的话告诉我。"], ["🙏", "小祷告", "请教我一个很短的小祷告，我可以跟耶稣说。"], ["📖", "小故事", "可以再讲一个跟这个有关的小故事给我听吗？"]], "seeker": [["🤝", "人際", "刚才说的放在人際关系里（家人、朋友、同事），对一个还不是基督徒的人有什么实際的帮助？请举一个生活的例子。"], ["💍", "婚姻家庭", "刚才说的放在婚姻与家庭里，对一个还不是基督徒的人有什么实際的帮助？请举一个生活的例子。"], ["💼", "工作", "刚才说的放在工作与职场里，对一个还不是基督徒的人有什么实際的帮助？请举一个生活的例子。"], ["😟", "压力焦虑", "刚才说的放在压力与焦虑里，对一个还不是基督徒的人有什么实際的帮助？请举一个生活的例子。"], ["🌍", "人生意义", "刚才说的放在寻找人生的意义与方向里，对一个还不是基督徒的人有什么实際的帮助？请举一个生活的例子。"], ["❓", "我的疑问", "我心里还有疑问，请诚实告诉我：信耶稣对一个人的生活到底有什么实際的帮助？也请告诉我可以怎么自己去查证。"], ["🌱", "下一步", "如果我想进一步了解，下一步可以做什么？请给我一两个不会有压力的建议。"]]}, "en": {"adult": [["💍", "Marriage", "Based on your answer, explain how to apply it in my marriage, and give me one concrete step I can take this week."], ["👨‍👩‍👧", "Family", "Based on your answer, explain how to apply it in my family and parenting (or with my parents), and give me one concrete step I can take this week."], ["💼", "Work", "Based on your answer, explain how to apply it at work (colleagues, boss, pressure, integrity), and give me one concrete step I can take this week."], ["🏡", "Daily life", "Based on your answer, explain how to apply it in everyday life (time, money, habits), and give me one concrete step I can take this week."], ["💭", "Inner life", "Based on your answer, explain how to apply it in facing my inner struggles (anxiety, anger, pride), and give me one concrete step I can take this week."], ["🙏", "Prayer", "Please turn the key point of your answer into a short, sincere prayer I can pray."]], "teen": [["🏫", "School", "Using what you just said, help me think through how to use it at school and with my studies — give me one small move I can try today."], ["🤝", "Friends", "Using what you just said, help me think through how to use it with my friends — give me one small move I can try today."], ["🏠", "Family", "Using what you just said, help me think through how to use it with my parents and family — give me one small move I can try today."], ["📱", "Phone & online", "Using what you just said, help me think through how to use it on my phone, online and on social media — give me one small move I can try today."], ["💭", "Stress", "Using what you just said, help me think through how to use it with stress and emotions — give me one small move I can try today."], ["🌟", "Future", "Using what you just said, help me think through how to use it for my future and dreams — give me one small move I can try today."], ["🎯", "Challenge", "Give me one small, specific, slightly fun challenge related to this that I can finish today."]], "kid": [["🏠", "At home", "About what you just said — what can I do at home? Please tell me in simple words."], ["🏫", "At school", "About what you just said — what can I do at school? Please tell me in simple words."], ["🤝", "With friends", "About what you just said — what can I do with my friends? Please tell me in simple words."], ["🙏", "Little prayer", "Please teach me a very short little prayer I can say to Jesus."], ["📖", "Story", "Can you tell me another little story about this?"]], "seeker": [["🤝", "Relationships", "Applying what you just said in relationships (family, friends, colleagues), what practical help would it be for someone who is not yet a Christian? Please give an everyday example."], ["💍", "Marriage & family", "Applying what you just said in marriage and family, what practical help would it be for someone who is not yet a Christian? Please give an everyday example."], ["💼", "Work", "Applying what you just said at work, what practical help would it be for someone who is not yet a Christian? Please give an everyday example."], ["😟", "Stress", "Applying what you just said in stress and anxiety, what practical help would it be for someone who is not yet a Christian? Please give an everyday example."], ["🌍", "Meaning", "Applying what you just said in searching for meaning and direction in life, what practical help would it be for someone who is not yet a Christian? Please give an everyday example."], ["❓", "My doubts", "I still have doubts. Please tell me honestly: what practical difference does faith in Jesus make to a person's life? And how could I check it out for myself?"], ["🌱", "Next step", "If I want to learn more, what could my next step be? Please give one or two no-pressure suggestions."]]}};
-const FU_LIST = () => { const x2 = A2(); if (x2) return x2.fu; return (FU_BANK[state.lang] || (isKO() ? FU_BANK.en : FU_BANK.zh))[state.audience] || []; };
+const FU_LIST = () => { const x2 = A2(); if (x2) return x2.fu; return (FU_BANK[state.lang] || (isX() ? FU_BANK.en : FU_BANK.zh))[state.audience] || []; };
 function fuCss(){
   if ($('#fucss')) return;
   const el = document.createElement('style'); el.id = 'fucss';
@@ -6304,7 +6316,7 @@ function refRegex(){
   REF_MAP = {};
   const RAW = [];
   const add = (n, id) => { const raw = String(n || '').trim(); n = raw.replace(/\s+/g, '').toLowerCase(); if (n && !REF_MAP[n]){ REF_MAP[n] = id; RAW.push(raw); } };
-  TOC.forEach(b => { [b.zh, b.zs, b.en, b.azh, b.azs, b.aen, b.ko, b.ako].forEach(n => add(n, b.id)); });
+  TOC.forEach(b => { [b.zh, b.zs, b.en, b.azh, b.azs, b.aen, b.ko, b.ako, b.ja, b.aja].forEach(n => add(n, b.id)); });
   add('Psalm', 'Psalms'); add('Song of Songs', 'SongofSolomon'); add('詩', 'Psalms'); add('诗', 'Psalms');
   const names = RAW.sort((a, b) => b.length - a.length).map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/ /g, '\\s*').replace(/^(\d)(?=[A-Za-z])/, '$1\\s*'));
   REF_RE = new RegExp('(' + names.join('|') + ')\\s*(\\d{1,3})\\s*(?:[:：]|[章篇장편]\\s*(?:第\\s*)?)\\s*(\\d{1,3})\\s*[節节절]?(?:\\s*[-–—~～至到]\\s*(\\d{1,3}))?', 'gi');
@@ -6389,7 +6401,7 @@ function toggleFav(txt){
 }
 /* 小智回答的格式規範（三語）。App 已經會把表格畫成表格、唸成人話、
    分享成清單，所以這裡明白地鼓勵它用表格，並要求把重點標成一句引言。 */
-const SYS_FMT = () => isEN()
+const SYS_FMT = () => isEP()
   ? ' Format: you may use a markdown table when comparing or listing things side by side — it renders as a real table, is read aloud as natural sentences, and becomes a clean list when shared. Mark the single most important sentence as a "> " blockquote; that line is what gets turned into a shareable picture. Use short headings. Do not use ASCII art, code blocks or decorative symbols that cannot be read aloud. If you write a prayer, always close it with "in the name of the Lord Jesus we pray, Amen" — never "in Jesus\' name we ask, Amen."'
   : isZS()
   ? ' 回答格式：需要並列或對照时可以用 markdown 表格，画面会画成真正的表格、朗读时会说成自然的句子、分享时会变成清单。请把最重要的那一句用「> 」标成引言，那一句会被做成美图。小标题要短。不要用 ASCII 图案、代码区块或念不出来的装饰符号。若寫到禱告，結尾一律用「奉主耶稣的名祷告，阿们」，不要用「奉耶稣的名求」。'
@@ -6401,7 +6413,7 @@ const AUD_KEYS = ['adult', 'teen', 'kid', 'seeker', 'elder', 'single_parent', 's
 const AUD_ICON = { adult:'🧑', teen:'🧒', kid:'🧸', seeker:'🌱', elder:'👴', single_parent:'👩‍👧', single:'🙋', parent:'👨‍👩‍👧', couple:'💑', pastor:'⛪' };
 /* v2.13.0 新增：長輩、單親、單身、父母——口氣、範例問題、追問、猜謎風格、獎章語都放在這一包（三語）。 */
 const AUD2 = {"elder": {"zh": {"sys": " 回答對象：長輩（約65歲以上）。請用尊敬、溫和、慢慢說的口吻，像晚輩敬重地陪長輩讀經；句子清楚、不拐彎，不用網路用語和英文縮寫；比喻取自一生的閱歷（田地、家人、歲月、病痛、孫子、老街坊）。重點先講，分成短段落，不要太長。肯定他們一生走過的路與在主裡的忠心，不說教、不指責、不用「你應該」。可以談健康與軟弱、孤單、放下與交託、把信仰傳給下一代、永恆的盼望與感恩。結尾給一件簡單、容易做到的小事（一句禱告、打電話問候家人、數算一件感謝）。若提到身體不適、孤單或失去親人，要先溫柔安慰，並鼓勵他和家人、教會關懷同工聯絡。", "write": "\n讀者是長輩：用語尊敬、溫和、清楚好懂，不用網路用語；不要用表情符號。", "style": "風格：給長輩，字詞平實、句子清楚，題目不要繞、不要太冷僻，選項簡短；解析用一句溫和的話。", "rw": ["您讀完整卷《{nm}》了！", "一天一天走到這裡，這份忠心神都記念，也是我們晚輩的榜樣。"], "res": ["沒關係，慢慢來，再讀一遍會更清楚。", "很好！這一章的話您記得不少。", "太好了！神的話已經住在您心裡。"], "q": ["這段經文用最簡單的話，是在說什麼？", "這段經文對年紀大的人有什麼安慰？", "身體漸漸衰弱了，神怎麼看顧我？", "我常常覺得孤單，這段經文能給我什麼？", "我該怎麼把信仰傳給兒孫？", "有些事放不下，這段經文怎麼教我交託？", "我老了，還能為神做什麼？", "請幫我寫一段簡短的禱告，我想念給主聽。"], "fu": [["🩺", "健康", "請針對你剛才的回答，用簡單清楚、慢慢說的話說明怎麼把它用在身體的軟弱與健康，並給我一個這個星期做得到的具體小步驟。"], ["🤍", "孤單", "請針對你剛才的回答，用簡單清楚、慢慢說的話說明怎麼把它用在孤單與思念，並給我一個這個星期做得到的具體小步驟。"], ["👨‍👩‍👧‍👦", "兒孫", "請針對你剛才的回答，用簡單清楚、慢慢說的話說明怎麼把它用在和兒孫、家人的關係，並給我一個這個星期做得到的具體小步驟。"], ["🕊️", "交託", "請針對你剛才的回答，用簡單清楚、慢慢說的話說明怎麼把它用在放下心中的牽掛、交託給主，並給我一個這個星期做得到的具體小步驟。"], ["🌅", "盼望", "請針對你剛才的回答，用簡單清楚、慢慢說的話說明怎麼把它用在永恆的盼望與感恩，並給我一個這個星期做得到的具體小步驟。"], ["🙏", "禱告", "請把你剛才說的重點，用簡單的話寫成一段短短的禱告，讓我可以慢慢念給主聽。"]]}, "zs": {"sys": " 回答对象：长辈（约65岁以上）。请用尊敬、温和、慢慢说的口吻，像晚辈敬重地陪长辈读经；句子清楚、不拐弯，不用网路用语和英文缩写；比喻取自一生的阅历（田地、家人、岁月、病痛、孙子、老街坊）。重点先讲，分成短段落，不要太长。肯定他们一生走过的路与在主里的忠心，不说教、不指责、不用「你应该」。可以谈健康与软弱、孤单、放下与交托、把信仰传给下一代、永恒的盼望与感恩。结尾给一件简单、容易做到的小事（一句祷告、打电话问候家人、数算一件感谢）。若提到身体不适、孤单或失去亲人，要先温柔安慰，并鼓励他和家人、教会关怀同工联络。", "write": "\n读者是长辈：用语尊敬、温和、清楚好懂，不用网路用语；不要用表情符号。", "style": "风格：给长辈，字词平实、句子清楚，题目不要绕、不要太冷僻，选项简短；解析用一句温和的话。", "rw": ["您读完整卷《{nm}》了！", "一天一天走到这里，这份忠心神都记念，也是我们晚辈的榜样。"], "res": ["没关系，慢慢来，再读一遍会更清楚。", "很好！这一章的话您记得不少。", "太好了！神的话已经住在您心里。"], "q": ["这段经文用最简单的话，是在说什么？", "这段经文对年纪大的人有什么安慰？", "身体渐渐衰弱了，神怎么看顾我？", "我常常觉得孤单，这段经文能给我什么？", "我该怎么把信仰传给儿孙？", "有些事放不下，这段经文怎么教我交托？", "我老了，还能为神做什么？", "请帮我写一段简短的祷告，我想念给主听。"], "fu": [["🩺", "健康", "请针对你刚才的回答，用简单清楚、慢慢说的话说明怎么把它用在身体的软弱与健康，并给我一个这个星期做得到的具体小步骤。"], ["🤍", "孤单", "请针对你刚才的回答，用简单清楚、慢慢说的话说明怎么把它用在孤单与思念，并给我一个这个星期做得到的具体小步骤。"], ["👨‍👩‍👧‍👦", "儿孙", "请针对你刚才的回答，用简单清楚、慢慢说的话说明怎么把它用在和儿孙、家人的关系，并给我一个这个星期做得到的具体小步骤。"], ["🕊️", "交托", "请针对你刚才的回答，用简单清楚、慢慢说的话说明怎么把它用在放下心中的牵挂、交托给主，并给我一个这个星期做得到的具体小步骤。"], ["🌅", "盼望", "请针对你刚才的回答，用简单清楚、慢慢说的话说明怎么把它用在永恒的盼望与感恩，并给我一个这个星期做得到的具体小步骤。"], ["🙏", "祷告", "请把你刚才说的重点，用简单的话写成一段短短的祷告，让我可以慢慢念给主听。"]]}, "en": {"sys": " Audience: an elder (about 65 and older). Speak respectfully, gently and unhurriedly, like a younger person reading Scripture with an older one they honour. Short, clear sentences; no internet slang or abbreviations; pictures from a long life (fields, family, the years, illness, grandchildren, old neighbours). Main point first, in short paragraphs. Honour the road they have walked and their faithfulness in the Lord; never preach, scold, or say \"you should\". You may speak of health and frailty, loneliness, letting go and entrusting, passing faith to the next generation, eternal hope and gratitude. End with one simple thing that is easy to do (a short prayer, a phone call to family, counting one blessing). If they mention illness, loneliness or loss, comfort them first and encourage them to reach out to family or the church care team.", "write": "\nThe reader is an elder: respectful, gentle, clear; no internet slang. No emoji.", "style": "Style: for an elder — plain words, clear sentences, questions that are not convoluted or obscure, short options; one gentle sentence of explanation.", "rw": ["You finished the whole book of {nm}!", "Day by day you came this far. God remembers this faithfulness, and it is an example to us who are younger."], "res": ["That is all right — take it slowly; another read will make it clearer.", "Very good! You remember a lot of this chapter.", "Wonderful! The Word is living in your heart."], "q": ["In the simplest words, what is this passage saying?", "What comfort does this passage give to those who are older?", "My body is growing weaker — how does God watch over me?", "I often feel lonely — what does this passage give me?", "How can I pass my faith on to my children and grandchildren?", "There are things I cannot let go of — how does this passage teach me to entrust them?", "I am old — what can I still do for God?", "Please write me a short prayer I can read to the Lord."], "fu": [["🩺", "Health", "Based on your answer, explain how to apply it to physical frailty and health, and give me one concrete step I can take this week."], ["🤍", "Loneliness", "Based on your answer, explain how to apply it to loneliness and missing loved ones, and give me one concrete step I can take this week."], ["👨‍👩‍👧‍👦", "Family", "Based on your answer, explain how to apply it to my relationship with my children and grandchildren, and give me one concrete step I can take this week."], ["🕊️", "Entrusting", "Based on your answer, explain how to apply it to letting go of my worries and entrusting them to the Lord, and give me one concrete step I can take this week."], ["🌅", "Hope", "Based on your answer, explain how to apply it to eternal hope and gratitude, and give me one concrete step I can take this week."], ["🙏", "Prayer", "Please turn the key point of your answer into a short, simple prayer I can read slowly to the Lord."]]}}, "single_parent": {"zh": {"sys": " 回答對象：單親爸爸或媽媽（一個人撐起一個家）。請先接住他的辛苦：他常常很累、有愧疚、有孤單，也有經濟、時間與教養的壓力。口吻溫暖、接納、不評斷，不追問過去的原因，不說「你應該再找個伴」，也不把單親說成缺憾。引用神的心意：神是孤兒的父、寡婦的伸冤者（詩篇68:5），祂與我們同在。再給盼望與實際：每一個小步驟都要在忙碌中做得到（五分鐘禱告、跟孩子的一個小儀式、開口向弟兄姊妹求助）。內容簡短、段落要短。結尾給一個這個星期做得到的小步驟。若他提到被暴力對待、疲憊到撐不下去或想傷害自己，要溫柔回應，並鼓勵他立刻聯絡信任的人、教會同工或專業協助。", "write": "\n讀者是單親爸媽：口吻溫暖、接納、不評斷，肯定他的辛苦；不要用表情符號。", "style": "風格：給單親爸媽，題目貼近日常的忙碌、教養與盼望；口氣溫暖，解析一句話帶出安慰。", "rw": ["您讀完整卷《{nm}》了！", "一個人撐一個家還能堅持讀經，真的不容易。神看見您的每一步，祂與您同在。"], "res": ["沒關係，您已經很努力了，有空再讀一遍就好。", "不錯！在這麼忙的日子裡還記得這麼多。", "太棒了！神的話正在托住您。"], "q": ["這段經文對一個人撐起一個家的我，有什麼安慰？", "我常常覺得累，也覺得對孩子有虧欠，神怎麼看？", "神怎麼看顧孤兒和寡婦？這跟我有什麼關係？", "經濟壓力很大，這段經文能給我什麼？", "孩子在頂嘴、情緒很大，我該怎麼辦？", "我不知道怎麼跟孩子說爸爸（或媽媽）不在身邊的事。", "我真的很孤單，可以怎麼向教會或弟兄姊妹開口求助？", "請幫我寫一段五分鐘內能禱告完的短禱告。"], "fu": [["😮‍💨", "疲累", "請針對你剛才的回答，說明怎麼把它用在一個人撐家的疲累與內疚，並給我一個這個星期做得到的具體小步驟。"], ["👧", "孩子", "請針對你剛才的回答，說明怎麼把它用在陪伴孩子與教養，並給我一個這個星期做得到的具體小步驟。"], ["💰", "經濟", "請針對你剛才的回答，說明怎麼把它用在經濟與時間的壓力，並給我一個這個星期做得到的具體小步驟。"], ["🤝", "求助", "請針對你剛才的回答，說明怎麼把它用在向弟兄姊妹或教會開口求助，並給我一個這個星期做得到的具體小步驟。"], ["🌤️", "盼望", "請針對你剛才的回答，說明怎麼把它用在在這個階段看見神的同在與盼望，並給我一個這個星期做得到的具體小步驟。"], ["🙏", "禱告", "請把你剛才說的重點，寫成一段我在忙碌中五分鐘內就能禱告完的短禱告。"]]}, "zs": {"sys": " 回答对象：单亲爸爸或妈妈（一个人撑起一个家）。请先接住他的辛苦：他常常很累、有愧疚、有孤单，也有经济、时间与教养的压力。口吻温暖、接纳、不评断，不追问过去的原因，不说「你应该再找个伴」，也不把单亲说成缺憾。引用神的心意：神是孤儿的父、寡妇的伸冤者（诗篇68:5），祂与我们同在。再给盼望与实际：每一个小步骤都要在忙碌中做得到（五分钟祷告、跟孩子的一个小仪式、开口向弟兄姐妹求助）。内容简短、段落要短。结尾给一个这个星期做得到的小步骤。若他提到被暴力对待、疲惫到撑不下去或想伤害自己，要温柔回应，并鼓励他立刻联络信任的人、教会同工或专业协助。", "write": "\n读者是单亲爸妈：口吻温暖、接纳、不评断，肯定他的辛苦；不要用表情符号。", "style": "风格：给单亲爸妈，题目贴近日常的忙碌、教养与盼望；口气温暖，解析一句话带出安慰。", "rw": ["您读完整卷《{nm}》了！", "一个人撑一个家还能坚持读经，真的不容易。神看见您的每一步，祂与您同在。"], "res": ["没关系，您已经很努力了，有空再读一遍就好。", "不错！在这么忙的日子里还记得这么多。", "太棒了！神的话正在托住您。"], "q": ["这段经文对一个人撑起一个家的我，有什么安慰？", "我常常觉得累，也觉得对孩子有亏欠，神怎么看？", "神怎么看顾孤儿和寡妇？这跟我有什么关系？", "经济压力很大，这段经文能给我什么？", "孩子在顶嘴、情绪很大，我该怎么办？", "我不知道怎么跟孩子说爸爸（或妈妈）不在身边的事。", "我真的很孤单，可以怎么向教会或弟兄姐妹开口求助？", "请帮我写一段五分钟内能祷告完的短祷告。"], "fu": [["😮‍💨", "疲累", "请针对你刚才的回答，说明怎么把它用在一个人撑家的疲累与内疚，并给我一个这个星期做得到的具体小步骤。"], ["👧", "孩子", "请针对你刚才的回答，说明怎么把它用在陪伴孩子与教养，并给我一个这个星期做得到的具体小步骤。"], ["💰", "经济", "请针对你刚才的回答，说明怎么把它用在经济与时间的压力，并给我一个这个星期做得到的具体小步骤。"], ["🤝", "求助", "请针对你刚才的回答，说明怎么把它用在向弟兄姐妹或教会开口求助，并给我一个这个星期做得到的具体小步骤。"], ["🌤️", "盼望", "请针对你刚才的回答，说明怎么把它用在在这个阶段看见神的同在与盼望，并给我一个这个星期做得到的具体小步骤。"], ["🙏", "祷告", "请把你刚才说的重点，写成一段我在忙碌中五分钟内就能祷告完的短祷告。"]]}, "en": {"sys": " Audience: a single parent (carrying a household alone). First receive their weariness: they are often exhausted, carry guilt and loneliness, and face pressure over money, time and raising children. Be warm, accepting and non-judging; do not ask why they are single, never say \"you should find a partner\", and never describe single parenting as a lack. Bring in God's heart: he is a father to the fatherless and a defender of widows (Psalm 68:5), and he is with us. Then give hope and practicality — every small step must be doable in a busy life (a five-minute prayer, one small ritual with the child, asking brothers and sisters for help). Keep it short, in short paragraphs. End with one step they can take this week. If they mention being abused, being too exhausted to go on, or wanting to harm themselves, answer gently and encourage them to contact someone they trust, a church worker or professional help right away.", "write": "\nThe reader is a single parent: warm, accepting, never judging; honour their effort. No emoji.", "style": "Style: for a single parent — questions close to everyday busyness, parenting and hope; a warm tone, with one sentence of comfort in the explanation.", "rw": ["You finished the whole book of {nm}!", "Keeping up Bible reading while carrying a family alone is not easy. God sees every step you take, and he is with you."], "res": ["That is all right — you have worked so hard. Read it again when you have time.", "Nice! You remember so much in such busy days.", "Wonderful! The Word is holding you up."], "q": ["What comfort does this passage give me as I carry a family alone?", "I am so tired and feel I owe my children more — how does God see me?", "How does God care for orphans and widows, and what does that mean for me?", "Money is very tight — what does this passage give me?", "My child talks back and has big emotions — what should I do?", "I do not know how to talk to my child about Dad (or Mom) not being around.", "I am really lonely — how can I ask the church or brothers and sisters for help?", "Please write me a short prayer I can pray in five minutes."], "fu": [["😮‍💨", "Weary", "Based on your answer, explain how to apply it to the weariness and guilt of carrying a family alone, and give me one concrete step I can take this week."], ["👧", "Child", "Based on your answer, explain how to apply it to being with my child and parenting, and give me one concrete step I can take this week."], ["💰", "Money", "Based on your answer, explain how to apply it to pressure over money and time, and give me one concrete step I can take this week."], ["🤝", "Help", "Based on your answer, explain how to apply it to asking brothers, sisters or the church for help, and give me one concrete step I can take this week."], ["🌤️", "Hope", "Based on your answer, explain how to apply it to seeing God's presence and hope in this season, and give me one concrete step I can take this week."], ["🙏", "Prayer", "Please turn the key point of your answer into a short prayer I can finish in five minutes in the middle of a busy day."]]}}, "single": {"zh": {"sys": " 回答對象：單身的人（可能未婚、離婚、喪偶，或正在等候；不要預設他想結婚或不想結婚）。請不要把單身說成缺憾、「預備期」或「還沒到的人生」，也不要用催婚的口氣。談在基督裡的身分已經完整、被愛；談孤單時怎麼與神、與朋友、與團契連結；談時間、金錢與恩賜的運用與使命；談等待中的信靠；談感情與婚姻的智慧，以及在情感與身體上的聖潔，態度要尊重、不論斷。口吻真誠、平等、輕鬆。結尾給一個這個星期可以做的小步驟。若他提到孤單到想傷害自己，要溫柔回應並鼓勵他立刻聯絡信任的人或專業協助。", "write": "\n讀者是單身朋友：口吻真誠、平等、輕鬆，不催婚、不把單身說成缺憾；不要用表情符號。", "style": "風格：給單身的朋友，題目貼近孤單、身分、等待、友誼與使命；口氣真誠平等，不催婚。", "rw": ["你讀完整卷《{nm}》了！", "一個人也能這樣堅持，在神面前，你的日子是完整而被愛的。"], "res": ["沒關係，慢慢來，再讀一遍就會更清楚。", "不錯喔！你把這一章的重點抓到了。", "太棒了！你很認真，神的話正在你裡面扎根。"], "q": ["單身的我，這段經文想對我說什麼？", "我覺得孤單，這段經文能給我什麼？", "在基督裡，我的身分和價值是什麼？", "等待的時候，要怎麼信靠神？", "感情的事，聖經給我什麼智慧？", "單身的時間和精力，可以怎麼為神所用？", "怎樣在教會和朋友中建立好的關係？", "請幫我寫一段單身者的簡短禱告。"], "fu": [["🫶", "孤單", "請針對你剛才的回答，說明怎麼把它用在孤單時怎麼與神、與朋友連結，並給我一個這個星期做得到的具體小步驟。"], ["💝", "身分", "請針對你剛才的回答，說明怎麼把它用在我在基督裡的身分與價值，並給我一個這個星期做得到的具體小步驟。"], ["⏳", "等待", "請針對你剛才的回答，說明怎麼把它用在等待中的信靠，並給我一個這個星期做得到的具體小步驟。"], ["💞", "感情", "請針對你剛才的回答，說明怎麼把它用在感情與交友的智慧，並給我一個這個星期做得到的具體小步驟。"], ["🎯", "使命", "請針對你剛才的回答，說明怎麼把它用在把時間與恩賜用在神的使命上，並給我一個這個星期做得到的具體小步驟。"], ["🙏", "禱告", "請把你剛才說的重點，寫成一段簡短、真誠的禱告，讓我可以拿來禱告。"]]}, "zs": {"sys": " 回答对象：单身的人（可能未婚、离婚、丧偶，或正在等候；不要预设他想结婚或不想结婚）。请不要把单身说成缺憾、「预备期」或「还没到的人生」，也不要用催婚的口气。谈在基督里的身分已经完整、被爱；谈孤单时怎么与神、与朋友、与团契连结；谈时间、金钱与恩赐的运用与使命；谈等待中的信靠；谈感情与婚姻的智慧，以及在情感与身体上的圣洁，态度要尊重、不论断。口吻真诚、平等、轻松。结尾给一个这个星期可以做的小步骤。若他提到孤单到想伤害自己，要温柔回应并鼓励他立刻联络信任的人或专业协助。", "write": "\n读者是单身朋友：口吻真诚、平等、轻松，不催婚、不把单身说成缺憾；不要用表情符号。", "style": "风格：给单身的朋友，题目贴近孤单、身分、等待、友谊与使命；口气真诚平等，不催婚。", "rw": ["你读完整卷《{nm}》了！", "一个人也能这样坚持，在神面前，你的日子是完整而被爱的。"], "res": ["没关系，慢慢来，再读一遍就会更清楚。", "不错喔！你把这一章的重点抓到了。", "太棒了！你很认真，神的话正在你里面扎根。"], "q": ["单身的我，这段经文想对我说什么？", "我觉得孤单，这段经文能给我什么？", "在基督里，我的身分和价值是什么？", "等待的时候，要怎么信靠神？", "感情的事，圣经给我什么智慧？", "单身的时间和精力，可以怎么为神所用？", "怎样在教会和朋友中建立好的关系？", "请帮我写一段单身者的简短祷告。"], "fu": [["🫶", "孤单", "请针对你刚才的回答，说明怎么把它用在孤单时怎么与神、与朋友连结，并给我一个这个星期做得到的具体小步骤。"], ["💝", "身分", "请针对你刚才的回答，说明怎么把它用在我在基督里的身分与价值，并给我一个这个星期做得到的具体小步骤。"], ["⏳", "等待", "请针对你刚才的回答，说明怎么把它用在等待中的信靠，并给我一个这个星期做得到的具体小步骤。"], ["💞", "感情", "请针对你刚才的回答，说明怎么把它用在感情与交友的智慧，并给我一个这个星期做得到的具体小步骤。"], ["🎯", "使命", "请针对你刚才的回答，说明怎么把它用在把时间与恩赐用在神的使命上，并给我一个这个星期做得到的具体小步骤。"], ["🙏", "祷告", "请把你刚才说的重点，写成一段简短、真诚的祷告，让我可以拿来祷告。"]]}, "en": {"sys": " Audience: a single person (never married, divorced, widowed, or still waiting — do not assume they want or do not want to marry). Never describe being single as a lack, a \"preparation stage\" or \"life not yet begun\", and never use a pushy-about-marriage tone. Speak of an identity in Christ that is already whole and loved; of connecting with God, friends and fellowship in loneliness; of using time, money and gifts for a purpose; of trusting while waiting; of wisdom in dating and marriage and of purity in heart and body, respectfully and without judging. Be sincere, equal and light. End with one step they can take this week. If they mention loneliness so deep they want to harm themselves, answer gently and encourage them to contact someone they trust or professional help right away.", "write": "\nThe reader is single: sincere, equal and relaxed; never pushing marriage or treating singleness as a lack. No emoji.", "style": "Style: for single friends — questions about loneliness, identity, waiting, friendship and purpose; a sincere, equal tone, never pushing marriage.", "rw": ["You finished the whole book of {nm}!", "You kept going on your own — and before God your days are whole and loved."], "res": ["That is okay — take your time; another read will make it clearer.", "Nice! You have caught the main points of this chapter.", "Excellent! You are diligent, and the Word is taking root in you."], "q": ["As a single person, what does this passage say to me?", "I feel lonely — what does this passage give me?", "Who am I in Christ, and what am I worth?", "How do I trust God while I wait?", "What wisdom does the Bible give about relationships?", "How can my time and energy as a single person be used for God?", "How do I build good relationships in church and with friends?", "Please write me a short prayer for a single person."], "fu": [["🫶", "Loneliness", "Based on your answer, explain how to apply it to connecting with God and friends when I feel lonely, and give me one concrete step I can take this week."], ["💝", "Identity", "Based on your answer, explain how to apply it to my identity and worth in Christ, and give me one concrete step I can take this week."], ["⏳", "Waiting", "Based on your answer, explain how to apply it to trusting God while I wait, and give me one concrete step I can take this week."], ["💞", "Relationships", "Based on your answer, explain how to apply it to wisdom in dating and friendship, and give me one concrete step I can take this week."], ["🎯", "Purpose", "Based on your answer, explain how to apply it to using my time and gifts for God's purposes, and give me one concrete step I can take this week."], ["🙏", "Prayer", "Please turn the key point of your answer into a short, sincere prayer I can pray."]]}}, "parent": {"zh": {"sys": " 回答對象：正在養育孩子的父母（孩子可能從嬰幼兒到成年）。請站在父母的位置：他們常常疲累、擔心孩子、也常常內疚。口吻溫暖、貼近生活、不評斷；承認每個孩子與每個家庭都不同。談陪伴與榜樣、管教與恩典的平衡、親子溝通（怎麼聽、怎麼說）、為孩子禱告、夫妻同心、面對自己的軟弱與失敗；可用日常場景當比喻（吃飯、功課、手機、睡前）。結尾給一個這個星期可以做的具體小步驟（一句話、一個擁抱、一段睡前禱告）。若提到孩子遭受傷害、家庭暴力或孩子有自傷的念頭，要溫柔回應並鼓勵立刻尋求專業協助與信任的人。", "write": "\n讀者是正在養育孩子的父母：口吻溫暖、貼近生活、不評斷；不要用表情符號。", "style": "風格：給養育孩子的父母，題目貼近親子溝通、管教、陪伴與為孩子禱告；口氣溫暖，解析一句話帶出提醒。", "rw": ["您讀完整卷《{nm}》了！", "在養育孩子的忙碌中還能一天一天讀經，這就是給孩子最好的榜樣。"], "res": ["沒關係，慢慢來，有空再讀一遍就會更清楚。", "不錯！這一章的重點您已經抓到了。", "太棒了！神的話正在您的家裡扎根。"], "q": ["這段經文對養育孩子的我有什麼提醒？", "孩子不聽話、情緒很大，我該怎麼回應？", "管教和恩典要怎麼拿捏？", "怎麼跟青春期的孩子好好說話？", "我常常對孩子發脾氣，事後很內疚怎麼辦？", "怎麼帶孩子認識神，而不只是去教會？", "夫妻在教養上意見不同，這段經文怎麼說？", "請幫我寫一段為孩子祝福的短禱告。"], "fu": [["🗣️", "溝通", "請針對你剛才的回答，說明怎麼把它用在跟孩子好好溝通（怎麼聽、怎麼說），並給我一個這個星期做得到的具體小步驟。"], ["⚖️", "管教", "請針對你剛才的回答，說明怎麼把它用在管教與恩典的平衡，並給我一個這個星期做得到的具體小步驟。"], ["😔", "內疚", "請針對你剛才的回答，說明怎麼把它用在對孩子發脾氣或覺得虧欠的內疚，並給我一個這個星期做得到的具體小步驟。"], ["💑", "夫妻", "請針對你剛才的回答，說明怎麼把它用在夫妻在教養上同心，並給我一個這個星期做得到的具體小步驟。"], ["📖", "信仰", "請針對你剛才的回答，說明怎麼把它用在帶孩子認識神、一起親近神，並給我一個這個星期做得到的具體小步驟。"], ["🙏", "禱告", "請把你剛才說的重點，寫成一段我可以為孩子祝福的短禱告。"]]}, "zs": {"sys": " 回答对象：正在养育孩子的父母（孩子可能从婴幼儿到成年）。请站在父母的位置：他们常常疲累、担心孩子、也常常内疚。口吻温暖、贴近生活、不评断；承认每个孩子与每个家庭都不同。谈陪伴与榜样、管教与恩典的平衡、亲子沟通（怎么听、怎么说）、为孩子祷告、夫妻同心、面对自己的软弱与失败；可用日常场景当比喻（吃饭、功课、手机、睡前）。结尾给一个这个星期可以做的具体小步骤（一句话、一个拥抱、一段睡前祷告）。若提到孩子遭受伤害、家庭暴力或孩子有自伤的念头，要温柔回应并鼓励立刻寻求专业协助与信任的人。", "write": "\n读者是正在养育孩子的父母：口吻温暖、贴近生活、不评断；不要用表情符号。", "style": "风格：给养育孩子的父母，题目贴近亲子沟通、管教、陪伴与为孩子祷告；口气温暖，解析一句话带出提醒。", "rw": ["您读完整卷《{nm}》了！", "在养育孩子的忙碌中还能一天一天读经，这就是给孩子最好的榜样。"], "res": ["没关系，慢慢来，有空再读一遍就会更清楚。", "不错！这一章的重点您已经抓到了。", "太棒了！神的话正在您的家里扎根。"], "q": ["这段经文对养育孩子的我有什么提醒？", "孩子不听话、情绪很大，我该怎么回应？", "管教和恩典要怎么拿捏？", "怎么跟青春期的孩子好好说话？", "我常常对孩子发脾气，事后很内疚怎么办？", "怎么带孩子认识神，而不只是去教会？", "夫妻在教养上意见不同，这段经文怎么说？", "请帮我写一段为孩子祝福的短祷告。"], "fu": [["🗣️", "沟通", "请针对你刚才的回答，说明怎么把它用在跟孩子好好沟通（怎么听、怎么说），并给我一个这个星期做得到的具体小步骤。"], ["⚖️", "管教", "请针对你刚才的回答，说明怎么把它用在管教与恩典的平衡，并给我一个这个星期做得到的具体小步骤。"], ["😔", "内疚", "请针对你刚才的回答，说明怎么把它用在对孩子发脾气或觉得亏欠的内疚，并给我一个这个星期做得到的具体小步骤。"], ["💑", "夫妻", "请针对你刚才的回答，说明怎么把它用在夫妻在教养上同心，并给我一个这个星期做得到的具体小步骤。"], ["📖", "信仰", "请针对你刚才的回答，说明怎么把它用在带孩子认识神、一起亲近神，并给我一个这个星期做得到的具体小步骤。"], ["🙏", "祷告", "请把你刚才说的重点，写成一段我可以为孩子祝福的短祷告。"]]}, "en": {"sys": " Audience: a parent raising children (from babies to adult children). Stand in the parent's shoes: they are often tired, worried about their children, and often feel guilty. Be warm, down-to-earth and non-judging; acknowledge that every child and every family is different. Speak of presence and example, balancing discipline and grace, parent–child communication (how to listen, how to speak), praying for children, husband and wife standing together, and facing one's own weakness and failure; use everyday scenes as pictures (mealtime, homework, phones, bedtime). End with one concrete step for this week (one sentence, a hug, a bedtime prayer). If a child is being harmed, there is domestic violence, or the child has thoughts of self-harm, answer gently and encourage seeking professional help and a trusted person right away.", "write": "\nThe reader is a parent raising children: warm, down-to-earth, never judging. No emoji.", "style": "Style: for parents — questions about communicating with children, discipline, presence and praying for them; a warm tone, with one sentence of reminder in the explanation.", "rw": ["You finished the whole book of {nm}!", "Reading Scripture day by day in the busyness of raising children — that is the best example you can give them."], "res": ["That is okay — take it slowly; read it again when you can.", "Nice! You have caught the main points of this chapter.", "Wonderful! The Word is taking root in your home."], "q": ["What does this passage remind me of as a parent?", "My child will not listen and has big emotions — how should I respond?", "How do I balance discipline and grace?", "How do I talk well with a teenager?", "I often lose my temper with my child and feel guilty afterwards — what now?", "How do I lead my child to know God, not just go to church?", "My spouse and I disagree on parenting — what does this passage say?", "Please write me a short prayer of blessing for my child."], "fu": [["🗣️", "Talking", "Based on your answer, explain how to apply it to communicating well with my child (how to listen, how to speak), and give me one concrete step I can take this week."], ["⚖️", "Discipline", "Based on your answer, explain how to apply it to balancing discipline and grace, and give me one concrete step I can take this week."], ["😔", "Guilt", "Based on your answer, explain how to apply it to the guilt of losing my temper or feeling I owe my child more, and give me one concrete step I can take this week."], ["💑", "Spouse", "Based on your answer, explain how to apply it to husband and wife being united in parenting, and give me one concrete step I can take this week."], ["📖", "Faith", "Based on your answer, explain how to apply it to leading my child to know God and drawing near to him together, and give me one concrete step I can take this week."], ["🙏", "Prayer", "Please turn the key point of your answer into a short prayer of blessing I can pray over my child."]]}}, "couple": {"zh": {"sys": " 回答對象：夫妻（正在經營婚姻的丈夫與妻子，可能是新婚、有孩子的中年夫妻，或相伴多年的伴侶）。請站在夫妻同行的位置：口吻溫暖、真誠、不評斷，不偏袒任何一方；承認每段婚姻都有磨合、疲累與受傷的時候。談愛是決定與付出、彼此饒恕、傾聽與表達（怎麼說、怎麼聽）、尊重與同心、金錢與家務的分工、姻親與孩子的教養、一起禱告與一起讀經、在主裡成為一體；可用日常場景當比喻（飯桌、手牽手、吵完架之後、睡前）。結尾給一個這個星期兩個人就能一起做的具體小步驟（一句感謝的話、一段兩人的禱告、一次不看手機的散步）。不要教導妻子順服或丈夫掌權的單方面要求，要強調彼此相愛、彼此順服。若提到家庭暴力、外遇、對方的威脅或有自傷念頭，要溫柔回應，把安全放在第一位，並鼓勵立刻尋求專業協助與信任的人，不要勸人一味忍耐。", "write": "\n讀者是夫妻：口吻溫暖、貼近生活、不評斷、不偏袒任何一方；不要用表情符號。", "style": "風格：給夫妻，題目貼近溝通、饒恕、同心、共同禱告與彼此相愛；口氣溫暖，解析一句話帶出提醒。", "rw": ["你們一起讀完整卷《{nm}》了！", "夫妻一同親近神的話，婚姻就有了稳固的根基。"], "res": ["沒關係，慢慢來，找個晚上兩個人再一起讀一遍。", "不錯！這一章的重點你們抓到了。", "太棒了！神的話正在你們的婚姻裡扎根。"], "q": ["這段經文對我們夫妻有什麼提醒？", "我們吵架之後總是冷戰，怎麼先伸出手？", "怎麼把心裡的話好好說給另一半聽？", "對方做錯事傷了我，我真的要饒恕嗎？", "我們為金錢與家務的事常常意見不同，怎麼辦？", "夫妻怎麼一起禱告、一起親近神？", "忙碌的日子裡，夫妻感情變淡了，怎麼重新連結？", "請幫我寫一段為我們婚姻祝福的短禱告。"], "fu": [["🗣️", "溝通", "請針對你剛才的回答，說明夫妻怎麼把它用在好好說、好好聽，並給我們一個這個星期兩個人做得到的具體小步驟。"], ["🤝", "饒恕", "請針對你剛才的回答，說明夫妻怎麼把它用在彼此認錯與饒恕，並給我們一個這個星期兩個人做得到的具體小步驟。"], ["💞", "親密", "請針對你剛才的回答，說明夫妻怎麼把它用在重新連結感情、表達愛與感謝，並給我們一個這個星期兩個人做得到的具體小步驟。"], ["👨‍👩‍👧", "同心", "請針對你剛才的回答，說明夫妻怎麼把它用在金錢、家務與教養上同心，並給我們一個這個星期兩個人做得到的具體小步驟。"], ["📖", "同讀", "請針對你剛才的回答，說明夫妻怎麼一起讀經、一起親近神，並給我們一個這個星期兩個人做得到的具體小步驟。"], ["🙏", "禱告", "請把你剛才說的重點，寫成一段夫妻可以一起禱告的短禱告。"]]}, "zs": {"sys": " 回答对象：夫妻（正在经营婚姻的丈夫与妻子，可能是新婚、有孩子的中年夫妻，或相伴多年的伴侶）。请站在夫妻同行的位置：口吻温暖、真诚、不评断，不偏袒任何一方；承认每段婚姻都有磨合、疲累与受伤的时候。谈爱是决定与付出、彼此饶恕、倾听与表达（怎么说、怎么听）、尊重与同心、金钱与家务的分工、姻亲与孩子的教养、一起祷告与一起读经、在主里成为一体；可用日常场景当比喻（饭桌、手牵手、吵完架之后、睡前）。结尾给一个这个星期两个人就能一起做的具体小步骤（一句感谢的话、一段两人的祷告、一次不看手机的散步）。不要教导妻子顺服或丈夫掌权的单方面要求，要强调彼此相爱、彼此顺服。若提到家庭暴力、外遇、对方的威胁或有自伤念头，要温柔回应，把安全放在第一位，并鼓励立刻寻求专业协助与信任的人，不要劝人一味忍耐。", "write": "\n读者是夫妻：口吻温暖、贴近生活、不评断、不偏袒任何一方；不要用表情符号。", "style": "风格：给夫妻，题目贴近沟通、饶恕、同心、共同祷告与彼此相爱；口气温暖，解析一句话带出提醒。", "rw": ["你们一起读完整卷《{nm}》了！", "夫妻一同亲近神的话，婚姻就有了稳固的根基。"], "res": ["没关系，慢慢来，找个晚上两个人再一起读一遍。", "不错！这一章的重点你们抓到了。", "太棒了！神的话正在你们的婚姻里扎根。"], "q": ["这段经文对我们夫妻有什么提醒？", "我们吵架之后总是冷战，怎么先伸出手？", "怎么把心里的话好好说给另一半听？", "对方做错事伤了我，我真的要饶恕吗？", "我们为金钱与家务的事常常意见不同，怎么办？", "夫妻怎么一起祷告、一起亲近神？", "忙碌的日子里，夫妻感情变淡了，怎么重新连结？", "请帮我写一段为我们婚姻祝福的短祷告。"], "fu": [["🗣️", "沟通", "请针对你刚才的回答，说明夫妻怎么把它用在好好说、好好听，并给我们一个这个星期两个人做得到的具体小步骤。"], ["🤝", "饶恕", "请针对你刚才的回答，说明夫妻怎么把它用在彼此认错与饶恕，并给我们一个这个星期两个人做得到的具体小步骤。"], ["💞", "亲密", "请针对你刚才的回答，说明夫妻怎么把它用在重新连结感情、表达爱与感谢，并给我们一个这个星期两个人做得到的具体小步骤。"], ["👨‍👩‍👧", "同心", "请针对你刚才的回答，说明夫妻怎么把它用在金钱、家务与教养上同心，并给我们一个这个星期两个人做得到的具体小步骤。"], ["📖", "同读", "请针对你刚才的回答，说明夫妻怎么一起读经、一起亲近神，并给我们一个这个星期两个人做得到的具体小步骤。"], ["🙏", "祷告", "请把你刚才说的重点，写成一段夫妻可以一起祷告的短祷告。"]]}, "en": {"sys": " Audience: a married couple (husband and wife — newlyweds, parents in the thick of life, or long-time partners). Stand beside them as a fellow traveler: warm, sincere, never judging and never taking one side; admit every marriage has seasons of friction, weariness and hurt. Speak of love as a decision and a gift, forgiving one another, listening and speaking well, respect and unity, money and household work, in-laws and raising children, praying and reading Scripture together, becoming one in the Lord. Use everyday pictures (the dinner table, holding hands, after an argument, bedtime). Close with one small step the two of them can do together this week (a word of thanks, a short prayer together, a phone-free walk). Never lay one-sided demands on the wife to submit or the husband to rule; stress mutual love and mutual submission. If domestic violence, an affair, threats or thoughts of self-harm come up, respond gently, put safety first, and encourage reaching out at once to professionals and trusted people — never urge someone just to endure.", "write": "\nThe reader is a married couple: warm, down-to-earth, never judging, never taking sides; no emoji.", "style": "Style: for married couples — questions about communication, forgiveness, unity, praying together and loving each other; warm tone, one-line explanations with a gentle reminder.", "rw": ["You finished the whole book of {nm} together!", "A couple who draw near to God's Word together stand on solid ground."], "res": ["That's okay — take your time and read it together again some evening.", "Nice! You caught the main point of this chapter.", "Wonderful! God's Word is taking root in your marriage."], "q": ["What does this passage say to us as a couple?", "After an argument we go cold — how can one of us reach out first?", "How can I say what's in my heart so my spouse can hear it?", "My spouse hurt me — do I really have to forgive?", "We disagree about money and chores — what do we do?", "How can we pray and draw near to God together?", "We've drifted apart in our busy days — how do we reconnect?", "Please write a short prayer of blessing over our marriage."], "fu": [["🗣️", "Talking", "Based on your answer, show how a couple can apply it to speaking and listening well, and give us one small step we can both do this week."], ["🤝", "Forgiving", "Based on your answer, show how a couple can apply it to owning mistakes and forgiving, and give us one small step we can both do this week."], ["💞", "Closeness", "Based on your answer, show how a couple can apply it to reconnecting and expressing love and thanks, and give us one small step we can both do this week."], ["👨‍👩‍👧", "Unity", "Based on your answer, show how a couple can apply it to being united on money, chores and parenting, and give us one small step we can both do this week."], ["📖", "Together", "Based on your answer, show how a couple can read Scripture and draw near to God together, and give us one small step we can both do this week."], ["🙏", "Prayer", "Turn the main points of your answer into a short prayer a couple can pray together."]]}}, "pastor": {"zh": {"sys": " 回答對象：牧者與傳道同工（教會的牧師、傳道人、小組長與事奉的同工）。請站在同工的位置：他們常常肩負許多人的重擔，自己也會疲累、孤單、被誤解或灰心。口吻尊重、平等、真誠，像同工之間彼此扶持，不說教、不居高臨下。可以有適度的深度：點出經文脈絡、原文語境與關鍵字詞的意思，談牧養羊群與生命建造、預備講道與教導、帶領小組與門徒訓練、團隊同心與衝突、面對批評與孤單、屬靈爭戰、自己的靈命與家庭，以及不倦怠的安息與依靠；也可提供講章或查經的切入點、段落與應用建議，但要提醒最後仍須自己在神面前領受。結尾給一個這個星期可以做的具體小步驟（一段安靜親近神的時間、一通關心的電話、一次向同工的坦誠分享）。若提到極度疲憊、憂鬱、想放棄或有自傷念頭，要溫柔回應，並鼓勵立刻尋求信任的同工、屬靈長輩與專業協助。", "write": "\n讀者是牧者與傳道同工：口吻尊重、平等、真誠，像同工彼此扶持；不要用表情符號。", "style": "風格：給牧者與傳道同工，題目貼近牧養、講道預備、帶領團隊、面對疲累與屬靈爭戰；口氣尊重真誠，解析一句話帶出提醒。", "rw": ["您讀完整卷《{nm}》了！", "在繁忙的事奉中仍然親近神的話，這就是牧養羊群最深的根基。"], "res": ["沒關係，慢慢來，有空再讀一遍就會更清楚。", "不錯！這一章的重點您已經抓到了。", "太棒了！神的話先餵養了牧者，也必流向羊群。"], "q": ["這段經文對事奉中的我有什麼提醒？", "請幫我找這段經文的講道架構與切入點。", "事奉很累、快要倦怠了，這段經文怎麼安慰我？", "怎麼面對教會裡的批評與誤解？", "帶領團隊與同工同心，這段經文怎麼說？", "怎麼在忙碌的牧養中保守自己的靈命？", "怎麼牧養軟弱、受傷或離開的羊？", "請幫我寫一段為教會與同工代求的短禱告。"], "fu": [["📖", "講道", "請針對你剛才的回答，提供一個可用於講道或查經的架構（三個要點與一個應用），並提醒我自己先在神面前領受。"], ["🐑", "牧養", "請針對你剛才的回答，說明怎麼把它用在牧養羊群與關心個別的人，並給我一個這個星期做得到的具體小步驟。"], ["🤝", "團隊", "請針對你剛才的回答，說明怎麼把它用在帶領團隊、同工同心與處理衝突，並給我一個這個星期做得到的具體小步驟。"], ["🕊️", "安息", "請針對你剛才的回答，說明怎麼把它用在自己的疲累與靈命保守，並給我一個這個星期做得到的具體小步驟。"], ["⚔️", "爭戰", "請針對你剛才的回答，說明怎麼把它用在面對批評、孤單與屬靈爭戰，並給我一個這個星期做得到的具體小步驟。"], ["🙏", "代禱", "請把你剛才說的重點，寫成一段我可以為教會與同工代求的短禱告。"]]}, "zs": {"sys": " 回答对象：牧者与传道同工（教会的牧师、传道人、小组长与事奉的同工）。请站在同工的位置：他们常常肩负许多人的重担，自己也会疲累、孤单、被误解或灰心。口吻尊重、平等、真诚，像同工之间彼此扶持，不说教、不居高临下。可以有适度的深度：点出经文脉络、原文语境与关键字词的意思，谈牧养羊群与生命建造、预备讲道与教导、带领小组与门徒训练、团队同心与冲突、面对批评与孤单、属灵争战、自己的灵命与家庭，以及不倦怠的安息与依靠；也可提供讲章或查经的切入点、段落与应用建议，但要提醒最后仍须自己在神面前领受。结尾给一个这个星期可以做的具体小步骤（一段安静亲近神的时间、一通关心的电话、一次向同工的坦诚分享）。若提到极度疲惫、忧郁、想放弃或有自伤念头，要温柔回应，并鼓励立刻寻求信任的同工、属灵长辈与专业协助。", "write": "\n读者是牧者与传道同工：口吻尊重、平等、真诚，像同工彼此扶持；不要用表情符号。", "style": "风格：给牧者与传道同工，题目贴近牧养、讲道预备、带领团队、面对疲累与属灵争战；口气尊重真诚，解析一句话带出提醒。", "rw": ["您读完整卷《{nm}》了！", "在繁忙的事奉中仍然亲近神的话，这就是牧养羊群最深的根基。"], "res": ["没关系，慢慢来，有空再读一遍就会更清楚。", "不错！这一章的重点您已经抓到了。", "太棒了！神的话先喂养了牧者，也必流向羊群。"], "q": ["这段经文对事奉中的我有什么提醒？", "请帮我找这段经文的讲道架构与切入点。", "事奉很累、快要倦怠了，这段经文怎么安慰我？", "怎么面对教会里的批评与误解？", "带领团队与同工同心，这段经文怎么说？", "怎么在忙碌的牧养中保守自己的灵命？", "怎么牧养软弱、受伤或离开的羊？", "请帮我写一段为教会与同工代求的短祷告。"], "fu": [["📖", "讲道", "请针对你刚才的回答，提供一个可用于讲道或查经的架构（三个要点与一个应用），并提醒我自己先在神面前领受。"], ["🐑", "牧养", "请针对你刚才的回答，说明怎么把它用在牧养羊群与关心个别的人，并给我一个这个星期做得到的具体小步骤。"], ["🤝", "团队", "请针对你刚才的回答，说明怎么把它用在带领团队、同工同心与处理冲突，并给我一个这个星期做得到的具体小步骤。"], ["🕊️", "安息", "请针对你刚才的回答，说明怎么把它用在自己的疲累与灵命保守，并给我一个这个星期做得到的具体小步骤。"], ["⚔️", "争战", "请针对你刚才的回答，说明怎么把它用在面对批评、孤单与属灵争战，并给我一个这个星期做得到的具体小步骤。"], ["🙏", "代祷", "请把你刚才说的重点，写成一段我可以为教会与同工代求的短祷告。"]]}, "en": {"sys": " Audience: a pastor or ministry worker (pastor, preacher, small-group leader, church staff or volunteer). Stand beside them as a fellow worker: they carry many people's burdens and can themselves be weary, lonely, misunderstood or discouraged. Be respectful, equal and sincere — never lecturing or talking down. You may go deeper: the context of the passage, the sense of key words, shepherding and building lives, sermon and lesson preparation, leading groups and discipleship, team unity and conflict, criticism and loneliness, spiritual warfare, one's own walk and family, and resting in God without burning out. You may offer a sermon or Bible-study outline with points and applications, but remind them to receive the word from God themselves first. Close with one small step for this week (a quiet hour with God, a caring phone call, an honest talk with a coworker). If extreme exhaustion, depression, wanting to quit or self-harm come up, respond gently and encourage reaching out at once to trusted coworkers, spiritual elders and professionals.", "write": "\nThe reader is a pastor or ministry worker: respectful, equal and sincere, like a fellow worker; no emoji.", "style": "Style: for pastors and ministry workers — questions about shepherding, sermon preparation, leading a team, weariness and spiritual warfare; respectful, sincere tone, one-line explanations with a gentle reminder.", "rw": ["You finished the whole book of {nm}!", "Staying close to God's Word amid busy ministry is the deepest root of shepherding."], "res": ["That's okay — take your time and read it again when you can.", "Nice! You caught the main point of this chapter.", "Wonderful! God's Word feeds the shepherd first, then flows to the flock."], "q": ["What does this passage say to me in ministry?", "Help me find a sermon outline and entry point for this passage.", "I'm exhausted and close to burning out — how does this comfort me?", "How do I face criticism and misunderstanding in church?", "How does this passage speak to leading a team in unity?", "How can I guard my own walk with God amid a busy ministry?", "How do I shepherd the weak, the hurting and those who left?", "Please write a short intercessory prayer for the church and my coworkers."], "fu": [["📖", "Sermon", "Based on your answer, give a sermon or Bible-study outline (three points and one application), and remind me to receive it from God first."], ["🐑", "Shepherd", "Based on your answer, show how to apply it to shepherding the flock and caring for individuals, and give me one small step for this week."], ["🤝", "Team", "Based on your answer, show how to apply it to leading a team, unity among coworkers and handling conflict, and give me one small step for this week."], ["🕊️", "Rest", "Based on your answer, show how to apply it to my own weariness and guarding my walk with God, and give me one small step for this week."], ["⚔️", "Warfare", "Based on your answer, show how to apply it to criticism, loneliness and spiritual warfare, and give me one small step for this week."], ["🙏", "Intercede", "Turn the main points of your answer into a short prayer I can pray for the church and my coworkers."]]}}};
-const A2 = () => { const o = AUD2[state.audience]; return o ? (o[state.lang] || (isKO() ? o.en : o.zh)) : null; };
+const A2 = () => { const o = AUD2[state.audience]; return o ? (o[state.lang] || (isX() ? o.en : o.zh)) : null; };
 const AUD_NAME = () => ({
   adult: L3('成人', '成人', 'Adult'),
   teen : L3('青少年', '青少年', 'Teen'),
@@ -6437,7 +6449,7 @@ const SKBG_TXT = {"none": {"zh": "回答對象的信仰背景：沒有信仰。�
 const SKBG_SYS = () => {
   if (state.audience !== 'seeker') return '';
   const t = SKBG_TXT[state.skbg] || SKBG_TXT.none;
-  return ' ' + (isEN() ? t.en : isZS() ? t.zs : t.zh) + (isEN()
+  return ' ' + (isEP() ? t.en : isZS() ? t.zs : t.zh) + (isEP()
     ? ' Always speak with respect and love, never mock any belief, never put them under pressure; state Christian convictions honestly but gently, and answer their actual question first.'
     : isZS() ? ' 一律带着尊重与爱心，不嘲笑任何信仰、不施压；诚实而温和地说明基督信仰的立场，并先回答他真正的问题。'
     : ' 一律帶著尊重與愛心，不嘲笑任何信仰、不施壓；誠實而溫和地說明基督信仰的立場，並先回答他真正的問題。');
@@ -6448,7 +6460,7 @@ const LEN_NAME = () => ({ brief:L3('簡要','简要','Brief'), mid:L3('適中','
 const LEN_SYS = () => {
   const k = state.alen || 'mid';
   if (k === 'mid') return '';
-  if (isEN()) return k === 'brief'
+  if (isEP()) return k === 'brief'
     ? ' Length: BRIEF. Keep the whole answer to about 3–5 short sentences (roughly 120 words): the core answer, one key verse or picture, and a one-line prayer or step. No tables, no long lists.'
     : ' Length: DETAILED. Give a fuller, well-organised answer (roughly 600–900 words): the passage context, the meaning of key words, cross-references, a clear 3-2-1 application, a practical step for this week, and a closing prayer. Short headings are welcome.';
   if (isZS()) return k === 'brief'
@@ -6462,7 +6474,7 @@ const AUD_SYS = () => {
   const a = state.audience;
   if (a === 'seeker') return SK_SYS();
   { const x2 = A2(); if (x2) return x2.sys; }
-  if (isEN()) return {
+  if (isEP()) return {
     adult:
       ' Audience: an adult. Speak with a mature, steady and warm voice. You may go a little deeper — note the context and the meaning of key words — and connect the passage to work, marriage, parenting, relationships and spiritual battle. Close with one concrete step the reader can practise this week.',
     teen:
@@ -6553,16 +6565,16 @@ const QBANK20 = {"adult": {"zh": ["房貸、孩子學費壓得我喘不過氣，
 const QBANK20SK = {"buddhism": {"zh": ["我習慣誦經、吃素，信耶穌需要放棄這些嗎？", "佛教說苦是來自執著，聖經怎麼看人的苦？", "佛教講因果報應，聖經說的「恩典」跟因果有什麼不同？", "輪迴和聖經說的「人有一次生死，之後面對審判」差在哪裡？", "佛教講眾生平等、慈悲為懷，耶穌也教人愛人嗎？", "我拜佛是為了心安，耶穌給的平安有什麼不一樣？", "佛陀和耶穌都是導師嗎？耶穌為什麼說自己是救主？", "佛教講「放下」，聖經怎麼教人放下憂慮與怨恨？", "我學過靜坐，基督教的默想禱告有什麼不同？", "佛教強調自力修行，聖經為什麼說得救是靠恩典、不是靠行為？", "聖經說神是創造主，跟佛教的「空」「緣起」有什麼不同？", "我家人都信佛，我若信耶穌會讓他們傷心嗎？怎麼溝通？", "親人往生要做功德迴向，基督徒怎麼看亡者與追思？", "我做過不少善事，為什麼還說我需要被拯救？", "佛教說人人有佛性，聖經怎麼看人的本性與罪？", "為什麼耶穌的死能赦免我的罪？跟「業」有什麼關係？", "「涅槃」和聖經說的「永生」「天堂」一樣嗎？", "學佛的人可以同時信耶穌嗎？為什麼聖經強調獨一真神？", "我想了解耶穌，可以先從哪一卷、哪一段讀起？", "如果我願意試著向耶穌禱告，第一句話可以怎麼說？"], "zs": ["我习惯诵经、吃素，信耶稣需要放弃这些吗？", "佛教说苦是来自执着，圣经怎么看人的苦？", "佛教讲因果报应，圣经说的“恩典”跟因果有什么不同？", "轮回和圣经说的“人有一次生死，之后面对审判”差在哪里？", "佛教讲众生平等、慈悲为怀，耶稣也教人爱人吗？", "我拜佛是为了心安，耶稣给的平安有什么不一样？", "佛陀和耶稣都是导师吗？耶稣为什么说自己是救主？", "佛教讲“放下”，圣经怎么教人放下忧虑与怨恨？", "我学过静坐，基督教的默想祷告有什么不同？", "佛教强调自力修行，圣经为什么说得救是靠恩典、不是靠行为？", "圣经说神是创造主，跟佛教的“空”“缘起”有什么不同？", "我家人都信佛，我若信耶稣会让他们伤心吗？怎么沟通？", "亲人往生要做功德回向，基督徒怎么看亡者与追思？", "我做过不少善事，为什么还说我需要被拯救？", "佛教说人人有佛性，圣经怎么看人的本性与罪？", "为什么耶稣的死能赦免我的罪？跟“业”有什么关系？", "“涅槃”和圣经说的“永生”“天堂”一样吗？", "学佛的人可以同时信耶稣吗？为什么圣经强调独一真神？", "我想了解耶稣，可以先从哪一卷、哪一段读起？", "如果我愿意试着向耶稣祷告，第一句话可以怎么说？"], "en": ["I chant and eat vegetarian. Do I have to give these up to follow Jesus?", "Buddhism says suffering comes from attachment. How does the Bible see human suffering?", "Buddhism teaches karma. How is the Bible's 'grace' different from cause and effect?", "How is reincarnation different from the Bible's 'one life, then judgement'?", "Buddhism teaches equality and compassion. Does Jesus teach loving others too?", "I worship the Buddha for peace of mind. How is the peace Jesus gives different?", "Are the Buddha and Jesus both teachers? Why does Jesus call himself Saviour?", "Buddhism speaks of 'letting go'. How does the Bible teach letting go of worry and resentment?", "I've practised meditation. How is Christian contemplative prayer different?", "Buddhism stresses self-effort. Why does the Bible say we're saved by grace, not works?", "The Bible says God is Creator. How is that different from 'emptiness' and 'dependent origination'?", "My family are all Buddhists. Would following Jesus hurt them? How do I talk with them?", "When a loved one dies we do merit-transfer. How do Christians see the dead and remembrance?", "I've done many good deeds. Why does the Bible say I need to be saved?", "Buddhism says everyone has Buddha-nature. How does the Bible see human nature and sin?", "Why can Jesus' death forgive my sins? How does that relate to karma?", "Is 'nirvana' the same as the Bible's 'eternal life' and 'heaven'?", "Can a Buddhist follow Jesus at the same time? Why does the Bible stress one true God?", "I want to know Jesus. Which book or passage should I read first?", "If I'm willing to try praying to Jesus, what can I say as a first sentence?"]}, "folk": {"zh": ["我家拜拜、拜祖先，信耶穌就不能拜了嗎？為什麼？", "我拜神明是求平安、求保佑，耶穌可以給我這些嗎？", "聖經教人孝敬父母，信耶穌會不會變成不孝？", "清明、中元要祭拜祖先，基督徒可以怎麼追思、表達孝心？", "我家神桌上有好多神明，到底哪一位才是真的？", "算命、拜太歲、改運，聖經怎麼看？", "風水和廟裡的籤準不準？信耶穌的人怎麼面對未知的事？", "我生意不順，朋友教我拜財神，耶穌怎麼幫我？", "家裡有人生病，有人說要收驚、問神，我該怎麼做？", "我怕得罪神明、遭報應，信了耶穌，這些恐懼怎麼辦？", "我爸媽反對我去教會，怎麼溝通才不傷感情？", "媽祖、關公這些神明，聖經怎麼看？他們是真的嗎？", "為什麼說只有一位真神？其他的神明難道都是假的？", "過世的親人在另一個世界過得好嗎？我能為他們做什麼？", "我過去拜過很多廟，神會不會嫌棄我？", "家人的婚喪喜慶都要拜拜，我信耶穌怎麼參加才不尷尬？", "我家有神像、符咒，信主後要怎麼處理？", "耶穌能保佑我平安嗎？跟神明保佑有什麼不一樣？", "我想了解耶穌，要先去教會，還是自己先讀聖經？", "我想向耶穌禱告，需要燒香、擺供品嗎？怎麼禱告？"], "zs": ["我家拜拜、拜祖先，信耶稣就不能拜了吗？为什么？", "我拜神明是求平安、求保佑，耶稣可以给我这些吗？", "圣经教人孝敬父母，信耶稣会不会变成不孝？", "清明、中元要祭拜祖先，基督徒可以怎么追思、表达孝心？", "我家神桌上有好多神明，到底哪一位才是真的？", "算命、拜太岁、改运，圣经怎么看？", "风水和庙里的签准不准？信耶稣的人怎么面对未知的事？", "我生意不顺，朋友教我拜财神，耶稣怎么帮我？", "家里有人生病，有人说要收惊、问神，我该怎么做？", "我怕得罪神明、遭报应，信了耶稣，这些恐惧怎么办？", "我爸妈反对我去教会，怎么沟通才不伤感情？", "妈祖、关公这些神明，圣经怎么看？他们是真的吗？", "为什么说只有一位真神？其他的神明难道都是假的？", "过世的亲人在另一个世界过得好吗？我能为他们做什么？", "我过去拜过很多庙，神会不会嫌弃我？", "家人的婚丧喜庆都要拜拜，我信耶稣怎么参加才不尴尬？", "我家有神像、符咒，信主后要怎么处理？", "耶稣能保佑我平安吗？跟神明保佑有什么不一样？", "我想了解耶稣，要先去教会，还是自己先读圣经？", "我想向耶稣祷告，需要烧香、摆供品吗？怎么祷告？"], "en": ["My family worships deities and ancestors. If I follow Jesus can I no longer do that? Why?", "I worship the gods for peace and protection. Can Jesus give me those?", "The Bible teaches honouring parents. Would following Jesus make me unfilial?", "At Qingming and Ghost Month we honour ancestors. How can a Christian remember them and show respect?", "Our altar has many gods. Which one is real?", "Fortune-telling, praying to the Grand Duke, changing luck — what does the Bible say?", "Are feng shui and temple divination accurate? How do people who follow Jesus face the unknown?", "My business is struggling and a friend says worship the wealth god. How does Jesus help me?", "Someone at home is sick and people say do a soul-calling ritual or consult a deity. What should I do?", "I'm afraid of offending the gods and being punished. What happens to that fear if I follow Jesus?", "My parents oppose my going to church. How do I talk with them without hurting them?", "What does the Bible say about Mazu, Guan Gong and such? Are they real?", "Why only one true God? Are all the other gods false?", "Are my departed relatives doing well in the next world? What can I do for them?", "I've worshipped at many temples. Will God reject me?", "Weddings and funerals in my family involve worship. How can I join without awkwardness if I follow Jesus?", "We have idols and charms at home. What do I do with them after I believe?", "Can Jesus protect me? How is that different from the gods' protection?", "I want to know Jesus. Should I go to church first, or read the Bible on my own first?", "I want to pray to Jesus. Do I need incense or offerings? How do I pray?"]}, "yiguandao": {"zh": ["我吃素、重視修身行善，信耶穌需要改變這些嗎？", "一貫道說「五教同源、萬教歸一」，耶穌為什麼說自己是唯一的道路？", "我們敬拜「天」，聖經的「上帝」是同一位嗎？", "一貫道講修道成聖，聖經的「得救」靠修行還是靠恩典？", "道場裡講三期末劫，聖經對末世和審判怎麼說？", "向耶穌禱告需要什麼儀式嗎？跟我們敬天禮神有什麼不同？", "聖經裡的耶穌，跟道場裡說的耶穌（五教聖人之一）一樣嗎？", "我在道場很投入，若轉而認識耶穌，是不是背叛師尊與道親？", "道親都是好人，為什麼聖經還說人人有罪、需要救主？", "我們講「明明上帝」「回天」，聖經的天堂與永生是什麼？", "我們求道、上香，聖經說的敬拜是什麼樣子？", "為什麼聖經說耶穌是神的兒子？這跟人修成神仙有什麼不同？", "我的家人都在道場，我怎麼說出想了解耶穌的心意？", "一貫道重孝道與倫理，聖經在家庭倫理上教導什麼？", "道場有「求道」「點傳」，信耶穌要受洗，兩者有什麼不同？", "我在道場裡曾經感到平安，耶穌給的平安有什麼不同？", "我過去的修持和行善，在神面前算什麼？", "我心裡有疑問，又怕被說信心不夠，可以誠實問嗎？", "我想了解耶穌，從哪一段聖經開始最合適？", "如果我向耶穌禱告，需要先離開道場嗎？第一句可以怎麼說？"], "zs": ["我吃素、重视修身行善，信耶稣需要改变这些吗？", "一贯道说“五教同源、万教归一”，耶稣为什么说自己是唯一的道路？", "我们敬拜“天”，圣经的“上帝”是同一位吗？", "一贯道讲修道成圣，圣经的“得救”靠修行还是靠恩典？", "道场里讲三期末劫，圣经对末世和审判怎么说？", "向耶稣祷告需要什么仪式吗？跟我们敬天礼神有什么不同？", "圣经里的耶稣，跟道场里说的耶稣（五教圣人之一）一样吗？", "我在道场很投入，若转而认识耶稣，是不是背叛师尊与道亲？", "道亲都是好人，为什么圣经还说人人有罪、需要救主？", "我们讲“明明上帝”“回天”，圣经的天堂与永生是什么？", "我们求道、上香，圣经说的敬拜是什么样子？", "为什么圣经说耶稣是神的儿子？这跟人修成神仙有什么不同？", "我的家人都在道场，我怎么说出想了解耶稣的心意？", "一贯道重孝道与伦理，圣经在家庭伦理上教导什么？", "道场有“求道”“点传”，信耶稣要受洗，两者有什么不同？", "我在道场里曾经感到平安，耶稣给的平安有什么不同？", "我过去的修持和行善，在神面前算什么？", "我心里有疑问，又怕被说信心不够，可以诚实问吗？", "我想了解耶稣，从哪一段圣经开始最合适？", "如果我向耶稣祷告，需要先离开道场吗？第一句可以怎么说？"], "en": ["I'm vegetarian and value self-cultivation and good deeds. Must I change these to follow Jesus?", "Yiguandao says 'five religions share one source'. Why does Jesus say he is the only way?", "We worship 'Heaven'. Is the Bible's 'God' the same one?", "Yiguandao speaks of cultivating the Way to become a saint. Is 'salvation' by effort or by grace?", "Our hall teaches the three ages of calamity. What does the Bible say about the end and judgement?", "Does praying to Jesus need rituals? How is it different from how we honour Heaven?", "Is the Jesus of the Bible the same as the Jesus in our hall (one of the five sages)?", "I'm deeply involved in our hall. If I come to know Jesus, am I betraying my teachers and fellow believers?", "My fellow believers are good people. Why does the Bible say everyone has sin and needs a Saviour?", "We speak of 'the Lord on High' and 'returning to Heaven'. What are heaven and eternal life in the Bible?", "We seek the Way and burn incense. What does worship look like in the Bible?", "Why does the Bible say Jesus is the Son of God? How is that different from a person cultivating into a deity?", "My family are all in the hall. How do I tell them I want to understand Jesus?", "Yiguandao values filial piety and ethics. What does the Bible teach about family?", "Our hall has 'seeking the Way' and 'the transmitting master'. Following Jesus involves baptism. What's the difference?", "I once felt peace in the hall. How is the peace Jesus gives different?", "What do my past practice and good deeds count for before God?", "I have doubts but fear being told my faith is weak. May I ask honestly?", "I want to know Jesus. Which part of the Bible is best to start with?", "If I pray to Jesus, must I leave the hall first? What can I say as a first sentence?"]}, "muslim": {"zh": ["我信真主獨一，基督徒說的「三位一體」是不是信三個神？", "我們尊敬爾薩（耶穌），聖經為什麼說他是神的兒子？", "古蘭經和聖經都提到亞伯拉罕、摩西，兩者有什麼不同？", "穆斯林靠五功和行善盼望進天堂，聖經為什麼說得救是靠恩典？", "耶穌真的被釘十字架而死嗎？為什麼需要他的死？", "有人說聖經被更改了，聖經可靠嗎？有什麼根據？", "耶穌復活有什麼歷史根據？", "我每天禮拜五次，基督徒怎麼禱告？一定要固定的方式嗎？", "我犯了罪，真主赦免靠什麼？聖經說的赦免是什麼？", "我若對耶穌有興趣，家人和社群會怎麼看？我怎麼保護自己與家人的關係？", "我可以只讀聖經來認識耶穌，不與家人爭論嗎？", "聖經怎麼說耶穌的身分？只是先知，還是更多？", "聖經說神是愛，我熟悉真主的慈憫，兩者有什麼異同？", "基督徒喝酒、吃豬肉嗎？聖經對飲食的教導是什麼？", "末日審判的時候，我怎麼才有把握得救？", "「道成肉身」是什麼意思？神怎麼可能成為人？", "基督徒怎麼看聖戰與暴力？耶穌怎麼教導人對待仇敵？", "我從小受穆斯林教育，如果我信耶穌，是不是背叛？", "我可以怎麼安靜地讀約翰福音，認識耶穌？", "如果我想向耶穌禱告，可以用自己的話嗎？第一句怎麼說？"], "zs": ["我信真主独一，基督徒说的“三位一体”是不是信三个神？", "我们尊敬尔萨（耶稣），圣经为什么说他是神的儿子？", "古兰经和圣经都提到亚伯拉罕、摩西，两者有什么不同？", "穆斯林靠五功和行善盼望进天堂，圣经为什么说得救是靠恩典？", "耶稣真的被钉十字架而死吗？为什么需要他的死？", "有人说圣经被更改了，圣经可靠吗？有什么根据？", "耶稣复活有什么历史根据？", "我每天礼拜五次，基督徒怎么祷告？一定要固定的方式吗？", "我犯了罪，真主赦免靠什么？圣经说的赦免是什么？", "我若对耶稣有兴趣，家人和社群会怎么看？我怎么保护自己与家人的关系？", "我可以只读圣经来认识耶稣，不与家人争论吗？", "圣经怎么说耶稣的身分？只是先知，还是更多？", "圣经说神是爱，我熟悉真主的慈悯，两者有什么异同？", "基督徒喝酒、吃猪肉吗？圣经对饮食的教导是什么？", "末日审判的时候，我怎么才有把握得救？", "“道成肉身”是什么意思？神怎么可能成为人？", "基督徒怎么看圣战与暴力？耶稣怎么教导人对待仇敌？", "我从小受穆斯林教育，如果我信耶稣，是不是背叛？", "我可以怎么安静地读约翰福音，认识耶稣？", "如果我想向耶稣祷告，可以用自己的话吗？第一句怎么说？"], "en": ["I believe God is one. Isn't the Christian 'Trinity' belief in three gods?", "We honour Isa (Jesus). Why does the Bible say he is the Son of God?", "The Qur'an and the Bible both mention Abraham and Moses. How do they differ?", "Muslims hope for paradise through the five pillars and good deeds. Why does the Bible say salvation is by grace?", "Was Jesus really crucified and killed? Why was his death needed?", "Some say the Bible was altered. Is it reliable? What is the evidence?", "What historical evidence is there for the resurrection of Jesus?", "I pray five times a day. How do Christians pray? Must it be in a fixed form?", "I have sinned. How does God forgive according to my tradition, and what is forgiveness in the Bible?", "If I'm interested in Jesus, how will my family and community see it? How do I protect myself and my family ties?", "Can I read only the Bible to get to know Jesus, without arguing with my family?", "What does the Bible say about Jesus' identity? Only a prophet, or more?", "The Bible says God is love. I know God's mercy well. How are they alike and different?", "Do Christians drink alcohol or eat pork? What does the Bible teach about food?", "On the Day of Judgement, how can I be sure of being saved?", "What does 'the Word became flesh' mean? How could God become a man?", "How do Christians see holy war and violence? How did Jesus teach people to treat enemies?", "I was raised Muslim. If I follow Jesus, is that betrayal?", "How can I quietly read the Gospel of John to get to know Jesus?", "If I want to pray to Jesus, may I use my own words? What is a first sentence?"]}, "atheist": {"zh": ["科學已經能解釋宇宙的起源，為什麼還需要神？", "進化論和聖經的創造是不是互相衝突？", "我沒有看過神，有什麼證據證明神存在？", "如果神是全能又全愛，為什麼有戰爭、疾病和災難？", "道德不靠宗教也可以，為什麼還需要信仰？", "歷史上有十字軍與宗教戰爭，這不是信仰的問題嗎？", "聖經裡有些故事（如神蹟）看起來不合理，我要怎麼讀？", "耶穌在歷史上真的存在嗎？有哪些歷史記載？", "耶穌復活有什麼歷史根據？難道不是門徒編出來的？", "信仰是不是只是心理安慰、逃避現實？", "人死了就結束，不是更簡單嗎？為什麼要談永生？", "人生的意義如果沒有神，是從哪裡來的？", "基督徒怎麼面對自己的疑問與懷疑？可以提出來問嗎？", "我看過一些基督徒言行不一，這是不是證明信仰是假的？", "「信」是不是就是放棄思考？", "如果我想認真認識耶穌，要用什麼態度、先看什麼？", "禱告真的有用嗎？有沒有可以自己驗證的方法？", "為什麼說人有「罪」？我不覺得自己犯了什麼大錯。", "耶穌的教導有什麼獨特之處，值得認真考慮？", "我還在懷疑，但願意試著開口禱告一次，可以怎麼說？"], "zs": ["科学已经能解释宇宙的起源，为什么还需要神？", "进化论和圣经的创造是不是互相冲突？", "我没有看过神，有什么证据证明神存在？", "如果神是全能又全爱，为什么有战争、疾病和灾难？", "道德不靠宗教也可以，为什么还需要信仰？", "历史上有十字军与宗教战争，这不是信仰的问题吗？", "圣经里有些故事（如神迹）看起来不合理，我要怎么读？", "耶稣在历史上真的存在吗？有哪些历史记载？", "耶稣复活有什么历史根据？难道不是门徒编出来的？", "信仰是不是只是心理安慰、逃避现实？", "人死了就结束，不是更简单吗？为什么要谈永生？", "人生的意义如果没有神，是从哪里来的？", "基督徒怎么面对自己的疑问与怀疑？可以提出来问吗？", "我看过一些基督徒言行不一，这是不是证明信仰是假的？", "“信”是不是就是放弃思考？", "如果我想认真认识耶稣，要用什么态度、先看什么？", "祷告真的有用吗？有没有可以自己验证的方法？", "为什么说人有“罪”？我不觉得自己犯了什么大错。", "耶稣的教导有什么独特之处，值得认真考虑？", "我还在怀疑，但愿意试着开口祷告一次，可以怎么说？"], "en": ["Science can explain the origin of the universe. Why do we still need God?", "Does evolution conflict with the Bible's creation?", "I've never seen God. What evidence is there that he exists?", "If God is all-powerful and all-loving, why are there wars, disease and disasters?", "Morality doesn't need religion. Why do we still need faith?", "History has the Crusades and religious wars. Isn't that the problem with faith?", "Some Bible stories (like miracles) seem unreasonable. How should I read them?", "Did Jesus really exist in history? What historical records are there?", "What historical basis is there for the resurrection? Wasn't it invented by the disciples?", "Isn't faith just psychological comfort and escape from reality?", "Isn't it simpler that death is the end? Why talk about eternal life?", "Without God, where does life's meaning come from?", "How do Christians face their own doubts and questions? May I raise them?", "I've seen Christians whose words and actions don't match. Doesn't that prove faith is false?", "Doesn't 'believing' mean giving up thinking?", "If I want to look seriously at Jesus, what attitude should I take and what should I read first?", "Does prayer really work? Is there a way I can test it myself?", "Why does the Bible say people have 'sin'? I don't think I've done anything terrible.", "What is distinctive in Jesus' teaching that's worth taking seriously?", "I'm still doubting, but willing to try praying once. What can I say?"]}};
 const qbankNow = () => {
   const lg = state.lang;
-  if (state.audience === 'seeker') { const bs = QBANK20SK[state.skbg]; if (bs && (bs[lg] || !isKO())) return bs[lg] || bs.zh; }
-  { const b20 = QBANK20[state.audience]; if (b20 && (b20[lg] || !isKO())) return b20[lg] || b20.zh; }
+  if (state.audience === 'seeker') { const bs = QBANK20SK[state.skbg]; if (bs && (bs[lg] || !isX())) return bs[lg] || bs.zh; }
+  { const b20 = QBANK20[state.audience]; if (b20 && (b20[lg] || !isX())) return b20[lg] || b20.zh; }
   { const x2 = A2(); if (x2) return x2.q; }
   const a = QBANK_AUD[state.audience];
   return (a && (a[lg] || a.zh)) || QBANK[lg] || QBANK.zh;
 };
 /* ---- 慕道友（v2.11.0）：站在還沒信主的人的角度，用生活的話說明聖經的真理，並給實際有用的幫助 ---- */
-const SK_SYS   = () => isEN() ? ' Audience: a seeker — a friend who is not yet a believer and is exploring the Christian faith. Stand fully in their shoes: they may never have read the Bible, do not know church language, and may have questions or reservations. (1) Start from their real situation, feelings or question, then bring in the passage, so they feel "this is about me". (2) Use plain everyday words; the 321 vision is only your inner compass — never use insider words like "self-emptied", "let Jesus reign", "overcomer" or "spiritual", and no church or theological jargon; if a word like grace, sin or salvation is unavoidable, explain it at once in everyday terms. (3) Be honest and respectful — no preaching, no pressure, no demand to believe now, no judging; doubts and objections are normal, so acknowledge the weight of the question first, then answer it honestly. (4) State clearly what the Bible says about it (what God is like, what Jesus did for us) through stories, pictures and everyday examples they can understand and remember. (5) Always give practical help: one or two small steps they can try this week by themselves (something to notice, a question to ask, a simple action). (6) When it fits, gently invite them to keep exploring (read a short passage, ask a question) — never force the conversation toward a decision. (7) Never say things like "we Christians all know", which assumes they already believe. Quote the World English Bible and explain it in plain words. If you include a prayer, offer it only as "if you like, you could say something like this to God" — never forced. Keep the whole answer concise, with short paragraphs.' : (isZS() ? ' 回答对象：慕道友（还没有信主、正在了解基督信仰的朋友）。请完全站在他的立场和角度：他可能没读过圣经、不懂教会用语，心里有疑问，甚至有些保留。①先从他真实的生活处境、感受或疑问切入，再带到经文，让他觉得“这跟我有关”。②用最平常的话说；321理念只是你心里的方向，不要在回答里出现“无己、作王、得胜、属灵”这类内部用语，也不用教会与神学术语；一定要提到的词（如恩典、罪、救恩），马上用生活的说法解释。③诚实、尊重、不说教、不施压、不要求他现在就相信，也不论断他；有疑问或质疑很正常，先认真承认那个问题的份量，再诚实回答。④清楚说出圣经在这件事上的真理（神是怎样的神、耶稣为我们做了什么），用故事、比喻和日常例子，让他听得懂、记得住。⑤一定要有实際有用的帮助：给一两个他这个星期就能自己试试看的小步驟（一个观察、一个提问、一个簡单的行动）。⑥合适时，可以温和邀请他继续探索（例如读一小段、问一个问题），不要硬把话题转到决志。⑦不要说“我们基督徒都知道”这类预设他已经信的话。引用经文用和合本，并用白话解释他的意思。若写到祷告，只当作“若你愿意，可以这样对神说”的邀请，不强迫。整个回答要簡明、段落要短。' : ' 回答對象：慕道友（還沒有信主、正在了解基督信仰的朋友）。請完全站在他的立場和角度：他可能沒讀過聖經、不懂教會用語，心裡有疑問，甚至有些保留。①先從他真實的生活處境、感受或疑問切入，再帶到經文，讓他覺得「這跟我有關」。②用最平常的話說；321理念只是你心裡的方向，不要在回答裡出現「無己、作王、得勝、屬靈」這類內部用語，也不用教會與神學術語；一定要提到的詞（如恩典、罪、救恩），馬上用生活的說法解釋。③誠實、尊重、不說教、不施壓、不要求他現在就相信，也不論斷他；有疑問或質疑很正常，先認真承認那個問題的份量，再誠實回答。④清楚說出聖經在這件事上的真理（神是怎樣的神、耶穌為我們做了什麼），用故事、比喻和日常例子，讓他聽得懂、記得住。⑤一定要有實際有用的幫助：給一兩個他這個星期就能自己試試看的小步驟（一個觀察、一個提問、一個簡單的行動）。⑥合適時，可以溫和邀請他繼續探索（例如讀一小段、問一個問題），不要硬把話題轉到決志。⑦不要說「我們基督徒都知道」這類預設他已經信的話。引用經文用和合本，並用白話解釋它的意思。若寫到禱告，只當作「若你願意，可以這樣對神說」的邀請，不強迫。整個回答要簡明、段落要短。');
-const SK_WRITE = () => isEN() ? '\nThe reader is a friend who is not yet a believer: everyday, warm, never preachy, no church jargon, never assuming they already believe. No emoji.' : (isZS() ? '\n读者是还没信主的朋友：用生活化、亲切、不说教的话，不用教会术语，不预设他已经信；不要用表情符号。' : '\n讀者是還沒信主的朋友：用生活化、親切、不說教的話，不用教會術語，不預設他已經信；不要用表情符號。');
-const SK_STYLE = () => isEN() ? 'Style: for someone who is not a believer and has never read the Bible. State the background in the question itself (name the person or event), assume no Bible or church vocabulary, use plain words, and make the explanation one plain sentence on why it matters to an ordinary person.' : (isZS() ? '风格：给还没信主、没读过圣经的人。题目要把背景交代清楚（人物、事件的名字直接写出来），不假设他懂圣经或教会用语；用字平实，解析用一句白话说明这件事对一般人有什么意义。' : '風格：給還沒信主、沒讀過聖經的人。題目要把背景交代清楚（人物、事件的名字直接寫出來），不假設他懂聖經或教會用語；用字平實，解析用一句白話說明這件事對一般人有什麼意義。');
+const SK_SYS   = () => isEP() ? ' Audience: a seeker — a friend who is not yet a believer and is exploring the Christian faith. Stand fully in their shoes: they may never have read the Bible, do not know church language, and may have questions or reservations. (1) Start from their real situation, feelings or question, then bring in the passage, so they feel "this is about me". (2) Use plain everyday words; the 321 vision is only your inner compass — never use insider words like "self-emptied", "let Jesus reign", "overcomer" or "spiritual", and no church or theological jargon; if a word like grace, sin or salvation is unavoidable, explain it at once in everyday terms. (3) Be honest and respectful — no preaching, no pressure, no demand to believe now, no judging; doubts and objections are normal, so acknowledge the weight of the question first, then answer it honestly. (4) State clearly what the Bible says about it (what God is like, what Jesus did for us) through stories, pictures and everyday examples they can understand and remember. (5) Always give practical help: one or two small steps they can try this week by themselves (something to notice, a question to ask, a simple action). (6) When it fits, gently invite them to keep exploring (read a short passage, ask a question) — never force the conversation toward a decision. (7) Never say things like "we Christians all know", which assumes they already believe. Quote the World English Bible and explain it in plain words. If you include a prayer, offer it only as "if you like, you could say something like this to God" — never forced. Keep the whole answer concise, with short paragraphs.' : (isZS() ? ' 回答对象：慕道友（还没有信主、正在了解基督信仰的朋友）。请完全站在他的立场和角度：他可能没读过圣经、不懂教会用语，心里有疑问，甚至有些保留。①先从他真实的生活处境、感受或疑问切入，再带到经文，让他觉得“这跟我有关”。②用最平常的话说；321理念只是你心里的方向，不要在回答里出现“无己、作王、得胜、属灵”这类内部用语，也不用教会与神学术语；一定要提到的词（如恩典、罪、救恩），马上用生活的说法解释。③诚实、尊重、不说教、不施压、不要求他现在就相信，也不论断他；有疑问或质疑很正常，先认真承认那个问题的份量，再诚实回答。④清楚说出圣经在这件事上的真理（神是怎样的神、耶稣为我们做了什么），用故事、比喻和日常例子，让他听得懂、记得住。⑤一定要有实際有用的帮助：给一两个他这个星期就能自己试试看的小步驟（一个观察、一个提问、一个簡单的行动）。⑥合适时，可以温和邀请他继续探索（例如读一小段、问一个问题），不要硬把话题转到决志。⑦不要说“我们基督徒都知道”这类预设他已经信的话。引用经文用和合本，并用白话解释他的意思。若写到祷告，只当作“若你愿意，可以这样对神说”的邀请，不强迫。整个回答要簡明、段落要短。' : ' 回答對象：慕道友（還沒有信主、正在了解基督信仰的朋友）。請完全站在他的立場和角度：他可能沒讀過聖經、不懂教會用語，心裡有疑問，甚至有些保留。①先從他真實的生活處境、感受或疑問切入，再帶到經文，讓他覺得「這跟我有關」。②用最平常的話說；321理念只是你心裡的方向，不要在回答裡出現「無己、作王、得勝、屬靈」這類內部用語，也不用教會與神學術語；一定要提到的詞（如恩典、罪、救恩），馬上用生活的說法解釋。③誠實、尊重、不說教、不施壓、不要求他現在就相信，也不論斷他；有疑問或質疑很正常，先認真承認那個問題的份量，再誠實回答。④清楚說出聖經在這件事上的真理（神是怎樣的神、耶穌為我們做了什麼），用故事、比喻和日常例子，讓他聽得懂、記得住。⑤一定要有實際有用的幫助：給一兩個他這個星期就能自己試試看的小步驟（一個觀察、一個提問、一個簡單的行動）。⑥合適時，可以溫和邀請他繼續探索（例如讀一小段、問一個問題），不要硬把話題轉到決志。⑦不要說「我們基督徒都知道」這類預設他已經信的話。引用經文用和合本，並用白話解釋它的意思。若寫到禱告，只當作「若你願意，可以這樣對神說」的邀請，不強迫。整個回答要簡明、段落要短。');
+const SK_WRITE = () => isEP() ? '\nThe reader is a friend who is not yet a believer: everyday, warm, never preachy, no church jargon, never assuming they already believe. No emoji.' : (isZS() ? '\n读者是还没信主的朋友：用生活化、亲切、不说教的话，不用教会术语，不预设他已经信；不要用表情符号。' : '\n讀者是還沒信主的朋友：用生活化、親切、不說教的話，不用教會術語，不預設他已經信；不要用表情符號。');
+const SK_STYLE = () => isEP() ? 'Style: for someone who is not a believer and has never read the Bible. State the background in the question itself (name the person or event), assume no Bible or church vocabulary, use plain words, and make the explanation one plain sentence on why it matters to an ordinary person.' : (isZS() ? '风格：给还没信主、没读过圣经的人。题目要把背景交代清楚（人物、事件的名字直接写出来），不假设他懂圣经或教会用语；用字平实，解析用一句白话说明这件事对一般人有什么意义。' : '風格：給還沒信主、沒讀過聖經的人。題目要把背景交代清楚（人物、事件的名字直接寫出來），不假設他懂聖經或教會用語；用字平實，解析用一句白話說明這件事對一般人有什麼意義。');
 const SK_RW = nm => [
   L3(`恭喜你！《${nm}》整卷讀完了！`, `恭喜你！《${nm}》整卷读完了！`, `Congratulations — you finished the whole book of ${nm}!`),
   L3('你願意一天一天走進這本書，真不簡單。希望這些話對你有幫助。', '你愿意一天一天走进这本书，真不簡单。希望这些话对你有帮助。', 'You kept walking into this book day by day — that is not easy. I hope these words help you.')
@@ -6592,7 +6604,7 @@ async function sendChat(text){
   chatBusy = true;
   chatLog.push({ role:'ai', text: t().thinking, src:srcNow }); paintChat();
   const b = RD.book ? BOOK[RD.book] : null;
-  const sys = (isEN()
+  const sys = (isEP()
     ? 'You are Xiaozhi, a Bible companion from Kingdom 321 Online Fellowship. Answer in the spirit of the 3-2-1 ideology — the three foundations: Jesus is my Role Model, the Bible is my Standard, the Holy Spirit is my Guide; the two core values: Let Jesus be King, Let Jesus receive all the glory; the one purpose: to build God’s system. Explain plainly, use everyday pictures, quote the World English Bible, and keep answers short.'
     : isZS()
     ? '你是「小智」，国度321空中团契的圣经陪读。以321理念（耶稣是我的榜样、圣经是我的准则、圣灵是我的引导；让耶稣作王、让耶稣得着一切的荣耀；建立属神的体系）回应，深入浅出、善用比喻，引用和合本圣经，回答简明。'
@@ -6602,7 +6614,7 @@ async function sendChat(text){
        所以放心用表格；重點用 > 標一句，那一句會被抓去做成美圖。 */
     + SYS_FMT()
     + AUD_SYS() + SKBG_SYS() + LEN_SYS()
-    + (b ? (isEN() ? ` (The reader is currently in ${bname(b)} ${RD.ch}.)`
+    + (b ? (isEP() ? ` (The reader is currently in ${bname(b)} ${RD.ch}.)`
           : isZS() ? `（读者目前在读：${bname(b)} 第 ${RD.ch} 章）`
                    : `（讀者目前在讀：${bname(b)} 第 ${RD.ch} 章）`) : '');
   const msgs = chatLog.filter(m => m.text !== t().thinking).slice(-12)
@@ -6715,7 +6727,7 @@ const PL_STYLE = () => {
   const a = state.audience;
   if (a === 'seeker') return SK_STYLE();
   { const x2 = A2(); if (x2) return x2.style; }
-  if (isEN()) return {
+  if (isEP()) return {
     adult:'Style: steady and clear; one or two questions should bring out a life application.',
     teen :'Style: the questions and explanations are funny and witty, like friendly banter; the options may be playful, but the correct answer must be unambiguous, and never joke about God or Scripture itself.',
     kid  :'Style: for children aged 5–11 — very simple words, very short sentences, like telling a story; keep options short; one warm sentence of explanation, with at most one cute emoji.'
@@ -6732,7 +6744,7 @@ const PL_STYLE = () => {
   }[a];
 };
 function plSysQuiz(n, k){
-  if (isEN()) return `You are a Bible teacher writing a quiz for a Bible-reading app. The goal is to help people remember the KEY POINTS of this chapter.
+  if (isEP()) return `You are a Bible teacher writing a quiz for a Bible-reading app. The goal is to help people remember the KEY POINTS of this chapter.
 Method: first decide the ${n} most important points in the passage (the core message, a key person or event, what God does or promises, one command or lesson, one life application) and write one question for each point.
 Every question must:
 1. Be clear and instantly understandable: one complete sentence under 25 words; name the person, place or event directly — never say "the man in this passage" or "that event" so the reader has to look back.
@@ -6764,7 +6776,7 @@ Write ${n} questions, each with exactly ${k} options. "v" is the verse number(s)
 共 ${n} 題，每題剛好 ${k} 個選項。v 是答案所在的節號，例如 "3" 或 "3-4"。${PL_STYLE()}請用繁體中文。只回傳 JSON，不要任何說明、不要 markdown 圍欄：{"q":[{"q":"題目","o":["選項","選項"],"a":正確選項的序號（從0開始）,"e":"一句解析","v":"3"}]}`;
 }
 function plSysRiddle(n){
-  if (isEN()) return `You are a Bible teacher designing riddles for a Bible-reading app, to help people remember the key people, places, objects or events of this chapter. From the passage the user gives you, write ${n} riddles.
+  if (isEP()) return `You are a Bible teacher designing riddles for a Bible-reading app, to help people remember the key people, places, objects or events of this chapter. From the passage the user gives you, write ${n} riddles.
 Every riddle must:
 1. Have an answer that is a KEY point of the chapter: a central person, a key place, an important object or the main event; given as the most common short name (1–4 words); no obscure minor characters.
 2. Start with "t" (type) — exactly one of "Person", "Place", "Object", "Event" — so the reader knows at once what kind of thing to guess.
@@ -7166,6 +7178,7 @@ async function viewMe(v){
         <button class="${state.lang === 'zs' ? 'on' : ''}" data-l="zs">简体中文</button>
         <button class="${state.lang === 'en' ? 'on' : ''}" data-l="en">English</button>
         <button class="${state.lang === 'ko' ? 'on' : ''}" data-l="ko">한국어</button>
+        <button class="${state.lang === 'ja' ? 'on' : ''}" data-l="ja">日本語</button>
         </div></div>
       <div class="setrow"><div class="sl">${esc(L3('小智回答對象', '小智回答对象', 'Xiaozhi answers for'))}
         <div class="muted" style="font-size:11.5px;line-height:1.6">${esc(AUD_HINT()[state.audience])}</div></div>
@@ -7421,9 +7434,9 @@ function refTable(){
   if (_refRe && _refLang === state.lang) return { re:_refRe, map:_refMap };
   const map = {};
   (TOC || []).forEach(b => {
-    const full = isKO() ? (b.ko || b.en) : isEN() ? b.en : (isZS() ? b.zs : b.zh);
+    const full = isJA() ? (b.ja || b.en) : isKO() ? (b.ko || b.en) : isEN() ? b.en : (isZS() ? b.zs : b.zh);
     const val = { full, ps: b.id === 'Psalms' };
-    const keys = isKO() ? [b.ko, b.ako] : isEN() ? [b.en, b.aen] : [(isZS() ? b.zs : b.zh), (isZS() ? b.azs : b.azh)];
+    const keys = isJA() ? [b.ja, b.aja] : isKO() ? [b.ko, b.ako] : isEN() ? [b.en, b.aen] : [(isZS() ? b.zs : b.zh), (isZS() ? b.azs : b.azh)];
     keys.forEach(k => { if (k) map[k] = val; });
   });
   const ks = Object.keys(map).sort((a, b) => b.length - a.length)
@@ -7446,9 +7459,10 @@ function ttsRef(x){
   return src.replace(r.re, function (m, bk, c, v, v2, off){
     /* 單字縮寫（創、約、詩…）若緊接在另一個中文字後面，多半是別的詞的一部分
        ——「大約 3:2 個人」不能變成「大約翰福音3章2節」。整個書名寫全的就不必顧慮。 */
-    if (bk.length === 1 && off > 0 && (CJK_RE.test(src.charAt(off - 1)) || /[\uAC00-\uD7A3]/.test(src.charAt(off - 1)))) return m;
+    if (bk.length === 1 && off > 0 && (CJK_RE.test(src.charAt(off - 1)) || /[\u3040-\u30FF]/.test(src.charAt(off - 1)) || /[\uAC00-\uD7A3]/.test(src.charAt(off - 1)))) return m;
     if (isEN() && off > 0 && /[A-Za-z]/.test(src.charAt(off - 1))) return m;
     const it = r.map[bk] || { full:bk, ps:false };
+    if (isJA()) return it.full + c + (it.ps ? '篇' : '章') + v + (v2 ? '節から' + v2 : '') + '節';
     if (isKO()) return it.full + ' ' + c + (it.ps ? '편' : '장') + ' ' + v + (v2 ? '절에서 ' + v2 : '') + '절';
     if (isEN()){
       const head = it.ps ? ('Psalm ' + c) : (it.full + ' chapter ' + c);
@@ -7585,7 +7599,7 @@ PRON321.hookNative(() => isZS() ? 'cn' : 'tw');
 function ttsPrep(s){
   let x = noEmoji(ttsRef(dropRefParens(s)));
   x = x.replace(/〔[^〕]*〕/g, '').replace(/\[[^\]]*\]/g, '');   // 譯者註不朗讀
-  if (isEN()) return x.replace(/\s+/g, ' ').trim();                  // 英文不做破音字修正
+  if (isEP()) return x.replace(/\s+/g, ' ').trim();                  // 英文／日文不做華語破音字修正
   x = x.replace(/[「」『』（）]/g, '');
   /* 真人朗讀發音（技能 321-reading-pronunciation）：先套共用指定讀音與兩岸差異，再套下面的舊表 */
   x = PRON321.fix(x, isZS() ? 'cn' : 'tw', ((VOICES[state.lang] || [])[state.voice[state.lang]] || {}).v || '');
@@ -7829,7 +7843,7 @@ function ttsNativeFrom(i, gen){
   spk.idx = i; raShow(spk.items[i]); ttsBtn('playing');
   const say = ttsPrep(spk.items[i].text);
   const u = new SpeechSynthesisUtterance(say);
-  u.lang = isKO() ? 'ko-KR' : (isEN() ? 'en-US' : (isZS() ? 'zh-CN' : 'zh-TW')); u.rate = .95;
+  u.lang = isJA() ? 'ja-JP' : isKO() ? 'ko-KR' : (isEN() ? 'en-US' : (isZS() ? 'zh-CN' : 'zh-TW')); u.rate = .95;
   /* 裝置語音給得到字元位置，就直接照位置換句子 */
   u.onboundary = e => {
     if (!spk.on || spk.abort || spk.idx !== i || gen !== spk.gen) return;
@@ -7957,7 +7971,7 @@ async function ttsSpeakText(text, id){
   }catch(e){
     if ('speechSynthesis' in window){
       const u = new SpeechSynthesisUtterance(clean);
-      u.lang = isKO() ? 'ko-KR' : (isEN() ? 'en-US' : (isZS() ? 'zh-CN' : 'zh-TW'));
+      u.lang = isJA() ? 'ja-JP' : isKO() ? 'ko-KR' : (isEN() ? 'en-US' : (isZS() ? 'zh-CN' : 'zh-TW'));
       u.onend = done; u.onerror = done;
       speechSynthesis.speak(u); toast(t().ttsFallback);
     } else { toast(t().ttsErr); done(); }
@@ -8122,16 +8136,16 @@ function amenOnly(s){
 
 /* ---------- 小智回答說成自然口吻（朗讀用） ---------- */
 function mdSpeak(md){
-  const zh = !isEN();
+  const zh = !isEN(), ja = isJA();
   const tbl = mdTableMap(String(md || ''), function (head, rows){
     const lead = L3('我們用一個對照來整理。', '我们用一个对照来整理。', 'Here is a quick comparison.');
     const body = rows.map((r, ri) => {
       const cells = r.map((c, j) => {
         const h = (head[j] || '').trim();
         if (!c) return '';
-        return h ? (zh ? h + '是' + c : h + ' is ' + c) : c;
-      }).filter(Boolean).join(zh ? '，' : ', ');
-      const pre = (rows.length > 1 && ri === rows.length - 1) ? (zh ? '最後，' : 'Finally, ') : '';
+        return h ? (zh ? h + (ja ? 'は' : '是') + c : h + ' is ' + c) : c;
+      }).filter(Boolean).join(ja ? '、' : zh ? '，' : ', ');
+      const pre = (rows.length > 1 && ri === rows.length - 1) ? (ja ? '最後に、' : zh ? '最後，' : 'Finally, ') : '';
       return pre + cells + (zh ? '。' : '.');
     }).join('\n');
     return lead + '\n' + body;
@@ -8165,10 +8179,10 @@ function mdSpeak(md){
     } else if (b.k === 'p'){ if (!(cur && cur.numbered)) cur = null; }
     else if (b.k !== 'br'){ cur = null; }
   });
-  const isKW = /想更多|延伸|多想|再想|深思|think more/i, isPR = /禱告|祷告|pray/i;
+  const isKW = /想更多|延伸|多想|再想|深思|もっと考え|さらに考え|思いを深め|think more/i, isPR = /禱告|祷告|祈り|pray/i;
   const normalH = blocks.filter(b => b.k === 'h' && !isKW.test(b.t) && !isPR.test(b.t));
   let hn = 0, qn = 0;
-  const startsLead = /^(首先|其次|另外|最後|最后|第[一二三四五六七八九十]|first|second|third|finally|next)/i;
+  const startsLead = /^(首先|其次|另外|最後|最后|第[一二三四五六七八九十]|まず|次に|つぎに|最後に|さらに|first|second|third|finally|next)/i;
   const scripture = t => /[「“”"]|\d+\s*[:：]\s*\d+/.test(t);
   const endP = s => { s = s.trim(); if (!s) return s; return zh ? (/[。！？：；，、」』）…]$/.test(s) ? s : s + '。') : (/[.!?:;,)"”]$/.test(s) ? s : s + '.'); };
   const modeOf = g => {
@@ -8176,24 +8190,29 @@ function mdSpeak(md){
     if (n === 1) return 'none';
     if (its.every(i => scripture(i.t))) return 'none';
     if (g.numbered) return 'num';
-    if (/步驟|步骤|方法|做法|如何|幾個|几个|幾件事|几件事|steps?|ways?|how to/i.test(g.prev)) return 'num';
+    if (/步驟|步骤|方法|做法|如何|幾個|几个|幾件事|几件事|手順|やり方|どうすれば|ステップ|steps?|ways?|how to/i.test(g.prev)) return 'num';
     if (its.filter(i => i.lab).length * 2 > n) return 'label';
     if (its.every(i => (zh ? i.t.length <= 14 : i.t.length <= 28) && !/[，。；,;]/.test(i.t))) return 'short';
     return 'plain';
   };
   groups.forEach(g => { g.mode = modeOf(g); });
-  const LEAD = zh
+  const LEAD = ja
+    ? { first:'まず、', mid:['次に、', 'また、'], last:'最後に、', only2last:'最後に、' }
+    : zh
     ? { first:'首先，', mid:['另外，', '還有，'], last:'最後，', only2last:'最後，' }
     : { first:'First, ', mid:['Next, ', 'Also, '], last:'Finally, ', only2last:'Finally, ' };
   const out = [];
   blocks.forEach(b => {
     if (b.k === 'br') return;
     if (b.k === 'h'){
-      if (isKW.test(b.t)) out.push(zh ? '如果想更多一點，可以這樣想。' : 'If you want to think a little further, here is a thought.');
-      else if (isPR.test(b.t)) out.push(zh ? '讓我們一起禱告。' : 'Let us pray together.');
+      if (isKW.test(b.t)) out.push(ja ? 'もう少し考えてみたい方へ、こんな見方もあります。' : zh ? '如果想更多一點，可以這樣想。' : 'If you want to think a little further, here is a thought.');
+      else if (isPR.test(b.t)) out.push(ja ? 'いっしょに祈りましょう。' : zh ? '讓我們一起禱告。' : 'Let us pray together.');
       else {
         const n = normalH.length, i = hn++, t = b.t.replace(/^\d+[.)、]\s*/, '');
-        if (zh){
+        if (ja){
+          const w = n === 1 ? '' : (i === 0 ? 'まず、' : ((n >= 3 && i === n - 1) ? '最後に、' : ['次に、', 'つづいて、', 'さらに、'][(i - 1) % 3]));
+          out.push(w + t + 'についてです。');
+        } else if (zh){
           const w = n === 1 ? '我們來談' : (i === 0 ? '先談' : ((n >= 3 && i === n - 1) ? '最後談' : ['接下來談', '再來看', '我們再看'][(i - 1) % 3]));
           out.push(w + t + '。');
         } else {
@@ -8205,7 +8224,7 @@ function mdSpeak(md){
     }
     if (b.k === 'q'){
       const i = qn++;
-      const lead = zh ? (i === 0 ? (scripture(b.t) ? '聖經說：' : '有一句話特別要記住：') : '還有一句：')
+      const lead = ja ? (i === 0 ? (scripture(b.t) ? '聖書にはこうあります。' : '心に留めたい言葉があります。') : 'もうひとつ。') : zh ? (i === 0 ? (scripture(b.t) ? '聖經說：' : '有一句話特別要記住：') : '還有一句：')
                       : (i === 0 ? (scripture(b.t) ? 'The Bible says: ' : 'One line is worth remembering: ') : 'And another: ');
       out.push(lead + endP(b.t)); return;
     }
@@ -8214,17 +8233,17 @@ function mdSpeak(md){
       if (g.mode === 'short'){
         if (i > 0) return;
         const ts = g.items.map(x => x.t);
-        out.push(endP(ts.length === 2 ? ts.join(zh ? '和' : ' and ') : ts.slice(0, -1).join(zh ? '、' : ', ') + (zh ? '，還有' : ', and ') + ts[ts.length - 1]));
+        out.push(endP(ts.length === 2 ? ts.join(ja ? 'と' : zh ? '和' : ' and ') : ts.slice(0, -1).join(zh ? '、' : ', ') + (ja ? '、そして' : zh ? '，還有' : ', and ') + ts[ts.length - 1]));
         return;
       }
       let lead = '', text = b.t;
       if (g.mode === 'num'){
         const k = b.num || (i + 1);
-        lead = zh ? '第' + (k <= 10 ? NUMS.charAt(k) : k) + '，' : (['', 'First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth'][k] || 'Number ' + k) + ', ';
+        lead = ja ? (k <= 10 ? NUMS.charAt(k) + 'つ目、' : k + '番目、') : zh ? '第' + (k <= 10 ? NUMS.charAt(k) : k) + '，' : (['', 'First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth'][k] || 'Number ' + k) + ', ';
       } else if (g.mode === 'label'){
         if (b.lab){
-          const w = zh ? (i === 0 ? '首先是' : (i === n - 1 ? '最後是' : '再來是')) : (i === 0 ? 'First is ' : (i === n - 1 ? 'Last is ' : 'Then '));
-          out.push(w + b.lab + (b.desc ? (zh ? '，' : ', ') + endP(b.desc) : (zh ? '。' : '.'))); return;
+          const w = ja ? (i === 0 ? 'まずは' : (i === n - 1 ? '最後は' : '次は')) : zh ? (i === 0 ? '首先是' : (i === n - 1 ? '最後是' : '再來是')) : (i === 0 ? 'First is ' : (i === n - 1 ? 'Last is ' : 'Then '));
+          out.push(w + b.lab + (b.desc ? (ja ? '、' : zh ? '，' : ', ') + endP(b.desc) : (zh ? '。' : '.'))); return;
         }
       } else if (g.mode === 'plain'){
         lead = i === 0 ? LEAD.first : (i === n - 1 ? LEAD.last : LEAD.mid[(i - 1) % 2]);
@@ -8454,7 +8473,7 @@ function embedBoot(){
     const it = o.item;
     studioItem = { b:'', ch:0, v:0, t:String(it.t || ''), ref:String(it.ref || ''), n:String(it.n || ''), x:1 };
     studioNote = studioItem.n; fullBless = ''; blessOwn = '';
-    if (['zh', 'zs', 'en', 'ko'].includes(o.lang) && state.lang !== o.lang){ state.lang = o.lang; saveState(); applyChrome(); }
+    if (['zh', 'zs', 'en', 'ko', 'ja'].includes(o.lang) && state.lang !== o.lang){ state.lang = o.lang; saveState(); applyChrome(); }
   }
   /* 外層換了文字來源（經文／亮光／宣告…）就直接換，不重新載入 */
   window.addEventListener('message', e => {
@@ -8497,7 +8516,7 @@ if (CR_JOIN){ try{ history.replaceState(null, '', location.pathname + location.h
   document.head.appendChild(st);
 })();
 function CRT(k){
-  let s = (CR_TX[state.lang] || (isKO() ? CR_TX.en : CR_TX.zh))[k]; if (s == null) s = CR_TX.zh[k] || k;
+  let s = (CR_TX[state.lang] || (isX() ? CR_TX.en : CR_TX.zh))[k]; if (s == null) s = CR_TX.zh[k] || k;
   for (let i = 1; i < arguments.length; i++) s = s.replace('{' + (i - 1) + '}', arguments[i]);
   return s;
 }
@@ -8635,7 +8654,7 @@ function crGo(pg, keep){
   ttsStop(); go(`#/read/${pg.b}/${pg.c}`);
 }
 /* ---- 定位：章＋節＋該節第幾句（同語系用原本的段落／句序，不同語系靠節號對齊） ---- */
-const crGrp = lg => lg === 'en' ? 'en' : (lg === 'ko' ? 'ko' : 'zh');
+const crGrp = lg => lg === 'en' ? 'en' : (lg === 'ko' ? 'ko' : (lg === 'ja' ? 'ja' : 'zh'));
 function crWhere(el){
   const c = +el.dataset.c, v = +el.dataset.v || 0;
   const same = v ? $$('#reader .sent').filter(e => +e.dataset.c === c && (+e.dataset.v || 0) === v) : [el];
@@ -8830,6 +8849,22 @@ async function boot(){
   setTimeout(checkPlanRemind, 3000);              // 開 App 當下也順便檢查一次
 }
 /* ---- 한국어 팩: lang-ko.js 의 내용을 각 언어 표에 연결 (파일이 없으면 통째로 건너뜀) ---- */
+(function attachJA(){
+  const P = window.JA_PACK; if (!P) return;
+  I18N.ja = P.I18N.ja;
+  PIC_L.ja = P.PIC; HYM_L.ja = P.HYM; TWEAK_L.ja = P.TWEAK; TEAM_L.ja = P.TEAM; CR_TX.ja = P.CR;
+  QBANK.ja = P.QBANK;
+  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].ja = P.Q20[k]; });
+  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].ja = P.Q20SK[k]; });
+  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].ja = P.QAUD[k]; });
+  Object.keys(P.AUD2).forEach(k => {
+    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
+    o.ja = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
+  });
+  FU_BANK.ja = {};
+  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.ja[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
+  GROUPS.forEach((g, i) => { g.ja = P.groups[i]; });
+})();
 (function attachKO(){
   const P = window.KO_PACK; if (!P) return;
   I18N.ko = P.I18N.ko;

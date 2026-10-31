@@ -104,11 +104,12 @@ header.topbar{
   padding:10px 14px 10px 14px; padding-top:calc(10px + env(safe-area-inset-top));
   display:flex; align-items:center; gap:10px;
 }
-header.topbar .brand{display:flex; align-items:center; gap:8px; font-family:var(--f-serif); font-weight:900; color:var(--accent); font-size:16px;}
+header.topbar .brand{display:flex; align-items:center; gap:8px; min-width:0; font-family:var(--f-serif); font-weight:900; color:var(--accent); font-size:16px;}
 header.topbar .brand img{width:26px;height:26px;border-radius:6px;}
 header.topbar .spacer{flex:1;}
 .langswitch{display:flex; border:1px solid var(--border-strong); border-radius:999px; overflow:hidden; font-size:11.5px;}
-.langswitch button{border:none;background:var(--surface);color:var(--ink-soft);padding:6px 9px;font-weight:600;}
+.langswitch button{border:none;background:var(--surface);color:var(--ink-soft);padding:6px 7px;font-weight:600;}
+.langswitch{flex-shrink:0;}
 .langswitch button+button{border-left:1px solid var(--border);}
 .langswitch button.active{background:var(--accent);color:#fff;}
 
@@ -244,6 +245,11 @@ html.hidenote .reader .note{display:none;}
 .readend{text-align:center; color:var(--ink-faint); font-size:12.5px; margin-top:18px;}
 
 /* ---------- 英文版排版 ---------- */
+html[lang="ja"]{--f-serif:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho","YuMincho","MS PMincho",serif; --f-sans:"Noto Sans JP","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;}
+html[lang="ja"] body{font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",-apple-system,"Segoe UI",sans-serif; line-break:strict; word-break:normal; overflow-wrap:break-word;}
+html[lang="ja"] .reader p{line-height:2.05; line-break:strict; overflow-wrap:break-word;}
+html[lang="ja"] .reader h2.ch{letter-spacing:.12em;}
+html[lang="ja"] nav.tabbar a{font-size:10px;}
 html[lang="ko"]{--f-serif:"Noto Serif KR","Nanum Myeongjo","AppleMyungjo","Batang",serif; --f-sans:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic","Nanum Gothic",sans-serif;}
 html[lang="ko"] body{font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic","Nanum Gothic",-apple-system,"Segoe UI",sans-serif; word-break:keep-all;}
 html[lang="en"] body{font-family:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;}
@@ -535,7 +541,7 @@ select.cardinput{appearance:none; -webkit-appearance:none;
   <div class="brand"><img src="icon-72.png" alt=""><span id="brandName">321互動聖經</span></div>
   <div class="spacer"></div>
   <div class="langswitch" id="langswitch">
-    <button data-lang="zh">繁</button><button data-lang="zs">简</button><button data-lang="en">EN</button><button data-lang="ko">한</button>
+    <button data-lang="zh">繁</button><button data-lang="zs">简</button><button data-lang="en">EN</button><button data-lang="ko">한</button><button data-lang="ja">日</button>
   </div>
 </header>
 
@@ -570,7 +576,7 @@ select.cardinput{appearance:none; -webkit-appearance:none;
 
 <script>
 /* 程式檔帶上更新時間戳（?u=…）載入：更新後重整的那一次一定抓到最新的 app.js，不會被瀏覽器或 CDN 的舊快取擋住 */
-(function(){var m=location.search.match(/[?&]u=(\d+)/);document.write('<script src="lang-ko.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="app.js'+(m?'?u='+m[1]:'')+'"><\/script>');})();
+(function(){var m=location.search.match(/[?&]u=(\d+)/);document.write('<script src="lang-ko.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-ja.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="app.js'+(m?'?u='+m[1]:'')+'"><\/script>');})();
 </script>
 </body>
 </html>
