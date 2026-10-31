@@ -8,7 +8,8 @@
 /* 韓文模式：不管系統提示是哪一種語言，一律要求小智用韓文回答（含經文引用與用語） */
 const KO_DIRECTIVE = '\n\nIMPORTANT — LANGUAGE (this overrides any earlier instruction about reply language): write your entire reply in natural, warm, elegant Korean (한국어), using the vocabulary of the Korean Protestant church (하나님, 예수 그리스도, 성령님, 은혜, 구원, 기도). When you quote Scripture, use the wording of the 개역한글 (Korean Revised Version, 1961) and give references with Korean book names, for example 요한복음 3:16. Do not answer in English or Chinese unless the user explicitly asks. Wherever this prompt mentions the reader\'s language, script or Chinese/English wording, it means Korean.';
 const JA_DIRECTIVE = '\n\nIMPORTANT — LANGUAGE (this overrides any earlier instruction about reply language): write your entire reply in natural, warm, elegant Japanese (日本語, polite です・ます style), using the vocabulary of the Japanese Protestant church (神, 主イエス・キリスト, 聖霊, 恵み, 救い, 祈り, 福音). When you quote Scripture, use the wording of the 口語訳聖書 (Japanese Colloquial Bible, 1955) and give references with Japanese book names, for example ヨハネによる福音書 3:16. Do not answer in English or Chinese unless the user explicitly asks. Wherever this prompt mentions the reader\'s language, script or Chinese/English wording, it means Japanese.';
-const koSys = x => (state.lang === 'ko') ? String(x == null ? '' : x) + KO_DIRECTIVE : (state.lang === 'ja') ? String(x == null ? '' : x) + JA_DIRECTIVE : x;
+const ID_DIRECTIVE = '\n\nIMPORTANT — LANGUAGE (this overrides any earlier instruction about reply language): write your entire reply in natural, warm, elegant Indonesian (Bahasa Indonesia baku yang hangat), using the vocabulary of Indonesian Protestant/Evangelical churches (Allah, Tuhan, TUHAN, Tuhan Yesus, Roh Kudus, Injil, firman Tuhan, pertobatan, anugerah). When you quote Scripture, follow the wording of the Alkitab Yang Terbuka (AYT) / Terjemahan Baru and name books as in AYT (e.g. Yohanes 3:16, Kisah Para Rasul, Wahyu). Keep Xiaozhi as the name of the companion. Everything else in the instructions stays the same.';
+const koSys = x => (state.lang === 'id') ? String(x == null ? '' : x) + ID_DIRECTIVE : (state.lang === 'ko') ? String(x == null ? '' : x) + KO_DIRECTIVE : (state.lang === 'ja') ? String(x == null ? '' : x) + JA_DIRECTIVE : x;
 const API = {
   chat: 'https://xiaozhi-proxy.spch321.workers.dev',   // {system, messages:[{role,content}]}
   tts : 'https://azure-tts.spch321.workers.dev',       // {voice, rate, sil, silc, sile, text}
@@ -20,7 +21,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.25.0';
+const VERSION = 'v2.26.0';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -372,14 +373,15 @@ const I18N = {
 const t = () => I18N[state.lang] || I18N.zh;
 const isKO = () => state.lang === 'ko';
 const isJA = () => state.lang === 'ja';
+const isID = () => state.lang === 'id';
 /* 「語言包」語言（韓、日）：UI 文字先查 lang-xx.js 對照表（英文原句→該語言），查不到就維持英文 */
-const isX = () => state.lang === 'ko' || state.lang === 'ja';
+const isX = () => state.lang === 'ko' || state.lang === 'ja' || state.lang === 'id';
 /* 提示詞／內容底稿用英文的語言（英、韓、日）；排版仍各走各的（日文走 CJK 排版） */
-const isEP = () => state.lang === 'en' || state.lang === 'ko' || state.lang === 'ja';
+const isEP = () => state.lang === 'en' || state.lang === 'ko' || state.lang === 'ja' || state.lang === 'id';
 /* 「西文排版」：斷句、空白、標點、量詞都走英文那一套——韓文（有空格、句點結尾）也走這一條 */
-const isEN = () => state.lang === 'en' || state.lang === 'ko';
+const isEN = () => state.lang === 'en' || state.lang === 'ko' || state.lang === 'id';
 /* 韓文 UI 字串：先查 lang-ko.js 的對照表（英文原句→韓文），查不到就維持英文 */
-const koT = (zh, en) => { const P = state.lang === 'ja' ? window.JA_PACK : window.KO_PACK; return (P && typeof en === 'string') ? P.t(zh, en) : en; };
+const koT = (zh, en) => { const P = state.lang === 'id' ? window.ID_PACK : state.lang === 'ja' ? window.JA_PACK : window.KO_PACK; return (P && typeof en === 'string') ? P.t(zh, en) : en; };
 const isZS = () => state.lang === 'zs';
 /* 三語挑字：L3(繁, 简, 英) */
 const L3 = (zh, zs, en) => isX() ? koT(zh, en) : (isEN() ? en : (isZS() ? zs : zh));
@@ -392,6 +394,9 @@ const HL_SWATCH = {gold:'#D9B168', green:'#6FAE71', blue:'#6C93D1', pink:'#E58FA
                    purple:'#A48AC9', maroon:'#8C4A4E', brown:'#8A6740', charcoal:'#54534E'};
 /* 與姊妹App共用的 Azure 真人語音；順序＝預設值在最前（zh 雲哲、zs 云帆） */
 const VOICES = {
+  id: [{n:'Ardi', v:'id-ID-ArdiNeural'},
+       {n:'Gadis', v:'id-ID-GadisNeural'},
+       {n:'Ardi (alt)', v:'id-ID-ArdiNeural'}],
   ja: [{n:'ケイタ', v:'ja-JP-KeitaNeural'},
        {n:'ナナミ', v:'ja-JP-NanamiNeural'},
        {n:'ダイチ', v:'ja-JP-DaichiNeural'}],
@@ -479,7 +484,7 @@ function applyChrome(){
   h.classList.toggle('bmmode', bmMode);
   const th = THEMES[state.theme] || 'auto';
   if (th === 'auto') h.removeAttribute('data-theme'); else h.setAttribute('data-theme', th);
-  h.setAttribute('lang', isJA() ? 'ja' : isKO() ? 'ko' : (isEN() ? 'en' : (isZS() ? 'zh-Hans' : 'zh-Hant')));
+  h.setAttribute('lang', isID() ? 'id' : isJA() ? 'ja' : isKO() ? 'ko' : (isEN() ? 'en' : (isZS() ? 'zh-Hans' : 'zh-Hant')));
   h.setAttribute('data-lang', state.lang);
   $('#brandName').textContent = t().app;
   document.title = t().app;
@@ -533,7 +538,8 @@ async function loadTOC(){
   TOC = await fetchJSON('toc.json');
   TOC.forEach((b, i) => { b.i = i; BOOK[b.id] = b;
     const kb = window.KO_PACK && KO_PACK.books[b.id]; if (kb){ b.ko = kb.ko; b.ako = kb.ako; }
-    const jb = window.JA_PACK && JA_PACK.books[b.id]; if (jb){ b.ja = jb.ja; b.aja = jb.aja; } });
+    const jb = window.JA_PACK && JA_PACK.books[b.id]; if (jb){ b.ja = jb.ja; b.aja = jb.aja; }
+    const ib = window.ID_PACK && ID_PACK.books[b.id]; if (ib){ b.idn = ib.idn; b.aid = ib.aid; } });
 }
 async function loadShard(lang, shard){
   const key = lang + '|' + shard;
@@ -552,8 +558,8 @@ async function getChapter(bookId, ch){
   const arr = d[bookId]; if (!arr || !arr[ch - 1]) return null;
   return arr[ch - 1];
 }
-const bname = b => isJA() ? (b.ja || b.en || b.zh) : isKO() ? (b.ko || b.en || b.zh) : (isEN() ? (b.en || b.zh) : (isZS() ? b.zs : b.zh));
-const babbr = b => isJA() ? (b.aja || b.aen || b.azh) : isKO() ? (b.ako || b.aen || b.azh) : (isEN() ? (b.aen || b.azh) : (isZS() ? b.azs : b.azh));
+const bname = b => isID() ? (b.idn || b.en || b.zh) : isJA() ? (b.ja || b.en || b.zh) : isKO() ? (b.ko || b.en || b.zh) : (isEN() ? (b.en || b.zh) : (isZS() ? b.zs : b.zh));
+const babbr = b => isID() ? (b.aid || b.aen || b.azh) : isJA() ? (b.aja || b.aen || b.azh) : isKO() ? (b.ako || b.aen || b.azh) : (isEN() ? (b.aen || b.azh) : (isZS() ? b.azs : b.azh));
 
 const GROUPS = [
   { zh:'摩西五經',   zs:'摩西五经',   en:'The Law',              a:0,  b:5  },
@@ -566,7 +572,7 @@ const GROUPS = [
   { zh:'一般書信',   zs:'一般书信',   en:'General Letters',      a:57, b:65 },
   { zh:'啟示錄',     zs:'启示录',     en:'Revelation',           a:65, b:66 }
 ];
-const gname = g => isJA() ? (g.ja || g.en) : isKO() ? (g.ko || g.en) : (isEN() ? g.en : (isZS() ? g.zs : g.zh));
+const gname = g => isID() ? (g.idn || g.en) : isJA() ? (g.ja || g.en) : isKO() ? (g.ko || g.en) : (isEN() ? g.en : (isZS() ? g.zs : g.zh));
 
 /* 今日默想輪替的經卷章（皆為歷代信徒所愛的篇章） */
 const DAILY = [
@@ -2150,7 +2156,7 @@ function openHlSheet(el){
       h.c = color; h.n = ta.value.trim(); saveUser(); mask.remove();
       /* 記下這一題是從哪一節來的，答完才分享得出「經文＋答案」 */
       chatSrc = { t:h.t, b:RD.book, ch:cno, v:h.v || 0, v2:h.v2 || 0 };
-      chatPending = isJA() ? `この箇所を黙想できるよう助けてください：「${h.t}」` : isKO() ? `이 말씀으로 묵상하도록 도와주세요: “${h.t}”` : isEN() ? `Help me meditate on this verse: “${h.t}”`
+      chatPending = isID() ? `Tolong bantu saya merenungkan bagian ini: “${h.t}”` : isJA() ? `この箇所を黙想できるよう助けてください：「${h.t}」` : isKO() ? `이 말씀으로 묵상하도록 도와주세요: “${h.t}”` : isEN() ? `Help me meditate on this verse: “${h.t}”`
                 : `${isZS() ? '请就这句经文帮助我默想：' : '請就這句經文幫助我默想：'}「${h.t}」`;
       go('#/companion');
     }
@@ -2619,11 +2625,11 @@ const HYM_L = {
 };
 const hl_ = () => HYM_L[state.lang] || (isX() ? HYM_L.en : HYM_L.zh);
 /* 一首歌的顯示名稱（三語，沒填就用中文那個） */
-const songName = s => (isJA() ? (s.nj || s.ne || s.n) : isKO() ? (s.nk || s.ne || s.n) : isEN() ? (s.ne || s.n) : (isZS() ? (s.ns || s.n) : s.n)) || s.f || '';
+const songName = s => (isID() ? (s.ni || s.ne || s.n) : isJA() ? (s.nj || s.ne || s.n) : isKO() ? (s.nk || s.ne || s.n) : isEN() ? (s.ne || s.n) : (isZS() ? (s.ns || s.n) : s.n)) || s.f || '';
 /* 出處與分類也跟著語言走（music.json 的 bs／be、ts／te；沒填就用中文那個） */
-const songBy  = s => (isJA() ? (s.bj || s.be || s.by) : isKO() ? (s.bk || s.be || s.by) : isEN() ? (s.be || s.by) : (isZS() ? (s.bs || s.by) : s.by)) || '';
+const songBy  = s => (isID() ? (s.bi || s.be || s.by) : isJA() ? (s.bj || s.be || s.by) : isKO() ? (s.bk || s.be || s.by) : isEN() ? (s.be || s.by) : (isZS() ? (s.bs || s.by) : s.by)) || '';
 const tagName = (s, tg) => { const L = (hymnList || []).find(x => x.tag === tg) || s || {};
-  return (isJA() ? (L.tj || L.te || tg) : isKO() ? (L.tk || L.te || tg) : isEN() ? (L.te || tg) : (isZS() ? (L.ts || tg) : tg)) || ''; };
+  return (isID() ? (L.ti || L.te || tg) : isJA() ? (L.tj || L.te || tg) : isKO() ? (L.tk || L.te || tg) : isEN() ? (L.te || tg) : (isZS() ? (L.ts || tg) : tg)) || ''; };
 
 let hymnList = null;          // null = 還沒抓過
 let bgmCredit = '';           // 「詩歌：〈歌名〉／出處」，會印在影片下緣
@@ -2968,8 +2974,8 @@ async function bgLoadList(){
   }catch(e){ bgList = []; bgCats = []; }
   return bgList;
 }
-const bgCatName = c => (isJA() ? (c.nj || c.ne || c.n) : isKO() ? (c.nk || c.ne || c.n) : isEN() ? (c.ne || c.n) : (isZS() ? (c.ns || c.n) : c.n)) || '';
-const bgName = b => (isJA() ? (b.nj || b.ne || b.n) : isKO() ? (b.nk || b.ne || b.n) : isEN() ? (b.ne || b.n) : (isZS() ? (b.ns || b.n) : b.n)) || '';
+const bgCatName = c => (isID() ? (c.ni || c.ne || c.n) : isJA() ? (c.nj || c.ne || c.n) : isKO() ? (c.nk || c.ne || c.n) : isEN() ? (c.ne || c.n) : (isZS() ? (c.ns || c.n) : c.n)) || '';
+const bgName = b => (isID() ? (b.ni || b.ne || b.n) : isJA() ? (b.nj || b.ne || b.n) : isKO() ? (b.nk || b.ne || b.n) : isEN() ? (b.ne || b.n) : (isZS() ? (b.ns || b.n) : b.n)) || '';
 function bgImgLoad(file){
   return new Promise((res, rej) => {
     const tryAt = (bases) => {
@@ -3099,7 +3105,7 @@ const cardToVal = () => { const v = (state.cardTo || '').trim(); return (v === '
 const DEF_SIGN = () => L3('願上帝賜福你！', '愿上帝赐福你！', 'God bless you!');
 /* 詩篇用「篇」／Psalm，其餘用「章」／Chapter */
 function chapLabel(bookId, n){
-  if (bookId === 'Psalms') return isJA() ? `第${n}篇` : isKO() ? `${n}편` : isEN() ? `Psalm ${n}` : L3(`第 ${n} 篇`, `第 ${n} 篇`, '');
+  if (bookId === 'Psalms') return isID() ? `Mazmur ${n}` : isJA() ? `第${n}篇` : isKO() ? `${n}편` : isEN() ? `Psalm ${n}` : L3(`第 ${n} 篇`, `第 ${n} 篇`, '');
   return t().chapter(n);
 }
 function cardRef(h){
@@ -6316,7 +6322,7 @@ function refRegex(){
   REF_MAP = {};
   const RAW = [];
   const add = (n, id) => { const raw = String(n || '').trim(); n = raw.replace(/\s+/g, '').toLowerCase(); if (n && !REF_MAP[n]){ REF_MAP[n] = id; RAW.push(raw); } };
-  TOC.forEach(b => { [b.zh, b.zs, b.en, b.azh, b.azs, b.aen, b.ko, b.ako, b.ja, b.aja].forEach(n => add(n, b.id)); });
+  TOC.forEach(b => { [b.zh, b.zs, b.en, b.azh, b.azs, b.aen, b.ko, b.ako, b.ja, b.aja, b.idn, b.aid].forEach(n => add(n, b.id)); });
   add('Psalm', 'Psalms'); add('Song of Songs', 'SongofSolomon'); add('詩', 'Psalms'); add('诗', 'Psalms');
   const names = RAW.sort((a, b) => b.length - a.length).map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/ /g, '\\s*').replace(/^(\d)(?=[A-Za-z])/, '$1\\s*'));
   REF_RE = new RegExp('(' + names.join('|') + ')\\s*(\\d{1,3})\\s*(?:[:：]|[章篇장편]\\s*(?:第\\s*)?)\\s*(\\d{1,3})\\s*[節节절]?(?:\\s*[-–—~～至到]\\s*(\\d{1,3}))?', 'gi');
@@ -7179,6 +7185,7 @@ async function viewMe(v){
         <button class="${state.lang === 'en' ? 'on' : ''}" data-l="en">English</button>
         <button class="${state.lang === 'ko' ? 'on' : ''}" data-l="ko">한국어</button>
         <button class="${state.lang === 'ja' ? 'on' : ''}" data-l="ja">日本語</button>
+        <button class="${state.lang === 'id' ? 'on' : ''}" data-l="id">Bahasa Indonesia</button>
         </div></div>
       <div class="setrow"><div class="sl">${esc(L3('小智回答對象', '小智回答对象', 'Xiaozhi answers for'))}
         <div class="muted" style="font-size:11.5px;line-height:1.6">${esc(AUD_HINT()[state.audience])}</div></div>
@@ -7434,9 +7441,9 @@ function refTable(){
   if (_refRe && _refLang === state.lang) return { re:_refRe, map:_refMap };
   const map = {};
   (TOC || []).forEach(b => {
-    const full = isJA() ? (b.ja || b.en) : isKO() ? (b.ko || b.en) : isEN() ? b.en : (isZS() ? b.zs : b.zh);
+    const full = isID() ? (b.idn || b.en) : isJA() ? (b.ja || b.en) : isKO() ? (b.ko || b.en) : isEN() ? b.en : (isZS() ? b.zs : b.zh);
     const val = { full, ps: b.id === 'Psalms' };
-    const keys = isJA() ? [b.ja, b.aja] : isKO() ? [b.ko, b.ako] : isEN() ? [b.en, b.aen] : [(isZS() ? b.zs : b.zh), (isZS() ? b.azs : b.azh)];
+    const keys = isID() ? [b.idn, b.aid] : isJA() ? [b.ja, b.aja] : isKO() ? [b.ko, b.ako] : isEN() ? [b.en, b.aen] : [(isZS() ? b.zs : b.zh), (isZS() ? b.azs : b.azh)];
     keys.forEach(k => { if (k) map[k] = val; });
   });
   const ks = Object.keys(map).sort((a, b) => b.length - a.length)
@@ -7462,6 +7469,7 @@ function ttsRef(x){
     if (bk.length === 1 && off > 0 && (CJK_RE.test(src.charAt(off - 1)) || /[\u3040-\u30FF]/.test(src.charAt(off - 1)) || /[\uAC00-\uD7A3]/.test(src.charAt(off - 1)))) return m;
     if (isEN() && off > 0 && /[A-Za-z]/.test(src.charAt(off - 1))) return m;
     const it = r.map[bk] || { full:bk, ps:false };
+    if (isID()){ const head = it.ps ? ('Mazmur ' + c) : (it.full + ' pasal ' + c); return head + (v2 ? ' ayat ' + v + ' sampai ' + v2 : ' ayat ' + v); }
     if (isJA()) return it.full + c + (it.ps ? '篇' : '章') + v + (v2 ? '節から' + v2 : '') + '節';
     if (isKO()) return it.full + ' ' + c + (it.ps ? '편' : '장') + ' ' + v + (v2 ? '절에서 ' + v2 : '') + '절';
     if (isEN()){
@@ -7843,7 +7851,7 @@ function ttsNativeFrom(i, gen){
   spk.idx = i; raShow(spk.items[i]); ttsBtn('playing');
   const say = ttsPrep(spk.items[i].text);
   const u = new SpeechSynthesisUtterance(say);
-  u.lang = isJA() ? 'ja-JP' : isKO() ? 'ko-KR' : (isEN() ? 'en-US' : (isZS() ? 'zh-CN' : 'zh-TW')); u.rate = .95;
+  u.lang = isID() ? 'id-ID' : isJA() ? 'ja-JP' : isKO() ? 'ko-KR' : (isEN() ? 'en-US' : (isZS() ? 'zh-CN' : 'zh-TW')); u.rate = .95;
   /* 裝置語音給得到字元位置，就直接照位置換句子 */
   u.onboundary = e => {
     if (!spk.on || spk.abort || spk.idx !== i || gen !== spk.gen) return;
@@ -7971,7 +7979,7 @@ async function ttsSpeakText(text, id){
   }catch(e){
     if ('speechSynthesis' in window){
       const u = new SpeechSynthesisUtterance(clean);
-      u.lang = isJA() ? 'ja-JP' : isKO() ? 'ko-KR' : (isEN() ? 'en-US' : (isZS() ? 'zh-CN' : 'zh-TW'));
+      u.lang = isID() ? 'id-ID' : isJA() ? 'ja-JP' : isKO() ? 'ko-KR' : (isEN() ? 'en-US' : (isZS() ? 'zh-CN' : 'zh-TW'));
       u.onend = done; u.onerror = done;
       speechSynthesis.speak(u); toast(t().ttsFallback);
     } else { toast(t().ttsErr); done(); }
@@ -8136,16 +8144,16 @@ function amenOnly(s){
 
 /* ---------- 小智回答說成自然口吻（朗讀用） ---------- */
 function mdSpeak(md){
-  const zh = !isEN(), ja = isJA();
+  const zh = !isEN(), ja = isJA(), idn = isID();
   const tbl = mdTableMap(String(md || ''), function (head, rows){
     const lead = L3('我們用一個對照來整理。', '我们用一个对照来整理。', 'Here is a quick comparison.');
     const body = rows.map((r, ri) => {
       const cells = r.map((c, j) => {
         const h = (head[j] || '').trim();
         if (!c) return '';
-        return h ? (zh ? h + (ja ? 'は' : '是') + c : h + ' is ' + c) : c;
+        return h ? (zh ? h + (ja ? 'は' : '是') + c : h + (idn ? ' adalah ' : ' is ') + c) : c;
       }).filter(Boolean).join(ja ? '、' : zh ? '，' : ', ');
-      const pre = (rows.length > 1 && ri === rows.length - 1) ? (ja ? '最後に、' : zh ? '最後，' : 'Finally, ') : '';
+      const pre = (rows.length > 1 && ri === rows.length - 1) ? (ja ? '最後に、' : zh ? '最後，' : idn ? 'Terakhir, ' : 'Finally, ') : '';
       return pre + cells + (zh ? '。' : '.');
     }).join('\n');
     return lead + '\n' + body;
@@ -8179,10 +8187,10 @@ function mdSpeak(md){
     } else if (b.k === 'p'){ if (!(cur && cur.numbered)) cur = null; }
     else if (b.k !== 'br'){ cur = null; }
   });
-  const isKW = /想更多|延伸|多想|再想|深思|もっと考え|さらに考え|思いを深め|think more/i, isPR = /禱告|祷告|祈り|pray/i;
+  const isKW = /想更多|延伸|多想|再想|深思|もっと考え|さらに考え|思いを深め|think more|renungkan lebih|pikirkan lebih/i, isPR = /禱告|祷告|祈り|pray|berdoa|doa\b/i;
   const normalH = blocks.filter(b => b.k === 'h' && !isKW.test(b.t) && !isPR.test(b.t));
   let hn = 0, qn = 0;
-  const startsLead = /^(首先|其次|另外|最後|最后|第[一二三四五六七八九十]|まず|次に|つぎに|最後に|さらに|first|second|third|finally|next)/i;
+  const startsLead = /^(首先|其次|另外|最後|最后|第[一二三四五六七八九十]|まず|次に|つぎに|最後に|さらに|pertama|kedua|ketiga|terakhir|selanjutnya|first|second|third|finally|next)/i;
   const scripture = t => /[「“”"]|\d+\s*[:：]\s*\d+/.test(t);
   const endP = s => { s = s.trim(); if (!s) return s; return zh ? (/[。！？：；，、」』）…]$/.test(s) ? s : s + '。') : (/[.!?:;,)"”]$/.test(s) ? s : s + '.'); };
   const modeOf = g => {
@@ -8190,13 +8198,15 @@ function mdSpeak(md){
     if (n === 1) return 'none';
     if (its.every(i => scripture(i.t))) return 'none';
     if (g.numbered) return 'num';
-    if (/步驟|步骤|方法|做法|如何|幾個|几个|幾件事|几件事|手順|やり方|どうすれば|ステップ|steps?|ways?|how to/i.test(g.prev)) return 'num';
+    if (/步驟|步骤|方法|做法|如何|幾個|几个|幾件事|几件事|手順|やり方|どうすれば|ステップ|langkah|cara|bagaimana|steps?|ways?|how to/i.test(g.prev)) return 'num';
     if (its.filter(i => i.lab).length * 2 > n) return 'label';
     if (its.every(i => (zh ? i.t.length <= 14 : i.t.length <= 28) && !/[，。；,;]/.test(i.t))) return 'short';
     return 'plain';
   };
   groups.forEach(g => { g.mode = modeOf(g); });
-  const LEAD = ja
+  const LEAD = idn
+    ? { first:'Pertama, ', mid:['Selanjutnya, ', 'Lalu, '], last:'Terakhir, ', only2last:'Terakhir, ' }
+    : ja
     ? { first:'まず、', mid:['次に、', 'また、'], last:'最後に、', only2last:'最後に、' }
     : zh
     ? { first:'首先，', mid:['另外，', '還有，'], last:'最後，', only2last:'最後，' }
@@ -8205,11 +8215,14 @@ function mdSpeak(md){
   blocks.forEach(b => {
     if (b.k === 'br') return;
     if (b.k === 'h'){
-      if (isKW.test(b.t)) out.push(ja ? 'もう少し考えてみたい方へ、こんな見方もあります。' : zh ? '如果想更多一點，可以這樣想。' : 'If you want to think a little further, here is a thought.');
-      else if (isPR.test(b.t)) out.push(ja ? 'いっしょに祈りましょう。' : zh ? '讓我們一起禱告。' : 'Let us pray together.');
+      if (isKW.test(b.t)) out.push(idn ? 'Jika Anda ingin merenungkannya lebih jauh, ada satu pemikiran.' : ja ? 'もう少し考えてみたい方へ、こんな見方もあります。' : zh ? '如果想更多一點，可以這樣想。' : 'If you want to think a little further, here is a thought.');
+      else if (isPR.test(b.t)) out.push(idn ? 'Marilah kita berdoa bersama.' : ja ? 'いっしょに祈りましょう。' : zh ? '讓我們一起禱告。' : 'Let us pray together.');
       else {
         const n = normalH.length, i = hn++, t = b.t.replace(/^\d+[.)、]\s*/, '');
-        if (ja){
+        if (idn){
+          const w = n === 1 ? 'Mari kita bicarakan ' : (i === 0 ? 'Mari kita mulai dengan ' : ((n >= 3 && i === n - 1) ? 'Terakhir, ' : ['Selanjutnya, mari kita lihat ', 'Kemudian, ', 'Sekarang, '][(i - 1) % 3]));
+          out.push(w + t + '.');
+        } else if (ja){
           const w = n === 1 ? '' : (i === 0 ? 'まず、' : ((n >= 3 && i === n - 1) ? '最後に、' : ['次に、', 'つづいて、', 'さらに、'][(i - 1) % 3]));
           out.push(w + t + 'についてです。');
         } else if (zh){
@@ -8224,7 +8237,7 @@ function mdSpeak(md){
     }
     if (b.k === 'q'){
       const i = qn++;
-      const lead = ja ? (i === 0 ? (scripture(b.t) ? '聖書にはこうあります。' : '心に留めたい言葉があります。') : 'もうひとつ。') : zh ? (i === 0 ? (scripture(b.t) ? '聖經說：' : '有一句話特別要記住：') : '還有一句：')
+      const lead = idn ? (i === 0 ? (scripture(b.t) ? 'Alkitab berkata: ' : 'Ada satu kalimat yang layak diingat: ') : 'Dan satu lagi: ') : ja ? (i === 0 ? (scripture(b.t) ? '聖書にはこうあります。' : '心に留めたい言葉があります。') : 'もうひとつ。') : zh ? (i === 0 ? (scripture(b.t) ? '聖經說：' : '有一句話特別要記住：') : '還有一句：')
                       : (i === 0 ? (scripture(b.t) ? 'The Bible says: ' : 'One line is worth remembering: ') : 'And another: ');
       out.push(lead + endP(b.t)); return;
     }
@@ -8233,16 +8246,16 @@ function mdSpeak(md){
       if (g.mode === 'short'){
         if (i > 0) return;
         const ts = g.items.map(x => x.t);
-        out.push(endP(ts.length === 2 ? ts.join(ja ? 'と' : zh ? '和' : ' and ') : ts.slice(0, -1).join(zh ? '、' : ', ') + (ja ? '、そして' : zh ? '，還有' : ', and ') + ts[ts.length - 1]));
+        out.push(endP(ts.length === 2 ? ts.join(ja ? 'と' : zh ? '和' : idn ? ' dan ' : ' and ') : ts.slice(0, -1).join(zh ? '、' : ', ') + (ja ? '、そして' : zh ? '，還有' : idn ? ', dan ' : ', and ') + ts[ts.length - 1]));
         return;
       }
       let lead = '', text = b.t;
       if (g.mode === 'num'){
         const k = b.num || (i + 1);
-        lead = ja ? (k <= 10 ? NUMS.charAt(k) + 'つ目、' : k + '番目、') : zh ? '第' + (k <= 10 ? NUMS.charAt(k) : k) + '，' : (['', 'First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth'][k] || 'Number ' + k) + ', ';
+        lead = idn ? (['', 'Pertama', 'Kedua', 'Ketiga', 'Keempat', 'Kelima', 'Keenam', 'Ketujuh', 'Kedelapan', 'Kesembilan', 'Kesepuluh'][k] || 'Nomor ' + k) + ', ' : ja ? (k <= 10 ? NUMS.charAt(k) + 'つ目、' : k + '番目、') : zh ? '第' + (k <= 10 ? NUMS.charAt(k) : k) + '，' : (['', 'First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth'][k] || 'Number ' + k) + ', ';
       } else if (g.mode === 'label'){
         if (b.lab){
-          const w = ja ? (i === 0 ? 'まずは' : (i === n - 1 ? '最後は' : '次は')) : zh ? (i === 0 ? '首先是' : (i === n - 1 ? '最後是' : '再來是')) : (i === 0 ? 'First is ' : (i === n - 1 ? 'Last is ' : 'Then '));
+          const w = idn ? (i === 0 ? 'Pertama adalah ' : (i === n - 1 ? 'Terakhir adalah ' : 'Lalu ')) : ja ? (i === 0 ? 'まずは' : (i === n - 1 ? '最後は' : '次は')) : zh ? (i === 0 ? '首先是' : (i === n - 1 ? '最後是' : '再來是')) : (i === 0 ? 'First is ' : (i === n - 1 ? 'Last is ' : 'Then '));
           out.push(w + b.lab + (b.desc ? (ja ? '、' : zh ? '，' : ', ') + endP(b.desc) : (zh ? '。' : '.'))); return;
         }
       } else if (g.mode === 'plain'){
@@ -8473,7 +8486,7 @@ function embedBoot(){
     const it = o.item;
     studioItem = { b:'', ch:0, v:0, t:String(it.t || ''), ref:String(it.ref || ''), n:String(it.n || ''), x:1 };
     studioNote = studioItem.n; fullBless = ''; blessOwn = '';
-    if (['zh', 'zs', 'en', 'ko', 'ja'].includes(o.lang) && state.lang !== o.lang){ state.lang = o.lang; saveState(); applyChrome(); }
+    if (['zh', 'zs', 'en', 'ko', 'ja', 'id'].includes(o.lang) && state.lang !== o.lang){ state.lang = o.lang; saveState(); applyChrome(); }
   }
   /* 外層換了文字來源（經文／亮光／宣告…）就直接換，不重新載入 */
   window.addEventListener('message', e => {
@@ -8654,7 +8667,7 @@ function crGo(pg, keep){
   ttsStop(); go(`#/read/${pg.b}/${pg.c}`);
 }
 /* ---- 定位：章＋節＋該節第幾句（同語系用原本的段落／句序，不同語系靠節號對齊） ---- */
-const crGrp = lg => lg === 'en' ? 'en' : (lg === 'ko' ? 'ko' : (lg === 'ja' ? 'ja' : 'zh'));
+const crGrp = lg => lg === 'en' ? 'en' : (lg === 'ko' ? 'ko' : (lg === 'ja' ? 'ja' : (lg === 'id' ? 'id' : 'zh')));
 function crWhere(el){
   const c = +el.dataset.c, v = +el.dataset.v || 0;
   const same = v ? $$('#reader .sent').filter(e => +e.dataset.c === c && (+e.dataset.v || 0) === v) : [el];
@@ -8849,6 +8862,22 @@ async function boot(){
   setTimeout(checkPlanRemind, 3000);              // 開 App 當下也順便檢查一次
 }
 /* ---- 한국어 팩: lang-ko.js 의 내용을 각 언어 표에 연결 (파일이 없으면 통째로 건너뜀) ---- */
+(function attachID(){
+  const P = window.ID_PACK; if (!P) return;
+  I18N.id = P.I18N.id;
+  PIC_L.id = P.PIC; HYM_L.id = P.HYM; TWEAK_L.id = P.TWEAK; TEAM_L.id = P.TEAM; CR_TX.id = P.CR;
+  QBANK.id = P.QBANK;
+  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].id = P.Q20[k]; });
+  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].id = P.Q20SK[k]; });
+  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].id = P.QAUD[k]; });
+  Object.keys(P.AUD2).forEach(k => {
+    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
+    o.id = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
+  });
+  FU_BANK.id = {};
+  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.id[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
+  GROUPS.forEach((g, i) => { g.idn = P.groups[i]; });
+})();
 (function attachJA(){
   const P = window.JA_PACK; if (!P) return;
   I18N.ja = P.I18N.ja;
