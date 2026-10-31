@@ -124,7 +124,7 @@ nav.tabbar{
 }
 nav.tabbar a{flex:1; min-width:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; text-decoration:none; color:var(--ink-faint); font-size:10.5px; font-weight:600;}
 nav.tabbar a span{max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-html[lang="en"] nav.tabbar a, html[lang="ko"] nav.tabbar a, html[lang="id"] nav.tabbar a{font-size:9.5px;}
+html[lang="en"] nav.tabbar a, html[lang="ko"] nav.tabbar a, html[lang="id"] nav.tabbar a, html[lang="fil"] nav.tabbar a{font-size:9.5px;}
 nav.tabbar a.active{color:var(--accent);}
 nav.tabbar a svg{width:20px;height:20px;}
 
@@ -250,17 +250,17 @@ html[lang="ja"] body{font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Hir
 html[lang="ja"] .reader p{line-height:2.05; line-break:strict; overflow-wrap:break-word;}
 html[lang="ja"] .reader h2.ch{letter-spacing:.12em;}
 html[lang="ja"] nav.tabbar a{font-size:10px;}
-html[lang="id"] .reader p{text-align:left; hyphens:auto; overflow-wrap:break-word; line-height:1.9;}
+html[lang="id"] .reader p, html[lang="fil"] .reader p{text-align:left; hyphens:auto; overflow-wrap:break-word; line-height:1.9;}
 html[lang="ko"]{--f-serif:"Noto Serif KR","Nanum Myeongjo","AppleMyungjo","Batang",serif; --f-sans:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic","Nanum Gothic",sans-serif;}
 html[lang="ko"] body{font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic","Nanum Gothic",-apple-system,"Segoe UI",sans-serif; word-break:keep-all;}
 html[lang="en"] body{font-family:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;}
 html[lang="en"] .reader p{text-align:left; hyphens:auto; -webkit-hyphens:auto;}
 html[lang="ko"] .reader p{text-align:left; word-break:keep-all; overflow-wrap:break-word; line-height:1.95;}
-html[lang="en"] .reader p.prose, html[lang="ko"] .reader p.prose, html[lang="id"] .reader p.prose{text-indent:1.6em;}
-html[lang="en"] .reader .vn, html[lang="ko"] .reader .vn, html[lang="id"] .reader .vn{margin:0 .22em 0 .06em;}
-html[lang="en"] .chhead h1, html[lang="ko"] .chhead h1, html[lang="id"] .chhead h1{letter-spacing:0;}
-html[lang="en"] .hero-cover .hc-title, html[lang="ko"] .hero-cover .hc-title, html[lang="id"] .hero-cover .hc-title{letter-spacing:.02em;}
-html[lang="en"] .reader h2.ch, html[lang="ko"] .reader h2.ch, html[lang="id"] .reader h2.ch{letter-spacing:.18em;}
+html[lang="en"] .reader p.prose, html[lang="ko"] .reader p.prose, html[lang="id"] .reader p.prose, html[lang="fil"] .reader p.prose{text-indent:1.6em;}
+html[lang="en"] .reader .vn, html[lang="ko"] .reader .vn, html[lang="id"] .reader .vn, html[lang="fil"] .reader .vn{margin:0 .22em 0 .06em;}
+html[lang="en"] .chhead h1, html[lang="ko"] .chhead h1, html[lang="id"] .chhead h1, html[lang="fil"] .chhead h1{letter-spacing:0;}
+html[lang="en"] .hero-cover .hc-title, html[lang="ko"] .hero-cover .hc-title, html[lang="id"] .hero-cover .hc-title, html[lang="fil"] .hero-cover .hc-title{letter-spacing:.02em;}
+html[lang="en"] .reader h2.ch, html[lang="ko"] .reader h2.ch, html[lang="id"] .reader h2.ch, html[lang="fil"] .reader h2.ch{letter-spacing:.18em;}
 
 /* ---------- 字級 ---------- */
 html.fs-lg .reader p{font-size:19.5px;}
@@ -542,7 +542,7 @@ select.cardinput{appearance:none; -webkit-appearance:none;
   <div class="brand"><img src="icon-72.png" alt=""><span id="brandName">321互動聖經</span></div>
   <div class="spacer"></div>
   <div class="langswitch" id="langswitch">
-    <button data-lang="zh">繁</button><button data-lang="zs">简</button><button data-lang="en">EN</button><button data-lang="ko">한</button><button data-lang="ja">日</button><button data-lang="id">ID</button>
+    <button data-lang="zh">繁</button><button data-lang="zs">简</button><button data-lang="en">EN</button><button data-lang="ko">한</button><button data-lang="ja">日</button><button data-lang="id">ID</button><button data-lang="tl">TL</button>
   </div>
 </header>
 
@@ -577,7 +577,7 @@ select.cardinput{appearance:none; -webkit-appearance:none;
 
 <script>
 /* 程式檔帶上更新時間戳（?u=…）載入：更新後重整的那一次一定抓到最新的 app.js，不會被瀏覽器或 CDN 的舊快取擋住 */
-(function(){var m=location.search.match(/[?&]u=(\d+)/);document.write('<script src="lang-ko.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-ja.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-id.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="app.js'+(m?'?u='+m[1]:'')+'"><\/script>');})();
+(function(){var m=location.search.match(/[?&]u=(\d+)/);document.write('<script src="lang-ko.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-ja.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-id.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-tl.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="app.js'+(m?'?u='+m[1]:'')+'"><\/script>');})();
 </script>
 </body>
 </html>
