@@ -16,7 +16,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.22.4';
+const VERSION = 'v2.23.0';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -736,6 +736,7 @@ async function render(){
   if (tab !== 'read' && tab !== 'studio') scrollToTop();
   if (tab === 'studio'){ mjDoneItem = null; mjRestore(); }
   mjPill();
+  crAfter();
 }
 
 
@@ -1623,6 +1624,7 @@ async function viewReader(v, bookId, ch){
       <button class="chtb-btn ${bmMode ? 'on' : ''}" id="rdBm" title="${esc(L.bm)}">🔖</button>
       <button class="chtb-btn ${(state.flow || !state.shCh || !state.shV) ? 'on' : ''}" id="rdMode" title="${esc(L.pure)}">${esc(L3('淨', '净', '¶'))}</button>
       <button class="chtb-btn" id="rdFont">A⁺</button>
+      ${crBtn()}
       <span class="tts-group">
         <button class="chtb-btn" id="rdPlay" title="${esc(L.ttsPlay)}">▶</button>
         <button class="chtb-btn" id="rdPause" title="${esc(L.ttsPause)}">⏸</button>
@@ -1867,6 +1869,7 @@ function sentGroups(els){
 }
 function onSentTap(el){
   const cno = +el.dataset.c || RD.ch;
+  crPoint(el);
   if (bmMode){ toggleBm(el, cno); return; }
   const k = hlKey(RD.book, cno, el.dataset.p, el.dataset.s);
   if (!user.hl[k] && el.dataset.op == null){
@@ -7093,6 +7096,8 @@ async function viewMe(v){
     <div class="card" style="padding:4px 16px">
       <a class="rowlink" href="#/play"><div class="meta"><div class="t">🎯 ${esc(L3('讀經樂：猜謎與測驗', '读经乐：猜谜与测验', 'Bible Fun: Riddles & Quiz'))}</div>
         <div class="s">${esc(user.quizWrong.length ? L3(`錯題本 ${user.quizWrong.length} 題，可以複習`, `错题本 ${user.quizWrong.length} 题，可以复习`, `${user.quizWrong.length} missed questions to review`) : L3('玩一玩，加深對經文的記憶', '玩一玩，加深对经文的记忆', 'Play to remember what you read'))}</div></div><div class="chev">›</div></a>
+      <div class="rowlink" id="crRow" onclick="crMenu()"><div class="meta"><div class="t">📡 ${esc(CRT('crTitle'))}</div>
+        <div class="s">${esc(CRT('crTile_d'))}</div></div><div class="chev">›</div></div>
       <a class="rowlink" href="#/plan"><div class="meta"><div class="t">${esc(L.plan)}</div>
         <div class="s">${user.plan.active ? esc(L.progress) : esc(L.planEmpty)}</div></div><div class="chev">›</div></a>
     </div>
@@ -7568,6 +7573,7 @@ function raSeg(item, k){
   const g = item.segs[k].filter(e => e && e.isConnected);
   if (!g.length) return;
   g.forEach(e => e.classList.add('tts-reading'));
+  crTts(g[0]);
   if (Date.now() - raManualAt > RA_COOLDOWN){
     try{ g[0].scrollIntoView({ behavior:'smooth', block:'center' }); }catch(_){}
   }
@@ -8405,6 +8411,311 @@ function embedBoot(){
   location.hash = '#/studio';
   return true;
 }
+const CR_TX = {"zh":{"crTitle":"一起共讀","crCopyB":"複製連結","crTile_d":"帶領或加入：讓大家的手機跟著同一章、同一節走","crHostB":"我來帶領共讀","crHostD":"大家的手機會跟著我翻到同一章、捲到同一處、看我點的那一節、聽我朗讀到哪裡","crJoinB":"加入共讀","crJoinD":"輸入帶領者給你的6碼代碼（或直接點他傳來的連結、掃 QR）","crCodePh":"6碼代碼","crJoinGo":"加入","crNamePh":"你的稱呼（讓帶領者知道你來了）","crBadCode":"請輸入6碼共讀代碼","crStarting":"正在建立共讀…","crJoining":"正在加入共讀…","crCode":"共讀代碼","crScan":"請對方用手機相機掃描 QR，或在閱讀頁按 📡 輸入代碼","crShareLink":"傳送邀請連結","crInviteMsg":"邀請你和我一起用《321互動聖經》共讀，點下面的連結就能加入（共讀代碼 {0}）：","crMembers":"已加入 {0} 人","crNone":"還沒有人加入，把連結或 QR 給大家吧","crEnd":"結束共讀","crLeaveB":"離開","crInv":"邀請","crHostBar":"帶領共讀 {0}","crGuestBar":"跟著 {0} 共讀","crWait":"正在連線共讀…","crOff":"目前不在閱讀頁","crFollow":"回到帶領者","crFree":"自己瀏覽一下","crFollowB":"自己瀏覽一下","crFreeB":"回到帶領者","crFollowOn":"跟著帶領者走","crFreeOn":"你可以自己瀏覽，按「回到帶領者」即可跳回","crJoined":"{0} 加入了共讀","crLeft":"{0} 離開了共讀","crEnded":"帶領者已結束共讀，願主祝福你！","crNoRoom":"找不到這個共讀，請確認代碼，或請帶領者重新開始","crLostT":"共讀連線中斷了，可以重新加入","crLibErr":"共讀元件載入失敗，請檢查網路後再試","crSent":"已送給帶領者","crAway":"帶領者在其他頁面","crGuest":"朋友","crLeader":"帶領者","crCopied":"已複製連結","crNoShare":"這台裝置不支援分享","crGuestTip":"你可以隨時「自己瀏覽一下」，再按「回到帶領者」就會跳回帶領者所在的地方。你的畫線與書籤只存在自己的手機。","crTip":"大家進入共讀後，帶領者翻到哪一章、捲到哪一段、點哪一節、朗讀到哪裡，所有人的手機都會一起跟著走；每個人看到的是自己設定的語言與字級（帶領者看繁體、你看英文，也會是同一章同一節）。想投影到電視，可用手機的螢幕鏡像（AirPlay／Chromecast）。"},"zs":{"crTitle":"一起共读","crCopyB":"复制连结","crTile_d":"带领或加入：让大家的手机跟着同一章、同一节走","crHostB":"我来带领共读","crHostD":"大家的手机会跟着我翻到同一章、卷到同一处、看我点的那一节、听我朗读到哪里","crJoinB":"加入共读","crJoinD":"输入带领者给你的6码代码（或直接点他传来的连结、扫 QR）","crCodePh":"6码代码","crJoinGo":"加入","crNamePh":"你的称呼（让带领者知道你来了）","crBadCode":"请输入6码共读代码","crStarting":"正在建立共读…","crJoining":"正在加入共读…","crCode":"共读代码","crScan":"请对方用手机相机扫描 QR，或在阅读页按 📡 输入代码","crShareLink":"传送邀请连结","crInviteMsg":"邀请你和我一起用《321互动圣经》共读，点下面的连结就能加入（共读代码 {0}）：","crMembers":"已加入 {0} 人","crNone":"还没有人加入，把连结或 QR 给大家吧","crEnd":"结束共读","crLeaveB":"离开","crInv":"邀请","crHostBar":"带领共读 {0}","crGuestBar":"跟着 {0} 共读","crWait":"正在连线共读…","crOff":"目前不在阅读页","crFollow":"回到带领者","crFree":"自己浏览一下","crFollowB":"自己浏览一下","crFreeB":"回到带领者","crFollowOn":"跟着带领者走","crFreeOn":"你可以自己浏览，按「回到带领者」即可跳回","crJoined":"{0} 加入了共读","crLeft":"{0} 离开了共读","crEnded":"带领者已结束共读，愿主祝福你！","crNoRoom":"找不到这个共读，请确认代码，或请带领者重新开始","crLostT":"共读连线中断了，可以重新加入","crLibErr":"共读元件载入失败，请检查网路后再试","crSent":"已送给带领者","crAway":"带领者在其他页面","crGuest":"朋友","crLeader":"带领者","crCopied":"已复制连结","crNoShare":"这台装置不支援分享","crGuestTip":"你可以随时「自己浏览一下」，再按「回到带领者」就会跳回带领者所在的地方。你的画线与书签只存在自己的手机。","crTip":"大家进入共读后，带领者翻到哪一章、卷到哪一段、点哪一节、朗读到哪里，所有人的手机都会一起跟着走；每个人看到的是自己设定的语言与字级（带领者看繁体、你看英文，也会是同一章同一节）。想投影到电视，可用手机的荧幕镜像（AirPlay／Chromecast）。"},"en":{"crTitle":"Read Together","crCopyB":"Copy link","crTile_d":"Lead or join: everyone’s phone follows the same chapter and verse","crHostB":"I’ll lead","crHostD":"Everyone’s phone follows me to the same chapter, scroll position, the verse I tap and where read-aloud is","crJoinB":"Join","crJoinD":"Enter the leader’s 6-character code (or tap their link / scan the QR)","crCodePh":"6-character code","crJoinGo":"Join","crNamePh":"Your name (so the leader knows you’re here)","crBadCode":"Please enter the 6-character code","crStarting":"Starting Read Together…","crJoining":"Joining…","crCode":"Code","crScan":"Ask them to scan the QR with a phone camera, or tap 📡 on the reading page and enter the code","crShareLink":"Send invite link","crInviteMsg":"I invite you to read together with me in 321 Interactive Bible. Tap the link below to join (code {0}):","crMembers":"{0} joined","crNone":"No one yet—share the link or QR","crEnd":"End","crLeaveB":"Leave","crInv":"Invite","crHostBar":"Leading {0}","crGuestBar":"Following {0}","crWait":"Connecting…","crOff":"not on a reading page","crFollow":"Back to leader","crFree":"Browse on my own","crFollowB":"Browse on my own","crFreeB":"Back to leader","crFollowOn":"Following the leader","crFreeOn":"You can browse freely—tap “Back to leader” to jump back","crJoined":"{0} joined","crLeft":"{0} left","crEnded":"The leader ended Read Together. God bless you!","crNoRoom":"Couldn’t find this session. Check the code, or ask the leader to start again","crLostT":"Connection lost—you can join again","crLibErr":"Couldn’t load the Read Together component—check your connection","crSent":"Sent to the leader","crAway":"leader is on another page","crGuest":"Friend","crLeader":"Leader","crCopied":"Link copied","crNoShare":"Sharing is not available here","crGuestTip":"You can “Browse on my own” anytime, then tap “Back to leader” to jump to where the leader is. Your highlights and bookmarks stay on your own phone.","crTip":"Once everyone joins, wherever the leader goes—which chapter, scroll position, tapped verse, read-aloud—every phone follows, in each person’s own language and text size (the leader on Traditional Chinese and you on English still see the same chapter and verse). To show it on a TV, use your phone’s screen mirroring (AirPlay / Chromecast)."}};
+/* ================================================================ 一起共讀（帶領者的閱讀畫面同步到大家的手機）
+   傳輸：PeerJS／WebRTC 點對點，沒有自己的伺服器；帶領者的手機就是房間主機（Peer id = bb321-代碼）。
+   協定與《321真理點心》《321舊約導讀》同一套：st（頁面）／pos（捲動）／mk（點的那一句或朗讀到的那一句）／re（🙏🙋）／end。
+   定位用「章＋節＋該節第幾句」，所以帶領者看繁體、你看英文，也會對到同一章同一節。 */
+const CR = { role:'', code:'', peer:null, conns:[], conn:null, host:'', n:0, follow:true, last:{}, tries:0, scrollT:0, stT:0, away:false, hostPage:null };
+const CR_CH = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789', CR_PFX = 'bb321-';
+const CR_JOIN = ((location.search.match(/[?&]join=([A-Za-z0-9]{6})/) || [])[1] || '').toUpperCase();
+if (CR_JOIN){ try{ history.replaceState(null, '', location.pathname + location.hash); }catch(e){} }
+(function(){
+  const st = document.createElement('style'); st.id = 'crcss';
+  st.textContent = '.crbar{position:fixed;left:0;right:0;top:0;z-index:60;display:flex;align-items:center;gap:6px;padding:calc(6px + env(safe-area-inset-top)) 10px 6px;background:linear-gradient(90deg,#14336F,#6C4BA3);color:#fff;font-size:12.5px;line-height:1.4;box-shadow:0 2px 10px rgba(0,0,0,.2)}'
+    + '.crbar .crt{flex:1 1 0;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700;cursor:pointer}'
+    + '.crbar button{flex:0 0 auto;border:0;border-radius:999px;background:rgba(255,255,255,.18);color:#fff;padding:5px 9px;font:inherit;font-weight:600;cursor:pointer}'
+    + 'body.crOn{padding-top:calc(34px + env(safe-area-inset-top))}body.crOn header.topbar{top:calc(34px + env(safe-area-inset-top))}'
+    + 'body.crOn .chtoolbar{top:calc(var(--header-h,56px) + 34px + env(safe-area-inset-top))}'
+    + '.chtb-btn.crlive{background:#6C4BA3;border-color:#6C4BA3;color:#fff}'
+    + '.cr-pt{box-shadow:inset 0 0 0 999px rgba(108,75,163,.2);outline:2px solid rgba(108,75,163,.6);border-radius:4px;animation:crp 1.6s ease-out 1}'
+    + '@keyframes crp{0%{outline-color:rgba(108,75,163,1);outline-width:5px}100%{outline-color:rgba(108,75,163,.6);outline-width:2px}}'
+    + '.crqr{display:flex;justify-content:center}.crqr svg{width:200px;height:200px;max-width:70vw;background:#fff;border-radius:12px}'
+    + '.crcode{font-size:2em;font-weight:800;letter-spacing:.25em;color:var(--accent);font-family:ui-monospace,Menlo,monospace}'
+    + '.crsheet .opt{display:flex;flex-direction:column;gap:4px;width:100%;text-align:left;border:1px solid var(--border);background:var(--surface);border-radius:14px;padding:14px;margin-bottom:10px;color:var(--ink);font:inherit;box-sizing:border-box}'
+    + '.crsheet.c{text-align:center}.crsheet .h2{font-size:1.15em;font-weight:800;color:var(--ink);margin:0 0 4px}.crsheet .sm{font-size:.88em;color:var(--ink-soft);margin:0 0 12px}'
+    + '.crsheet .xs{font-size:.8em;color:var(--ink-soft);overflow-wrap:anywhere}.crsheet .full{width:100%}'
+    + '.crsheet .pill{display:inline-block;background:var(--surface-alt);border-radius:999px;padding:3px 10px;margin:2px;font-size:.85em}'
+    + '.crsheet input[type=text]{border:1px solid var(--border-strong);background:var(--surface-alt);border-radius:12px;padding:11px 12px;font:inherit;color:var(--ink);width:100%;box-sizing:border-box}'
+    + '.crsheet .row{display:flex;align-items:center}.crsheet .grow{flex:1 1 0;min-width:0}.crsheet .eyebrow{font-size:.8em;color:var(--ink-faint);margin:8px 0 0}'
+    + '.crsheet .btn{white-space:normal;line-height:1.35}';
+  document.head.appendChild(st);
+})();
+function CRT(k){
+  let s = (CR_TX[state.lang] || CR_TX.zh)[k]; if (s == null) s = CR_TX.zh[k] || k;
+  for (let i = 1; i < arguments.length; i++) s = s.replace('{' + (i - 1) + '}', arguments[i]);
+  return s;
+}
+function crLoad(src, test, cb){
+  if (test()) return cb();
+  const s = document.createElement('script'); s.src = src + '?v=' + VERSION;
+  s.onload = () => { if (test()) cb(); else toast(CRT('crLibErr')); };
+  s.onerror = () => toast(CRT('crLibErr'));
+  document.body.appendChild(s);
+}
+function crOpt(){ return window.CR_PEER_OPT || { debug:0, config:{ iceServers:[{ urls:'stun:stun.l.google.com:19302' }, { urls:'stun:stun1.l.google.com:19302' }, { urls:'stun:stun.cloudflare.com:3478' }] } }; }
+function crGen(){ let c = ''; for (let i = 0; i < 6; i++) c += CR_CH.charAt(Math.floor(Math.random() * CR_CH.length)); return c; }
+function crUrl(){ return location.origin + location.pathname.replace(/index\.html$/, '') + '?join=' + CR.code; }
+function crMe(){ return String(state.crName || '').trim() || CRT(CR.role === 'host' ? 'crLeader' : 'crGuest'); }
+function crSheet(html){
+  crSheetClose();
+  const m = document.createElement('div'); m.className = 'hlsheet-mask crmask';
+  m.innerHTML = '<div class="hlsheet-card">' + html + '</div>';
+  m.onclick = e => { if (e.target === m) m.remove(); };
+  document.body.appendChild(m); return m;
+}
+function crSheetClose(){ $$('.crmask').forEach(e => e.remove()); }
+function crBtn(){ return `<button class="chtb-btn${CR.role ? ' crlive' : ''}" id="rdCr" title="${esc(CRT('crTitle'))}" aria-label="${esc(CRT('crTitle'))}" onclick="crMenu()">📡</button>`; }
+function crMenu(){
+  if (CR.role) return crPanel();
+  crSheet('<div class="crsheet"><p class="h2">📡 ' + esc(CRT('crTitle')) + '</p><p class="sm">' + esc(CRT('crTip')) + '</p>'
+    + '<button class="opt" id="crHostBtn"><b>' + esc(CRT('crHostB')) + '</b><span class="xs">' + esc(CRT('crHostD')) + '</span></button>'
+    + '<div class="opt"><b>' + esc(CRT('crJoinB')) + '</b><span class="xs">' + esc(CRT('crJoinD')) + '</span>'
+    + '<div class="row" style="gap:8px;margin-top:8px"><input type="text" id="crc" maxlength="6" autocomplete="off" autocapitalize="characters" placeholder="' + esc(CRT('crCodePh')) + '" style="flex:1 1 0;width:0;min-width:0;text-transform:uppercase;letter-spacing:.2em"><button class="btn primary" id="crJoinBtn" style="flex:0 0 auto">' + esc(CRT('crJoinGo')) + '</button></div>'
+    + '<input type="text" id="crn" maxlength="20" placeholder="' + esc(CRT('crNamePh')) + '" value="' + esc(state.crName || '') + '" style="margin-top:8px"></div>'
+    + '<button class="btn full" id="crCloseBtn">' + esc(t().close) + '</button></div>');
+  $('#crHostBtn').onclick = () => { crSheetClose(); crHost(); };
+  $('#crJoinBtn').onclick = crJoinUi;
+  $('#crCloseBtn').onclick = crSheetClose;
+  $('#crc').onkeydown = e => { if (e.key === 'Enter') crJoinUi(); };
+}
+function crJoinUi(){
+  const n = String(($('#crn') || {}).value || '').trim();
+  if (n){ state.crName = n.slice(0, 20); saveState(); }
+  const c = ($('#crc') || {}).value || '';
+  crSheetClose(); crJoin(c);
+}
+function crHost(code){
+  crLoad('peerjs.min.js', () => !!window.Peer, () => {
+    crKill(); CR.role = 'host'; CR.code = code || crGen(); CR.conns = []; toast(CRT('crStarting'));
+    const p = new Peer(CR_PFX + CR.code, crOpt()); CR.peer = p;
+    p.on('open', () => { CR.tries = 0; crBar(); crPanel(); });
+    p.on('connection', c => {
+      c.on('open', () => { CR.conns.push(c); crBar(); });
+      c.on('data', d => crHostData(c, d));
+      c.on('close', () => crDrop(c)); c.on('error', () => crDrop(c));
+    });
+    p.on('disconnected', () => { if (CR.role === 'host' && CR.peer === p){ try{ p.reconnect(); }catch(e){} } });
+    p.on('error', e => {
+      if (e && e.type === 'unavailable-id' && !code){ crHost(); return; }
+      if (e && e.type === 'unavailable-id'){ if (CR.tries++ < 5) setTimeout(() => { if (CR.role === 'host') crHost(CR.code); }, 3000); return; }
+      crErr(e);
+    });
+  });
+}
+function crHostData(c, d){
+  if (!d || !d.t) return;
+  if (d.t === 'hi'){ c._nm = String(d.name || CRT('crGuest')).slice(0, 20); toast(CRT('crJoined', c._nm)); crSend(c, crState()); crBar(); if ($('.crmask .crhp')) crPanel(); }
+  else if (d.t === 're') toast((c._nm || '') + ' ' + String(d.e || '').slice(0, 4));
+}
+function crDrop(c){
+  const a = CR.conns.filter(x => x !== c);
+  if (a.length !== CR.conns.length && c._nm) toast(CRT('crLeft', c._nm));
+  CR.conns = a; crBar(); if ($('.crmask .crhp')) crPanel();
+}
+function crSend(c, m){ try{ if (c && c.open) c.send(m); }catch(e){} }
+function crCast(m){ if (CR.role !== 'host') return; CR.conns.forEach(c => crSend(c, m)); }
+function crPage(){ return crTab() === 'read' && typeof RD !== 'undefined' && RD && RD.book ? { b:RD.book, c:RD.ch } : null; }
+function crState(){ return { t:'st', page:crPage(), name:crMe(), n:CR.conns.length + 1, pos:CR.last.pos || null, mk:CR.last.mk || null }; }
+function crJoin(code){
+  code = String(code || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
+  if (code.length < 6) return toast(CRT('crBadCode'));
+  crLoad('peerjs.min.js', () => !!window.Peer, () => {
+    crKill(); CR.role = 'guest'; CR.code = code; CR.follow = true; CR.tries = 0; CR.hostPage = null; toast(CRT('crJoining')); crConnect(); crBar();
+  });
+}
+function crConnect(){
+  if (CR.peer){ try{ CR.peer.destroy(); }catch(e){} }
+  const p = new Peer(crOpt()); CR.peer = p; CR.host = '';
+  p.on('open', () => {
+    const c = p.connect(CR_PFX + CR.code, { reliable:true }); CR.conn = c;
+    const to = setTimeout(() => { if (CR.role === 'guest' && !CR.host) crLost(); }, 15000);
+    c.on('open', () => crSend(c, { t:'hi', name:crMe() }));
+    c.on('data', d => { clearTimeout(to); CR.tries = 0; crGuestData(d); });
+    c.on('close', () => { if (CR.role === 'guest' && CR.peer === p) crLost(); });
+    c.on('error', () => { if (CR.role === 'guest' && CR.peer === p) crLost(); });
+  });
+  p.on('error', e => {
+    if (CR.peer !== p) return;
+    if (e && e.type === 'peer-unavailable'){ if (CR.tries === 0 && !CR.host){ toast(CRT('crNoRoom')); crLeave(); } else crLost(); return; }
+    crLost();
+  });
+}
+function crErr(e){ toast(CRT('crLostT')); crLeave(); }
+function crLost(){
+  CR.host = ''; crBar(); if (CR.role !== 'guest') return;
+  if (CR.tries++ < 6) setTimeout(() => { if (CR.role === 'guest') crConnect(); }, 1500 * CR.tries);
+  else { toast(CRT('crLostT')); crLeave(); }
+}
+function crGuestData(d){
+  if (!d || !d.t) return;
+  if (d.t === 'end'){ toast(CRT('crEnded')); crLeave(); return; }
+  if (d.t === 'st'){
+    CR.host = String(d.name || CRT('crLeader')).slice(0, 20); CR.n = d.n || 0; CR.away = !d.page;
+    if (d.page) CR.hostPage = d.page;
+    if (d.pos) CR.last.pos = d.pos; if (d.mk) CR.last.mk = d.mk;
+    crBar();
+    if (CR.follow && d.page) crGo(d.page); else crApply();
+    return;
+  }
+  if (d.t === 'pos'){
+    CR.last.pos = d; if (!CR.follow) return;
+    if (d.b && d.c && crNeedNav({ b:d.b, c:d.c })){ CR.hostPage = { b:d.b, c:d.c }; crGo(CR.hostPage, true); } else crScroll(d);
+    return;
+  }
+  if (d.t === 'mk'){
+    CR.last.mk = d; if (!CR.follow) return;
+    if (d.b && d.c && crNeedNav({ b:d.b, c:d.c })){ CR.hostPage = { b:d.b, c:d.c }; crGo(CR.hostPage, true); } else crMark(d, 1);
+  }
+}
+/* 我這邊要不要換頁才看得到帶領者所在的章：整卷連讀模式整卷都在畫面上，同一卷就不必換 */
+function crNeedNav(pg){
+  if (!pg || crTab() !== 'read' || typeof RD === 'undefined' || !RD) return true;
+  if (RD.book !== pg.b) return true;
+  return !state.flow && RD.ch !== pg.c;
+}
+function crGo(pg, keep){
+  if (!crNeedNav(pg)){ crApply(); return; }
+  if (!keep){ CR.last.pos = null; CR.last.mk = null; }
+  ttsStop(); go(`#/read/${pg.b}/${pg.c}`);
+}
+/* ---- 定位：章＋節＋該節第幾句（同語系用原本的段落／句序，不同語系靠節號對齊） ---- */
+const crGrp = lg => lg === 'en' ? 'en' : 'zh';
+function crWhere(el){
+  const c = +el.dataset.c, v = +el.dataset.v || 0;
+  const same = v ? $$('#reader .sent').filter(e => +e.dataset.c === c && (+e.dataset.v || 0) === v) : [el];
+  return { b:RD.book, c, p:+el.dataset.p, s:+el.dataset.s, v, vi:Math.max(0, same.indexOf(el)), vk:same.length, lg:state.lang };
+}
+function crFindSent(d){
+  if (!d || !d.c) return null;
+  const cs = $$('#reader .sent').filter(e => +e.dataset.c === +d.c);
+  if (!cs.length) return null;
+  if (crGrp(d.lg) === crGrp(state.lang)){
+    const e = cs.find(x => +x.dataset.p === +d.p && +x.dataset.s === +d.s); if (e) return e;
+  }
+  if (d.v){
+    const vs = cs.filter(x => (+x.dataset.v || 0) === +d.v);
+    if (vs.length){ const k = d.vk > 1 ? Math.round(d.vi / (d.vk - 1) * (vs.length - 1)) : 0; return vs[Math.min(Math.max(k, 0), vs.length - 1)]; }
+  }
+  return cs.find(x => +x.dataset.p === +d.p) || cs[0];
+}
+function crScroll(d){
+  if (Date.now() - raManualAt < 5000) return;
+  if (d.top0){ scrollToTop(); return; }
+  const el = crFindSent(d); if (!el) return;
+  el.style.scrollMarginTop = '150px';
+  try{ el.scrollIntoView({ behavior:'smooth', block:'start' }); }catch(e){ el.scrollIntoView(); }
+  setTimeout(() => { el.style.scrollMarginTop = ''; }, 1500);
+}
+function crClearMk(){ $$('.cr-pt').forEach(e => e.classList.remove('cr-pt')); }
+function crMark(d, move){
+  crClearMk();
+  const el = crFindSent(d); if (!el) return;
+  el.classList.add('cr-pt');
+  if (move && Date.now() - raManualAt > 5000){ try{ el.scrollIntoView({ behavior:'smooth', block:'center' }); }catch(e){} }
+}
+function crApply(){
+  if (CR.role !== 'guest' || !CR.follow) return;
+  setTimeout(() => { if (crTab() !== 'read') return; if (CR.last.pos) crScroll(CR.last.pos); if (CR.last.mk) crMark(CR.last.mk, 0); }, 150);
+}
+/* render() 每次畫完都會呼叫：帶領者把新頁面廣播出去，跟隨者把位置與標記套回來 */
+function crAfter(){
+  if (CR.role === 'host'){ clearTimeout(CR.stT); CR.stT = setTimeout(() => { CR.last.pos = null; CR.last.mk = null; crCast(crState()); }, 150); }
+  else if (CR.role === 'guest') crApply();
+  crBar();
+}
+function crTab(){ return currentRoute()[0] || 'today'; }
+function crTopSent(){
+  const hd = $('header.topbar'), th = (hd ? hd.offsetHeight : 56) + 58 + (CR.role ? 34 : 0);
+  return $$('#reader .sent').find(e => e.getBoundingClientRect().bottom > th) || null;
+}
+function crSendPos(){
+  if (CR.role !== 'host' || !CR.conns.length || crTab() !== 'read' || !$('#reader')) return;
+  const y = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+  if (y < 12){ CR.last.pos = { t:'pos', top0:1, b:RD.book, c:state.flow ? 1 : RD.ch }; crCast(CR.last.pos); return; }
+  const e = crTopSent(); if (!e) return;
+  CR.last.pos = Object.assign({ t:'pos' }, crWhere(e)); crCast(CR.last.pos);
+}
+window.addEventListener('scroll', () => {
+  if (CR.role !== 'host' || !CR.conns.length) return;
+  clearTimeout(CR.scrollT); CR.scrollT = setTimeout(crSendPos, 220);
+}, { passive:true, capture:true });
+function crMk(el, k){
+  if (CR.role !== 'host' || !CR.conns.length || !el || !el.dataset || el.dataset.s == null || crTab() !== 'read') return;
+  const m = Object.assign({ t:'mk', k }, crWhere(el)); CR.last.mk = m; crCast(m);
+}
+function crPoint(el){ try{ crMk(el, 'pt'); }catch(e){} }
+function crTts(el){ try{ crMk(el, 'tts'); }catch(e){} }
+function crReact(e){ if (CR.conn) crSend(CR.conn, { t:'re', e }); toast(CRT('crSent')); }
+function crToggle(){
+  CR.follow = !CR.follow; toast(CRT(CR.follow ? 'crFollowOn' : 'crFreeOn')); crBar();
+  if (CR.follow && CR.hostPage) crGo(CR.hostPage, true); else crApply();
+}
+function crKill(){
+  if (CR.peer){ try{ CR.peer.destroy(); }catch(e){} }
+  CR.peer = null; CR.conn = null; CR.conns = []; CR.host = ''; CR.last = {};
+}
+function crLeave(){
+  if (CR.role === 'host') crCast({ t:'end' });
+  const r = CR.role; setTimeout(crKill, r === 'host' ? 300 : 0);
+  CR.role = ''; CR.code = ''; crClearMk(); crBar(); crSheetClose();
+  const b = $('#rdCr'); if (b) b.classList.remove('crlive');
+}
+function crEndAsk(){ if (confirm(CRT('crEnd') + '？')) crLeave(); }
+function crBar(){
+  let el = $('#crbar'); document.body.className = document.body.className.replace(/\s*crOn/g, '') + (CR.role ? ' crOn' : '');
+  const b = $('#rdCr'); if (b) b.classList.toggle('crlive', !!CR.role);
+  if (!CR.role){ if (el) el.remove(); return; }
+  if (!el){ el = document.createElement('div'); el.id = 'crbar'; el.className = 'crbar'; document.body.appendChild(el); }
+  if (CR.role === 'host'){
+    el.innerHTML = '<span class="crt" id="crbT">📡 ' + esc(CRT('crHostBar', CR.code)) + ' · 👥' + (CR.conns.length + 1) + (crPage() ? '' : ' · ' + esc(CRT('crOff'))) + '</span>'
+      + '<button id="crbI">' + esc(CRT('crInv')) + '</button><button id="crbE">' + esc(CRT('crEnd')) + '</button>';
+    $('#crbT').onclick = $('#crbI').onclick = crPanel; $('#crbE').onclick = crEndAsk;
+  } else {
+    el.innerHTML = '<span class="crt" id="crbT">📡 ' + esc(CR.host ? CRT('crGuestBar', CR.host) + ' · 👥' + CR.n + (CR.away ? ' · ' + CRT('crAway') : '') : CRT('crWait')) + '</span>'
+      + '<button id="crbF">' + esc(CRT(CR.follow ? 'crFollowB' : 'crFreeB')) + '</button><button id="crbP">🙏</button><button id="crbQ">🙋</button><button id="crbL">' + esc(CRT('crLeaveB')) + '</button>';
+    $('#crbT').onclick = crPanel; $('#crbF').onclick = crToggle;
+    $('#crbP').onclick = () => crReact('🙏'); $('#crbQ').onclick = () => crReact('🙋'); $('#crbL').onclick = crLeave;
+  }
+}
+async function crShare(){
+  const text = CRT('crInviteMsg', CR.code) + '\n' + crUrl();
+  if (navigator.share){ try{ await navigator.share({ title:t().app, text }); return; }catch(e){ if (e && e.name === 'AbortError') return; } }
+  crCopy(text);
+}
+async function crCopy(s){
+  try{ await navigator.clipboard.writeText(s || crUrl()); toast(CRT('crCopied')); }
+  catch(e){ toast(CRT('crNoShare')); }
+}
+function crPanel(){
+  if (!CR.role) return crMenu();
+  if (CR.role === 'guest'){
+    crSheet('<div class="crsheet c"><p class="h2">📡 ' + esc(CRT('crTitle')) + '</p><p>' + esc(CR.host ? CRT('crGuestBar', CR.host) : CRT('crWait')) + '</p><p class="xs">' + esc(CRT('crGuestTip')) + '</p>'
+      + '<button class="btn primary full" id="crpT">' + esc(CRT(CR.follow ? 'crFree' : 'crFollow')) + '</button>'
+      + '<button class="btn danger full" id="crpL" style="margin-top:8px">' + esc(CRT('crLeaveB')) + '</button></div>');
+    $('#crpT').onclick = () => { crSheetClose(); crToggle(); }; $('#crpL').onclick = crLeave;
+    return;
+  }
+  crLoad('qrcode.js', () => !!window.qrcode, () => {
+    const q = qrcode(0, 'M'); q.addData(crUrl()); q.make();
+    const ms = CR.conns.map(c => '<span class="pill">' + esc(c._nm || CRT('crGuest')) + '</span>').join(' ');
+    crSheet('<div class="crsheet c crhp"><p class="h2">📡 ' + esc(CRT('crTitle')) + '</p><p class="xs">' + esc(CRT('crScan')) + '</p><div class="crqr">' + q.createSvgTag(5, 8) + '</div>'
+      + '<p class="eyebrow">' + esc(CRT('crCode')) + '</p><div class="crcode">' + esc(CR.code) + '</div>'
+      + '<div class="row" style="gap:8px;margin:10px 0"><button class="btn primary grow" id="crpS">' + esc(CRT('crShareLink')) + '</button><button class="btn grow" id="crpC">' + esc(CRT('crCopyB')) + '</button></div>'
+      + '<p class="eyebrow" style="text-align:left">' + esc(CRT('crMembers', CR.conns.length)) + '</p><div style="text-align:left;min-height:24px">' + (ms || '<span class="xs">' + esc(CRT('crNone')) + '</span>') + '</div>'
+      + '<p class="xs" style="text-align:left">' + esc(CRT('crTip')) + '</p>'
+      + '<div class="row" style="gap:8px"><button class="btn grow" id="crpX">' + esc(t().close) + '</button><button class="btn danger grow" id="crpE">' + esc(CRT('crEnd')) + '</button></div></div>');
+    $('#crpS').onclick = crShare; $('#crpC').onclick = () => crCopy(); $('#crpX').onclick = crSheetClose; $('#crpE').onclick = crEndAsk;
+  });
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible') return;
+  if (CR.role === 'guest' && (!CR.conn || !CR.conn.open)){ CR.tries = 0; crConnect(); }
+  if (CR.role === 'host' && CR.peer && CR.peer.disconnected){ try{ CR.peer.reconnect(); }catch(e){} }
+});
+/* 開機完成後：如果是點邀請連結（?join=代碼）進來的，自動加入 */
+function crBoot(){ if (CR_JOIN) setTimeout(() => crJoin(CR_JOIN), 400); }
+
 async function switchLang(l){
   if (l === state.lang) return;
   ttsStop();
@@ -8431,6 +8742,7 @@ async function boot(){
     embedBoot();
     if (!location.hash) location.hash = '#/today';
     await render();
+    crBoot();
   }catch(e){
     $('#bootText').textContent = '載入失敗：' + (e.message || e);
     $('#boot-diag').style.display = 'flex';
