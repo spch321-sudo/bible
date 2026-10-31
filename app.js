@@ -21,7 +21,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.26.2';
+const VERSION = 'v2.26.3';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -7853,7 +7853,15 @@ async function ttsPlayFrom(i, gen){
 function ttsNativeFrom(i, gen){
   if (gen !== spk.gen) return;
   if (!('speechSynthesis' in window)){ toast(t().ttsErr); ttsStop(true); return; }
-  if (!spk.native){ spk.native = true; toast(t().ttsFallback + (ttsLastErr ? '（' + ttsLastErr + '）' : '')); }
+  if (!spk.native){ spk.native = true;
+    let msg = t().ttsFallback + (ttsLastErr ? '（' + ttsLastErr + '）' : '');
+    try{
+      const want = isID() ? 'id' : isJA() ? 'ja' : isKO() ? 'ko' : '';
+      const vs = speechSynthesis.getVoices() || [];
+      if (want && vs.length && !vs.some(v => (v.lang || '').toLowerCase().replace('_', '-').indexOf(want) === 0))
+        msg = (isID() ? 'Perangkat ini belum punya suara bahasa Indonesia. Unduh di Pengaturan → Aksesibilitas → Konten Lisan → Suara → Indonesia.' : isJA() ? 'この端末に日本語の音声がありません。設定→アクセシビリティ→読み上げコンテンツ→声 から日本語を追加してください。' : '이 기기에 한국어 음성이 없습니다. 설정 → 손쉬운 사용 → 음성 콘텐츠 → 음성에서 추가하세요.');
+    }catch(e){}
+    toast(msg); }
   if (!spk.on || spk.abort || i >= spk.items.length){ ttsStop(i >= spk.items.length); return; }
   spk.idx = i; raShow(spk.items[i]); ttsBtn('playing');
   const say = ttsPrep(spk.items[i].text);
