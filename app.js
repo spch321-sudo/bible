@@ -21,7 +21,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.26.3';
+const VERSION = 'v2.26.4';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -7765,7 +7765,7 @@ function ttsUnlock(){
 /* 日文／印尼文的雲端語音尚未驗證：第一次逾時或失敗後，本次開啟 App 期間直接改用裝置內建語音，不再讓每一句都等 */
 const TTS_BAD = {};
 async function ttsFetch(text, voice){
-  const lg = state.lang, unverified = (lg === 'ja' || lg === 'id');
+  const lg = state.lang, unverified = false;   // Worker 已支援各語言語音（v2.26.4），不再另外縮短逾時
   if (unverified && TTS_BAD[lg]) throw new Error('cloud voice skipped');
   const body = JSON.stringify({ voice, rate: TTS_RATE, sil: TTS_SIL, silc: TTS_SILC, sile: TTS_SILE, text });
   for (let a = 0; a <= TTS_RETRY.length; a++){
