@@ -112,6 +112,20 @@ header.topbar .spacer{flex:1;}
 .langswitch{flex-shrink:0;}
 .langswitch button+button{border-left:1px solid var(--border);}
 .langswitch button.active{background:var(--accent);color:#fff;}
+#langMore{white-space:nowrap}
+#langPanel{position:absolute; right:10px; top:calc(100% + 4px); z-index:80; background:var(--surface); border:1px solid var(--border-strong); border-radius:14px; box-shadow:0 8px 28px rgba(0,0,0,.22); padding:6px; display:grid; grid-template-columns:1fr 1fr; gap:4px; min-width:250px; max-width:calc(100vw - 20px);}
+#langPanel[hidden]{display:none}
+#langPanel button{border:1px solid var(--border); background:var(--surface-alt,var(--surface)); color:var(--ink); border-radius:10px; padding:10px 8px; font-size:14px; font-weight:600; text-align:center;}
+#langPanel button.active{background:var(--accent); color:#fff; border-color:var(--accent);}
+html[lang="th"] body, html[lang="th"] button, html[lang="th"] input, html[lang="th"] textarea{font-family:"Sarabun","Noto Sans Thai","Thonburi","Leelawadee UI",system-ui,sans-serif;}
+html[lang="th"] .reader p{line-height:2.1; text-align:left; overflow-wrap:break-word;}
+html[lang="th"] .hitem .q, html[lang="th"] .bubble, html[lang="th"] .msg{line-height:1.9;}
+html[lang="th"] nav.tabbar a{font-size:9.5px;}
+html[lang="th"] .reader p.prose{text-indent:1.6em;}
+html[lang="th"] .reader .vn{margin:0 .22em 0 .06em;}
+html[lang="th"] .chhead h1{letter-spacing:0;}
+html[lang="th"] .reader h2.ch{letter-spacing:.1em;}
+
 
 main#view{max-width:640px; margin:0 auto; padding:16px 16px 84px; min-height:60vh;}
 
@@ -545,7 +559,10 @@ select.cardinput{appearance:none; -webkit-appearance:none;
   <div class="brand"><img src="icon-72.png" alt=""><span id="brandName">321互動聖經</span></div>
   <div class="spacer"></div>
   <div class="langswitch" id="langswitch">
-    <button data-lang="zh">繁</button><button data-lang="zs">简</button><button data-lang="en">EN</button><button data-lang="ko">한</button><button data-lang="ja">日</button><button data-lang="id">ID</button><button data-lang="tl">TL</button><button data-lang="my">မြန်</button><button data-lang="vi">VI</button>
+    <button data-lang="zh">繁</button><button data-lang="zs">简</button><button data-lang="en">EN</button><button id="langMore" aria-haspopup="true" aria-expanded="false" title="Languages">🌐 <span id="langMoreTxt">▾</span></button>
+  </div>
+  <div id="langPanel" role="menu" hidden>
+    <button data-lang="ko">한국어</button><button data-lang="ja">日本語</button><button data-lang="id">Bahasa Indonesia</button><button data-lang="tl">Filipino</button><button data-lang="my">မြန်မာဘာသာ</button><button data-lang="vi">Tiếng Việt</button><button data-lang="th">ภาษาไทย</button>
   </div>
 </header>
 
@@ -580,7 +597,7 @@ select.cardinput{appearance:none; -webkit-appearance:none;
 
 <script>
 /* 程式檔帶上更新時間戳（?u=…）載入：更新後重整的那一次一定抓到最新的 app.js，不會被瀏覽器或 CDN 的舊快取擋住 */
-(function(){var m=location.search.match(/[?&]u=(\d+)/);document.write('<script src="lang-ko.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-ja.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-id.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-tl.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-my.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-vi.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-pf.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="app.js'+(m?'?u='+m[1]:'')+'"><\/script>');})();
+(function(){var m=location.search.match(/[?&]u=(\d+)/);document.write('<script src="lang-ko.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-ja.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-id.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-tl.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-my.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-vi.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-th.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-pf.js'+(m?'?u='+m[1]:'')+'"><\/script>');document.write('<script src="app.js'+(m?'?u='+m[1]:'')+'"><\/script>');})();
 </script>
 </body>
 </html>
