@@ -34,7 +34,10 @@
    "ti": "Pengharapan",
    "nl": "Pagsikat ng Araw sa Maaliwalas na Umaga",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Pag-asa"
+   "tl": "Pag-asa",
+   "nm": "ကြည်လင်သောမနက်ခင်း နေထွက်ချိန်",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "မျှော်လင့်ခြင်း"
   },
   {
    "f": "m02.mp3",
@@ -58,7 +61,10 @@
    "ti": "Pengharapan",
    "nl": "Pag-asa – Pagsikat ng Araw sa Maaliwalas na Umaga",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Pag-asa"
+   "tl": "Pag-asa",
+   "nm": "မျှော်လင့်ခြင်း – ကြည်လင်သောမနက်ခင်း နေထွက်ချိန်",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "မျှော်လင့်ခြင်း"
   },
   {
    "f": "m03.mp3",
@@ -82,7 +88,10 @@
    "ti": "Pengharapan",
    "nl": "Pag-asa 2 – Paglikha, mga Bundok at Karagatan",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Pag-asa"
+   "tl": "Pag-asa",
+   "nm": "မျှော်လင့်ခြင်း 2 – ဖန်ဆင်းခြင်း၊ တောင်များနှင့် သမုဒ္ဒရာ",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "မျှော်လင့်ခြင်း"
   },
   {
    "f": "m04.mp3",
@@ -106,7 +115,10 @@
    "ti": "Pengharapan",
    "nl": "Pag-asa 3 – Tahimik na Pagninilay at Panalangin",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Pag-asa"
+   "tl": "Pag-asa",
+   "nm": "မျှော်လင့်ခြင်း 3 – တိတ်ဆိတ်စွာ ဆင်ခြင်ခြင်းနှင့် ဆုတောင်းခြင်း",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "မျှော်လင့်ခြင်း"
   },
   {
    "f": "m05.mp3",
@@ -130,7 +142,10 @@
    "ti": "Pengharapan",
    "nl": "Pag-asa 4 – Pagsamba at Kaluwalhatian",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Pag-asa"
+   "tl": "Pag-asa",
+   "nm": "မျှော်လင့်ခြင်း 4 – ကိုးကွယ်ဝတ်ပြုခြင်းနှင့် ဘုန်းတော်",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "မျှော်လင့်ခြင်း"
   },
   {
    "f": "m06.mp3",
@@ -154,7 +169,10 @@
    "ti": "Iman",
    "nl": "Pananampalataya 1 – Lumakad sa Pananampalataya",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Pananampalataya"
+   "tl": "Pananampalataya",
+   "nm": "ယုံကြည်ခြင်း 1 – ယုံကြည်ခြင်းဖြင့် လမ်းလျှောက်ခြင်း",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "ယုံကြည်ခြင်း"
   },
   {
    "f": "m07.mp3",
@@ -178,7 +196,10 @@
    "ti": "Iman",
    "nl": "Pananampalataya 2 – Pananampalatayang Gaya ng Butil ng Mustasa",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Pananampalataya"
+   "tl": "Pananampalataya",
+   "nm": "ယုံကြည်ခြင်း 2 – မုန်ညင်းစေ့ကဲ့သို့သော ယုံကြည်ခြင်း",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "ယုံကြည်ခြင်း"
   },
   {
    "f": "m08.mp3",
@@ -202,7 +223,10 @@
    "ti": "Kasih",
    "nl": "Pag-ibig 1 – Gayon na Lamang ang Pag-ibig ng Diyos sa Sanlibutan",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Pag-ibig"
+   "tl": "Pag-ibig",
+   "nm": "ချစ်ခြင်းမေတ္တာ 1 – ဘုရားသခင်သည် ဤလောကကို ထိုမျှလောက် ချစ်တော်မူ၏",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "ချစ်ခြင်းမေတ္တာ"
   },
   {
    "f": "m09.mp3",
@@ -226,7 +250,10 @@
    "ti": "Kasih",
    "nl": "Pag-ibig 2 – Ang Pinakadakilang Pag-ibig, Inialay ang Buhay Para sa Akin",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Pag-ibig"
+   "tl": "Pag-ibig",
+   "nm": "ချစ်ခြင်းမေတ္တာ 2 – အကြီးမားဆုံးသော ချစ်ခြင်း၊ ကျွန်ုပ်အတွက် အသက်စွန့်တော်မူခြင်း",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "ချစ်ခြင်းမေတ္တာ"
   },
   {
    "f": "m10.mp3",
@@ -250,7 +277,10 @@
    "ti": "Kasih",
    "nl": "Pag-ibig 3 – Ang Tunay na Kahulugan ng Pag-ibig",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Pag-ibig"
+   "tl": "Pag-ibig",
+   "nm": "ချစ်ခြင်းမေတ္တာ 3 – ချစ်ခြင်း၏ အစစ်အမှန်အဓိပ္ပာယ်",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "ချစ်ခြင်းမေတ္တာ"
   },
   {
    "f": "m11.mp3",
@@ -274,7 +304,10 @@
    "ti": "Kasih",
    "nl": "Pag-ibig 4 – Magmahalan Kayo",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Pag-ibig"
+   "tl": "Pag-ibig",
+   "nm": "ချစ်ခြင်းမေတ္တာ 4 – အချင်းချင်း ချစ်ကြလော့",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "ချစ်ခြင်းမေတ္တာ"
   },
   {
    "f": "m12.mp3",
@@ -298,7 +331,10 @@
    "ti": "Kasih",
    "nl": "Pag-ibig 5 – Tinatakpan ng Pag-ibig ang Karamihan ng mga Kasalanan",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Pag-ibig"
+   "tl": "Pag-ibig",
+   "nm": "ချစ်ခြင်းမေတ္တာ 5 – ချစ်ခြင်းမေတ္တာသည် အပြစ်များစွာကို ဖုံးအုပ်တတ်၏",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "ချစ်ခြင်းမေတ္တာ"
   },
   {
    "f": "m13.mp3",
@@ -322,7 +358,10 @@
    "ti": "Berkat",
    "nl": "Pagpapala 1 – Pangako ng Pagpapala ng Diyos",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Pagpapala"
+   "tl": "Pagpapala",
+   "nm": "ကောင်းချီးခြင်း 1 – ဘုရားသခင်၏ ကောင်းချီးပေးမည့် ကတိတော်",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "ကောင်းချီးခြင်း"
   },
   {
    "f": "m14.mp3",
@@ -346,7 +385,10 @@
    "ti": "Berkat",
    "nl": "Pagpapala 2 – Ang Pagpapala ng Saserdote",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Pagpapala"
+   "tl": "Pagpapala",
+   "nm": "ကောင်းချီးခြင်း 2 – ယဇ်ပုရောဟိတ်၏ ကောင်းချီး",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "ကောင်းချီးခြင်း"
   },
   {
    "f": "m15.mp3",
@@ -370,7 +412,10 @@
    "ti": "Anugerah",
    "nl": "Biyaya 1 – Naligtas sa Pamamagitan ng Biyaya",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Biyaya"
+   "tl": "Biyaya",
+   "nm": "ကျေးဇူးတော် 1 – ကျေးဇူးတော်ဖြင့် ကယ်တင်ခြင်းခံရသည်",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "ကျေးဇူးတော်"
   },
   {
    "f": "m16.mp3",
@@ -394,7 +439,10 @@
    "ti": "Anugerah",
    "nl": "Biyaya 2 – Biyaya sa Krus",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Biyaya"
+   "tl": "Biyaya",
+   "nm": "ကျေးဇူးတော် 2 – လက်ဝါးကပ်တိုင်ပေါ်က ကျေးဇူးတော်",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "ကျေးဇူးတော်"
   },
   {
    "f": "m17.mp3",
@@ -418,7 +466,10 @@
    "ti": "Damai Sejahtera",
    "nl": "Kapayapaan 1 – Ang Kapayapaang Ibinibigay ni Cristo",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Kapayapaan"
+   "tl": "Kapayapaan",
+   "nm": "ငြိမ်သက်ခြင်း 1 – ခရစ်တော်ပေးသော ငြိမ်သက်ခြင်း",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "ငြိမ်သက်ခြင်း"
   },
   {
    "f": "m18.mp3",
@@ -442,7 +493,10 @@
    "ti": "Damai Sejahtera",
    "nl": "Kapayapaan 2 – Kapayapaan sa Gitna ng Unos",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Kapayapaan"
+   "tl": "Kapayapaan",
+   "nm": "ငြိမ်သက်ခြင်း 2 – မုန်တိုင်းအလယ်က ငြိမ်သက်ခြင်း",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "ငြိမ်သက်ခြင်း"
   },
   {
    "f": "m19.mp3",
@@ -466,7 +520,10 @@
    "ti": "Sukacita",
    "nl": "Kagalakan 1 – Magalak Kayo sa Panginoon Magpakailanman",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Kagalakan"
+   "tl": "Kagalakan",
+   "nm": "ရွှင်လန်းခြင်း 1 – သခင်ဘုရားကို မှီ၍ အစဉ်ရွှင်လန်းကြလော့",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "ရွှင်လန်းခြင်း"
   },
   {
    "f": "m20.mp3",
@@ -490,7 +547,10 @@
    "ti": "Sukacita",
    "nl": "Kagalakan 2 – Awit ng Kagalakan sa Umaga",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Kagalakan"
+   "tl": "Kagalakan",
+   "nm": "ရွှင်လန်းခြင်း 2 – နံနက်ခင်း ရွှင်လန်းသောသီချင်း",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "ရွှင်လန်းခြင်း"
   },
   {
    "f": "m21.mp3",
@@ -514,7 +574,10 @@
    "ti": "Sukacita",
    "nl": "Kagalakan 3 – Umawit nang Masaya sa Papuri",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Kagalakan"
+   "tl": "Kagalakan",
+   "nm": "ရွှင်လန်းခြင်း 3 – ဝမ်းမြောက်စွာ ချီးမွမ်းသီဆိုကြစို့",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "ရွှင်လန်းခြင်း"
   },
   {
    "f": "m22.mp3",
@@ -538,7 +601,10 @@
    "ti": "Sukacita",
    "nl": "Kagalakan 4 – Sumayaw nang Masaya",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Kagalakan"
+   "tl": "Kagalakan",
+   "nm": "ရွှင်လန်းခြင်း 4 – ဝမ်းမြောက်စွာ ကခုန်ကြစို့",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "ရွှင်လန်းခြင်း"
   },
   {
    "f": "m23.mp3",
@@ -562,7 +628,10 @@
    "ti": "Sukacita",
    "nl": "Kagalakan 5 – Ang Kagalakan sa Panginoon ang Aking Lakas",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Kagalakan"
+   "tl": "Kagalakan",
+   "nm": "ရွှင်လန်းခြင်း 5 – သခင်ဘုရား၌ ရွှင်လန်းခြင်းသည် ကျွန်ုပ်၏ခွန်အား",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "ရွှင်လန်းခြင်း"
   },
   {
    "f": "m24.mp3",
@@ -586,7 +655,10 @@
    "ti": "Menanti",
    "nl": "Paghihintay 1 – Maghintay sa Panginoon",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Paghihintay"
+   "tl": "Paghihintay",
+   "nm": "စောင့်မျှော်ခြင်း 1 – ထာဝရဘုရားကို စောင့်မျှော်ပါ",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "စောင့်မျှော်ခြင်း"
   },
   {
    "f": "m25.mp3",
@@ -610,7 +682,10 @@
    "ti": "Menanti",
    "nl": "Paghihintay 2 – Lumilipad na may Pakpak na Gaya ng Agila",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Paghihintay"
+   "tl": "Paghihintay",
+   "nm": "စောင့်မျှော်ခြင်း 2 – လင်းယုန်ကဲ့သို့ အတောင်ဖြန့်ပျံသန်းခြင်း",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "စောင့်မျှော်ခြင်း"
   },
   {
    "f": "m26.mp3",
@@ -634,7 +709,10 @@
    "ti": "Menanti",
    "nl": "Paghihintay 4 – Tumahimik at Sumandal sa Kanya",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Paghihintay"
+   "tl": "Paghihintay",
+   "nm": "စောင့်မျှော်ခြင်း 4 – တိတ်ဆိတ်စွာ ဘုရားသခင်ကို မှီခိုခြင်း",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "စောင့်မျှော်ခြင်း"
   },
   {
    "f": "m27.mp3",
@@ -658,7 +736,10 @@
    "ti": "Penghiburan dalam Sakit",
    "nl": "Kaaliwan sa Karamdaman 2 – Mga Luha sa Gitna ng Sakit",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Kaaliwan sa Karamdaman"
+   "tl": "Kaaliwan sa Karamdaman",
+   "nm": "နာမကျန်းချိန် နှစ်သိမ့်ခြင်း 2 – နာကျင်မှုအလယ်က မျက်ရည်များ",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "နာမကျန်းချိန် နှစ်သိမ့်ခြင်း"
   },
   {
    "f": "m28.mp3",
@@ -682,7 +763,10 @@
    "ti": "Penghiburan dalam Sakit",
    "nl": "Katahimikan sa Karamdaman, Kasama ang Diyos",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Kaaliwan sa Karamdaman"
+   "tl": "Kaaliwan sa Karamdaman",
+   "nm": "နာမကျန်းချိန် တိတ်ဆိတ်ခြင်း၊ ဘုရားသခင်နှင့်အတူရှိခြင်း",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "နာမကျန်းချိန် နှစ်သိမ့်ခြင်း"
   },
   {
    "f": "m29.mp3",
@@ -706,7 +790,10 @@
    "ti": "Perayaan Ulang Tahun",
    "nl": "Pagdiriwang ng Kaarawan – Pagbubukas ng Kaarawan, Pagtatapos na Puno ng Pagpapala",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Pagdiriwang ng Kaarawan"
+   "tl": "Pagdiriwang ng Kaarawan",
+   "nm": "မွေးနေ့ပွဲတော် – မွေးနေ့ဖွင့်ပွဲ၊ ကောင်းချီးပြည့်ဝသော နိဂုံး",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "မွေးနေ့ပွဲတော်"
   },
   {
    "f": "m30.mp3",
@@ -730,7 +817,10 @@
    "ti": "Perayaan Ulang Tahun",
    "nl": "Pagbubukas ng Kaarawan, Simula ng mga Pagpapala",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Pagdiriwang ng Kaarawan"
+   "tl": "Pagdiriwang ng Kaarawan",
+   "nm": "မွေးနေ့ဖွင့်ပွဲ၊ ကောင်းချီးများ၏ အစ",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "မွေးနေ့ပွဲတော်"
   },
   {
    "f": "m31.mp3",
@@ -754,7 +844,10 @@
    "ti": "Perayaan Ulang Tahun",
    "nl": "Awit ng Maligayang Kaarawan",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Pagdiriwang ng Kaarawan"
+   "tl": "Pagdiriwang ng Kaarawan",
+   "nm": "မွေးနေ့ဆုမွန်ကောင်းသီချင်း",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "မွေးနေ့ပွဲတော်"
   },
   {
    "f": "m32.mp3",
@@ -778,7 +871,10 @@
    "ti": "Perayaan Ulang Tahun",
    "nl": "Pagdiriwang",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Pagdiriwang ng Kaarawan"
+   "tl": "Pagdiriwang ng Kaarawan",
+   "nm": "ပွဲတော်",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "မွေးနေ့ပွဲတော်"
   },
   {
    "f": "m33.mp3",
@@ -802,7 +898,10 @@
    "ti": "Penghiburan dalam Sakit",
    "nl": "Kaaliwan sa Karamdaman 5",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Kaaliwan sa Karamdaman"
+   "tl": "Kaaliwan sa Karamdaman",
+   "nm": "နာမကျန်းချိန် နှစ်သိမ့်ခြင်း 5",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "နာမကျန်းချိန် နှစ်သိမ့်ခြင်း"
   },
   {
    "f": "m34.mp3",
@@ -826,7 +925,10 @@
    "ti": "Perayaan Ulang Tahun",
    "nl": "Pagbati",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Pagdiriwang ng Kaarawan"
+   "tl": "Pagdiriwang ng Kaarawan",
+   "nm": "ဝမ်းမြောက်ဂုဏ်ပြုခြင်း",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "မွေးနေ့ပွဲတော်"
   },
   {
    "f": "m35.mp3",
@@ -850,7 +952,10 @@
    "ti": "Pengharapan",
    "nl": "Pag-asa",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Pag-asa"
+   "tl": "Pag-asa",
+   "nm": "မျှော်လင့်ခြင်း",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "မျှော်လင့်ခြင်း"
   },
   {
    "f": "m36.mp3",
@@ -874,7 +979,10 @@
    "ti": "Damai Sejahtera",
    "nl": "Kapayapaan",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Kapayapaan"
+   "tl": "Kapayapaan",
+   "nm": "ငြိမ်းချမ်းခြင်း",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "ငြိမ်သက်ခြင်း"
   },
   {
    "f": "m37.mp3",
@@ -898,7 +1006,10 @@
    "ti": "Kasih",
    "nl": "Tapat na Pag-ibig",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Pag-ibig"
+   "tl": "Pag-ibig",
+   "nm": "ကရုဏာမေတ္တာ",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "ချစ်ခြင်းမေတ္တာ"
   },
   {
    "f": "m38.mp3",
@@ -922,7 +1033,10 @@
    "ti": "Kasih",
    "nl": "Kahinahunan",
    "bl": "BGM ng 321 Interaktibong Biblia",
-   "tl": "Pag-ibig"
+   "tl": "Pag-ibig",
+   "nm": "နူးညံ့သိမ်မွေ့ခြင်း",
+   "bm": "321 အပြန်အလှန်ဆက်သွယ်နိုင်သော သမ္မာကျမ်းစာ BGM",
+   "tm": "ချစ်ခြင်းမေတ္တာ"
   }
  ]
 }
