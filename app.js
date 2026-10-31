@@ -22,7 +22,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.27.0';
+const VERSION = 'v2.27.1';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -2148,7 +2148,7 @@ function openHlSheet(el){
     h.c = color; h.n = ta.value.trim(); saveUser();
     mask.remove(); paintHl(cno);
   };
-  $$('[data-a]', mask).forEach(b => b.onclick = () => {
+  $$('[data-a]', mask).forEach(b => b.onclick = async () => {
     const a = b.dataset.a;
     if (a === 'save') commit();
     else if (a === 'card'){
@@ -2158,6 +2158,7 @@ function openHlSheet(el){
     else if (a === 'close') mask.remove();
     else if (a === 'del'){ delete user.hl[k]; saveUser(); mask.remove(); paintHl(cno); }
     else if (a === 'ask'){
+      await hlCur(h);
       h.c = color; h.n = ta.value.trim(); saveUser(); mask.remove();
       /* 記下這一題是從哪一節來的，答完才分享得出「經文＋答案」 */
       chatSrc = { t:h.t, b:RD.book, ch:cno, v:h.v || 0, v2:h.v2 || 0 };
@@ -5092,7 +5093,7 @@ async function viewStudio(v){
   bind('[data-sh]',   b => shareRec(b.dataset.sh));
   bind('[data-rm]',   b => rmRec(b.dataset.rm));
 }
-function openStudio(h){ studioItem = h; studioNote = h.n || ''; fullBless = ''; blessOwn = ''; go('#/studio');
+async function openStudio(h){ await hlCur(h); studioItem = h; studioNote = h.n || ''; fullBless = ''; blessOwn = ''; go('#/studio');
   setTimeout(() => { try{ document.body.scrollTop = 0; document.documentElement.scrollTop = 0; window.scrollTo(0, 0); }catch(e){} }, 60); }
 
 /* ================================================================ 235 團隊
@@ -5773,8 +5774,9 @@ function bindComposer(tm, kind){
   const L = tl();
   const ta = $('#tmText'), send = $('#tmSend'), ai = $('#tmAI'), vb = $('#tmVerse');
   let verse = '', ref = '';
-  if (vb) vb.onclick = () => {
+  if (vb) vb.onclick = async () => {
     const h = lastHl(); if (!h) return;
+    await hlCur(h);
     verse = (h.t || '').replace(/〔[^〕]*〕/g, '').replace(/\[[^\]]*\]/g, '').trim();
     ref = cardRef(h);
     vb.classList.add('gold'); vb.textContent = '📖 ' + ref;
@@ -6367,6 +6369,16 @@ async function verseTextOf(id, ch, v, v2){
     else if (nc > no) for (let k = nc - no; k > 0 && t.lastIndexOf(c) >= 0; k--){ const i = t.lastIndexOf(c); t = t.slice(0, i) + t.slice(i + 1); }
   });
   return t.trim();
+}
+/* 畫線／金句存的是畫下當時語言的經文：換了語言，美圖與問小智要改用目前語言的經文 */
+async function hlCur(h){
+  try{
+    if (h && h.b && h.v && BOOK[h.b]){
+      const t = await verseTextOf(h.b, h.ch, h.v, h.v2 || 0);
+      if (t) h.t = t;
+    }
+  }catch(e){}
+  return h;
 }
 async function pickVerse(md){
   try{ await loadTOC(); }catch(e){}
@@ -7295,6 +7307,7 @@ async function viewMe(v){
   });
   $$('[data-del]', v).forEach(b => b.onclick = () => { delete user.hl[b.dataset.del]; saveUser(); render(); });
   $$('[data-card]', v).forEach(b => b.onclick = () => { const h = user.hl[b.dataset.card]; if (h) openStudio(h); });
+  $$('[data-card]', v).forEach(async b => { const h = user.hl[b.dataset.card]; if (!h) return; const o = h.t; await hlCur(h); if (h.t !== o){ const q = b.closest('.hitem') && b.closest('.hitem').querySelector('.q'); if (q) q.textContent = h.t; } });
   $$('[data-go]', v).forEach(b => b.onclick = () => { const [x, y] = b.dataset.go.split('|'); go(`#/read/${x}/${y}`); });
   $$('[data-favdel]', v).forEach(b => b.onclick = () => { user.fav.splice(+b.dataset.favdel, 1); saveUser(); render(); });
 }
