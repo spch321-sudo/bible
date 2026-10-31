@@ -23,7 +23,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.28.3';
+const VERSION = 'v2.29.0';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -6142,6 +6142,7 @@ async function viewCompanion(v){
       <div class="xz-bar" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 6px">
         ${b ? `<span class="chatctx" style="margin:0">${esc(L.ctx(bname(b), RD.ch))}</span>` : ''}
         <button class="qs-toggle" id="audBtn" style="margin:0"></button>
+        <button class="qs-toggle" id="pfBtn" style="margin:0"></button>
         <button class="qs-toggle" id="qsBtn" style="margin:0">💡 ${esc(L.examples)}</button>
       </div>
       <div class="segbtns" id="lenSeg" style="justify-content:flex-start;align-items:center;margin:0 0 6px"></div>
@@ -6266,6 +6267,7 @@ async function viewCompanion(v){
     const sendB = $('#chatSend', v); if (sendB) sendB.addEventListener('click', () => { if (xzOptsOpen) setOpts(false); });
     const inB = $('#chatIn', v); if (inB) inB.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && xzOptsOpen) setOpts(false); });
   })();
+  { const pb = $('#pfBtn', v); const paintPf = () => { pb.textContent = '👤 ' + (pfNick() || L3('我的資料', '我的资料', 'About me')) + (pfAny() ? ' ✓' : ''); }; paintPf(); pb.onclick = () => openProfile(() => { paintPf(); try{ paintAud(); }catch(e){} }); }
   $('#audBtn', v).onclick = () => { const ap = $('#audPanel', v); ap.hidden = !ap.hidden; if (!ap.hidden) panel.hidden = true; };
   paintChat();
   $('#chatSend', v).onclick = () => sendChat($('#chatIn').value);
@@ -6544,6 +6546,97 @@ const LEN_SYS = () => {
     ? ' 回答長度：簡要。整段回答控制在 3～5 句話（約 150 字內）：直接給核心答案、一句關鍵經文或一個比喻，最後一句禱告或一個小步驟。不用表格、不列長清單。'
     : ' 回答長度：詳細。請完整、有條理地回答（約 800～1200 字）：說明經文脈絡、關鍵字詞的意思、相關經文對照、清楚的321應用、這星期可以操練的具體步驟，最後以禱告結束。可用簡短小標題。';
 };
+/* ===== v2.29.0：讀者資料——小智依暱稱、性別、年齡、身分、就職、在學、信仰與目前處境量身回答 ===== */
+const PF_FIELDS = [
+  { k:'gender', t:['性別','性别','Gender'], o:[['m','男','男','Male'],['f','女','女','Female']] },
+  { k:'marital', t:['身分','身份','Status'], o:[['couple','夫妻（已婚）','夫妻（已婚）','Married couple'],['unmarried','未婚','未婚','Not yet married'],['single','單身（離異／喪偶）','单身（离异／丧偶）','Single (divorced / widowed)'],['single_parent','單親','单亲','Single parent']] },
+  { k:'work', t:['就職','就职','Work'], o:[['boss','老闆','老板','Business owner'],['manager','主管','主管','Manager'],['employee','員工','员工','Employee'],['homemaker','家管','家管','Homemaker'],['selfemp','自僱／自由工作','自雇／自由职业','Self-employed'],['retired','退休','退休','Retired'],['jobless','待業','待业','Between jobs']] },
+  { k:'study', t:['在學','在学','Studying'], o:[['preK','幼兒園','幼儿园','Kindergarten'],['primary','小學','小学','Primary school'],['junior','初中','初中','Junior high'],['senior','高中','高中','Senior high'],['univ','大學','大学','University'],['grad','研究所','研究生','Graduate school']] },
+  { k:'faith', t:['信仰','信仰','Faith'], o:[['pastor','牧者','牧者','Pastor'],['coworker','同工','同工','Church worker'],['disciple','門徒','门徒','Disciple'],['newbeliever','初信','初信','New believer'],['seeker','慕道','慕道','Seeker'],['unbeliever','未信','未信','Not a believer']] }
+];
+const pfOpt = (f, k) => { const o = f.o.find(x => x[0] === k); return o ? (isEP() ? o[3] : isZS() ? o[2] : o[1]) : ''; };
+const pfLabel = f => isEP() ? f.t[2] : isZS() ? f.t[1] : f.t[0];
+const pfGet = () => { const p = state.profile; return (p && typeof p === 'object') ? p : {}; };
+const pfAny = () => { const p = pfGet(); return !!(p.nick || p.gender || p.age || p.marital || p.work || p.study || p.faith || p.note); };
+const pfNick = () => { const p = pfGet(); return (p.nick || '').trim(); };
+/* 資料 → 建議的「回答對象」 */
+const pfSuggestAud = () => {
+  const p = pfGet(), age = +p.age || 0;
+  if (age && age < 12 || p.study === 'preK' || p.study === 'primary') return 'kid';
+  if (age && age < 19 || p.study === 'junior' || p.study === 'senior') return 'teen';
+  if (p.faith === 'pastor') return 'pastor';
+  if (p.faith === 'seeker' || p.faith === 'unbeliever') return 'seeker';
+  if (p.marital === 'single_parent') return 'single_parent';
+  if (p.marital === 'couple') return 'couple';
+  if (age >= 65) return 'elder';
+  if (p.marital === 'unmarried' || p.marital === 'single') return 'single';
+  return 'adult';
+};
+const PF_GUIDE = {
+  faith: {
+    pastor:'a pastor/shepherd: speak peer-to-peer, assume biblical literacy, connect to shepherding, preaching and burnout, no basic explanations',
+    coworker:'a church worker/co-labourer: connect to serving, teamwork, leading a small group, staying fresh in ministry',
+    disciple:'a growing disciple: go deeper, practise, apply, and encourage them to disciple others (multiplication)',
+    newbeliever:'a new believer: keep foundations clear and encouraging, explain church words simply, small next steps',
+    seeker:'a seeker exploring faith: use everyday language, no jargon, no pressure, answer the real question first',
+    unbeliever:'not a believer: be respectful and gentle, avoid insider words, begin from their life and honest questions, never pressure'
+  },
+  marital:{ couple:'married: include marriage/family scenes where natural', unmarried:'not yet married: relationships, calling and waiting where natural', single:'single (divorced or widowed): be tender, never assume they are looking to remarry, speak of belonging and healing', single_parent:'a single parent: acknowledge exhaustion, give very practical small steps, no guilt' },
+  work:{ boss:'a business owner: decisions, responsibility, stewardship, integrity, loneliness of leading', manager:'a manager: leading a team, pressure from above and below, fairness', employee:'an employee: workplace relationships, boss, calling at work, fatigue', homemaker:'a homemaker: dignity and value of home work, ordinary-day examples', selfemp:'self-employed: income uncertainty, discipline, trust', retired:'retired: purpose, legacy, health, grandchildren', jobless:'between jobs: be gentle, hope, identity beyond work, practical encouragement' },
+  study:{ preK:'kindergarten age: extremely simple, tiny sentences, stories', primary:'primary-school age: simple words, concrete stories and games', junior:'junior-high age: real, relatable, no talking down', senior:'senior-high age: exams, future, identity, friendships', univ:'a university student: independence, major/career choices, relationships, doubts', grad:'a graduate student: research pressure, advisors, deeper reasoning' }
+};
+const PF_ZH = {
+  faith:{ pastor:'牧者：以同工平輩口吻，不必解釋基本觀念，可連結牧養、講道與倦怠', coworker:'教會同工：連結服事、團隊、帶小組與保持靈命新鮮', disciple:'門徒：可更深入，重實踐，並鼓勵他栽培別人（繁殖）', newbeliever:'初信者：根基清楚、鼓勵為主，教會用語要簡單解釋，給小步驟', seeker:'慕道友：用日常語言，不用術語、不施壓，先回答他真正的問題', unbeliever:'尚未信主：尊重溫和，避免教會內部詞彙，從他的生活與真實疑問出發，絕不施壓' },
+  marital:{ couple:'已婚：自然時可帶入夫妻與家庭情境', unmarried:'未婚：自然時可談交往、呼召與等候', single:'單身（離異或喪偶）：語氣溫柔，不預設他想再婚，談歸屬與醫治', single_parent:'單親：先體恤疲憊，給非常實際的小步驟，不加重愧疚' },
+  work:{ boss:'老闆：決策、責任、管家職分、誠信、領導的孤單', manager:'主管：帶團隊、上下夾擊的壓力、公平', employee:'員工：職場人際、上司、職場呼召、疲憊', homemaker:'家管：家務的價值與尊嚴，用日常生活舉例', selfemp:'自僱：收入不穩、自律、信靠', retired:'退休：生命意義、傳承、健康、含飴弄孫', jobless:'待業：溫柔、盼望、工作之外的身分、實際的鼓勵' },
+  study:{ preK:'幼兒園年紀：非常簡單的短句、用故事', primary:'小學年紀：淺白用字、具體故事與遊戲', junior:'初中年紀：真實、貼近、不居高臨下', senior:'高中年紀：考試、未來、自我認同、友誼', univ:'大學生：獨立、選系與職涯、感情、疑問', grad:'研究生：研究壓力、指導教授、較深的推理' }
+};
+const PROFILE_SYS = () => {
+  const p = pfGet(); if (!pfAny()) return '';
+  const en = isEP();
+  const G = en ? PF_GUIDE : PF_ZH;
+  const L = [];
+  if (p.nick) L.push((en ? 'Nickname: ' : '暱稱：') + String(p.nick).slice(0, 20));
+  if (p.gender) L.push((en ? 'Gender: ' : '性別：') + pfOpt(PF_FIELDS[0], p.gender));
+  if (+p.age) L.push((en ? 'Age: ' : '年齡：') + (+p.age));
+  ['marital', 'work', 'study', 'faith'].forEach(k => { if (p[k] && G[k] && G[k][p[k]]) L.push((en ? PF_FIELDS.find(f => f.k === k).t[2] : PF_FIELDS.find(f => f.k === k).t[0]) + ' → ' + G[k][p[k]]); });
+  if (p.note) L.push((en ? 'What they most want help with right now: ' : '目前最想得到幫助的事：') + String(p.note).slice(0, 160));
+  if (!L.length) return '';
+  return en
+    ? ' READER PROFILE (use it to tailor the answer; do not recite it back): ' + L.join(' | ') + '. Personalise: address them by nickname only now and then (not every sentence); choose vocabulary, length, examples and tone that fit their age, study level, work, family situation and faith stage; offer practical steps they can really do this week. Use correct gendered words where the language needs them. Never assume facts that are not listed, never mention their age or gender unless it matters, and keep the Scripture and gospel truth unchanged. If this profile conflicts with the selected answer audience, keep the audience\'s tone and format but use the profile for the content.'
+    : ' 讀者資料（請據此量身回答，但不要照念）：' + L.join('｜') + '。請：偶爾以暱稱稱呼（不要每句都叫）；依年齡、學歷階段、職場角色、家庭處境與信仰階段，選擇合適的用字、長度、舉例與語氣；給他這個星期真的做得到的具體步驟；語言需要時使用正確的性別用字。不要假設資料裡沒有的事，除非必要不提年齡或性別，經文與福音真理不可更動。若資料與所選「回答對象」衝突，語氣與格式依回答對象，內容依讀者資料。';
+};
+function openProfile(after){
+  const old = document.getElementById('pfMask'); if (old) old.remove();
+  const p = Object.assign({}, pfGet());
+  const m = document.createElement('div'); m.id = 'pfMask';
+  m.style.cssText = 'position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center';
+  const draw = () => {
+    const sg = f => `<div style="margin:12px 0 4px;font-weight:700;font-size:13px">${esc(pfLabel(f))}</div><div class="segbtns" data-f="${f.k}" style="justify-content:flex-start">${f.o.map(o => `<button class="${p[f.k] === o[0] ? 'on' : ''}" data-k="${o[0]}">${esc(pfOpt(f, o[0]))}</button>`).join('')}</div>`;
+    const sa = pfSuggestAud();
+    m.innerHTML = `<div style="background:var(--surface,#fff);color:var(--ink);width:100%;max-width:640px;max-height:88vh;overflow:auto;border-radius:18px 18px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom))">
+      <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:16px">👤 ${esc(L3('讀者資料（小智量身回答）', '读者资料（小智量身回答）', 'About me (personalised answers)'))}</b><button id="pfX" class="btn" style="padding:4px 12px">✕</button></div>
+      <div class="muted" style="font-size:12px;line-height:1.6;margin:6px 0 0">${esc(L3('全部選填，只存在這支手機；小智回答時會把這些資料一併傳給 AI 服務，讓答案更貼近你。想停用隨時清除。', '全部选填，只存在这部手机；小智回答时会把这些资料一并传给 AI 服务，让答案更贴近你。想停用随时清除。', 'All optional and stored only on this phone. When Xiaozhi answers, these details are sent along to the AI service so the answer fits you. Clear them any time.'))}</div>
+      <div style="margin:12px 0 4px;font-weight:700;font-size:13px">${esc(L3('暱稱', '昵称', 'Nickname'))}</div>
+      <input id="pfNick" maxlength="20" value="${esc(p.nick || '')}" style="width:100%;box-sizing:border-box;padding:9px 10px;border:1px solid var(--border);border-radius:10px;font:inherit;background:var(--surface-alt);color:var(--ink)">
+      ${sg(PF_FIELDS[0])}
+      <div style="margin:12px 0 4px;font-weight:700;font-size:13px">${esc(L3('年齡', '年龄', 'Age'))}</div>
+      <input id="pfAge" type="number" inputmode="numeric" min="3" max="110" value="${esc(p.age || '')}" style="width:120px;padding:9px 10px;border:1px solid var(--border);border-radius:10px;font:inherit;background:var(--surface-alt);color:var(--ink)">
+      ${PF_FIELDS.slice(1).map(sg).join('')}
+      <div style="margin:12px 0 4px;font-weight:700;font-size:13px">${esc(L3('目前最想得到幫助的事（選填）', '目前最想得到帮助的事（选填）', 'What I most want help with now (optional)'))}</div>
+      <textarea id="pfNote" rows="2" maxlength="160" placeholder="${esc(L3('例：工作壓力大、和孩子溝通、想建立靈修習慣…', '例：工作压力大、和孩子沟通、想建立灵修习惯…', 'e.g. work stress, talking with my kids, building a devotional habit…'))}" style="width:100%;box-sizing:border-box;padding:9px 10px;border:1px solid var(--border);border-radius:10px;font:inherit;background:var(--surface-alt);color:var(--ink)">${esc(p.note || '')}</textarea>
+      <div class="muted" id="pfAud" style="font-size:12px;margin-top:10px">${esc(L3('依你的資料，建議的回答對象：', '依你的资料，建议的回答对象：', 'Suggested answer audience: '))}${AUD_ICON[sa]} ${esc(AUD_NAME()[sa])} <button class="btn" id="pfApplyAud" style="padding:3px 10px;margin-left:6px">${esc(L3('套用', '套用', 'Apply'))}</button></div>
+      <div style="display:flex;gap:8px;margin-top:14px"><button class="btn primary block" id="pfSave" style="flex:1">${esc(L3('儲存', '保存', 'Save'))}</button><button class="btn" id="pfClear">${esc(L3('全部清除', '全部清除', 'Clear all'))}</button></div></div>`;
+    const grab = () => { p.nick = $('#pfNick', m).value.trim(); const a = parseInt($('#pfAge', m).value, 10); p.age = (a >= 3 && a <= 110) ? a : ''; p.note = $('#pfNote', m).value.trim(); };
+    $$('.segbtns[data-f] button', m).forEach(b => b.onclick = () => { grab(); const f = b.parentNode.dataset.f; p[f] = (p[f] === b.dataset.k) ? '' : b.dataset.k; draw(); });
+    $('#pfX', m).onclick = () => m.remove();
+    m.onclick = e => { if (e.target === m) m.remove(); };
+    $('#pfApplyAud', m).onclick = () => { grab(); state.profile = Object.assign({}, p); state.audience = pfSuggestAud(); saveState(); toast(L3('回答對象：', '回答对象：', 'Answering for: ') + AUD_NAME()[state.audience], 1800); if (after) after(); draw(); };
+    $('#pfSave', m).onclick = () => { grab(); state.profile = Object.assign({}, p); saveState(); m.remove(); toast(L3('已儲存，小智會依你的資料回答', '已保存，小智会依你的资料回答', 'Saved — Xiaozhi will tailor answers to you'), 2200); if (after) after(); };
+    $('#pfClear', m).onclick = () => { state.profile = {}; saveState(); m.remove(); toast(L3('已清除讀者資料', '已清除读者资料', 'Profile cleared'), 1800); if (after) after(); };
+  };
+  document.body.appendChild(m); draw();
+}
 const AUD_SYS = () => {
   const a = state.audience;
   if (a === 'seeker') return SK_SYS();
@@ -6687,7 +6780,7 @@ async function sendChat(text){
        表格在畫面上畫成真的表格、朗讀時會說成人話、分享時換成清單，
        所以放心用表格；重點用 > 標一句，那一句會被抓去做成美圖。 */
     + SYS_FMT()
-    + AUD_SYS() + SKBG_SYS() + LEN_SYS()
+    + AUD_SYS() + SKBG_SYS() + PROFILE_SYS() + LEN_SYS()
     + (b ? (isEP() ? ` (The reader is currently in ${bname(b)} ${RD.ch}.)`
           : isZS() ? `（读者目前在读：${bname(b)} 第 ${RD.ch} 章）`
                    : `（讀者目前在讀：${bname(b)} 第 ${RD.ch} 章）`) : '');
@@ -7262,6 +7355,9 @@ async function viewMe(v){
         <div class="segbtns" id="setAud">
         ${AUD_KEYS.map(k => `<button class="${state.audience === k ? 'on' : ''}" data-k="${k}">${AUD_ICON[k]} ${esc(AUD_NAME()[k])}</button>`).join('')}
         </div></div>
+      <div class="setrow"><div class="sl">${esc(L3('讀者資料', '读者资料', 'About me'))}
+        <div class="muted" style="font-size:11.5px;line-height:1.6">${esc(L3('暱稱、年齡、身分、就職、在學、信仰——讓小智量身回答', '昵称、年龄、身份、就职、在学、信仰——让小智量身回答', 'Nickname, age, status, work, study, faith — so Xiaozhi tailors answers'))}</div></div>
+        <div class="segbtns"><button id="setProfile">👤 ${esc(pfNick() || L3('設定', '设置', 'Set up'))}${pfAny() ? ' ✓' : ''}</button></div></div>
       <div class="setrow"><div class="sl">${esc(L.font)}</div><div class="segbtns" id="setFont">
         ${L.fonts.map((f, i) => `<button class="${state.font === i ? 'on' : ''}" data-i="${i}">${esc(f)}</button>`).join('')}</div></div>
       <div class="setrow"><div class="sl">${esc(L.theme)}</div><div class="segbtns" id="setTheme">
@@ -7340,6 +7436,7 @@ async function viewMe(v){
     if (updReady) setReady();
     else ub.onclick = async () => { await checkForUpdate(true); if (updReady) setReady(); };
   }
+  { const sp = $('#setProfile', v); if (sp) sp.onclick = () => openProfile(() => render()); }
   $$('#setAud button', v).forEach(b => b.onclick = () => { state.audience = b.dataset.k; saveState(); render(); });
   $$('#setFont button', v).forEach(b => b.onclick = () => { state.font = +b.dataset.i; saveState(); applyChrome(); render(); });
   $$('#setTheme button', v).forEach(b => b.onclick = () => { state.theme = +b.dataset.i; saveState(); applyChrome(); render(); });
