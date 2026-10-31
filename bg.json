@@ -18,7 +18,8 @@
    "nl": "Ang Halamanan ng Eden",
    "nm": "ဧဒင်ဥယျာဉ်",
    "nv": "Vườn Ê-đen",
-   "nt": "สวนเอเดน"
+   "nt": "สวนเอเดน",
+   "nms": "Taman Eden"
   },
   {
    "f": "bg286.jpg",
@@ -33,7 +34,8 @@
    "nl": "Lumabas si Noe sa Daong",
    "nm": "နောဧ သင်္ဘောကြီးမှ ထွက်လာခြင်း",
    "nv": "Nô-ê ra khỏi tàu",
-   "nt": "โนอาห์ออกจากเรือ"
+   "nt": "โนอาห์ออกจากเรือ",
+   "nms": "Nuh keluar dari bahtera"
   },
   {
    "f": "bg287.jpg",
@@ -48,7 +50,8 @@
    "nl": "Isinalin ni Jose ang mga Panaginip",
    "nm": "ယောသပ် ဖာရောဘုရင်၏အိပ်မက်ကို ဖြေခြင်း",
    "nv": "Giô-sép giải mộng trước mặt Pha-ra-ôn",
-   "nt": "โยเซฟแก้ฝัน"
+   "nt": "โยเซฟแก้ฝัน",
+   "nms": "Yusuf mentafsir mimpi di hadapan Firaun"
   },
   {
    "f": "bg288.jpg",
@@ -63,7 +66,8 @@
    "nl": "Ang Hagdan ni Jacob",
    "nm": "ယာကုပ်၏ ကောင်းကင်လှေကား",
    "nv": "Cái thang của Gia-cốp",
-   "nt": "บันไดของยาโคบ"
+   "nt": "บันไดของยาโคบ",
+   "nms": "Tangga Yakub"
   },
   {
    "f": "bg289.jpg",
@@ -78,7 +82,8 @@
    "nl": "Binibilang ni Abraham ang mga Bituin",
    "nm": "အာဗြဟံ ကြယ်ရေတွက်ခြင်း",
    "nv": "Áp-ra-ham đếm sao",
-   "nt": "อับราฮัมนับดวงดาว"
+   "nt": "อับราฮัมนับดวงดาว",
+   "nms": "Abraham mengira bintang"
   },
   {
    "f": "bg290.jpg",
@@ -93,7 +98,8 @@
    "nl": "Namulot ng Uhay si Ruth",
    "nm": "ရုသ ကောက်ရိုးကောက်ခြင်း",
    "nv": "Ru-tơ mót lúa",
-   "nt": "รูธเก็บรวงข้าว"
+   "nt": "รูธเก็บรวงข้าว",
+   "nms": "Rut memungut bulir gandum"
   },
   {
    "f": "bg291.jpg",
@@ -108,7 +114,8 @@
    "nl": "Tinawid ni Moises ang Dagat na Pula",
    "nm": "မောရှေ ပင်လယ်နီကို ဖြတ်ကူးခြင်း",
    "nv": "Môi-se dẫn dân qua Biển Đỏ",
-   "nt": "โมเสสข้ามทะเลแดง"
+   "nt": "โมเสสข้ามทะเลแดง",
+   "nms": "Musa menyeberangi Laut Merah"
   },
   {
    "f": "bg292.jpg",
@@ -123,7 +130,8 @@
    "nl": "Ang Nagniningas na Mababang Punongkahoy",
    "nm": "မီးလောင်နေသော ချုံပုတ်",
    "nv": "Bụi gai cháy",
-   "nt": "พุ่มไม้ที่ลุกเป็นไฟ"
+   "nt": "พุ่มไม้ที่ลุกเป็นไฟ",
+   "nms": "Semak duri yang menyala"
   },
   {
    "f": "bg293.jpg",
@@ -138,7 +146,8 @@
    "nl": "Nilabanan ni David si Goliat",
    "nm": "ဒါဝိဒ်နှင့် ဂေါလျတ်",
    "nv": "Đa-vít đánh Gô-li-át",
-   "nt": "ดาวิดสู้กับโกลิอัท"
+   "nt": "ดาวิดสู้กับโกลิอัท",
+   "nms": "Daud melawan Goliat"
   },
   {
    "f": "bg294.jpg",
@@ -153,7 +162,8 @@
    "nl": "Tinawag ang Batang si Samuel",
    "nm": "လူငယ်ရှမွေလ ခေါ်ခြင်းခံရသည်",
    "nv": "Sa-mu-ên thuở nhỏ được kêu gọi",
-   "nt": "ซามูเอลเด็กน้อยได้รับการทรงเรียก"
+   "nt": "ซามูเอลเด็กน้อยได้รับการทรงเรียก",
+   "nms": "Samuel kecil dipanggil Tuhan"
   },
   {
    "f": "bg295.jpg",
@@ -168,7 +178,8 @@
    "nl": "Dinalhan ng Tinapay ng mga Uwak si Elias",
    "nm": "ကျီးအတို့ ဧလိယကို မုန့်ကျွေးခြင်း",
    "nv": "Chim quạ đem bánh cho Ê-li",
-   "nt": "อีกาคาบอาหารมาให้เอลียาห์"
+   "nt": "อีกาคาบอาหารมาให้เอลียาห์",
+   "nms": "Burung gagak membawa roti kepada Elia"
   },
   {
    "f": "bg296.jpg",
@@ -183,7 +194,8 @@
    "nl": "Si Daniel sa Hukay ng mga Leon",
    "nm": "ဒံယေလ ခြင်္သေ့တွင်းထဲတွင်",
    "nv": "Đa-ni-ên trong hang sư tử",
-   "nt": "ดาเนียลในถ้ำสิงโต"
+   "nt": "ดาเนียลในถ้ำสิงโต",
+   "nms": "Daniel di dalam gua singa"
   },
   {
    "f": "bg297.jpg",
@@ -198,7 +210,8 @@
    "nl": "Dumating sa Dalampasigan si Jonas",
    "nm": "ယောနာ ကမ်းပေါ်သို့ ရောက်လာခြင်း",
    "nv": "Giô-na lên bờ",
-   "nt": "โยนาห์ขึ้นฝั่ง"
+   "nt": "โยนาห์ขึ้นฝั่ง",
+   "nms": "Yunus tiba di tepi pantai"
   },
   {
    "f": "bg298.jpg",
@@ -213,7 +226,8 @@
    "nl": "Pinatahimik ni Jesus ang Hangin at mga Alon",
    "nm": "ယေရှု လေမုန်တိုင်းကို ငြိမ်သက်စေခြင်း",
    "nv": "Chúa Giê-su dẹp yên sóng gió",
-   "nt": "พระเยซูทรงทำให้คลื่นลมสงบ"
+   "nt": "พระเยซูทรงทำให้คลื่นลมสงบ",
+   "nms": "Yesus menenangkan ribut"
   },
   {
    "f": "bg299.jpg",
@@ -228,7 +242,8 @@
    "nl": "Bininyagan si Jesus",
    "nm": "ယေရှု ဗတ္တိဇံခံခြင်း",
    "nv": "Chúa Giê-su chịu phép báp-têm",
-   "nt": "พระเยซูทรงรับบัพติศมา"
+   "nt": "พระเยซูทรงรับบัพติศมา",
+   "nms": "Yesus dibaptis"
   },
   {
    "f": "bg300.jpg",
@@ -243,7 +258,8 @@
    "nl": "Ang Kapanganakan ni Jesus",
    "nm": "ယေရှု ဖွားမြင်တော်မူခြင်း",
    "nv": "Chúa Giê-su giáng sinh",
-   "nt": "พระเยซูทรงประสูติ"
+   "nt": "พระเยซูทรงประสูติ",
+   "nms": "Kelahiran Yesus"
   },
   {
    "f": "bg301.jpg",
@@ -258,7 +274,8 @@
    "nl": "Ang Alibughang Anak na Nagbalik",
    "nm": "ပျောက်ဆုံးခဲ့သော သားပြန်လာခြင်း",
    "nv": "Người con trai hoang đàng trở về",
-   "nt": "บุตรสุรุ่ยสุร่ายกลับบ้าน"
+   "nt": "บุตรสุรุ่ยสุร่ายกลับบ้าน",
+   "nms": "Anak yang hilang kembali"
   },
   {
    "f": "bg302.jpg",
@@ -273,7 +290,8 @@
    "nl": "Ang Mabuting Samaritano",
    "nm": "သနားတတ်သော ရှမာရိလူ",
    "nv": "Người Sa-ma-ri nhân lành",
-   "nt": "ชาวสะมาเรียผู้ใจดี"
+   "nt": "ชาวสะมาเรียผู้ใจดี",
+   "nms": "Orang Samaria yang baik hati"
   },
   {
    "f": "bg303.jpg",
@@ -288,7 +306,8 @@
    "nl": "Ang Limang Tinapay at Dalawang Isda",
    "nm": "မုန့်ငါးလုံးနှင့် ငါးနှစ်ကောင်",
    "nv": "Năm cái bánh và hai con cá",
-   "nt": "ขนมปังห้าก้อนกับปลาสองตัว"
+   "nt": "ขนมปังห้าก้อนกับปลาสองตัว",
+   "nms": "Lima ketul roti dan dua ekor ikan"
   },
   {
    "f": "bg304.jpg",
@@ -303,7 +322,8 @@
    "nl": "Umaga ng Muling Pagkabuhay",
    "nm": "ရှင်ပြန်ထမြောက်ခြင်း၏ နံနက်ခင်း",
    "nv": "Buổi sáng Phục sinh",
-   "nt": "เช้าวันฟื้นคืนพระชนม์"
+   "nt": "เช้าวันฟื้นคืนพระชนม์",
+   "nms": "Pagi kebangkitan"
   },
   {
    "f": "bg305.jpg",
@@ -318,7 +338,8 @@
    "nl": "Nakakita ng Tubig sina Agar at Ismael",
    "nm": "ဟာဂရနှင့် ဣရှမေလ ရေရရှိခြင်း",
    "nv": "A-ga và Ích-ma-ên được nước uống",
-   "nt": "ฮาการ์กับอิชมาเอลได้พบน้ำ"
+   "nt": "ฮาการ์กับอิชมาเอลได้พบน้ำ",
+   "nms": "Hagar dan Ismael menerima air"
   },
   {
    "f": "bg306.jpg",
@@ -333,7 +354,8 @@
    "nl": "Ang Sanggol na si Moises sa mga Tambo",
    "nm": "ကလေးငယ်မောရှေ ကျူပင်ထဲတွင်",
    "nv": "Bé Môi-se trong đám sậy",
-   "nt": "ทารกโมเสสในพงอ้อ"
+   "nt": "ทารกโมเสสในพงอ้อ",
+   "nms": "Bayi Musa di celah gelagah"
   },
   {
    "f": "bg307.jpg",
@@ -348,7 +370,8 @@
    "nl": "Nakilala ni Jose ang Kanyang mga Kapatid",
    "nm": "ယောသပ်နှင့် မောင်များ ပြန်လည်သိကျွမ်းခြင်း",
    "nv": "Giô-sép nhận lại các anh em",
-   "nt": "โยเซฟแสดงตัวให้พี่น้องรู้จัก"
+   "nt": "โยเซฟแสดงตัวให้พี่น้องรู้จัก",
+   "nms": "Yusuf bertemu semula dengan abang-abangnya"
   },
   {
    "f": "bg308.jpg",
@@ -363,7 +386,8 @@
    "nl": "Sumasalok ng Tubig si Rebeca sa Balon",
    "nm": "ရေဗက္က ရေတွင်းနားတွင် ရေခပ်ခြင်း",
    "nv": "Rê-be-ca múc nước bên giếng",
-   "nt": "เรเบคาห์ตักน้ำที่บ่อ"
+   "nt": "เรเบคาห์ตักน้ำที่บ่อ",
+   "nms": "Ribka menimba air di perigi"
   },
   {
    "f": "bg309.jpg",
@@ -378,7 +402,8 @@
    "nl": "Inalalayan nina Aaron at Hur ang mga Kamay ni Moises",
    "nm": "အာရုန်နှင့် ဟုရတို့ မောရှေ၏လက်ကို ထောက်ပေးခြင်း",
    "nv": "A-rôn và Hu-rơ đỡ tay Môi-se",
-   "nt": "อาโรนกับฮูร์ประคองมือโมเสส"
+   "nt": "อาโรนกับฮูร์ประคองมือโมเสส",
+   "nms": "Harun dan Hur menyokong tangan Musa"
   },
   {
    "f": "bg310.jpg",
@@ -393,7 +418,8 @@
    "nl": "Tubig na Lumabas sa Bato",
    "nm": "ကျောက်တောင်မှ ရေထွက်ခြင်း",
    "nv": "Nước từ hòn đá vọt ra",
-   "nt": "น้ำพุ่งออกจากหิน"
+   "nt": "น้ำพุ่งออกจากหิน",
+   "nms": "Air memancar dari batu karang"
   },
   {
    "f": "bg311.jpg",
@@ -408,7 +434,8 @@
    "nl": "Pinupulot ng mga Israelita ang Mana",
    "nm": "ဣသရေလလူတို့ မန္နမုန့်ကောက်ယူခြင်း",
    "nv": "Dân Y-sơ-ra-ên nhặt ma-na",
-   "nt": "ชาวอิสราเอลเก็บมานา"
+   "nt": "ชาวอิสราเอลเก็บมานา",
+   "nms": "Orang Israel memungut manna"
   },
   {
    "f": "bg312.jpg",
@@ -423,7 +450,8 @@
    "nl": "Tinawag ng Anghel si Gedeon",
    "nm": "ဂိဒေါင်သည် ကောင်းကင်တမန်၏ ခေါ်ခြင်းကို ခံရသည်",
    "nv": "Ghê-đê-ôn được thiên sứ kêu gọi",
-   "nt": "กิเดโอนได้รับการทรงเรียกจากทูตสวรรค์"
+   "nt": "กิเดโอนได้รับการทรงเรียกจากทูตสวรรค์",
+   "nms": "Gideon dipanggil oleh malaikat"
   },
   {
    "f": "bg313.jpg",
@@ -438,7 +466,8 @@
    "nl": "Nailigtas ang Sambahayan ni Rahab",
    "nm": "ရာခပ်၏ အိမ်သားစုများ ကယ်တင်ခြင်းခံရသည်",
    "nv": "Gia đình Ra-háp được cứu",
-   "nt": "ครอบครัวของราหับได้รับความรอด"
+   "nt": "ครอบครัวของราหับได้รับความรอด",
+   "nms": "Keluarga Rahab diselamatkan"
   },
   {
    "f": "bg314.jpg",
@@ -453,7 +482,8 @@
    "nl": "Binuhat ang Kaban ng Tipan Tawid sa Ilog Jordan",
    "nm": "ပဋိညာဉ်သေတ္တာကို ထမ်း၍ ယော်ဒန်မြစ်ကို ဖြတ်ကူးခြင်း",
    "nv": "Khiêng hòm giao ước qua sông Giô-đanh",
-   "nt": "ยกหีบพันธสัญญาข้ามแม่น้ำจอร์แดน"
+   "nt": "ยกหีบพันธสัญญาข้ามแม่น้ำจอร์แดน",
+   "nms": "Membawa Tabut Perjanjian menyeberangi Sungai Yordan"
   },
   {
    "f": "bg315.jpg",
@@ -468,7 +498,8 @@
    "nl": "Hindi Nauubos ang Langis ng Biyuda",
    "nm": "မုဆိုးမ၏ ဆီမကုန်ခြင်း",
    "nv": "Dầu của bà góa không hết",
-   "nt": "น้ำมันของหญิงม่ายที่ไม่รู้หมด"
+   "nt": "น้ำมันของหญิงม่ายที่ไม่รู้หมด",
+   "nms": "Minyak balu yang tidak habis-habis"
   },
   {
    "f": "bg316.jpg",
@@ -483,7 +514,8 @@
    "nl": "Ibinigay ni Jonatan ang Kanyang Balabal kay David",
    "nm": "ယောနသန် ဒါဝိဒ်အား ဝတ်လုံပေးခြင်း",
    "nv": "Giô-na-than tặng áo choàng cho Đa-vít",
-   "nt": "โยนาธานมอบเสื้อคลุมให้ดาวิด"
+   "nt": "โยนาธานมอบเสื้อคลุมให้ดาวิด",
+   "nms": "Yonatan memberikan jubahnya kepada Daud"
   },
   {
    "f": "bg317.jpg",
@@ -498,7 +530,8 @@
    "nl": "Nananalangin si Ana sa Templo",
    "nm": "ဟန္နာ ဗိမာန်တော်တွင် ဆုတောင်းခြင်း",
    "nv": "An-ne cầu nguyện trong đền",
-   "nt": "ฮันนาห์อธิษฐานในพระวิหาร"
+   "nt": "ฮันนาห์อธิษฐานในพระวิหาร",
+   "nms": "Hanna berdoa di Bait Allah"
   },
   {
    "f": "bg318.jpg",
@@ -513,7 +546,8 @@
    "nl": "Naging Alak ang Tubig sa Kasalan sa Cana",
    "nm": "ကာနာမင်္ဂလာပွဲတွင် ရေကို စပျစ်ရည်ဖြစ်စေခြင်း",
    "nv": "Nước hóa thành rượu tại tiệc cưới Ca-na",
-   "nt": "น้ำกลายเป็นน้ำองุ่นที่งานเลี้ยงสมรสในเมืองคานา"
+   "nt": "น้ำกลายเป็นน้ำองุ่นที่งานเลี้ยงสมรสในเมืองคานา",
+   "nms": "Air menjadi anggur di pesta perkahwinan di Kana"
   },
   {
    "f": "bg319.jpg",
@@ -528,7 +562,8 @@
    "nl": "Humarap si Esther sa Hari",
    "nm": "ဧသတာ ဘုရင်ထံ ဝင်ခစားခြင်း",
    "nv": "Ê-xơ-tê ra mắt vua",
-   "nt": "เอสเธอร์เข้าเฝ้ากษัตริย์"
+   "nt": "เอสเธอร์เข้าเฝ้ากษัตริย์",
+   "nms": "Ester mengadap raja"
   },
   {
    "f": "bg320.jpg",
@@ -543,7 +578,8 @@
    "nl": "Nalinis si Naaman sa Ilog Jordan",
    "nm": "နေမန်သည် ယော်ဒန်မြစ်တွင် သန့်စင်ခြင်းခံရသည်",
    "nv": "Na-a-man được sạch bệnh nơi sông Giô-đanh",
-   "nt": "นาอามานหายจากโรคที่แม่น้ำจอร์แดน"
+   "nt": "นาอามานหายจากโรคที่แม่น้ำจอร์แดน",
+   "nms": "Naaman disucikan di Sungai Yordan"
   },
   {
    "f": "bg321.jpg",
@@ -558,7 +594,8 @@
    "nl": "Ang Babaing Samaritana sa Tabi ng Balon",
    "nm": "ရေတွင်းနားက ရှမာရိမိန်းမ",
    "nv": "Người đàn bà Sa-ma-ri bên giếng",
-   "nt": "หญิงชาวสะมาเรียที่บ่อน้ำ"
+   "nt": "หญิงชาวสะมาเรียที่บ่อน้ำ",
+   "nms": "Perempuan Samaria di perigi"
   },
   {
    "f": "bg322.jpg",
@@ -573,7 +610,8 @@
    "nl": "Binuhay ang Anak na Babae ni Jairo",
    "nm": "ယာဣရု၏သမီး အသက်ပြန်ရှင်ခြင်း",
    "nv": "Con gái Giai-ru được sống lại",
-   "nt": "ธิดาของไยรัสฟื้นขึ้นมา"
+   "nt": "ธิดาของไยรัสฟื้นขึ้นมา",
+   "nms": "Anak perempuan Yairus dibangkitkan"
   },
   {
    "f": "bg323.jpg",
@@ -588,7 +626,8 @@
    "nl": "Binasbasan ni Jesus ang mga Bata",
    "nm": "ယေရှု ကလေးငယ်များကို ကောင်းချီးပေးခြင်း",
    "nv": "Chúa Giê-su chúc phước cho các trẻ nhỏ",
-   "nt": "พระเยซูทรงอวยพรเด็กเล็กๆ"
+   "nt": "พระเยซูทรงอวยพรเด็กเล็กๆ",
+   "nms": "Yesus memberkati kanak-kanak"
   },
   {
    "f": "bg324.jpg",
@@ -603,7 +642,8 @@
    "nl": "Hinugasan ni Jesus ang mga Paa ng mga Alagad",
    "nm": "ယေရှု တပည့်တော်တို့၏ ခြေကို ဆေးကြောခြင်း",
    "nv": "Chúa Giê-su rửa chân cho môn đồ",
-   "nt": "พระเยซูทรงล้างเท้าเหล่าสาวก"
+   "nt": "พระเยซูทรงล้างเท้าเหล่าสาวก",
+   "nms": "Yesus membasuh kaki murid-murid"
   },
   {
    "f": "bg325.jpg",
@@ -618,7 +658,8 @@
    "nl": "Nagpuri sina Pablo at Silas sa Bilangguan",
    "nm": "ပေါလုနှင့် သိလ ထောင်ထဲတွင် ချီးမွမ်းခြင်း",
    "nv": "Phao-lô và Si-la ngợi khen trong ngục",
-   "nt": "เปาโลกับสิลาสร้องเพลงสรรเสริญในคุก"
+   "nt": "เปาโลกับสิลาสร้องเพลงสรรเสริญในคุก",
+   "nms": "Paulus dan Silas memuji Allah di penjara"
   },
   {
    "f": "bg326.jpg",
@@ -633,7 +674,8 @@
    "nl": "Pinagaling ni Pedro ang Pilay Mula sa Pagkasilang",
    "nm": "ပေတရုသည် မွေးရာမှ ခြေမစွမ်းသောသူကို ကုသခြင်း",
    "nv": "Phi-e-rơ chữa người què từ lúc mới sinh",
-   "nt": "เปโตรรักษาชายง่อยตั้งแต่กำเนิด"
+   "nt": "เปโตรรักษาชายง่อยตั้งแต่กำเนิด",
+   "nms": "Petrus menyembuhkan lelaki yang lumpuh sejak lahir"
   },
   {
    "f": "bg327.jpg",
@@ -648,7 +690,8 @@
    "nl": "Sa Daan Patungong Emaus",
    "nm": "ဧမမွတ်သွားရာလမ်းပေါ်တွင်",
    "nv": "Trên đường đi Ê-ma-út",
-   "nt": "บนถนนสู่เมืองเอมมาอูส"
+   "nt": "บนถนนสู่เมืองเอมมาอูส",
+   "nms": "Di jalan ke Emaus"
   },
   {
    "f": "bg328.jpg",
@@ -663,7 +706,8 @@
    "nl": "Ang May Sakit sa Tabi ng Tangke ng Betesda",
    "nm": "ဗေသေဒါရေကန်နားက နာမကျန်းသူ",
    "nv": "Người bệnh bên hồ Bê-tết-đa",
-   "nt": "คนป่วยที่สระเบธซาดา"
+   "nt": "คนป่วยที่สระเบธซาดา",
+   "nms": "Orang sakit di tepi kolam Betesda"
   },
   {
    "f": "bg329.jpg",
@@ -678,7 +722,8 @@
    "nl": "Umakyat si Zaqueo sa Puno ng Sikomoro",
    "nm": "ဇက္ကဲ သစ်ဖန်ပင်ပေါ် တက်ခြင်း",
    "nv": "Xa-chê leo lên cây sung",
-   "nt": "ศักเกียสปีนขึ้นต้นมะเดื่อ"
+   "nt": "ศักเกียสปีนขึ้นต้นมะเดื่อ",
+   "nms": "Zakheus memanjat pokok ara"
   },
   {
    "f": "bg330.jpg",
@@ -693,7 +738,8 @@
    "nl": "Karga ni Simeon ang Sanggol na si Jesus",
    "nm": "ရှိမောင် ကလေးငယ်ယေရှုကို ပွေ့ချီခြင်း",
    "nv": "Si-mê-ôn bồng Hài nhi Giê-su",
-   "nt": "ซีเมโอนอุ้มพระกุมารเยซู"
+   "nt": "ซีเมโอนอุ้มพระกุมารเยซู",
+   "nms": "Simeon mendukung bayi Yesus"
   },
   {
    "f": "bg331.jpg",
@@ -708,7 +754,8 @@
    "nl": "Sumunod sa Bituin ang mga Pantas",
    "nm": "ပညာရှိတို့ ကြယ်ကိုလိုက်၍ လာကြခြင်း",
    "nv": "Các nhà thông thái theo ngôi sao",
-   "nt": "โหราจารย์ตามดวงดาวมา"
+   "nt": "โหราจารย์ตามดวงดาวมา",
+   "nms": "Orang Majus mengikuti bintang"
   },
   {
    "f": "bg332.jpg",
@@ -723,7 +770,8 @@
    "nl": "Muling Itinayo ni Nehemias ang Pader",
    "nm": "နေဟမိ မြို့ရိုးပြန်လည်တည်ဆောက်ခြင်း",
    "nv": "Nê-hê-mi xây lại vách thành",
-   "nt": "เนหะมีย์สร้างกำแพงเมืองขึ้นใหม่"
+   "nt": "เนหะมีย์สร้างกำแพงเมืองขึ้นใหม่",
+   "nms": "Nehemia membina semula tembok kota"
   },
   {
    "f": "bg333.jpg",
@@ -738,7 +786,8 @@
    "nl": "Binuhay ang Anak ng Babaing Sunamita",
    "nm": "ရှုနင်မိန်းမ၏သား အသက်ပြန်ရှင်ခြင်း",
    "nv": "Con trai người đàn bà Su-nem sống lại",
-   "nt": "บุตรของหญิงชาวชูเนมฟื้นขึ้นมา"
+   "nt": "บุตรของหญิงชาวชูเนมฟื้นขึ้นมา",
+   "nms": "Anak perempuan Sunem dihidupkan semula"
   },
   {
    "f": "bg334.jpg",
@@ -753,7 +802,8 @@
    "nl": "Si Elias sa Bunganga ng Yungib sa Bundok ng Horeb",
    "nm": "ဧလိယ ဟောရပ်တောင်ဂူဝတွင်",
    "nv": "Ê-li tại cửa hang núi Hô-rếp",
-   "nt": "เอลียาห์ที่ปากถ้ำบนภูเขาโฮเรบ"
+   "nt": "เอลียาห์ที่ปากถ้ำบนภูเขาโฮเรบ",
+   "nms": "Elia di pintu gua Gunung Horeb"
   },
   {
    "f": "bg335.jpg",
@@ -768,7 +818,8 @@
    "nl": "Panalangin ni Salomon sa Pagtatalaga ng Templo",
    "nm": "ရှောလမုန် ဗိမာန်တော်အပ်နှံသောဆုတောင်း",
    "nv": "Sa-lô-môn cầu nguyện khi dâng đền thờ",
-   "nt": "ซาโลมอนอธิษฐานในพิธีถวายพระวิหาร"
+   "nt": "ซาโลมอนอธิษฐานในพิธีถวายพระวิหาร",
+   "nms": "Salomo berdoa semasa pengudusan Bait Allah"
   },
   {
    "f": "bg336.jpg",
@@ -783,7 +834,8 @@
    "nl": "Naging Mabait si David kay Mefiboset",
    "nm": "ဒါဝိဒ်သည် မဖိဗောရှက်အား ကရုဏာပြခြင်း",
    "nv": "Đa-vít đối đãi tử tế với Mê-phi-bô-sết",
-   "nt": "ดาวิดแสดงความกรุณาต่อเมฟีโบเชท"
+   "nt": "ดาวิดแสดงความกรุณาต่อเมฟีโบเชท",
+   "nms": "Daud berbuat baik kepada Mefiboset"
   },
   {
    "f": "bg337.jpg",
@@ -798,7 +850,8 @@
    "nl": "Kinakarga ni Noemi ang Apong si Obed",
    "nm": "နောမိ မြေးငယ်ဩဗက်ကို ပွေ့ချီခြင်း",
    "nv": "Na-ô-mi ẵm cháu Ô-bết",
-   "nt": "นาโอมีอุ้มโอเบดหลานชาย"
+   "nt": "นาโอมีอุ้มโอเบดหลานชาย",
+   "nms": "Naomi mendukung cucunya Obed"
   },
   {
    "f": "bg338.jpg",
@@ -813,7 +866,8 @@
    "nl": "Kumain Nang Sama sina Booz at Ruth",
    "nm": "ဗောဇနှင့် ရုသ အတူစားသောက်ခြင်း",
    "nv": "Bô-ô và Ru-tơ dùng bữa chung",
-   "nt": "โบอาสกับรูธรับประทานอาหารร่วมกัน"
+   "nt": "โบอาสกับรูธรับประทานอาหารร่วมกัน",
+   "nms": "Boas dan Rut makan bersama"
   },
   {
    "f": "bg339.jpg",
@@ -828,7 +882,8 @@
    "nl": "Bumaba si Moises sa Bundok ng Sinai Dala ang Sampung Utos",
    "nm": "မောရှေ ပညတ်တော်ဆယ်ပါးကို ယူ၍ ဆိုနာတောင်မှ ဆင်းလာခြင်း",
    "nv": "Môi-se mang các bảng Mười Điều Răn xuống núi Si-na-i",
-   "nt": "โมเสสนำบัญญัติสิบประการลงจากภูเขาซีนาย"
+   "nt": "โมเสสนำบัญญัติสิบประการลงจากภูเขาซีนาย",
+   "nms": "Musa turun dari Gunung Sinai membawa Sepuluh Perintah"
   },
   {
    "f": "bg340.jpg",
@@ -843,7 +898,8 @@
    "nl": "Ang Paglalakbay ng Paglabas sa Ehipto",
    "nm": "အီဂျစ်ပြည်မှ ထွက်ခွာသောခရီး",
    "nv": "Hành trình xuất Ê-díp-tô",
-   "nt": "การเดินทางออกจากอียิปต์"
+   "nt": "การเดินทางออกจากอียิปต์",
+   "nms": "Perjalanan keluar dari Mesir"
   },
   {
    "f": "bg341.jpg",
@@ -858,7 +914,8 @@
    "nl": "Inalagaan ni Jose ang Amang si Jacob",
    "nm": "ယောသပ် ဖခင်ယာကုပ်ကို ပြုစုလုပ်ကျွေးခြင်း",
    "nv": "Giô-sép phụng dưỡng cha là Gia-cốp",
-   "nt": "โยเซฟเลี้ยงดูยาโคบบิดา"
+   "nt": "โยเซฟเลี้ยงดูยาโคบบิดา",
+   "nms": "Yusuf menyara bapanya Yakub"
   },
   {
    "f": "bg342.jpg",
@@ -873,7 +930,8 @@
    "nl": "Nagkasundo sina Jacob at Esau",
    "nm": "ယာကုပ်နှင့် ဧသော သင့်မြတ်ခြင်း",
    "nv": "Gia-cốp và Ê-sau hòa thuận",
-   "nt": "ยาโคบกับเอซาวคืนดีกัน"
+   "nt": "ยาโคบกับเอซาวคืนดีกัน",
+   "nms": "Yakub dan Esau berdamai"
   },
   {
    "f": "bg343.jpg",
@@ -888,7 +946,8 @@
    "nl": "Sinalubong ni Isaac si Rebeca",
    "nm": "ဣဇာက်သည် ရေဗက္ကကို ကြိုဆိုခြင်း",
    "nv": "Y-sác đón Rê-be-ca",
-   "nt": "อิสอัคต้อนรับเรเบคาห์"
+   "nt": "อิสอัคต้อนรับเรเบคาห์",
+   "nms": "Ishak menyambut Ribka"
   },
   {
    "f": "bg344.jpg",
@@ -903,7 +962,8 @@
    "nl": "Tinanggap ni Abraham ang Tatlong Panauhin",
    "nm": "အာဗြဟံ ဧည့်သည်သုံးပါးကို ဧည့်ခံခြင်း",
    "nv": "Áp-ra-ham tiếp đãi ba vị khách",
-   "nt": "อับราฮัมต้อนรับแขกสามท่าน"
+   "nt": "อับราฮัมต้อนรับแขกสามท่าน",
+   "nms": "Abraham menjamu tiga orang tetamu"
   },
   {
    "f": "bg195.jpg",
@@ -918,7 +978,8 @@
    "nl": "Hagdan-hagdang Pool ng Travertine",
    "nm": "ထုံးကျောက်လှေကားထစ်ရေကန်များ",
    "nv": "Ruộng bậc thang đá vôi",
-   "nt": "แอ่งหินปูนทราเวอร์ทีนขั้นบันได"
+   "nt": "แอ่งหินปูนทราเวอร์ทีนขั้นบันได",
+   "nms": "Kolam travertin bertingkat"
   },
   {
    "f": "bg196.jpg",
@@ -933,7 +994,8 @@
    "nl": "Rosas na Lawa ng Asin",
    "nm": "ပန်းရောင်ဆားကန်",
    "nv": "Hồ muối hồng",
-   "nt": "ทะเลสาบเกลือสีชมพู"
+   "nt": "ทะเลสาบเกลือสีชมพู",
+   "nms": "Tasik garam merah jambu"
   },
   {
    "f": "bg197.jpg",
@@ -948,7 +1010,8 @@
    "nl": "Pagsikat ng Araw sa Baybaying Basalto",
    "nm": "ဘေဆော့ကျောက်ကမ်းရိုးတန်း နေထွက်ချိန်",
    "nv": "Bình minh trên bờ biển đá bazan",
-   "nt": "พระอาทิตย์ขึ้นเหนือชายฝั่งหินบะซอลต์"
+   "nt": "พระอาทิตย์ขึ้นเหนือชายฝั่งหินบะซอลต์",
+   "nms": "Matahari terbit di pantai batu basalt"
   },
   {
    "f": "bg198.jpg",
@@ -963,7 +1026,8 @@
    "nl": "Mga Tore ng Pulang Bato",
    "nm": "ကျောက်နီအထွတ်အပြောင်များ",
    "nv": "Những tháp đá đỏ",
-   "nt": "เสาหินทรายแดง"
+   "nt": "เสาหินทรายแดง",
+   "nms": "Menara batu merah"
   },
   {
    "f": "bg199.jpg",
@@ -978,7 +1042,8 @@
    "nl": "Lambak ng Glacier",
    "nm": "ရေခဲမြစ်ချိုင့်ဝှမ်း",
    "nv": "Thung lũng sông băng",
-   "nt": "หุบเขาธารน้ำแข็ง"
+   "nt": "หุบเขาธารน้ำแข็ง",
+   "nms": "Lembah glasier"
   },
   {
    "f": "bg200.jpg",
@@ -993,7 +1058,8 @@
    "nl": "Mga Birch at Lupine",
    "nm": "ဘတ်ချ်သစ်ပင်နှင့် လူပိုင်းပန်းများ",
    "nv": "Bạch dương và hoa lupin",
-   "nt": "ป่าเบิร์ชกับดอกลูพิน"
+   "nt": "ป่าเบิร์ชกับดอกลูพิน",
+   "nms": "Pokok birch dan bunga lupin"
   },
   {
    "f": "bg201.jpg",
@@ -1008,7 +1074,8 @@
    "nl": "Mga Talampas na Chalk sa Tabing-dagat",
    "nm": "ထုံးကျောက်ကမ်းပါး",
    "nv": "Vách đá phấn bên biển",
-   "nt": "หน้าผาชอล์กริมทะเล"
+   "nt": "หน้าผาชอล์กริมทะเล",
+   "nms": "Tebing kapur tepi laut"
   },
   {
    "f": "bg202.jpg",
@@ -1023,7 +1090,8 @@
    "nl": "Asul na Anino sa Yungib ng Yelo",
    "nm": "ရေခဲဂူထဲက အပြာရောင်အရိပ်",
    "nv": "Hang băng xanh thẳm",
-   "nt": "เงาสีน้ำเงินในถ้ำน้ำแข็ง"
+   "nt": "เงาสีน้ำเงินในถ้ำน้ำแข็ง",
+   "nms": "Bayangan biru di gua ais"
   },
   {
    "f": "bg203.jpg",
@@ -1038,7 +1106,8 @@
    "nl": "Mababaw na Look ng mga Bakawan",
    "nm": "ကမ်းနားမန်ကြိုက်တောနှင့် ရေတိမ်ပင်လယ်အော်",
    "nv": "Vịnh cạn rừng ngập mặn",
-   "nt": "อ่าวน้ำตื้นป่าชายเลน"
+   "nt": "อ่าวน้ำตื้นป่าชายเลน",
+   "nms": "Teluk cetek hutan bakau"
   },
   {
    "f": "bg204.jpg",
@@ -1053,7 +1122,8 @@
    "nl": "Latian ng mga Cotton Grass",
    "nm": "ဝါဂွမ်းမြက်ရွှံ့နွံပြင်",
    "nv": "Đầm lầy cỏ bông",
-   "nt": "พื้นที่ชุ่มน้ำกับหญ้าฝ้าย"
+   "nt": "พื้นที่ชุ่มน้ำกับหญ้าฝ้าย",
+   "nms": "Tanah lembap rumput kapas"
   },
   {
    "f": "bg205.jpg",
@@ -1068,7 +1138,8 @@
    "nl": "Batis ng mga Larch sa Taglagas",
    "nm": "ဆောင်းဦး လာရ်ချ်သစ်ပင်ကြားစမ်းချောင်း",
    "nv": "Dòng suối rừng thông rụng lá mùa thu",
-   "nt": "ลำธารกับต้นลาร์ชในฤดูใบไม้ร่วง"
+   "nt": "ลำธารกับต้นลาร์ชในฤดูใบไม้ร่วง",
+   "nms": "Anak sungai pokok larch musim luruh"
   },
   {
    "f": "bg206.jpg",
@@ -1083,7 +1154,8 @@
    "nl": "Mga Wisteria sa Tabi ng Lawa",
    "nm": "ဝိစ်တီးရီးယားပန်း ရေကန်ကမ်းစပ်",
    "nv": "Hoa tử đằng bên hồ",
-   "nt": "ดอกวิสทีเรียริมทะเลสาบ"
+   "nt": "ดอกวิสทีเรียริมทะเลสาบ",
+   "nms": "Tepi tasik bunga wisteria"
   },
   {
    "f": "bg207.jpg",
@@ -1098,7 +1170,8 @@
    "nl": "Tanawin ng mga Bundok na Karst",
    "nm": "ကာစ်တောင်တန်းမြစ်ရေ",
    "nv": "Non nước vùng đá vôi",
-   "nt": "ภูมิทัศน์ภูเขาและแม่น้ำแบบคาร์สต์"
+   "nt": "ภูมิทัศน์ภูเขาและแม่น้ำแบบคาร์สต์",
+   "nms": "Pemandangan gunung dan sungai karst"
   },
   {
    "f": "bg208.jpg",
@@ -1113,7 +1186,8 @@
    "nl": "Paglubog ng Araw sa Tidal Pool ng mga Korales",
    "nm": "သန္တာကျောက်ရေကန်ငယ် နေဝင်ချိန်",
    "nv": "Hoàng hôn trên vũng san hô",
-   "nt": "พระอาทิตย์ตกเหนือแอ่งน้ำขึ้นน้ำลงและปะการัง"
+   "nt": "พระอาทิตย์ตกเหนือแอ่งน้ำขึ้นน้ำลงและปะการัง",
+   "nms": "Senja di kolam air pasang terumbu karang"
   },
   {
    "f": "bg209.jpg",
@@ -1128,7 +1202,8 @@
    "nl": "Dagat ng mga Ulap at mga Azalea",
    "nm": "ရိုဒိုဒန်ဒရွန်ပန်းနှင့် တိမ်ပင်လယ်",
    "nv": "Biển mây và hoa đỗ quyên",
-   "nt": "ทะเลหมอกกับดอกอาซาเลีย"
+   "nt": "ทะเลหมอกกับดอกอาซาเลีย",
+   "nms": "Lautan awan dan bunga rhododendron"
   },
   {
    "f": "bg210.jpg",
@@ -1143,7 +1218,8 @@
    "nl": "Dalampasigang Puti ang Buhangin",
    "nm": "သဲဖြူကမ်းခြေ",
    "nv": "Bãi biển cát trắng",
-   "nt": "หาดทรายขาว"
+   "nt": "หาดทรายขาว",
+   "nms": "Pantai pasir putih"
   },
   {
    "f": "bg211.jpg",
@@ -1158,7 +1234,8 @@
    "nl": "Damuhan sa Tabi ng Look",
    "nm": "ကမ်းစပ်မြက်ခင်းပြင်",
    "nv": "Đồng cỏ ven vịnh",
-   "nt": "ทุ่งหญ้าริมอ่าว"
+   "nt": "ทุ่งหญ้าริมอ่าว",
+   "nms": "Padang rumput tepi pantai"
   },
   {
    "f": "bg212.jpg",
@@ -1173,7 +1250,8 @@
    "nl": "Makukulay na Lawa ng Geothermal",
    "nm": "ဘူမိအပူ အရောင်စုံရေကန်",
    "nv": "Hồ nhiều màu địa nhiệt",
-   "nt": "ทะเลสาบสีสันจากพลังงานความร้อนใต้พิภพ"
+   "nt": "ทะเลสาบสีสันจากพลังงานความร้อนใต้พิภพ",
+   "nms": "Tasik geoterma berwarna-warni"
   },
   {
    "f": "bg213.jpg",
@@ -1188,7 +1266,8 @@
    "nl": "Takipsilim sa mga Puno ng Olibo",
    "nm": "သံလွင်ပင် နေဝင်ဆည်းဆာ",
    "nv": "Cây ô-liu trong nắng chiều",
-   "nt": "ต้นมะกอกในแสงอาทิตย์อัสดง"
+   "nt": "ต้นมะกอกในแสงอาทิตย์อัสดง",
+   "nms": "Pokok zaitun di bawah cahaya senja"
   },
   {
    "f": "bg214.jpg",
@@ -1203,7 +1282,8 @@
    "nl": "Nagyeyelong Talon",
    "nm": "ရေခဲသွားသော ရေတံခွန်",
    "nv": "Thác nước đóng băng",
-   "nt": "น้ำตกที่กลายเป็นน้ำแข็ง"
+   "nt": "น้ำตกที่กลายเป็นน้ำแข็ง",
+   "nms": "Air terjun yang membeku"
   },
   {
    "f": "bg175.jpg",
@@ -1218,7 +1298,8 @@
    "nl": "Talon sa Bundok na may Niyebe at mga Ligaw na Bulaklak",
    "nm": "နှင်းတောင်ရေတံခွန်နှင့် တောပန်းများ",
    "nv": "Thác núi tuyết và hoa dại",
-   "nt": "น้ำตกภูเขาหิมะกับดอกไม้ป่า"
+   "nt": "น้ำตกภูเขาหิมะกับดอกไม้ป่า",
+   "nms": "Air terjun gunung dan bunga liar"
   },
   {
    "f": "bg176.jpg",
@@ -1233,7 +1314,8 @@
    "nl": "Pagsikat ng Araw sa Look",
    "nm": "ပင်လယ်အော် နေထွက်ချိန်",
    "nv": "Bình minh trên vịnh",
-   "nt": "พระอาทิตย์ขึ้นเหนืออ่าว"
+   "nt": "พระอาทิตย์ขึ้นเหนืออ่าว",
+   "nms": "Matahari terbit di teluk"
   },
   {
    "f": "bg177.jpg",
@@ -1248,7 +1330,8 @@
    "nl": "Batis na may Pulang Maple sa Taglagas",
    "nm": "ဆောင်းဦး မေပယ်ရွက်နီ စမ်းချောင်း",
    "nv": "Dòng suối và lá phong mùa thu",
-   "nt": "ลำธารกับใบเมเปิลฤดูใบไม้ร่วง"
+   "nt": "ลำธารกับใบเมเปิลฤดูใบไม้ร่วง",
+   "nms": "Anak sungai dan daun maple musim luruh"
   },
   {
    "f": "bg178.jpg",
@@ -1263,7 +1346,8 @@
    "nl": "Batong Landas sa Ulap ng Umaga",
    "nm": "မနက်ခင်းမြူဝေသော ကျောက်ခင်းလမ်းငယ်",
    "nv": "Lối đá trong sương sớm",
-   "nt": "ทางเดินหินในหมอกยามเช้า"
+   "nt": "ทางเดินหินในหมอกยามเช้า",
+   "nms": "Lorong batu berkabus pagi"
   },
   {
    "f": "bg179.jpg",
@@ -1278,7 +1362,8 @@
    "nl": "Repleksiyon ng Bundok na may Niyebe sa Lawa",
    "nm": "နှင်းတောင်၏ ရေကန်ပေါ်ရိပ်ထင်ခြင်း",
    "nv": "Bóng núi tuyết trên hồ",
-   "nt": "เงาภูเขาหิมะในทะเลสาบ"
+   "nt": "เงาภูเขาหิมะในทะเลสาบ",
+   "nms": "Bayangan gunung bersalji di tasik"
   },
   {
    "f": "bg180.jpg",
@@ -1293,7 +1378,8 @@
    "nl": "Dagat ng mga Ulap sa Hagdan-hagdang Palayan",
    "nm": "လှေကားထစ်လယ်ယာ တိမ်ပင်လယ်",
    "nv": "Ruộng bậc thang trong biển mây",
-   "nt": "ทะเลหมอกเหนือนาขั้นบันได"
+   "nt": "ทะเลหมอกเหนือนาขั้นบันได",
+   "nms": "Sawah padi bertingkat dan lautan awan"
   },
   {
    "f": "bg181.jpg",
@@ -1308,7 +1394,8 @@
    "nl": "Pagsikat ng Araw sa Bukid ng Lavender",
    "nm": "လာဗင်ဒါခြံကြီး နေထွက်ချိန်",
    "nv": "Bình minh trên đồi hoa oải hương",
-   "nt": "พระอาทิตย์ขึ้นเหนือไร่ลาเวนเดอร์"
+   "nt": "พระอาทิตย์ขึ้นเหนือไร่ลาเวนเดอร์",
+   "nms": "Matahari terbit di ladang lavender"
   },
   {
    "f": "bg182.jpg",
@@ -1323,7 +1410,8 @@
    "nl": "Batis na may Sakura",
    "nm": "ဆာကူရာပန်း စမ်းချောင်း",
    "nv": "Dòng suối hoa anh đào",
-   "nt": "ลำธารกับดอกซากุระ"
+   "nt": "ลำธารกับดอกซากุระ",
+   "nms": "Anak sungai bunga sakura"
   },
   {
    "f": "bg183.jpg",
@@ -1338,7 +1426,8 @@
    "nl": "Tropikal na Look",
    "nm": "အပူပိုင်းဇုန် ပင်လယ်အော်",
    "nv": "Vịnh nhiệt đới",
-   "nt": "อ่าวเขตร้อน"
+   "nt": "อ่าวเขตร้อน",
+   "nms": "Teluk tropika"
   },
   {
    "f": "bg184.jpg",
@@ -1353,7 +1442,8 @@
    "nl": "Dagat ng mga Bulaklak sa Bundok at Tanawin ng Lawa",
    "nm": "တောင်ပေါ်ပန်းခင်းနှင့် ရေကန်မြင်ကွင်း",
    "nv": "Hồ và biển hoa trên núi cao",
-   "nt": "ทะเลดอกไม้บนภูเขากับทิวทัศน์ทะเลสาบ"
+   "nt": "ทะเลดอกไม้บนภูเขากับทิวทัศน์ทะเลสาบ",
+   "nms": "Tasik dan padang bunga pergunungan"
   },
   {
    "f": "bg185.jpg",
@@ -1368,7 +1458,8 @@
    "nl": "Gintong Bukid ng Trigo",
    "nm": "ရွှေရောင် ဂျုံလယ်",
    "nv": "Cánh đồng lúa mì vàng",
-   "nt": "ทุ่งข้าวสาลีสีทอง"
+   "nt": "ทุ่งข้าวสาลีสีทอง",
+   "nms": "Ladang gandum keemasan"
   },
   {
    "f": "bg186.jpg",
@@ -1383,7 +1474,8 @@
    "nl": "Pagsikat ng Araw sa Disyerto",
    "nm": "သဲကန္တာရ နေထွက်ချိန်",
    "nv": "Bình minh trên sa mạc",
-   "nt": "พระอาทิตย์ขึ้นกลางทะเลทราย"
+   "nt": "พระอาทิตย์ขึ้นกลางทะเลทราย",
+   "nms": "Matahari terbit di padang pasir"
   },
   {
    "f": "bg187.jpg",
@@ -1398,7 +1490,8 @@
    "nl": "Talon sa Fjord",
    "nm": "ဖျော့ဒ်ရေတံခွန်များ",
    "nv": "Thác nước nơi vịnh hẹp",
-   "nt": "น้ำตกที่ฟยอร์ด"
+   "nt": "น้ำตกที่ฟยอร์ด",
+   "nms": "Air terjun fiord"
   },
   {
    "f": "bg188.jpg",
@@ -1413,7 +1506,8 @@
    "nl": "Takipsilim sa Arkong Gawa ng Dagat",
    "nm": "ပင်လယ်ရေတိုက်စားသော ကျောက်တံခါးတန်ဆာ နေဝင်ချိန်",
    "nv": "Hoàng hôn bên vòm đá biển",
-   "nt": "พระอาทิตย์อัสดงที่ซุ้มหินธรรมชาติริมทะเล"
+   "nt": "พระอาทิตย์อัสดงที่ซุ้มหินธรรมชาติริมทะเล",
+   "nms": "Senja di gerbang batu hakisan laut"
   },
   {
    "f": "bg189.jpg",
@@ -1428,7 +1522,8 @@
    "nl": "Batong Landas sa Gubat ng Kawayan",
    "nm": "ဝါးတောထဲက ကျောက်ခင်းလမ်းငယ်",
    "nv": "Lối đá trong rừng tre",
-   "nt": "ทางเดินหินในป่าไผ่"
+   "nt": "ทางเดินหินในป่าไผ่",
+   "nms": "Lorong batu di hutan buluh"
   },
   {
    "f": "bg190.jpg",
@@ -1443,7 +1538,8 @@
    "nl": "Pagsikat ng Araw sa Lawa ng Bulkan",
    "nm": "မီးတောင်ကန် နေထွက်ချိန်",
    "nv": "Bình minh trên hồ núi lửa",
-   "nt": "พระอาทิตย์ขึ้นเหนือทะเลสาบปากปล่องภูเขาไฟ"
+   "nt": "พระอาทิตย์ขึ้นเหนือทะเลสาบปากปล่องภูเขาไฟ",
+   "nms": "Matahari terbit di tasik gunung berapi"
   },
   {
    "f": "bg191.jpg",
@@ -1458,7 +1554,8 @@
    "nl": "Pulang Bangin ng Bato",
    "nm": "ကျောက်နီချောက်ကြီး",
    "nv": "Hẻm núi đá đỏ",
-   "nt": "หุบผาหินแดง"
+   "nt": "หุบผาหินแดง",
+   "nms": "Ngarai batu merah"
   },
   {
    "f": "bg192.jpg",
@@ -1473,7 +1570,8 @@
    "nl": "Ang Milky Way sa Lawa sa Bundok",
    "nm": "နဂါးငွေ့တန်းနှင့် တောင်ကြားရေကန်",
    "nv": "Dải Ngân Hà trên hồ núi",
-   "nt": "ทางช้างเผือกเหนือภูเขาและทะเลสาบ"
+   "nt": "ทางช้างเผือกเหนือภูเขาและทะเลสาบ",
+   "nms": "Bima Sakti di atas tasik gunung"
   },
   {
    "f": "bg193.jpg",
@@ -1488,7 +1586,8 @@
    "nl": "Aurora at Nagyeyelong Lawa",
    "nm": "အော်ရိုရာနှင့် ရေခဲကန်",
    "nv": "Cực quang trên hồ băng",
-   "nt": "ทะเลสาบน้ำแข็งกับแสงเหนือ"
+   "nt": "ทะเลสาบน้ำแข็งกับแสงเหนือ",
+   "nms": "Tasik ais dan cahaya aurora"
   },
   {
    "f": "bg194.jpg",
@@ -1503,7 +1602,8 @@
    "nl": "Batis sa Gubat na may Niyebe",
    "nm": "နှင်းဖုံးသစ်တော စမ်းချောင်း",
    "nv": "Dòng suối trong rừng tuyết",
-   "nt": "ลำธารในป่าหิมะ"
+   "nt": "ลำธารในป่าหิมะ",
+   "nms": "Anak sungai hutan bersalji"
   },
   {
    "f": "bg215.jpg",
@@ -1518,7 +1618,8 @@
    "nl": "Pagsikat ng Araw sa Makukulay na Burol",
    "nm": "အရောင်စုံတောင်ကုန်း နေထွက်ချိန်",
    "nv": "Bình minh trên đồi nhiều màu",
-   "nt": "พระอาทิตย์ขึ้นเหนือเนินเขาหลากสี"
+   "nt": "พระอาทิตย์ขึ้นเหนือเนินเขาหลากสี",
+   "nms": "Matahari terbit di bukit berwarna-warni"
   },
   {
    "f": "bg216.jpg",
@@ -1533,7 +1634,8 @@
    "nl": "Batis sa Lambak na Hugis Kalahating Bilog",
    "nm": "အဝိုင်းခြမ်းပုံ ချိုင့်ဝှမ်းထဲက စမ်းချောင်း",
    "nv": "Dòng suối trong thung lũng bán nguyệt",
-   "nt": "ลำธารในหุบเขารูปครึ่งวงกลม"
+   "nt": "ลำธารในหุบเขารูปครึ่งวงกลม",
+   "nms": "Anak sungai di lembah separuh bulatan"
   },
   {
    "f": "bg217.jpg",
@@ -1548,7 +1650,8 @@
    "nl": "Dapithapon sa mga Puting Buhanginan",
    "nm": "သဲဖြူကုန်းမြင့် ညနေစာရီ",
    "nv": "Hoàng hôn trên đồi cát trắng",
-   "nt": "เนินทรายขาวยามพลบค่ำ"
+   "nt": "เนินทรายขาวยามพลบค่ำ",
+   "nms": "Senja di bukit pasir putih"
   },
   {
    "f": "bg218.jpg",
@@ -1563,7 +1666,8 @@
    "nl": "Sinkhole sa Rainforest",
    "nm": "မိုးသစ်တောတွင်းက မြေကျင်း",
    "nv": "Hố sụt giữa rừng mưa",
-   "nt": "หลุมยุบกลางป่าฝน"
+   "nt": "หลุมยุบกลางป่าฝน",
+   "nms": "Lubang benam hutan hujan"
   },
   {
    "f": "bg219.jpg",
@@ -1578,7 +1682,8 @@
    "nl": "Dagat ng Bulaklak sa Gintong Bangin",
    "nm": "ရွှေရောင်ချောက်ကြီးထဲ ပန်းပင်ပင်လယ်",
    "nv": "Hẻm núi vàng và biển hoa",
-   "nt": "ทุ่งดอกไม้ในหุบผาสีทอง"
+   "nt": "ทุ่งดอกไม้ในหุบผาสีทอง",
+   "nms": "Ngarai keemasan dan padang bunga"
   },
   {
    "f": "bg220.jpg",
@@ -1593,7 +1698,8 @@
    "nl": "Paglubog ng Araw sa Dalampasigang Bilog na Bato",
    "nm": "ကျောက်ဘောလုံးကမ်းခြေ နေဝင်ချိန်",
    "nv": "Hoàng hôn trên bãi đá tròn",
-   "nt": "พระอาทิตย์ตกเหนือหาดหินกลม"
+   "nt": "พระอาทิตย์ตกเหนือหาดหินกลม",
+   "nms": "Matahari terbenam di pantai batu bulat"
   },
   {
    "f": "bg221.jpg",
@@ -1608,7 +1714,8 @@
    "nl": "Bukang-liwayway sa Lawa ng mga Lotus",
    "nm": "ကြာကန် အရုဏ်တက်ချိန်",
    "nv": "Rạng đông trên ao sen",
-   "nt": "สระบัวยามรุ่งอรุณ"
+   "nt": "สระบัวยามรุ่งอรุณ",
+   "nms": "Fajar di kolam teratai"
   },
   {
    "f": "bg222.jpg",
@@ -1623,7 +1730,8 @@
    "nl": "Dalampasigang Itim ang Buhangin na may Kristal na Yelo",
    "nm": "ရေခဲပုံဆောင်ခဲများနှင့် သဲမည်းကမ်းခြေ",
    "nv": "Băng tinh trên bãi cát đen",
-   "nt": "ผลึกน้ำแข็งบนหาดทรายดำ"
+   "nt": "ผลึกน้ำแข็งบนหาดทรายดำ",
+   "nms": "Hablur ais di pantai pasir hitam"
   },
   {
    "f": "bg223.jpg",
@@ -1638,7 +1746,8 @@
    "nl": "Latian ng Pulang Salicornia",
    "nm": "ဆားမြက်နီ ရွှံ့နွံပြင်",
    "nv": "Đầm lầy cỏ muối đỏ",
-   "nt": "พื้นที่ชุ่มน้ำกับผักเบี้ยทะเลสีแดง"
+   "nt": "พื้นที่ชุ่มน้ำกับผักเบี้ยทะเลสีแดง",
+   "nms": "Tanah lembap rumput masin merah"
   },
   {
    "f": "bg224.jpg",
@@ -1653,7 +1762,8 @@
    "nl": "Hagdan-hagdang Talon sa Rainforest",
    "nm": "မိုးသစ်တော လှေကားထစ်ရေတံခွန်များ",
    "nv": "Thác bậc thang trong rừng mưa",
-   "nt": "น้ำตกขั้นบันไดในป่าฝน"
+   "nt": "น้ำตกขั้นบันไดในป่าฝน",
+   "nms": "Air terjun bertingkat hutan hujan"
   },
   {
    "f": "bg46.jpg",
@@ -1668,7 +1778,8 @@
    "nl": "Cake na Tsokolate",
    "nm": "ချော့ကလက်ကိတ်မုန့်",
    "nv": "Bánh sô-cô-la",
-   "nt": "เค้กช็อกโกแลต"
+   "nt": "เค้กช็อกโกแลต",
+   "nms": "Kek coklat"
   },
   {
    "f": "bg47.jpg",
@@ -1683,7 +1794,8 @@
    "nl": "Cake na Strawberry at Sariwang Krema",
    "nm": "စတော်ဘယ်ရီခရင်မ်ကိတ်မုန့်",
    "nv": "Bánh kem dâu tây",
-   "nt": "เค้กสตรอว์เบอร์รีครีมสด"
+   "nt": "เค้กสตรอว์เบอร์รีครีมสด",
+   "nms": "Kek krim strawberi"
   },
   {
    "f": "bg48.jpg",
@@ -1698,7 +1810,8 @@
    "nl": "Cake na Rosas",
    "nm": "နှင်းဆီကိတ်မုန့်",
    "nv": "Bánh hoa hồng",
-   "nt": "เค้กกุหลาบ"
+   "nt": "เค้กกุหลาบ",
+   "nms": "Kek mawar"
   },
   {
    "f": "bg49.jpg",
@@ -1713,7 +1826,8 @@
    "nl": "Cake na Kabibe ng Karagatan",
    "nm": "ပင်လယ်ခရုခွံကိတ်မုန့်",
    "nv": "Bánh vỏ sò đại dương",
-   "nt": "เค้กเปลือกหอยทะเล"
+   "nt": "เค้กเปลือกหอยทะเล",
+   "nms": "Kek kulit kerang laut"
   },
   {
    "f": "bg50.jpg",
@@ -1728,7 +1842,8 @@
    "nl": "Matcha Mille Crepe Cake",
    "nm": "မက်ချာအလွှာပေါင်းစုံကိတ်မုန့်",
    "nv": "Bánh ngàn lớp trà xanh",
-   "nt": "เค้กเครปมัทฉะ"
+   "nt": "เค้กเครปมัทฉะ",
+   "nms": "Kek krep lapis matcha"
   },
   {
    "f": "bg54.jpg",
@@ -1743,7 +1858,8 @@
    "nl": "Batang Pusang Kulay Krema",
    "nm": "ခရင်မ်ရောင်ကြောင်ကလေး",
    "nv": "Mèo con màu kem",
-   "nt": "ลูกแมวสีครีม"
+   "nt": "ลูกแมวสีครีม",
+   "nms": "Anak kucing warna krim"
   },
   {
    "f": "bg55.jpg",
@@ -1758,7 +1874,8 @@
    "nl": "Batang Pusang Kahel-at-Puti",
    "nm": "လိမ္မော်ရောင်နှင့်ဖြူ ကြောင်ကလေး",
    "nv": "Mèo con cam trắng",
-   "nt": "ลูกแมวสีส้มขาว"
+   "nt": "ลูกแมวสีส้มขาว",
+   "nms": "Anak kucing jingga putih"
   },
   {
    "f": "bg56.jpg",
@@ -1773,7 +1890,8 @@
    "nl": "Kulay-pilak na British Shorthair",
    "nm": "ငွေဖြူရောင် ဗြိတိသျှတိုကြောင်",
    "nv": "Mèo Anh lông ngắn xám bạc",
-   "nt": "แมวบริติชชอร์ตแฮร์สีเทาเงิน"
+   "nt": "แมวบริติชชอร์ตแฮร์สีเทาเงิน",
+   "nms": "Kucing British Shorthair kelabu perak"
   },
   {
    "f": "bg135.jpg",
@@ -1788,7 +1906,8 @@
    "nl": "Ragdoll na Kulay Krema at mga Rosas",
    "nm": "ခရင်မ်ရောင်ရက်ဒ်ဒေါ့လ်ကြောင်နှင့် နှင်းဆီများ",
    "nv": "Mèo Ragdoll màu kem và hoa hồng",
-   "nt": "แมวแร็กดอลล์สีครีมกับกุหลาบ"
+   "nt": "แมวแร็กดอลล์สีครีมกับกุหลาบ",
+   "nms": "Anak kucing Ragdoll warna krim dan mawar"
   },
   {
    "f": "bg136.jpg",
@@ -1803,7 +1922,8 @@
    "nl": "Batang Pusang Kahel-at-Puti sa Basket ng mga Daisy",
    "nm": "ဒေစီပန်းခြင်းထဲက လိမ္မော်ရောင်ကြောင်ကလေး",
    "nv": "Mèo con cam trắng trong giỏ cúc dại",
-   "nt": "ลูกแมวสีส้มขาวในตะกร้าดอกเดซี่"
+   "nt": "ลูกแมวสีส้มขาวในตะกร้าดอกเดซี่",
+   "nms": "Anak kucing jingga putih di bakul daisi"
   },
   {
    "f": "bg137.jpg",
@@ -1818,7 +1938,8 @@
    "nl": "Pusang Tricolor at mga Tulip",
    "nm": "အရောင်သုံးမျိုးကြောင်နှင့် ကျူးလစ်ပန်းများ",
    "nv": "Mèo tam thể và hoa tulip",
-   "nt": "แมวสามสีกับดอกทิวลิป"
+   "nt": "แมวสามสีกับดอกทิวลิป",
+   "nms": "Kucing calico dan bunga tulip"
   },
   {
    "f": "bg57.jpg",
@@ -1833,7 +1954,8 @@
    "nl": "Kahon ng Regalo na may Rosas na Rosas",
    "nm": "ပန်းရောင်နှင်းဆီ လက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà hoa hồng hồng",
-   "nt": "กล่องของขวัญกุหลาบสีชมพู"
+   "nt": "กล่องของขวัญกุหลาบสีชมพู",
+   "nms": "Hadiah kotak mawar merah jambu"
   },
   {
    "f": "bg58.jpg",
@@ -1848,7 +1970,8 @@
    "nl": "Kahon ng Regalo na may Lavender",
    "nm": "လာဗင်ဒါပန်း လက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà hoa oải hương",
-   "nt": "กล่องของขวัญลาเวนเดอร์"
+   "nt": "กล่องของขวัญลาเวนเดอร์",
+   "nms": "Hadiah kotak lavender"
   },
   {
    "f": "bg59.jpg",
@@ -1863,7 +1986,8 @@
    "nl": "Kahon ng Regalo sa Kraft Paper na may mga Daisy",
    "nm": "ခရက်စက္ကူ ဒေစီပန်း လက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà giấy kraft và cúc dại",
-   "nt": "กล่องของขวัญกระดาษคราฟต์กับดอกเดซี่"
+   "nt": "กล่องของขวัญกระดาษคราฟต์กับดอกเดซี่",
+   "nms": "Hadiah kotak kertas kraf dan bunga daisi"
   },
   {
    "f": "bg60.jpg",
@@ -1878,7 +2002,8 @@
    "nl": "Cake ng Lilang Gabing Puno ng Bituin",
    "nm": "ခရမ်းရောင်ညဉ့် ကြယ်စုံကိတ်မုန့်",
    "nv": "Bánh đêm sao tím",
-   "nt": "เค้กท้องฟ้าราตรีสีม่วงเต็มดาว"
+   "nt": "เค้กท้องฟ้าราตรีสีม่วงเต็มดาว",
+   "nms": "Kek malam berbintang ungu"
   },
   {
    "f": "bg61.jpg",
@@ -1893,7 +2018,8 @@
    "nl": "Cake na Munting Oso at Pulot-pukyutan",
    "nm": "ပျားရည်ဝက်ဝံငယ်ကိတ်မုန့်",
    "nv": "Bánh gấu mật ong",
-   "nt": "เค้กหมีน้อยน้ำผึ้ง"
+   "nt": "เค้กหมีน้อยน้ำผึ้ง",
+   "nms": "Kek anak beruang madu"
   },
   {
    "f": "bg62.jpg",
@@ -1908,7 +2034,8 @@
    "nl": "Cake na Kendi ng Bahaghari",
    "nm": "သက်တန့်သကြားလုံးကိတ်မုန့်",
    "nv": "Bánh kẹo cầu vồng",
-   "nt": "เค้กลูกอมสีรุ้ง"
+   "nt": "เค้กลูกอมสีรุ้ง",
+   "nms": "Kek gula-gula pelangi"
   },
   {
    "f": "bg63.jpg",
@@ -1923,7 +2050,8 @@
    "nl": "Gintong Cake na Tatlong Patong",
    "nm": "ရွှေရောင် သုံးထပ်ကိတ်မုန့်",
    "nv": "Bánh ba tầng màu vàng",
-   "nt": "เค้กสามชั้นสีทอง"
+   "nt": "เค้กสามชั้นสีทอง",
+   "nms": "Kek tiga lapis keemasan"
   },
   {
    "f": "bg64.jpg",
@@ -1938,7 +2066,8 @@
    "nl": "Cake ng Hardin ng Limon",
    "nm": "ရှောက်ပန်းခြံကိတ်မုန့်",
    "nv": "Bánh vườn chanh",
-   "nt": "เค้กมะนาวสวนดอกไม้"
+   "nt": "เค้กมะนาวสวนดอกไม้",
+   "nms": "Kek taman lemon"
   },
   {
    "f": "bg65.jpg",
@@ -1953,7 +2082,8 @@
    "nl": "Cake na Puting Tsokolate sa Taglamig",
    "nm": "ဆောင်းနှင်းဖြူ ချော့ကလက်ဖြူကိတ်မုန့်",
    "nv": "Bánh sô-cô-la trắng mùa đông",
-   "nt": "เค้กไวท์ช็อกโกแลตหิมะฤดูหนาว"
+   "nt": "เค้กไวท์ช็อกโกแลตหิมะฤดูหนาว",
+   "nms": "Kek coklat putih salji musim sejuk"
   },
   {
    "f": "bg66.jpg",
@@ -1968,7 +2098,8 @@
    "nl": "Cake na Karamelo at Walnut",
    "nm": "ကာရာမယ်နှင့် ဝေါလ်နပ်ကိတ်မုန့်",
    "nv": "Bánh caramen óc chó",
-   "nt": "เค้กคาราเมลวอลนัต"
+   "nt": "เค้กคาราเมลวอลนัต",
+   "nms": "Kek karamel walnut"
   },
   {
    "f": "bg67.jpg",
@@ -1983,7 +2114,8 @@
    "nl": "Cake na Mangga",
    "nm": "သရက်သီးကိတ်မုန့်",
    "nv": "Bánh xoài",
-   "nt": "เค้กมะม่วง"
+   "nt": "เค้กมะม่วง",
+   "nms": "Kek mangga"
   },
   {
    "f": "bg68.jpg",
@@ -1998,7 +2130,8 @@
    "nl": "Cake na Piyano at mga Nota",
    "nm": "စန္ဒရားနှင့် ဂီတသံ ကိတ်မုန့်",
    "nv": "Bánh nốt nhạc dương cầm",
-   "nt": "เค้กเปียโนและโน้ตดนตรี"
+   "nt": "เค้กเปียโนและโน้ตดนตรี",
+   "nms": "Kek piano dan not muzik"
   },
   {
    "f": "bg69.jpg",
@@ -2013,7 +2146,8 @@
    "nl": "Tiramisu",
    "nm": "တီရာမီစု",
    "nv": "Tiramisu",
-   "nt": "ทีรามิสุ"
+   "nt": "ทีรามิสุ",
+   "nms": "Tiramisu"
   },
   {
    "f": "bg70.jpg",
@@ -2028,7 +2162,8 @@
    "nl": "Cake na Melokoton at Liwanag ng Lawa",
    "nm": "မက်မွန်ရေကန်အလင်းကိတ်မုန့်",
    "nv": "Bánh đào bên hồ",
-   "nt": "เค้กพีชริมทะเลสาบ"
+   "nt": "เค้กพีชริมทะเลสาบ",
+   "nms": "Kek pic dan cahaya tasik"
   },
   {
    "f": "bg71.jpg",
@@ -2043,7 +2178,8 @@
    "nl": "Cake na Peach ng Mahabang Buhay",
    "nm": "သက်တော်ရှည်မက်မွန်ကိတ်မုန့်",
    "nv": "Bánh đào thọ",
-   "nt": "เค้กลูกท้อมงคลอายุยืน"
+   "nt": "เค้กลูกท้อมงคลอายุยืน",
+   "nms": "Kek pic panjang umur"
   },
   {
    "f": "bg72.jpg",
@@ -2058,7 +2194,8 @@
    "nl": "Red Velvet na Cake na Puso",
    "nm": "ရက်ဗဲလ်ဗက် နှလုံးပုံကိတ်မုန့်",
    "nv": "Bánh trái tim nhung đỏ",
-   "nt": "เค้กเรดเวลเวตรูปหัวใจ"
+   "nt": "เค้กเรดเวลเวตรูปหัวใจ",
+   "nms": "Kek hati red velvet"
   },
   {
    "f": "bg73.jpg",
@@ -2073,7 +2210,8 @@
    "nl": "Cake na Basket ng Bulaklak",
    "nm": "ပန်းခြင်းပုံကိတ်မုန့်",
    "nv": "Bánh giỏ hoa",
-   "nt": "เค้กตะกร้าดอกไม้"
+   "nt": "เค้กตะกร้าดอกไม้",
+   "nms": "Kek bakul bunga"
   },
   {
    "f": "bg74.jpg",
@@ -2088,7 +2226,8 @@
    "nl": "Cake na Dinosaur",
    "nm": "ဒိုင်နိုဆောကိတ်မုန့်",
    "nv": "Bánh khủng long",
-   "nt": "เค้กไดโนเสาร์"
+   "nt": "เค้กไดโนเสาร์",
+   "nms": "Kek dinosaur"
   },
   {
    "f": "bg75.jpg",
@@ -2103,7 +2242,8 @@
    "nl": "Krus na Oak at mga Rosas",
    "nm": "ဝက်သစ်ချသစ်လက်ဝါးကပ်တိုင်နှင့် နှင်းဆီများ",
    "nv": "Thập tự giá gỗ sồi và hoa hồng",
-   "nt": "ไม้กางเขนไม้โอ๊กกับกุหลาบ"
+   "nt": "ไม้กางเขนไม้โอ๊กกับกุหลาบ",
+   "nms": "Salib kayu oak dan mawar"
   },
   {
    "f": "bg76.jpg",
@@ -2118,7 +2258,8 @@
    "nl": "Payak na Krus at mga Lavender",
    "nm": "ရိုးရှင်းသော လက်ဝါးကပ်တိုင်နှင့် လာဗင်ဒါပန်းများ",
    "nv": "Thập tự giá mộc mạc và hoa oải hương",
-   "nt": "ไม้กางเขนเรียบง่ายกับลาเวนเดอร์"
+   "nt": "ไม้กางเขนเรียบง่ายกับลาเวนเดอร์",
+   "nms": "Salib kayu klasik dan lavender"
   },
   {
    "f": "bg77.jpg",
@@ -2133,7 +2274,8 @@
    "nl": "Krus na Pulang Kahoy at mga Peonia",
    "nm": "ကျွန်းနီလက်ဝါးကပ်တိုင်နှင့် ပီယိုနီပန်းများ",
    "nv": "Thập tự giá gỗ đỏ và hoa mẫu đơn",
-   "nt": "ไม้กางเขนไม้แดงกับดอกโบตั๋น"
+   "nt": "ไม้กางเขนไม้แดงกับดอกโบตั๋น",
+   "nms": "Salib kayu merah dan peoni"
   },
   {
    "f": "bg78.jpg",
@@ -2148,7 +2290,8 @@
    "nl": "Gintong Krus at mga Liryo",
    "nm": "ရွှေလက်ဝါးကပ်တိုင်နှင့် လီလီပန်းများ",
    "nv": "Thập tự giá vàng và hoa huệ",
-   "nt": "ไม้กางเขนสีทองกับดอกลิลลี่"
+   "nt": "ไม้กางเขนสีทองกับดอกลิลลี่",
+   "nms": "Salib emas dan bunga lili"
   },
   {
    "f": "bg79.jpg",
@@ -2163,7 +2306,8 @@
    "nl": "Puting Krus at mga Daisy",
    "nm": "လက်ဝါးကပ်တိုင်ဖြူနှင့် ဒေစီပန်းများ",
    "nv": "Thập tự giá trắng và cúc dại",
-   "nt": "ไม้กางเขนสีขาวกับดอกเดซี่"
+   "nt": "ไม้กางเขนสีขาวกับดอกเดซี่",
+   "nms": "Salib putih dan bunga daisi"
   },
   {
    "f": "bg80.jpg",
@@ -2178,7 +2322,8 @@
    "nl": "Krus, Pulang Rosas, at Liwanag ng Kandila",
    "nm": "လက်ဝါးကပ်တိုင်၊ နှင်းဆီနီနှင့် ဖယောင်းတိုင်အလင်း",
    "nv": "Thập tự giá, hoa hồng đỏ và ánh nến",
-   "nt": "ไม้กางเขน กุหลาบแดง และแสงเทียน"
+   "nt": "ไม้กางเขน กุหลาบแดง และแสงเทียน",
+   "nms": "Salib, mawar merah dan cahaya lilin"
   },
   {
    "f": "bg81.jpg",
@@ -2193,7 +2338,8 @@
    "nl": "Krus na Oak at mga Puting Tulip",
    "nm": "ဝက်သစ်ချသစ်လက်ဝါးကပ်တိုင်နှင့် ကျူးလစ်ပန်းဖြူများ",
    "nv": "Thập tự giá gỗ sồi và tulip trắng",
-   "nt": "ไม้กางเขนไม้โอ๊กกับทิวลิปสีขาว"
+   "nt": "ไม้กางเขนไม้โอ๊กกับทิวลิปสีขาว",
+   "nms": "Salib kayu oak dan tulip putih"
   },
   {
    "f": "bg82.jpg",
@@ -2208,7 +2354,8 @@
    "nl": "Puting Krus at mga Asul na Hydrangea",
    "nm": "လက်ဝါးကပ်တိုင်ဖြူနှင့် ဟိုက်ဒရိန်ဂျီးယားအပြာ",
    "nv": "Thập tự giá trắng và cẩm tú cầu xanh",
-   "nt": "ไม้กางเขนสีขาวกับดอกไฮเดรนเยียสีฟ้า"
+   "nt": "ไม้กางเขนสีขาวกับดอกไฮเดรนเยียสีฟ้า",
+   "nms": "Salib putih dan bunga hidrangea biru"
   },
   {
    "f": "bg83.jpg",
@@ -2223,7 +2370,8 @@
    "nl": "Gintong Krus sa Langit na Puno ng Bituin",
    "nm": "ကြယ်ညဉ့်ကောင်းကင်အောက် ရွှေလက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá vàng dưới bầu trời sao",
-   "nt": "ไม้กางเขนสีทองใต้ท้องฟ้าเต็มดาว"
+   "nt": "ไม้กางเขนสีทองใต้ท้องฟ้าเต็มดาว",
+   "nms": "Salib emas di bawah langit berbintang"
   },
   {
    "f": "bg84.jpg",
@@ -2238,7 +2386,8 @@
    "nl": "Krus na Bato at mga Sakura",
    "nm": "ကျောက်လက်ဝါးကပ်တိုင်နှင့် ဆာကူရာပန်းများ",
    "nv": "Thập tự giá đá và hoa anh đào",
-   "nt": "ไม้กางเขนหินกับดอกซากุระ"
+   "nt": "ไม้กางเขนหินกับดอกซากุระ",
+   "nms": "Salib batu dan bunga sakura"
   },
   {
    "f": "bg85.jpg",
@@ -2253,7 +2402,8 @@
    "nl": "Krus at mga Sunflower",
    "nm": "လက်ဝါးကပ်တိုင်နှင့် နေကြာပန်းများ",
    "nv": "Thập tự giá và hoa hướng dương",
-   "nt": "ไม้กางเขนกับดอกทานตะวัน"
+   "nt": "ไม้กางเขนกับดอกทานตะวัน",
+   "nms": "Salib dan bunga matahari"
   },
   {
    "f": "bg86.jpg",
@@ -2268,7 +2418,8 @@
    "nl": "Krus sa Taglagas",
    "nm": "ဆောင်းဦးရာသီ လက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá mùa thu",
-   "nt": "ไม้กางเขนในฤดูใบไม้ร่วง"
+   "nt": "ไม้กางเขนในฤดูใบไม้ร่วง",
+   "nms": "Salib musim luruh"
   },
   {
    "f": "bg87.jpg",
@@ -2283,7 +2434,8 @@
    "nl": "Krus at mga Rosas na Rosas",
    "nm": "လက်ဝါးကပ်တိုင်နှင့် ပန်းရောင်နှင်းဆီများ",
    "nv": "Thập tự giá và hoa hồng phấn",
-   "nt": "ไม้กางเขนกับกุหลาบสีชมพู"
+   "nt": "ไม้กางเขนกับกุหลาบสีชมพู",
+   "nms": "Salib dan mawar merah jambu"
   },
   {
    "f": "bg88.jpg",
@@ -2298,7 +2450,8 @@
    "nl": "Puting Krus at mga Anemone",
    "nm": "လက်ဝါးကပ်တိုင်ဖြူနှင့် ရန်နန်ကူလပ်စ်ပန်းများ",
    "nv": "Thập tự giá trắng và hoa mao lương",
-   "nt": "ไม้กางเขนสีขาวกับดอกอะนีโมน"
+   "nt": "ไม้กางเขนสีขาวกับดอกอะนีโมน",
+   "nms": "Salib putih dan bunga ranunculus"
   },
   {
    "f": "bg89.jpg",
@@ -2313,7 +2466,8 @@
    "nl": "Krus na Marmol at mga Gerbera",
    "nm": "ကျောက်သားလက်ဝါးကပ်တိုင်နှင့် ဂျာဘယ်ရာပန်းများ",
    "nv": "Thập tự giá đá cẩm thạch và hoa đồng tiền",
-   "nt": "ไม้กางเขนหินอ่อนกับดอกเจอร์เบอร่า"
+   "nt": "ไม้กางเขนหินอ่อนกับดอกเจอร์เบอร่า",
+   "nms": "Salib marmar dan bunga gerbera"
   },
   {
    "f": "bg90.jpg",
@@ -2328,7 +2482,8 @@
    "nl": "Gintong Krus at mga Orkidyas sa Paglubog ng Araw",
    "nm": "ရွှေလက်ဝါးကပ်တိုင်နှင့် သစ်ခွပန်းများ နေဝင်ချိန်",
    "nv": "Thập tự giá vàng, hoa lan và hoàng hôn",
-   "nt": "ไม้กางเขนสีทองกับกล้วยไม้ยามอาทิตย์ตก"
+   "nt": "ไม้กางเขนสีทองกับกล้วยไม้ยามอาทิตย์ตก",
+   "nms": "Salib emas dan orkid waktu senja"
   },
   {
    "f": "bg91.jpg",
@@ -2343,7 +2498,8 @@
    "nl": "Puting Krus sa Taglamig",
    "nm": "ဆောင်းရာသီ လက်ဝါးကပ်တိုင်ဖြူ",
    "nv": "Thập tự giá trắng mùa đông",
-   "nt": "ไม้กางเขนสีขาวในฤดูหนาว"
+   "nt": "ไม้กางเขนสีขาวในฤดูหนาว",
+   "nms": "Salib putih musim sejuk"
   },
   {
    "f": "bg92.jpg",
@@ -2358,7 +2514,8 @@
    "nl": "Krus, mga Liryo ng Lambak, at Ulap sa Umaga",
    "nm": "လက်ဝါးကပ်တိုင်၊ ချိုင့်ဝှမ်းလီလီပန်းနှင့် မနက်ခင်းမြူ",
    "nv": "Thập tự giá, hoa linh lan và sương sớm",
-   "nt": "ไม้กางเขน ดอกลิลลี่ออฟเดอะวัลเลย์ และหมอกยามเช้า"
+   "nt": "ไม้กางเขน ดอกลิลลี่ออฟเดอะวัลเลย์ และหมอกยามเช้า",
+   "nms": "Salib, bunga lili lembah dan kabus pagi"
   },
   {
    "f": "bg93.jpg",
@@ -2373,7 +2530,8 @@
    "nl": "Krus, Biblia, at mga Pinatuyong Bulaklak",
    "nm": "လက်ဝါးကပ်တိုင်၊ သမ္မာကျမ်းစာနှင့် ပန်းခြောက်များ",
    "nv": "Thập tự giá, Kinh Thánh và hoa khô",
-   "nt": "ไม้กางเขน พระคัมภีร์ และดอกไม้แห้ง"
+   "nt": "ไม้กางเขน พระคัมภีร์ และดอกไม้แห้ง",
+   "nms": "Salib, Alkitab dan bunga kering"
   },
   {
    "f": "bg94.jpg",
@@ -2388,7 +2546,8 @@
    "nl": "Krus na Tanso at mga Magnolia",
    "nm": "ကြေးဝါထုလက်ဝါးကပ်တိုင်နှင့် မက်ဂ်နိုလီယာပန်း",
    "nv": "Thập tự giá đồng và hoa mộc lan",
-   "nt": "ไม้กางเขนสำริดกับดอกแมกโนเลีย"
+   "nt": "ไม้กางเขนสำริดกับดอกแมกโนเลีย",
+   "nms": "Salib tembaga dan magnolia"
   },
   {
    "f": "bg345.jpg",
@@ -2403,7 +2562,8 @@
    "nl": "Krus sa Pulang Bangin ng Bato",
    "nm": "ကျောက်နီချောက်ကြီးထဲ လက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá nơi hẻm núi đá đỏ",
-   "nt": "ไม้กางเขนที่หุบผาหินแดง"
+   "nt": "ไม้กางเขนที่หุบผาหินแดง",
+   "nms": "Salib di ngarai batu merah"
   },
   {
    "f": "bg346.jpg",
@@ -2418,7 +2578,8 @@
    "nl": "Krus sa Paglubog ng Araw sa Glacier",
    "nm": "ရေခဲမြစ်ပေါ် နေဝင်ချိန် လက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá trong hoàng hôn băng hà",
-   "nt": "ไม้กางเขนกับพระอาทิตย์ตกเหนือธารน้ำแข็ง"
+   "nt": "ไม้กางเขนกับพระอาทิตย์ตกเหนือธารน้ำแข็ง",
+   "nms": "Salib di senja glasier"
   },
   {
    "f": "bg347.jpg",
@@ -2433,7 +2594,8 @@
    "nl": "Krus sa Oasis ng Disyerto",
    "nm": "သဲကန္တာရ အိုအေစစ်အပေါ် လက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá trên ốc đảo sa mạc",
-   "nt": "ไม้กางเขนกับโอเอซิสในทะเลทราย"
+   "nt": "ไม้กางเขนกับโอเอซิสในทะเลทราย",
+   "nms": "Salib di atas oasis padang pasir"
   },
   {
    "f": "bg348.jpg",
@@ -2448,7 +2610,8 @@
    "nl": "Krus sa Ulap ng Umaga sa Hagdan-hagdang Palayan",
    "nm": "မနက်ခင်းမြူဝေသော လှေကားထစ်လယ်ယာပေါ် လက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá trên ruộng bậc thang trong sương sớm",
-   "nt": "ไม้กางเขนกับนาขั้นบันไดในหมอกยามเช้า"
+   "nt": "ไม้กางเขนกับนาขั้นบันไดในหมอกยามเช้า",
+   "nms": "Salib di atas sawah padi bertingkat yang berkabus"
   },
   {
    "f": "bg349.jpg",
@@ -2463,7 +2626,8 @@
    "nl": "Krus sa Batuhan at mga Alon",
    "nm": "လှိုင်းလုံးနှင့် ကျောက်တန်းအနီး လက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá bên sóng vỗ ghềnh đá",
-   "nt": "ไม้กางเขนกับคลื่นและโขดหิน"
+   "nt": "ไม้กางเขนกับคลื่นและโขดหิน",
+   "nms": "Salib di batu karang yang dipukul ombak"
   },
   {
    "f": "bg350.jpg",
@@ -2478,7 +2642,8 @@
    "nl": "Krus at mga Bulaklak at Damo sa Bundok",
    "nm": "တောင်ပေါ်ပန်းမြက်ခင်းထဲ လက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá trên đồng hoa núi cao",
-   "nt": "ไม้กางเขนกับดอกไม้ป่าบนภูเขาสูง"
+   "nt": "ไม้กางเขนกับดอกไม้ป่าบนภูเขาสูง",
+   "nms": "Salib di padang bunga pergunungan"
   },
   {
    "f": "bg351.jpg",
@@ -2493,7 +2658,8 @@
    "nl": "Krus at mga Lilang Heather",
    "nm": "ခရမ်းရောင်ဟက်သာပန်းများအကြား လက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá giữa đồng thạch nam tím",
-   "nt": "ไม้กางเขนกับดอกฮีทเธอร์สีม่วง"
+   "nt": "ไม้กางเขนกับดอกฮีทเธอร์สีม่วง",
+   "nms": "Salib di antara bunga erika ungu"
   },
   {
    "f": "bg352.jpg",
@@ -2508,7 +2674,8 @@
    "nl": "Krus sa Liwanag ng Umaga sa Kabundukan at Tubig",
    "nm": "မြူဝေသောမြစ်ကမ်းနံနက်ခင်း လက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá bên sông núi trong ánh ban mai",
-   "nt": "ไม้กางเขนกับขุนเขาและสายน้ำในแสงเช้า"
+   "nt": "ไม้กางเขนกับขุนเขาและสายน้ำในแสงเช้า",
+   "nms": "Salib di tepi sungai berkabus"
   },
   {
    "f": "bg353.jpg",
@@ -2523,7 +2690,8 @@
    "nl": "Krus sa Paglubog ng Araw sa Baybayin",
    "nm": "ကမ်းရိုးတန်း နေဝင်ချိန် လက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá trong hoàng hôn bên bờ biển",
-   "nt": "ไม้กางเขนกับพระอาทิตย์ตกริมชายฝั่ง"
+   "nt": "ไม้กางเขนกับพระอาทิตย์ตกริมชายฝั่ง",
+   "nms": "Salib di senja pantai"
   },
   {
    "f": "bg354.jpg",
@@ -2538,7 +2706,8 @@
    "nl": "Krus sa Batis ng Gubat",
    "nm": "သစ်တောချောင်းကြား လက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá bên suối rừng",
-   "nt": "ไม้กางเขนกับลำธารในป่า"
+   "nt": "ไม้กางเขนกับลำธารในป่า",
+   "nms": "Salib di anak sungai hutan"
   },
   {
    "f": "bg355.jpg",
@@ -2553,7 +2722,8 @@
    "nl": "Krus sa Pulang Ulap ng Lawa ng Asin",
    "nm": "ဆားကန်ပေါ် နေဝင်ချိန်အလင်း လက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá trên hồ muối trong ráng chiều",
-   "nt": "ไม้กางเขนกับแสงสนธยาริมทะเลสาบเกลือ"
+   "nt": "ไม้กางเขนกับแสงสนธยาริมทะเลสาบเกลือ",
+   "nms": "Salib di padang garam waktu senja"
   },
   {
    "f": "bg356.jpg",
@@ -2568,7 +2738,8 @@
    "nl": "Krus sa Lambak na Ginto ng Taglagas",
    "nm": "ရွှေရောင်ဆောင်းဦး ချိုင့်ဝှမ်းထဲ လက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá nơi thung lũng thu vàng",
-   "nt": "ไม้กางเขนกับหุบเขาสีทองฤดูใบไม้ร่วง"
+   "nt": "ไม้กางเขนกับหุบเขาสีทองฤดูใบไม้ร่วง",
+   "nms": "Salib di lembah musim luruh keemasan"
   },
   {
    "f": "bg357.jpg",
@@ -2583,7 +2754,8 @@
    "nl": "Krus sa Puting Hagdan-hagdang Mainit na Bukal",
    "nm": "ရေပူစမ်း ဖြူသောလှေကားထစ်ရေကန်များနား လက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá bên ruộng bậc thang suối nước nóng trắng",
-   "nt": "ไม้กางเขนกับแอ่งน้ำพุร้อนขั้นบันไดสีขาว"
+   "nt": "ไม้กางเขนกับแอ่งน้ำพุร้อนขั้นบันไดสีขาว",
+   "nms": "Salib di kolam mata air panas bertingkat putih"
   },
   {
    "f": "bg358.jpg",
@@ -2598,7 +2770,8 @@
    "nl": "Krus sa Fjord",
    "nm": "ဖျော့ဒ်ပေါ်က လက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá trên vịnh hẹp",
-   "nt": "ไม้กางเขนที่ฟยอร์ด"
+   "nt": "ไม้กางเขนที่ฟยอร์ด",
+   "nms": "Salib di atas fiord"
   },
   {
    "f": "bg359.jpg",
@@ -2613,7 +2786,8 @@
    "nl": "Krus at mga Lotus sa Bukang-liwayway",
    "nm": "ကြာပန်းများကြား အရုဏ်တက်ချိန် လက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá giữa hoa sen lúc rạng đông",
-   "nt": "ไม้กางเขนกับดอกบัวยามรุ่งอรุณ"
+   "nt": "ไม้กางเขนกับดอกบัวยามรุ่งอรุณ",
+   "nms": "Salib di tengah teratai waktu fajar"
   },
   {
    "f": "bg360.jpg",
@@ -2628,7 +2802,8 @@
    "nl": "Krus na may mga Daisy sa Puting Talampas",
    "nm": "ဖြူသောကမ်းပါးပေါ် ဒေစီပန်းနှင့် လက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá trên vách đá trắng và cúc dại",
-   "nt": "ไม้กางเขนกับดอกเดซี่บนหน้าผาสีขาว"
+   "nt": "ไม้กางเขนกับดอกเดซี่บนหน้าผาสีขาว",
+   "nms": "Salib dan bunga daisi di tebing putih"
   },
   {
    "f": "bg361.jpg",
@@ -2643,7 +2818,8 @@
    "nl": "Krus sa Lawa ng Bulkan",
    "nm": "မီးတောင်ကန်ဘေး လက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá bên hồ núi lửa",
-   "nt": "ไม้กางเขนที่ทะเลสาบปากปล่องภูเขาไฟ"
+   "nt": "ไม้กางเขนที่ทะเลสาบปากปล่องภูเขาไฟ",
+   "nms": "Salib di tasik kawah gunung berapi"
   },
   {
    "f": "bg362.jpg",
@@ -2658,7 +2834,8 @@
    "nl": "Krus sa Talon at Dagat ng mga Ulap",
    "nm": "တိမ်ပင်လယ်နှင့် ရေတံခွန်အပေါ် လက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá trên biển mây và thác nước",
-   "nt": "ไม้กางเขนกับน้ำตกและทะเลหมอก"
+   "nt": "ไม้กางเขนกับน้ำตกและทะเลหมอก",
+   "nms": "Salib di atas awan dan air terjun"
   },
   {
    "f": "bg363.jpg",
@@ -2673,7 +2850,8 @@
    "nl": "Krus sa Paglubog ng Araw sa Halamanan ng mga Olibo",
    "nm": "သံလွင်ခြံထဲ နေဝင်ချိန် လက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá trong vườn ô-liu lúc hoàng hôn",
-   "nt": "ไม้กางเขนกับสวนมะกอกยามอาทิตย์ตก"
+   "nt": "ไม้กางเขนกับสวนมะกอกยามอาทิตย์ตก",
+   "nms": "Salib di kebun zaitun waktu senja"
   },
   {
    "f": "bg364.jpg",
@@ -2688,7 +2866,8 @@
    "nl": "Krus sa Gubat ng Birch sa Niyebe",
    "nm": "နှင်းဖုံးဘတ်ချ်တောထဲ လက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá trong rừng bạch dương phủ tuyết",
-   "nt": "ไม้กางเขนกับป่าเบิร์ชในหิมะ"
+   "nt": "ไม้กางเขนกับป่าเบิร์ชในหิมะ",
+   "nms": "Salib di hutan birch bersalji"
   },
   {
    "f": "bg95.jpg",
@@ -2703,7 +2882,8 @@
    "nl": "Kahon ng Regalo na may Rosas na Satin na Laso at Tanawin sa Bintana",
    "nm": "ပန်းရောင်ပိုးသားဖဲကြိုး နှင်းဆီ ပြတင်းပေါက် လက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà hoa hồng, ruy băng hồng và khung cửa sổ",
-   "nt": "กล่องของขวัญริบบิ้นซาตินสีชมพูกับกุหลาบริมหน้าต่าง"
+   "nt": "กล่องของขวัญริบบิ้นซาตินสีชมพูกับกุหลาบริมหน้าต่าง",
+   "nms": "Hadiah kotak mawar berreben merah jambu di tepi jendela"
   },
   {
    "f": "bg96.jpg",
@@ -2718,7 +2898,8 @@
    "nl": "Bilog na Kahon ng Regalo na may Liryo at Gintong Satin na Laso",
    "nm": "ရွှေပိုးသားဖဲကြိုး လီလီပန်း ဝိုင်းလက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà tròn hoa huệ và ruy băng vàng",
-   "nt": "กล่องของขวัญทรงกลมริบบิ้นซาตินสีทองกับดอกลิลลี่"
+   "nt": "กล่องของขวัญทรงกลมริบบิ้นซาตินสีทองกับดอกลิลลี่",
+   "nms": "Hadiah kotak bulat bunga lili berreben emas"
   },
   {
    "f": "bg97.jpg",
@@ -2733,7 +2914,8 @@
    "nl": "Kahon ng Regalo na may mga Daisy at Lubid na Yute",
    "nm": "ဒေစီပန်းနှင့် ပိုက်ကြိုး လက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà cúc dại và dây thừng gai",
-   "nt": "กล่องของขวัญผูกเชือกป่านกับดอกเดซี่"
+   "nt": "กล่องของขวัญผูกเชือกป่านกับดอกเดซี่",
+   "nms": "Hadiah kotak bunga daisi dan tali guni"
   },
   {
    "f": "bg98.jpg",
@@ -2748,7 +2930,8 @@
    "nl": "Kahon ng Regalo mula sa Bukid ng Lavender",
    "nm": "လာဗင်ဒါခြံကြီး လက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà đồi hoa oải hương",
-   "nt": "กล่องของขวัญไร่ลาเวนเดอร์"
+   "nt": "กล่องของขวัญไร่ลาเวนเดอร์",
+   "nms": "Hadiah kotak ladang lavender"
   },
   {
    "f": "bg99.jpg",
@@ -2763,7 +2946,8 @@
    "nl": "Kahon ng Regalo na may mga Tulip at Berdeng Satin na Laso",
    "nm": "ကျူးလစ်ပန်းနှင့် အစိမ်းရောင်ပိုးသားဖဲကြိုး လက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà tulip và ruy băng xanh lá",
-   "nt": "กล่องของขวัญริบบิ้นซาตินสีเขียวกับดอกทิวลิป"
+   "nt": "กล่องของขวัญริบบิ้นซาตินสีเขียวกับดอกทิวลิป",
+   "nms": "Hadiah kotak tulip berreben hijau"
   },
   {
    "f": "bg100.jpg",
@@ -2778,7 +2962,8 @@
    "nl": "Asul na Kahon ng Regalo na may Hydrangea sa Baybayin",
    "nm": "ဟိုက်ဒရိန်ဂျီးယား ပင်လယ်ကမ်းအပြာရောင် လက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà cẩm tú cầu xanh biển",
-   "nt": "กล่องของขวัญสีน้ำเงินชายฝั่งกับดอกไฮเดรนเยีย"
+   "nt": "กล่องของขวัญสีน้ำเงินชายฝั่งกับดอกไฮเดรนเยีย",
+   "nms": "Hadiah kotak biru bunga hidrangea tepi pantai"
   },
   {
    "f": "bg101.jpg",
@@ -2793,7 +2978,8 @@
    "nl": "Kahon ng Regalo na may Coral na Peonia",
    "nm": "သန္တာရောင် ပီယိုနီ လက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà mẫu đơn san hô",
-   "nt": "กล่องของขวัญโบตั๋นสีปะการัง"
+   "nt": "กล่องของขวัญโบตั๋นสีปะการัง",
+   "nms": "Hadiah kotak peoni merah karang"
   },
   {
    "f": "bg102.jpg",
@@ -2808,7 +2994,8 @@
    "nl": "Kahon ng Regalo na may Sakura sa Estilong Hapones",
    "nm": "ဆာကူရာပန်း ဂျပန်ဟန် လက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà hoa anh đào phong cách Nhật",
-   "nt": "กล่องของขวัญสไตล์ญี่ปุ่นลายซากุระ"
+   "nt": "กล่องของขวัญสไตล์ญี่ปุ่นลายซากุระ",
+   "nms": "Hadiah kotak bunga sakura gaya Jepun"
   },
   {
    "f": "bg103.jpg",
@@ -2823,7 +3010,8 @@
    "nl": "Dilaw na Kahon ng Regalo na may Sunflower",
    "nm": "နေကြာအဝါရောင် လက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà hướng dương vàng",
-   "nt": "กล่องของขวัญสีเหลืองดอกทานตะวัน"
+   "nt": "กล่องของขวัญสีเหลืองดอกทานตะวัน",
+   "nms": "Hadiah kotak kuning bunga matahari"
   },
   {
    "f": "bg104.jpg",
@@ -2838,7 +3026,8 @@
    "nl": "Kahon ng Regalong Pulang Rubi na Pelus",
    "nm": "ဗဲလ်ဗက်ပတ္တမြားရောင် လက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà nhung đỏ ngọc bích",
-   "nt": "กล่องของขวัญกำมะหยี่สีทับทิม"
+   "nt": "กล่องของขวัญกำมะหยี่สีทับทิม",
+   "nms": "Hadiah kotak baldu merah delima"
   },
   {
    "f": "bg105.jpg",
@@ -2853,7 +3042,8 @@
    "nl": "Kahong Rosas ng Regalo na may Puso",
    "nm": "နှလုံးပုံ ပန်းရောင်လက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà trái tim hồng",
-   "nt": "กล่องของขวัญหัวใจสีชมพู"
+   "nt": "กล่องของขวัญหัวใจสีชมพู",
+   "nms": "Hadiah kotak hati merah jambu"
   },
   {
    "f": "bg106.jpg",
@@ -2868,7 +3058,8 @@
    "nl": "Kahon ng Regalo na may Disenyong Anemone",
    "nm": "ရန်နန်ကူလပ်စ်ပန်းပုံ လက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà họa tiết hoa mao lương",
-   "nt": "กล่องของขวัญลายดอกอะนีโมน"
+   "nt": "กล่องของขวัญลายดอกอะนีโมน",
+   "nms": "Hadiah kotak bercorak bunga ranunculus"
   },
   {
    "f": "bg107.jpg",
@@ -2883,7 +3074,8 @@
    "nl": "Kahon ng Regalong Madilim na Asul na may Gintong Bituin",
    "nm": "ရေတပ်အပြာရောင်နှင့် ရွှေကြယ် လက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà xanh navy và sao vàng",
-   "nt": "กล่องของขวัญสีน้ำเงินเข้มลายดาวทอง"
+   "nt": "กล่องของขวัญสีน้ำเงินเข้มลายดาวทอง",
+   "nms": "Hadiah kotak biru tua berbintang emas"
   },
   {
    "f": "bg108.jpg",
@@ -2898,7 +3090,8 @@
    "nl": "Kahon ng Regalo na may Orkidyas at Lilang Gasa",
    "nm": "သစ်ခွနှင့် ခရမ်းရောင်ပိတ်သားပါး လက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà hoa lan và voan tím",
-   "nt": "กล่องของขวัญกล้วยไม้กับผ้าโปร่งสีม่วง"
+   "nt": "กล่องของขวัญกล้วยไม้กับผ้าโปร่งสีม่วง",
+   "nms": "Hadiah kotak orkid berorganza ungu"
   },
   {
    "f": "bg109.jpg",
@@ -2913,7 +3106,8 @@
    "nl": "Kahon ng Regalong Niniting sa Taglamig",
    "nm": "ဆောင်းရာသီ ချည်ထိုးလက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà len đan mùa đông",
-   "nt": "กล่องของขวัญไหมพรมฤดูหนาว"
+   "nt": "กล่องของขวัญไหมพรมฤดูหนาว",
+   "nms": "Hadiah kotak rajutan musim sejuk"
   },
   {
    "f": "bg110.jpg",
@@ -2928,7 +3122,8 @@
    "nl": "Kahon ng Regalong Tansong Satin na may Maple sa Taglagas",
    "nm": "ဆောင်းဦး မေပယ်ရွက်နီ ကြေးနီရောင်ပိုးသား လက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà lá phong thu và ruy băng đồng",
-   "nt": "กล่องของขวัญริบบิ้นสีทองแดงกับใบเมเปิลฤดูใบไม้ร่วง"
+   "nt": "กล่องของขวัญริบบิ้นสีทองแดงกับใบเมเปิลฤดูใบไม้ร่วง",
+   "nms": "Hadiah kotak reben tembaga warna maple luruh"
   },
   {
    "f": "bg111.jpg",
@@ -2943,7 +3138,8 @@
    "nl": "Kahon ng Regalo na may mga Gerbera at Polka Dots",
    "nm": "ဂျာဘယ်ရာပန်းနှင့် အစက်ပေါက်စာ လက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà hoa đồng tiền chấm bi",
-   "nt": "กล่องของขวัญลายจุดกับดอกเจอร์เบอร่า"
+   "nt": "กล่องของขวัญลายจุดกับดอกเจอร์เบอร่า",
+   "nms": "Hadiah kotak bertompok bunga gerbera"
   },
   {
    "f": "bg112.jpg",
@@ -2958,7 +3154,8 @@
    "nl": "Kahon ng Regalo na may Liryo ng Lambak sa Liwanag ng Umaga",
    "nm": "ချိုင့်ဝှမ်းလီလီပန်း နံနက်ခင်းအလင်း လက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà linh lan buổi sớm",
-   "nt": "กล่องของขวัญลิลลี่ออฟเดอะวัลเลย์ในแสงเช้า"
+   "nt": "กล่องของขวัญลิลลี่ออฟเดอะวัลเลย์ในแสงเช้า",
+   "nms": "Hadiah kotak lili lembah cahaya pagi"
   },
   {
    "f": "bg113.jpg",
@@ -2973,7 +3170,8 @@
    "nl": "Kahon ng Regalo sa Kraft Paper na Kulay Alak",
    "nm": "စပျစ်ရည်နီရောင် ခရက်စက္ကူ လက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà giấy kraft đỏ rượu vang",
-   "nt": "กล่องของขวัญกระดาษคราฟต์สีแดงเข้ม"
+   "nt": "กล่องของขวัญกระดาษคราฟต์สีแดงเข้ม",
+   "nms": "Hadiah kotak kertas kraf merah anggur"
   },
   {
    "f": "bg114.jpg",
@@ -2988,7 +3186,8 @@
    "nl": "Kahon ng Regalo na may Gintong Magnolia",
    "nm": "ရွှေရောင် မက်ဂ်နိုလီယာ လက်ဆောင်သေတ္တာ",
    "nv": "Hộp quà mộc lan vàng",
-   "nt": "กล่องของขวัญแมกโนเลียสีทอง"
+   "nt": "กล่องของขวัญแมกโนเลียสีทอง",
+   "nms": "Hadiah kotak magnolia keemasan"
   },
   {
    "f": "bg138.jpg",
@@ -3003,7 +3202,8 @@
    "nl": "Puting Persian na Pusa at mga Lavender",
    "nm": "ပါရှန်ကြောင်ဖြူနှင့် လာဗင်ဒါပန်းများ",
    "nv": "Mèo Ba Tư trắng và hoa oải hương",
-   "nt": "แมวเปอร์เซียสีขาวกับลาเวนเดอร์"
+   "nt": "แมวเปอร์เซียสีขาวกับลาเวนเดอร์",
+   "nms": "Kucing Parsi putih dan lavender"
   },
   {
    "f": "bg139.jpg",
@@ -3018,7 +3218,8 @@
    "nl": "Kulay-pilak na British Shorthair at mga Hydrangea",
    "nm": "ငွေဖြူရောင် ဗြိတိသျှကြောင်နှင့် ဟိုက်ဒရိန်ဂျီးယားပန်း",
    "nv": "Mèo Anh lông ngắn xám bạc và cẩm tú cầu",
-   "nt": "แมวบริติชชอร์ตแฮร์สีเทาเงินกับดอกไฮเดรนเยีย"
+   "nt": "แมวบริติชชอร์ตแฮร์สีเทาเงินกับดอกไฮเดรนเยีย",
+   "nms": "Kucing British Shorthair kelabu perak dan bunga hidrangea"
   },
   {
    "f": "bg140.jpg",
@@ -3033,7 +3234,8 @@
    "nl": "Ragdoll na Pusa at Kahon ng Regalo na may Peonia",
    "nm": "ရက်ဒ်ဒေါ့လ်ကြောင်နှင့် ပီယိုနီလက်ဆောင်သေတ္တာ",
    "nv": "Mèo Ragdoll và hộp quà mẫu đơn",
-   "nt": "แมวแร็กดอลล์กับกล่องของขวัญดอกโบตั๋น"
+   "nt": "แมวแร็กดอลล์กับกล่องของขวัญดอกโบตั๋น",
+   "nms": "Kucing Ragdoll dan hadiah kotak peoni"
   },
   {
    "f": "bg141.jpg",
@@ -3048,7 +3250,8 @@
    "nl": "Pusang Tabby at mga Sunflower",
    "nm": "အစင်းကြောင်းကြောင်နှင့် နေကြာပန်းများ",
    "nv": "Mèo vằn và hoa hướng dương",
-   "nt": "แมวลายเสือกับดอกทานตะวัน"
+   "nt": "แมวลายเสือกับดอกทานตะวัน",
+   "nms": "Kucing belang dan bunga matahari"
   },
   {
    "f": "bg142.jpg",
@@ -3063,7 +3266,8 @@
    "nl": "Magkayakap na mga Kuting sa Bintanang may Ulan",
    "nm": "မိုးကျသောပြတင်းပေါက်နားက ပွေ့ဖက်နေသော ကြောင်ကလေးများ",
    "nv": "Hai chú mèo con ôm nhau bên cửa sổ mưa",
-   "nt": "ลูกแมวกอดกันริมหน้าต่างวันฝนตก"
+   "nt": "ลูกแมวกอดกันริมหน้าต่างวันฝนตก",
+   "nms": "Anak kucing berpelukan di tepi jendela hujan"
   },
   {
    "f": "bg143.jpg",
@@ -3078,7 +3282,8 @@
    "nl": "Kahel na Pusa sa Basket ng Taglagas",
    "nm": "ဆောင်းဦးခြင်းထဲက လိမ္မော်ရောင်ကြောင်",
    "nv": "Mèo cam trong giỏ mùa thu",
-   "nt": "แมวสีส้มในตะกร้ายามฤดูใบไม้ร่วง"
+   "nt": "แมวสีส้มในตะกร้ายามฤดูใบไม้ร่วง",
+   "nms": "Anak kucing jingga di bakul musim luruh"
   },
   {
    "f": "bg144.jpg",
@@ -3093,7 +3298,8 @@
    "nl": "Siamese na Pusa sa Tabi ng Lawa",
    "nm": "ဆိုင်ယမ်ကြောင် ရေကန်ကမ်းစပ်",
    "nv": "Mèo Xiêm bên hồ",
-   "nt": "แมวสยามริมทะเลสาบ"
+   "nt": "แมวสยามริมทะเลสาบ",
+   "nms": "Kucing Siam di tepi tasik"
   },
   {
    "f": "bg145.jpg",
@@ -3108,7 +3314,8 @@
    "nl": "Itim na Pusa, mga Puting Rosas, at mga Perlas",
    "nm": "ကြောင်မည်းနှင့် နှင်းဆီဖြူ၊ ပုလဲများ",
    "nv": "Mèo đen, hoa hồng trắng và ngọc trai",
-   "nt": "แมวดำกับกุหลาบขาวและไข่มุก"
+   "nt": "แมวดำกับกุหลาบขาวและไข่มุก",
+   "nms": "Kucing hitam, mawar putih dan mutiara"
   },
   {
    "f": "bg146.jpg",
@@ -3123,7 +3330,8 @@
    "nl": "Asul-at-Puting Mahabang-balahibong Pusa sa Baybayin",
    "nm": "အပြာအဖြူ အမွှေးရှည်ကြောင် ပင်လယ်ကမ်းစပ်",
    "nv": "Mèo lông dài xanh trắng bên bờ biển",
-   "nt": "แมวขนยาวสีฟ้าขาวริมชายฝั่ง"
+   "nt": "แมวขนยาวสีฟ้าขาวริมชายฝั่ง",
+   "nms": "Kucing berbulu panjang biru putih di tepi laut"
   },
   {
    "f": "bg147.jpg",
@@ -3138,7 +3346,8 @@
    "nl": "Kambal na Kuting at mga Sakura",
    "nm": "အမွှာကြောင်ကလေးနှစ်ကောင်နှင့် ဆာကူရာပန်းများ",
    "nv": "Hai mèo con sinh đôi và hoa anh đào",
-   "nt": "ลูกแมวแฝดกับดอกซากุระ"
+   "nt": "ลูกแมวแฝดกับดอกซากุระ",
+   "nms": "Anak kucing kembar dan bunga sakura"
   },
   {
    "f": "bg148.jpg",
@@ -3153,7 +3362,8 @@
    "nl": "Kuting na may Pulang Bandana sa Bintanang may Niyebe",
    "nm": "ပုဝါနီနှင့် ကြောင်ကလေး နှင်းကျသောပြတင်းပေါက်",
    "nv": "Mèo con quàng khăn đỏ bên cửa sổ tuyết",
-   "nt": "ลูกแมวผ้าพันคอสีแดงริมหน้าต่างหิมะ"
+   "nt": "ลูกแมวผ้าพันคอสีแดงริมหน้าต่างหิมะ",
+   "nms": "Anak kucing berselendang merah di tepi jendela bersalji"
   },
   {
    "f": "bg149.jpg",
@@ -3168,7 +3378,8 @@
    "nl": "Batang Pusang Tabby at mga Aklat",
    "nm": "အစင်းကြောင်းကြောင်ကလေးနှင့် စာအုပ်",
    "nv": "Mèo con vằn và cuốn sách",
-   "nt": "ลูกแมวลายเสือกับหนังสือ"
+   "nt": "ลูกแมวลายเสือกับหนังสือ",
+   "nms": "Anak kucing belang dan buku"
   },
   {
    "f": "bg150.jpg",
@@ -3183,7 +3394,8 @@
    "nl": "Batang Pusang Tricolor sa Bukid ng Aster",
    "nm": "ဒေစီပန်းခင်းထဲက အရောင်သုံးမျိုးကြောင်ကလေး",
    "nv": "Mèo con tam thể giữa đồng cúc dại",
-   "nt": "ลูกแมวสามสีในทุ่งเดซี่"
+   "nt": "ลูกแมวสามสีในทุ่งเดซี่",
+   "nms": "Anak kucing calico di padang daisi"
   },
   {
    "f": "bg151.jpg",
@@ -3198,7 +3410,8 @@
    "nl": "Batang Pusang Kahel-at-Puti at Puso",
    "nm": "ကြောင်ကလေးနှင့် နှလုံးသား",
    "nv": "Mèo con cam trắng và trái tim",
-   "nt": "ลูกแมวสีส้มขาวกับหัวใจ"
+   "nt": "ลูกแมวสีส้มขาวกับหัวใจ",
+   "nms": "Anak kucing dan hati"
   },
   {
    "f": "bg152.jpg",
@@ -3213,7 +3426,8 @@
    "nl": "Ragdoll na Pusa at mga Hyacinth",
    "nm": "ရက်ဒ်ဒေါ့လ်ကြောင်နှင့် ဟိုင်ယာဆင့်ပန်းများ",
    "nv": "Mèo Ragdoll và hoa lan dạ hương",
-   "nt": "แมวแร็กดอลล์กับดอกฮยาซินท์"
+   "nt": "แมวแร็กดอลล์กับดอกฮยาซินท์",
+   "nms": "Kucing Ragdoll dan bunga hyacinth"
   },
   {
    "f": "bg153.jpg",
@@ -3228,7 +3442,8 @@
    "nl": "Inang Puting Pusa at mga Kuting sa Hardin ng mga Rosas",
    "nm": "ကြောင်မဖြူနှင့် ကြောင်ကလေး နှင်းဆီဥယျာဉ်",
    "nv": "Mèo mẹ trắng và mèo con trong vườn hồng",
-   "nt": "แม่แมวขาวกับลูกแมวในสวนกุหลาบ"
+   "nt": "แม่แมวขาวกับลูกแมวในสวนกุหลาบ",
+   "nms": "Kucing putih dan anak kucing di taman mawar"
   },
   {
    "f": "bg154.jpg",
@@ -3243,7 +3458,8 @@
    "nl": "Chinchilla na Pusa sa Tabi ng Lawa sa Pagsikat ng Araw",
    "nm": "ချင်ချီလာကြောင် နေထွက်ချိန် ရေကန်ကမ်းစပ်",
    "nv": "Mèo Chinchilla vàng bên hồ lúc bình minh",
-   "nt": "แมวชินชิลล่าริมทะเลสาบยามอาทิตย์ขึ้น"
+   "nt": "แมวชินชิลล่าริมทะเลสาบยามอาทิตย์ขึ้น",
+   "nms": "Kucing Chinchilla emas di tepi tasik waktu matahari terbit"
   },
   {
    "f": "bg245.jpg",
@@ -3258,7 +3474,8 @@
    "nl": "Siberian na Pusa at ang Greenhouse ng mga Orkidyas",
    "nm": "ဆိုက်ဘေးရီးယားကြောင်နှင့် သစ်ခွအပင်ဖန်လုံအိမ်",
    "nv": "Mèo Siberia trong nhà kính hoa lan",
-   "nt": "แมวไซบีเรียนกับเรือนกระจกกล้วยไม้"
+   "nt": "แมวไซบีเรียนกับเรือนกระจกกล้วยไม้",
+   "nms": "Kucing Siberia di rumah hijau orkid"
   },
   {
    "f": "bg246.jpg",
@@ -3273,7 +3490,8 @@
    "nl": "Abyssinian na Pusa at ang Bukal sa Takipsilim",
    "nm": "အဘီဆီနီးယားကြောင်နှင့် ရေပန်း နေဝင်ချိန်",
    "nv": "Mèo Abyssinia bên đài phun nước lúc hoàng hôn",
-   "nt": "แมวอบิสซิเนียนกับน้ำพุยามอาทิตย์อัสดง"
+   "nt": "แมวอบิสซิเนียนกับน้ำพุยามอาทิตย์อัสดง",
+   "nms": "Kucing Abyssinian dan air pancut waktu senja"
   },
   {
    "f": "bg247.jpg",
@@ -3288,7 +3506,8 @@
    "nl": "Maine Coon at ang Trellis ng mga Wisteria",
    "nm": "မိန်းကွန်းကြောင်နှင့် ဝိစ်တီးရီးယားပန်းမိုး",
    "nv": "Mèo Maine Coon dưới giàn tử đằng",
-   "nt": "แมวเมนคูนกับซุ้มดอกวิสทีเรีย"
+   "nt": "แมวเมนคูนกับซุ้มดอกวิสทีเรีย",
+   "nms": "Kucing Maine Coon di bawah para wisteria"
   },
   {
    "f": "bg248.jpg",
@@ -3303,7 +3522,8 @@
    "nl": "Norwegian Forest Cat at ang Bukang-liwayway sa Tabi ng Lawa",
    "nm": "နော်ဝေးဖောရက်စ်ကြောင်နှင့် ရေကန်ကမ်းအရုဏ်တက်ချိန်",
    "nv": "Mèo rừng Na Uy bên hồ lúc rạng đông",
-   "nt": "แมวป่านอร์วีเจียนกับแสงเช้าริมทะเลสาบ"
+   "nt": "แมวป่านอร์วีเจียนกับแสงเช้าริมทะเลสาบ",
+   "nms": "Kucing Norwegian Forest dan fajar di tepi tasik"
   },
   {
    "f": "bg249.jpg",
@@ -3318,7 +3538,8 @@
    "nl": "Puting Pusa at mga Talulot ng Tulip",
    "nm": "ကြောင်ဖြူနှင့် ကျူးလစ်ပွင့်ချပ်များ",
    "nv": "Mèo trắng và cánh hoa tulip",
-   "nt": "แมวขาวกับกลีบทิวลิป"
+   "nt": "แมวขาวกับกลีบทิวลิป",
+   "nms": "Kucing putih dan kelopak tulip"
   },
   {
    "f": "bg250.jpg",
@@ -3333,7 +3554,8 @@
    "nl": "Russian Blue na Pusa at ang Bintanang may Asul-at-Puting Porselana",
    "nm": "ရုရှားဘလူးကြောင်နှင့် အပြာအဖြူကြွေပစ္စည်းပြတင်းပေါက်",
    "nv": "Mèo xanh Nga bên cửa sổ gốm men lam",
-   "nt": "แมวรัสเซียนบลูกับหน้าต่างเครื่องลายคราม"
+   "nt": "แมวรัสเซียนบลูกับหน้าต่างเครื่องลายคราม",
+   "nms": "Kucing Russian Blue dan jendela porselin biru putih"
   },
   {
    "f": "bg251.jpg",
@@ -3348,7 +3570,8 @@
    "nl": "Bengal na Pusa at ang Munting Tulay sa Rainforest",
    "nm": "ဘင်္ဂလားကြောင် မိုးသစ်တောတံတားလေး",
    "nv": "Mèo Bengal trên cây cầu nhỏ trong rừng mưa",
-   "nt": "แมวเบงกอลบนสะพานเล็กในป่าฝน"
+   "nt": "แมวเบงกอลบนสะพานเล็กในป่าฝน",
+   "nms": "Kucing Bengal di jambatan kecil hutan hujan"
   },
   {
    "f": "bg252.jpg",
@@ -3363,7 +3586,8 @@
    "nl": "Egyptian Mau na Pusa at Lawa ng mga Lotus",
    "nm": "အီဂျစ်မောကြောင်နှင့် ကြာကန်",
    "nv": "Mèo Ai Cập và ao sen",
-   "nt": "แมวอียิปต์เมาริมสระบัว"
+   "nt": "แมวอียิปต์เมาริมสระบัว",
+   "nms": "Kucing Egyptian Mau dan kolam teratai"
   },
   {
    "f": "bg253.jpg",
@@ -3378,7 +3602,8 @@
    "nl": "Somali na Pusa at ang Pulang Bangin ng Bato",
    "nm": "ဆိုမာလီကြောင်နှင့် ကျောက်နီချောက်ကြီး",
    "nv": "Mèo Somali nơi hẻm núi đá đỏ",
-   "nt": "แมวโซมาลีกับหุบผาหินแดง"
+   "nt": "แมวโซมาลีกับหุบผาหินแดง",
+   "nms": "Kucing Somali di ngarai batu merah"
   },
   {
    "f": "bg254.jpg",
@@ -3393,7 +3618,8 @@
    "nl": "Turkish Van na Pusa at Bangkang Layag sa Takipsilim",
    "nm": "တူရကီဗန်ကြောင်နှင့် ရွက်လှေ နေဝင်ချိန်",
    "nv": "Mèo Van Thổ Nhĩ Kỳ trên thuyền buồm lúc hoàng hôn",
-   "nt": "แมวเทอร์กิชแวนกับเรือใบยามอาทิตย์อัสดง"
+   "nt": "แมวเทอร์กิชแวนกับเรือใบยามอาทิตย์อัสดง",
+   "nms": "Kucing Turkish Van dan perahu layar waktu senja"
   },
   {
    "f": "bg255.jpg",
@@ -3408,7 +3634,8 @@
    "nl": "Cornish Rex na Pusa at ang Silungan ng Bintana sa Daungan",
    "nm": "ကွန်းဝေါလ်ရက်စ်ကြောင်နှင့် ဆိပ်ကမ်းပြတင်းပေါက်",
    "nv": "Mèo Cornish Rex bên bệ cửa sổ cảng biển",
-   "nt": "แมวคอร์นิชเร็กซ์ริมขอบหน้าต่างเมืองท่า"
+   "nt": "แมวคอร์นิชเร็กซ์ริมขอบหน้าต่างเมืองท่า",
+   "nms": "Kucing Cornish Rex di jendela pelabuhan"
   },
   {
    "f": "bg256.jpg",
@@ -3423,7 +3650,8 @@
    "nl": "Devon Rex na Pusa at Teleskopyo sa Langit na Puno ng Bituin",
    "nm": "ဒီဗွန်ရက်စ်ကြောင်နှင့် ကြယ်ဝေးကြည့်မှန်ပြောင်း",
    "nv": "Mèo Devon Rex và kính thiên văn dưới trời sao",
-   "nt": "แมวเดวอนเร็กซ์กับกล้องโทรทรรศน์ใต้ท้องฟ้าเต็มดาว"
+   "nt": "แมวเดวอนเร็กซ์กับกล้องโทรทรรศน์ใต้ท้องฟ้าเต็มดาว",
+   "nms": "Kucing Devon Rex dan teleskop di bawah langit berbintang"
   },
   {
    "f": "bg257.jpg",
@@ -3438,7 +3666,8 @@
    "nl": "Ocicat at ang Pagawaan ng Palayok",
    "nm": "အိုစီကက်ကြောင်နှင့် မြေအိုးလုပ်ငန်းခွင်",
    "nv": "Mèo Ocicat trong xưởng gốm",
-   "nt": "แมวออซิแคทในสตูดิโอเครื่องปั้นดินเผา"
+   "nt": "แมวออซิแคทในสตูดิโอเครื่องปั้นดินเผา",
+   "nms": "Kucing Ocicat di bengkel tembikar"
   },
   {
    "f": "bg258.jpg",
@@ -3453,7 +3682,8 @@
    "nl": "Burmese na Pusa at mga Parol sa Lawa ng mga Lotus",
    "nm": "ဗမာကြောင်နှင့် ကြာကန်၊ မီးအိမ်များ",
    "nv": "Mèo Miến Điện bên ao sen và đèn lồng",
-   "nt": "แมวพม่ากับโคมไฟริมสระบัว"
+   "nt": "แมวพม่ากับโคมไฟริมสระบัว",
+   "nms": "Kucing Burma, kolam teratai dan tanglung"
   },
   {
    "f": "bg259.jpg",
@@ -3468,7 +3698,8 @@
    "nl": "Singapura na Pusa at ang Pavilion ng mga Orkidyas",
    "nm": "စင်ကာပူရာကြောင်နှင့် သစ်ခွပန်းတဲ",
    "nv": "Mèo Singapura và chòi hoa lan",
-   "nt": "แมวสิงคโปร์ร่ากับศาลาและกล้วยไม้"
+   "nt": "แมวสิงคโปร์ร่ากับศาลาและกล้วยไม้",
+   "nms": "Kucing Singapura dan pondok orkid"
   },
   {
    "f": "bg260.jpg",
@@ -3483,7 +3714,8 @@
    "nl": "Selkirk Rex na Pusa at Dagat ng mga Ulap",
    "nm": "ဆဲလ်ကျက်ရက်စ်ကြောင်နှင့် တိမ်ပင်လယ်",
    "nv": "Mèo Selkirk Rex trên biển mây",
-   "nt": "แมวเซลเคิร์กเร็กซ์กับทะเลหมอก"
+   "nt": "แมวเซลเคิร์กเร็กซ์กับทะเลหมอก",
+   "nms": "Kucing Selkirk Rex di atas lautan awan"
   },
   {
    "f": "bg261.jpg",
@@ -3498,7 +3730,8 @@
    "nl": "British Shorthair na Asul at ang Hardin ng mga Halamang Gamot",
    "nm": "ဗြိတိသျှဘလူးကြောင်နှင့် ဟာ့ဘ်ဥယျာဉ်",
    "nv": "Mèo Anh lông ngắn xanh và vườn thảo mộc",
-   "nt": "แมวบริติชชอร์ตแฮร์สีน้ำเงินกับสวนสมุนไพร"
+   "nt": "แมวบริติชชอร์ตแฮร์สีน้ำเงินกับสวนสมุนไพร",
+   "nms": "Kucing British Blue di taman herba"
   },
   {
    "f": "bg262.jpg",
@@ -3513,7 +3746,8 @@
    "nl": "British Shorthair na Silver Shaded at ang Bintana na may Tanawin ng Glacier",
    "nm": "ဗြိတိသျှငွေရောင်ကြောင်နှင့် ရေခဲမြစ်ပြတင်းပေါက်",
    "nv": "Mèo Anh lông ngắn bạc và khung cửa sổ băng hà",
-   "nt": "แมวบริติชชอร์ตแฮร์ซิลเวอร์เชดกับหน้าต่างมองธารน้ำแข็ง"
+   "nt": "แมวบริติชชอร์ตแฮร์ซิลเวอร์เชดกับหน้าต่างมองธารน้ำแข็ง",
+   "nms": "Kucing British Shorthair perang perak dan pemandangan glasier dari jendela"
   },
   {
    "f": "bg263.jpg",
@@ -3528,7 +3762,8 @@
    "nl": "Japanese Bobtail at ang Halamanan ng Pulang Maple",
    "nm": "ဂျပန်ဘောဘ်တေးလ်ကြောင်နှင့် မေပယ်ရွက်နီဥယျာဉ်",
    "nv": "Mèo cụt đuôi Nhật và sân vườn lá phong đỏ",
-   "nt": "แมวหางสั้นญี่ปุ่นในสวนใบเมเปิลแดง"
+   "nt": "แมวหางสั้นญี่ปุ่นในสวนใบเมเปิลแดง",
+   "nms": "Kucing Japanese Bobtail di taman maple merah"
   },
   {
    "f": "bg264.jpg",
@@ -3543,7 +3778,8 @@
    "nl": "American Curl na Pusa at mga Lobo ng Mainit na Hangin",
    "nm": "အမေရိကန်ကာလ်ကြောင်နှင့် ပူဖောင်းမျှော်များ",
    "nv": "Mèo tai cuộn Mỹ và khinh khí cầu",
-   "nt": "แมวอเมริกันเคิร์ลกับบอลลูนลมร้อน"
+   "nt": "แมวอเมริกันเคิร์ลกับบอลลูนลมร้อน",
+   "nms": "Kucing American Curl dan belon udara panas"
   },
   {
    "f": "bg51.jpg",
@@ -3558,7 +3794,8 @@
    "nl": "Tuta ng Corgi",
    "nm": "ကော်ဂီခွေးကလေး",
    "nv": "Chó Corgi con",
-   "nt": "ลูกสุนัขเวลช์คอร์กี้"
+   "nt": "ลูกสุนัขเวลช์คอร์กี้",
+   "nms": "Anak anjing Corgi"
   },
   {
    "f": "bg52.jpg",
@@ -3573,7 +3810,8 @@
    "nl": "Tuta ng Pomeranian",
    "nm": "ပိုမယ်ရေးနီးယန်းခွေးကလေး",
    "nv": "Chó Phốc sóc con",
-   "nt": "ลูกสุนัขปอมเมอเรเนียน"
+   "nt": "ลูกสุนัขปอมเมอเรเนียน",
+   "nms": "Anak anjing Pomeranian"
   },
   {
    "f": "bg53.jpg",
@@ -3588,7 +3826,8 @@
    "nl": "Tuta ng Poodle",
    "nm": "ပူဒယ်ခွေးကလေး",
    "nv": "Chó Poodle con",
-   "nt": "ลูกสุนัขพุดเดิ้ล"
+   "nt": "ลูกสุนัขพุดเดิ้ล",
+   "nms": "Anak anjing Poodle"
   },
   {
    "f": "bg115.jpg",
@@ -3603,7 +3842,8 @@
    "nl": "Tuta ng Golden Retriever at mga Rosas",
    "nm": "ဂိုးလ်ဒင်ခွေးကလေးနှင့် နှင်းဆီများ",
    "nv": "Chó Golden Retriever con và hoa hồng",
-   "nt": "ลูกสุนัขโกลเด้นรีทรีฟเวอร์กับกุหลาบ"
+   "nt": "ลูกสุนัขโกลเด้นรีทรีฟเวอร์กับกุหลาบ",
+   "nms": "Anak anjing Golden Retriever dan mawar"
   },
   {
    "f": "bg116.jpg",
@@ -3618,7 +3858,8 @@
    "nl": "Poodle at mga Lavender",
    "nm": "ပူဒယ်ခွေးနှင့် လာဗင်ဒါပန်းများ",
    "nv": "Chó Poodle và hoa oải hương",
-   "nt": "สุนัขพุดเดิ้ลกับลาเวนเดอร์"
+   "nt": "สุนัขพุดเดิ้ลกับลาเวนเดอร์",
+   "nms": "Anjing Poodle dan lavender"
   },
   {
    "f": "bg117.jpg",
@@ -3633,7 +3874,8 @@
    "nl": "Puting Pomeranian at mga Hydrangea",
    "nm": "ပိုမယ်ရေးနီးယန်းဖြူနှင့် ဟိုက်ဒရိန်ဂျီးယားပန်းများ",
    "nv": "Chó Phốc sóc trắng và cẩm tú cầu",
-   "nt": "สุนัขปอมเมอเรเนียนสีขาวกับดอกไฮเดรนเยีย"
+   "nt": "สุนัขปอมเมอเรเนียนสีขาวกับดอกไฮเดรนเยีย",
+   "nms": "Anjing Pomeranian putih dan bunga hidrangea"
   },
   {
    "f": "bg118.jpg",
@@ -3648,7 +3890,8 @@
    "nl": "Corgi at Basket ng mga Daisy",
    "nm": "ကော်ဂီခွေးနှင့် ဒေစီပန်းခြင်း",
    "nv": "Chó Corgi và giỏ cúc dại",
-   "nt": "สุนัขเวลช์คอร์กี้กับตะกร้าดอกเดซี่"
+   "nt": "สุนัขเวลช์คอร์กี้กับตะกร้าดอกเดซี่",
+   "nms": "Anjing Corgi dan bakul bunga daisi"
   },
   {
    "f": "bg119.jpg",
@@ -3663,7 +3906,8 @@
    "nl": "Shiba Inu at mga Sunflower",
    "nm": "ရှီဘာခွေးနှင့် နေကြာပန်းများ",
    "nv": "Chó Shiba và hoa hướng dương",
-   "nt": "สุนัขชิบะอินุกับดอกทานตะวัน"
+   "nt": "สุนัขชิบะอินุกับดอกทานตะวัน",
+   "nms": "Anjing Shiba dan bunga matahari"
   },
   {
    "f": "bg120.jpg",
@@ -3678,7 +3922,8 @@
    "nl": "Batang Labrador sa Bintanang may Ulan",
    "nm": "မိုးကျသောပြတင်းပေါက်နားက လက်ဘရာဒေါခွေးကလေးများ",
    "nv": "Chó Labrador con bên cửa sổ mưa",
-   "nt": "ลูกสุนัขลาบราดอร์ริมหน้าต่างวันฝนตก"
+   "nt": "ลูกสุนัขลาบราดอร์ริมหน้าต่างวันฝนตก",
+   "nms": "Anak anjing Labrador mengantuk di tepi jendela hujan"
   },
   {
    "f": "bg121.jpg",
@@ -3693,7 +3938,8 @@
    "nl": "Beagle at mga Tulip",
    "nm": "ဘီဂယ်ခွေးနှင့် ကျူးလစ်ပန်းများ",
    "nv": "Chó Beagle và hoa tulip",
-   "nt": "สุนัขบีเกิลกับดอกทิวลิป"
+   "nt": "สุนัขบีเกิลกับดอกทิวลิป",
+   "nms": "Anjing Beagle dan bunga tulip"
   },
   {
    "f": "bg122.jpg",
@@ -3708,7 +3954,8 @@
    "nl": "Border Collie sa Tabi ng Lawa",
    "nm": "ဘော်ဒါကိုလီခွေး ရေကန်ကမ်းစပ်",
    "nv": "Chó chăn cừu Border Collie bên hồ",
-   "nt": "สุนัขบอร์เดอร์คอลลี่ริมทะเลสาบ"
+   "nt": "สุนัขบอร์เดอร์คอลลี่ริมทะเลสาบ",
+   "nms": "Anjing Border Collie di tepi tasik"
   },
   {
    "f": "bg123.jpg",
@@ -3723,7 +3970,8 @@
    "nl": "Itim na Labrador at mga Puting Rosas",
    "nm": "လက်ဘရာဒေါခွေးမည်းနှင့် နှင်းဆီဖြူများ",
    "nv": "Chó Labrador đen và hoa hồng trắng",
-   "nt": "สุนัขลาบราดอร์สีดำกับกุหลาบขาว"
+   "nt": "สุนัขลาบราดอร์สีดำกับกุหลาบขาว",
+   "nms": "Anjing Labrador hitam dan mawar putih"
   },
   {
    "f": "bg124.jpg",
@@ -3738,7 +3986,8 @@
    "nl": "Yorkshire Terrier at mga Peonia",
    "nm": "ယော့ခ်ရှားတယ်ရီယာခွေးနှင့် ပီယိုနီပန်းများ",
    "nv": "Chó Yorkshire và hoa mẫu đơn",
-   "nt": "สุนัขยอร์กเชียร์เทอร์เรียกับดอกโบตั๋น"
+   "nt": "สุนัขยอร์กเชียร์เทอร์เรียกับดอกโบตั๋น",
+   "nms": "Anjing Yorkshire Terrier dan peoni"
   },
   {
    "f": "bg125.jpg",
@@ -3753,7 +4002,8 @@
    "nl": "Kambal na Golden Retriever at mga Sakura",
    "nm": "အမွှာ ဂိုးလ်ဒင်ခွေးကလေးနှစ်ကောင်နှင့် ဆာကူရာပန်းများ",
    "nv": "Hai chú Golden con sinh đôi và hoa anh đào",
-   "nt": "สุนัขโกลเด้นรีทรีฟเวอร์แฝดกับดอกซากุระ"
+   "nt": "สุนัขโกลเด้นรีทรีฟเวอร์แฝดกับดอกซากุระ",
+   "nms": "Anak anjing Golden Retriever kembar dan bunga sakura"
   },
   {
    "f": "bg126.jpg",
@@ -3768,7 +4018,8 @@
    "nl": "Samoyed na may Pulang Bandana",
    "nm": "ဆမိုယိတ်ခွေးနှင့် ပုဝါနီ",
    "nv": "Chó Samoyed quàng khăn đỏ",
-   "nt": "สุนัขซามอยด์กับผ้าพันคอสีแดง"
+   "nt": "สุนัขซามอยด์กับผ้าพันคอสีแดง",
+   "nms": "Anjing Samoyed berselendang merah"
   },
   {
    "f": "bg127.jpg",
@@ -3783,7 +4034,8 @@
    "nl": "Cavalier King Charles Spaniel sa Taglagas",
    "nm": "ကာဗလီယာခွေး ဆောင်းဦး",
    "nv": "Chó Cavalier King Charles mùa thu",
-   "nt": "สุนัขคาวาเลียร์คิงชาลส์สแปเนียลในฤดูใบไม้ร่วง"
+   "nt": "สุนัขคาวาเลียร์คิงชาลส์สแปเนียลในฤดูใบไม้ร่วง",
+   "nms": "Anjing Cavalier King Charles Spaniel di musim luruh"
   },
   {
    "f": "bg128.jpg",
@@ -3798,7 +4050,8 @@
    "nl": "Maltese at Bukid ng mga Daisy",
    "nm": "မောလ်တီစ်ခွေးနှင့် ဒေစီပန်းခင်း",
    "nv": "Chó Maltese giữa đồng cúc dại",
-   "nt": "สุนัขมอลทีสในทุ่งดอกเดซี่"
+   "nt": "สุนัขมอลทีสในทุ่งดอกเดซี่",
+   "nms": "Anjing Maltese di padang daisi"
   },
   {
    "f": "bg129.jpg",
@@ -3813,7 +4066,8 @@
    "nl": "Dachshund at Puso",
    "nm": "ဒက်ရှ်ဟွန်းခွေးနှင့် နှလုံးသား",
    "nv": "Chó Dachshund và trái tim",
-   "nt": "สุนัขดัชชุนด์กับหัวใจ"
+   "nt": "สุนัขดัชชุนด์กับหัวใจ",
+   "nms": "Anjing Dachshund dan hati"
   },
   {
    "f": "bg130.jpg",
@@ -3828,7 +4082,8 @@
    "nl": "Husky sa Baybayin",
    "nm": "ဟတ်စကီးခွေး ပင်လယ်ကမ်းခြေ",
    "nv": "Chó Husky bên bờ biển",
-   "nt": "สุนัขไซบีเรียนฮัสกี้ริมชายฝั่ง"
+   "nt": "สุนัขไซบีเรียนฮัสกี้ริมชายฝั่ง",
+   "nms": "Anjing Husky di tepi laut"
   },
   {
    "f": "bg131.jpg",
@@ -3843,7 +4098,8 @@
    "nl": "Malaking Aso at Tuta sa Hardin ng mga Rosas",
    "nm": "ခွေးကြီးနှင့် ခွေးငယ် နှင်းဆီဥယျာဉ်",
    "nv": "Chó lớn và chó nhỏ trong vườn hồng",
-   "nt": "สุนัขตัวใหญ่กับตัวเล็กในสวนกุหลาบ"
+   "nt": "สุนัขตัวใหญ่กับตัวเล็กในสวนกุหลาบ",
+   "nms": "Anjing besar dan anak anjing di taman mawar"
   },
   {
    "f": "bg132.jpg",
@@ -3858,7 +4114,8 @@
    "nl": "Bichon Frise at mga Lilang Bulaklak",
    "nm": "ဘီချွန်ခွေးနှင့် ခရမ်းရောင်ပန်းများ",
    "nv": "Chó Bichon và hoa tím",
-   "nt": "สุนัขบิชอง ฟริเซ่กับดอกไม้สีม่วง"
+   "nt": "สุนัขบิชอง ฟริเซ่กับดอกไม้สีม่วง",
+   "nms": "Anjing Bichon dan bunga ungu"
   },
   {
    "f": "bg133.jpg",
@@ -3873,7 +4130,8 @@
    "nl": "Pug at mga Aklat",
    "nm": "ပတ်ဂ်ခွေးနှင့် စာအုပ်များ",
    "nv": "Chó Pug và cuốn sách",
-   "nt": "สุนัขพั๊กกับหนังสือ"
+   "nt": "สุนัขพั๊กกับหนังสือ",
+   "nms": "Anjing Pug dan buku"
   },
   {
    "f": "bg134.jpg",
@@ -3888,7 +4146,8 @@
    "nl": "Cocker Spaniel sa Paglubog ng Araw",
    "nm": "ကော့ကာစပန်နီရယ်ခွေး နေဝင်ချိန်",
    "nv": "Chó Cocker Spaniel lúc hoàng hôn",
-   "nt": "สุนัขค็อกเกอร์สแปเนียลยามอาทิตย์ตก"
+   "nt": "สุนัขค็อกเกอร์สแปเนียลยามอาทิตย์ตก",
+   "nms": "Anjing Cocker Spaniel waktu matahari terbenam"
   },
   {
    "f": "bg265.jpg",
@@ -3903,7 +4162,8 @@
    "nl": "Dalmatian at ang Puting Bahay sa Banal na Pulo",
    "nm": "ဒယ်လမေးရှင်းခွေးနှင့် ဆန်တိုရီနီကျွန်းက အိမ်ဖြူများ",
    "nv": "Chó đốm Dalmatian bên những ngôi nhà trắng Santorini",
-   "nt": "สุนัขดัลเมเชียนกับบ้านสีขาวบนเกาะศักดิ์สิทธิ์"
+   "nt": "สุนัขดัลเมเชียนกับบ้านสีขาวบนเกาะศักดิ์สิทธิ์",
+   "nms": "Anjing Dalmatian dan rumah putih di Santorini"
   },
   {
    "f": "bg266.jpg",
@@ -3918,7 +4178,8 @@
    "nl": "Irish Setter at ang Batong Tulay sa Pulang Maple",
    "nm": "အိုင်းရစ်ဆက်တာခွေးနှင့် မေပယ်ရွက်နီ ကျောက်တံတား",
    "nv": "Chó Irish Setter và cầu đá lá phong đỏ",
-   "nt": "สุนัขไอริชเซตเตอร์กับสะพานหินและใบเมเปิลแดง"
+   "nt": "สุนัขไอริชเซตเตอร์กับสะพานหินและใบเมเปิลแดง",
+   "nms": "Anjing Irish Setter dan jambatan batu di antara daun maple merah"
   },
   {
    "f": "bg267.jpg",
@@ -3933,7 +4194,8 @@
    "nl": "Italian Greyhound at ang Tuscany",
    "nm": "အီတလီဂရေဟောင်းခွေးနှင့် တော့စ်ကနီ",
    "nv": "Chó săn thỏ Ý giữa vùng Toscana",
-   "nt": "สุนัขอิตาเลียนเกรย์ฮาวด์กับทัสคานี"
+   "nt": "สุนัขอิตาเลียนเกรย์ฮาวด์กับทัสคานี",
+   "nms": "Anjing Italian Greyhound di Tuscany"
   },
   {
    "f": "bg268.jpg",
@@ -3948,7 +4210,8 @@
    "nl": "Papillon at mga Hydrangea sa Tabi ng Lawa",
    "nm": "ပါပီယွန်ခွေးနှင့် ဟိုက်ဒရိန်ဂျီးယားပန်း ရေကန်ကမ်းစပ်",
    "nv": "Chó Papillon và cẩm tú cầu bên hồ",
-   "nt": "สุนัขปาปิยองกับดอกไฮเดรนเยียริมทะเลสาบ"
+   "nt": "สุนัขปาปิยองกับดอกไฮเดรนเยียริมทะเลสาบ",
+   "nms": "Anjing Papillon dan bunga hidrangea di tepi tasik"
   },
   {
    "f": "bg269.jpg",
@@ -3963,7 +4226,8 @@
    "nl": "Kerry Blue Terrier at mga Ligaw na Bulaklak sa Talampas sa Tabing-dagat",
    "nm": "ကယ်ရီဘလူးတယ်ရီယာခွေးနှင့် ကမ်းစပ်ကျောက်ဆောင်ပေါ်က ပန်းမြက်များ",
    "nv": "Chó Kerry Blue Terrier trên vách đá ven biển đầy hoa",
-   "nt": "สุนัขเคอร์รีบลูเทอร์เรียกับดอกไม้ริมหน้าผาชายทะเล"
+   "nt": "สุนัขเคอร์รีบลูเทอร์เรียกับดอกไม้ริมหน้าผาชายทะเล",
+   "nms": "Anjing Kerry Blue Terrier di tebing laut berbunga"
   },
   {
    "f": "bg270.jpg",
@@ -3978,7 +4242,8 @@
    "nl": "Finnish Lapphund at ang Aurora",
    "nm": "ဖင်လန်လက်ပ်ဟွန်ခွေးနှင့် အော်ရိုရာ",
    "nv": "Chó Lapphund Phần Lan và cực quang",
-   "nt": "สุนัขฟินนิชแลพฮุนด์กับแสงเหนือ"
+   "nt": "สุนัขฟินนิชแลพฮุนด์กับแสงเหนือ",
+   "nms": "Anjing Finnish Lapphund dan aurora"
   },
   {
    "f": "bg271.jpg",
@@ -3993,7 +4258,8 @@
    "nl": "Akita at ang Lumang Lansangan ng mga Ginkgo",
    "nm": "အာကီတာခွေးနှင့် ဂင်ဂိုသစ်ပင် လမ်းဟောင်း",
    "nv": "Chó Akita và phố cổ hàng bạch quả",
-   "nt": "สุนัขอากิตะอินุกับถนนโบราณใต้ต้นแปะก๊วย"
+   "nt": "สุนัขอากิตะอินุกับถนนโบราณใต้ต้นแปะก๊วย",
+   "nms": "Anjing Akita dan jalan lama pokok ginkgo"
   },
   {
    "f": "bg272.jpg",
@@ -4008,7 +4274,8 @@
    "nl": "Great Pyrenees at ang Bayan sa Bundok na may Lavender",
    "nm": "ဂရိတ်ပိရနီးစ်ခွေးနှင့် လာဗင်ဒါတောင်ပေါ်မြို့",
    "nv": "Chó Great Pyrenees và thị trấn núi hoa oải hương",
-   "nt": "สุนัขเกรทเพรนีสกับเมืองบนภูเขาท่ามกลางลาเวนเดอร์"
+   "nt": "สุนัขเกรทเพรนีสกับเมืองบนภูเขาท่ามกลางลาเวนเดอร์",
+   "nms": "Anjing Great Pyrenees dan perkampungan gunung lavender"
   },
   {
    "f": "bg273.jpg",
@@ -4023,7 +4290,8 @@
    "nl": "Newfoundland at ang Pantalan sa Tabi ng Lawa",
    "nm": "နယူးဖောင်လန်ခွေးနှင့် ရေကန်ကမ်းဆိပ်ခံတံတား",
    "nv": "Chó Newfoundland bên bến hồ",
-   "nt": "สุนัขนิวฟันด์แลนด์กับท่าเรือริมทะเลสาบ"
+   "nt": "สุนัขนิวฟันด์แลนด์กับท่าเรือริมทะเลสาบ",
+   "nms": "Anjing Newfoundland di jeti tepi tasik"
   },
   {
    "f": "bg274.jpg",
@@ -4038,7 +4306,8 @@
    "nl": "Old English Sheepdog, Gulong-tubig, at mga Iris",
    "nm": "အိုးလ်အင်္ဂလိပ်သိုးကျောင်းခွေးနှင့် ရေကြိုတ်စက်၊ အိုင်ရစ်ပန်းများ",
    "nv": "Chó chăn cừu cổ Anh bên cối xay nước và hoa diên vĩ",
-   "nt": "สุนัขโอลด์อิงลิชชีพด็อกกับกังหันน้ำและดอกไอริส"
+   "nt": "สุนัขโอลด์อิงลิชชีพด็อกกับกังหันน้ำและดอกไอริส",
+   "nms": "Anjing Old English Sheepdog, kincir air dan bunga iris"
   },
   {
    "f": "bg275.jpg",
@@ -4053,7 +4322,8 @@
    "nl": "Weimaraner at ang Ulap sa Umaga sa Gubat ng Birch",
    "nm": "ဝိုင်မာရာနာခွေးနှင့် ဘတ်ချ်သစ်ပင်ကြားက မနက်ခင်းမြူ",
    "nv": "Chó Weimaraner trong sương sớm rừng bạch dương",
-   "nt": "สุนัขไวมาราเนอร์กับหมอกยามเช้าในป่าเบิร์ช"
+   "nt": "สุนัขไวมาราเนอร์กับหมอกยามเช้าในป่าเบิร์ช",
+   "nms": "Anjing Weimaraner di kabus pagi hutan birch"
   },
   {
    "f": "bg276.jpg",
@@ -4068,7 +4338,8 @@
    "nl": "Vizsla at ang Gilingang-hangin ng mga Sunflower",
    "nm": "ဗစ်ဇ်လာခွေးနှင့် နေကြာပန်းများ၊ လေရဟတ်",
    "nv": "Chó Vizsla và cối xay gió hướng dương",
-   "nt": "สุนัขวิซสลากับกังหันลมและดอกทานตะวัน"
+   "nt": "สุนัขวิซสลากับกังหันลมและดอกทานตะวัน",
+   "nms": "Anjing Vizsla, bunga matahari dan kincir angin"
   },
   {
    "f": "bg277.jpg",
@@ -4083,7 +4354,8 @@
    "nl": "Rhodesian Ridgeback at ang Pulang Bangin ng Bato",
    "nm": "ရိုဒီးရှားရစ်ချ်ဘက်ခွေးနှင့် ကျောက်နီချောက်ကြီး",
    "nv": "Chó Rhodesian Ridgeback nơi hẻm núi đá đỏ",
-   "nt": "สุนัขโรดีเชียนริดจ์แบ็กกับหุบผาหินแดง"
+   "nt": "สุนัขโรดีเชียนริดจ์แบ็กกับหุบผาหินแดง",
+   "nms": "Anjing Rhodesian Ridgeback di ngarai batu merah"
   },
   {
    "f": "bg278.jpg",
@@ -4098,7 +4370,8 @@
    "nl": "Basenji at ang Sabana ng Africa",
    "nm": "ဘာဆင်ဂျီခွေးနှင့် အာဖရိကမြက်ခင်းပြင်ကျယ်",
    "nv": "Chó Basenji trên thảo nguyên châu Phi",
-   "nt": "สุนัขบาเซนจีกับทุ่งหญ้าสะวันนาแอฟริกา"
+   "nt": "สุนัขบาเซนจีกับทุ่งหญ้าสะวันนาแอฟริกา",
+   "nms": "Anjing Basenji di padang savana Afrika"
   },
   {
    "f": "bg279.jpg",
@@ -4113,7 +4386,8 @@
    "nl": "Scottish Terrier at ang Aklatan sa Sinaunang Kastilyo",
    "nm": "စကော့တလန်တယ်ရီယာခွေးနှင့် စာကြည့်ခန်း ရဲတိုက်ဟောင်း",
    "nv": "Chó Scottish Terrier trong thư phòng lâu đài cổ",
-   "nt": "สุนัขสกอตติชเทอร์เรียกับห้องหนังสือในปราสาทเก่า"
+   "nt": "สุนัขสกอตติชเทอร์เรียกับห้องหนังสือในปราสาทเก่า",
+   "nms": "Anjing Scottish Terrier di perpustakaan kota lama"
   },
   {
    "f": "bg280.jpg",
@@ -4128,7 +4402,8 @@
    "nl": "West Highland White Terrier at ang Munting Bahay sa Daungan",
    "nm": "ဝက်စတီးခွေးနှင့် ဆိပ်ကမ်းကျောင်းငယ်",
    "nv": "Chó Westie bên căn nhà nhỏ ở cảng",
-   "nt": "สุนัขเวสต์ไฮแลนด์ไวท์เทอร์เรียกับกระท่อมริมท่าเรือ"
+   "nt": "สุนัขเวสต์ไฮแลนด์ไวท์เทอร์เรียกับกระท่อมริมท่าเรือ",
+   "nms": "Anjing West Highland White Terrier dan pondok pelabuhan"
   },
   {
    "f": "bg281.jpg",
@@ -4143,7 +4418,8 @@
    "nl": "Bernese Mountain Dog at ang Dagat ng Bulaklak sa Alps",
    "nm": "ဘားနီစ်မောင်တိန်းခွေးနှင့် အဲလ်ပ်တောင်ကြားပန်းခင်း",
    "nv": "Chó Bernese giữa biển hoa núi Alps",
-   "nt": "สุนัขเบอร์นีสเมาน์เทนด็อกกับทุ่งดอกไม้แห่งเทือกเขาแอลป์"
+   "nt": "สุนัขเบอร์นีสเมาน์เทนด็อกกับทุ่งดอกไม้แห่งเทือกเขาแอลป์",
+   "nms": "Anjing Bernese di padang bunga Alps"
   },
   {
    "f": "bg282.jpg",
@@ -4158,7 +4434,8 @@
    "nl": "Shetland Sheepdog at ang Kastilyo sa mga Heather",
    "nm": "ရှက်တလန်သိုးကျောင်းခွေးနှင့် ဟက်သာပန်းတောထဲက ရဲတိုက်",
    "nv": "Chó chăn cừu Sheltie và lâu đài giữa đồng thạch nam",
-   "nt": "สุนัขเชตแลนด์ชีพด็อกกับปราสาทท่ามกลางทุ่งฮีทเธอร์"
+   "nt": "สุนัขเชตแลนด์ชีพด็อกกับปราสาทท่ามกลางทุ่งฮีทเธอร์",
+   "nms": "Anjing Sheltie dan istana di tanah berpokok erika"
   },
   {
    "f": "bg283.jpg",
@@ -4173,7 +4450,8 @@
    "nl": "Australian Shepherd at ang Ubasan sa Taglagas",
    "nm": "ဩစတြေးလျသိုးကျောင်းခွေးနှင့် ဆောင်းဦးစပျစ်ခြံ",
    "nv": "Chó chăn cừu Úc trong vườn nho mùa thu",
-   "nt": "สุนัขออสเตรเลียนเชพเพิร์ดกับสวนองุ่นในฤดูใบไม้ร่วง"
+   "nt": "สุนัขออสเตรเลียนเชพเพิร์ดกับสวนองุ่นในฤดูใบไม้ร่วง",
+   "nms": "Anjing Australian Shepherd di ladang anggur musim luruh"
   },
   {
    "f": "bg284.jpg",
@@ -4188,7 +4466,8 @@
    "nl": "Afghan Hound at ang Terasa ng mga Rosas",
    "nm": "အာဖဂန်ဟောင်းခွေးနှင့် နှင်းဆီဝရန်တာ",
    "nv": "Chó săn Afghanistan và sân thượng hoa hồng",
-   "nt": "สุนัขอัฟกันฮาวนด์กับระเบียงกุหลาบ"
+   "nt": "สุนัขอัฟกันฮาวนด์กับระเบียงกุหลาบ",
+   "nms": "Anjing Afghan Hound di teres mawar"
   },
   {
    "f": "bg155.jpg",
@@ -4203,7 +4482,8 @@
    "nl": "Rosas na Rosas, Liwanag ng Kandila, at Pusong Kahoy",
    "nm": "ပန်းရောင်နှင်းဆီ၊ ဖယောင်းတိုင်နှင့် သစ်သားနှလုံး",
    "nv": "Hoa hồng hồng, ánh nến và trái tim gỗ",
-   "nt": "หัวใจไม้กับกุหลาบสีชมพูและแสงเทียน"
+   "nt": "หัวใจไม้กับกุหลาบสีชมพูและแสงเทียน",
+   "nms": "Mawar merah jambu, lilin dan hati kayu"
   },
   {
    "f": "bg156.jpg",
@@ -4218,7 +4498,8 @@
    "nl": "Plorera ng mga Rosas na Kulay Gatas",
    "nm": "နို့ဖြူရောင်နှင်းဆီပန်းအိုး",
    "nv": "Bình hoa hồng trắng kem",
-   "nt": "แจกันกุหลาบสีขาวนวล"
+   "nt": "แจกันกุหลาบสีขาวนวล",
+   "nms": "Pasu mawar putih krim"
   },
   {
    "f": "bg157.jpg",
@@ -4233,7 +4514,8 @@
    "nl": "Kahon na Puso na may Rosas na Tulip",
    "nm": "ပန်းရောင်ကျူးလစ်ပန်းနှင့် နှလုံးပုံသေတ္တာ",
    "nv": "Hoa tulip hồng và hộp trái tim",
-   "nt": "กล่องรูปหัวใจกับทิวลิปสีชมพู"
+   "nt": "กล่องรูปหัวใจกับทิวลิปสีชมพู",
+   "nms": "Tulip merah jambu dan kotak hati"
   },
   {
    "f": "bg158.jpg",
@@ -4248,7 +4530,8 @@
    "nl": "Maiinit na Tsaa ng Chamomile",
    "nm": "ကမ်မိုင်းလက်ဖက်ရည်ပူ",
    "nv": "Trà cúc La Mã ấm áp",
-   "nt": "ชาคาโมมายล์ร้อนอุ่นๆ"
+   "nt": "ชาคาโมมายล์ร้อนอุ่นๆ",
+   "nms": "Teh chamomile yang hangat"
   },
   {
    "f": "bg159.jpg",
@@ -4263,7 +4546,8 @@
    "nl": "Rosas na Peonia at Dalawang Pusong Kahoy",
    "nm": "ပန်းရောင်ပီယိုနီနှင့် သစ်သားနှလုံးနှစ်ခု",
    "nv": "Mẫu đơn hồng và hai trái tim gỗ",
-   "nt": "หัวใจไม้คู่กับดอกโบตั๋นสีชมพู"
+   "nt": "หัวใจไม้คู่กับดอกโบตั๋นสีชมพู",
+   "nms": "Peoni merah jambu dan dua hati kayu"
   },
   {
    "f": "bg160.jpg",
@@ -4278,7 +4562,8 @@
    "nl": "Puting Porselanang Banga at mga Lavender",
    "nm": "လာဗင်ဒါပန်းနှင့် ကြွေရည်ဖြူရေအိုး",
    "nv": "Hoa oải hương và bình sứ trắng",
-   "nt": "กาเคลือบสีขาวกับลาเวนเดอร์"
+   "nt": "กาเคลือบสีขาวกับลาเวนเดอร์",
+   "nms": "Jag porselin putih dan lavender"
   },
   {
    "f": "bg161.jpg",
@@ -4293,7 +4578,8 @@
    "nl": "Pusong Salamin na may Hydrangea at Tanawin ng Dagat",
    "nm": "ဟိုက်ဒရိန်ဂျီးယားနှင့် ဖန်နှလုံးသား ပင်လယ်မြင်ကွင်း",
    "nv": "Cẩm tú cầu, trái tim thủy tinh và cảnh biển",
-   "nt": "หัวใจแก้วดอกไฮเดรนเยียกับทิวทัศน์ทะเล"
+   "nt": "หัวใจแก้วดอกไฮเดรนเยียกับทิวทัศน์ทะเล",
+   "nms": "Bunga hidrangea, hati kaca dan pemandangan laut"
   },
   {
    "f": "bg162.jpg",
@@ -4308,7 +4594,8 @@
    "nl": "Unan na Puso at mga Sunflower",
    "nm": "နေကြာပန်းများနှင့် နှလုံးပုံ ခေါင်းအုံး",
    "nv": "Hoa hướng dương và gối trái tim",
-   "nt": "หมอนรูปหัวใจกับดอกทานตะวัน"
+   "nt": "หมอนรูปหัวใจกับดอกทานตะวัน",
+   "nms": "Bunga matahari dan bantal hati"
   },
   {
    "f": "bg163.jpg",
@@ -4323,7 +4610,8 @@
    "nl": "Pusong Perlas at mga Carnation",
    "nm": "ကာနေးရှင်းပန်းနှင့် ပုလဲနှလုံးသား",
    "nv": "Hoa cẩm chướng và trái tim ngọc trai",
-   "nt": "ดอกคาร์เนชันกับหัวใจไข่มุก"
+   "nt": "ดอกคาร์เนชันกับหัวใจไข่มุก",
+   "nms": "Bunga carnation dan hati mutiara"
   },
   {
    "f": "bg164.jpg",
@@ -4338,7 +4626,8 @@
    "nl": "Mga Hyacinth at Sobre",
    "nm": "ဟိုင်ယာဆင့်ပန်းနှင့် စာအိတ်များ",
    "nv": "Hoa lan dạ hương và những lá thư",
-   "nt": "ดอกฮยาซินท์กับซองจดหมาย"
+   "nt": "ดอกฮยาซินท์กับซองจดหมาย",
+   "nms": "Bunga hyacinth dan sampul surat"
   },
   {
    "f": "bg165.jpg",
@@ -4353,7 +4642,8 @@
    "nl": "Pumpon ng mga Gerbera sa Kraft Paper",
    "nm": "ဂျာဘယ်ရာပန်းနှင့် ခရက်စက္ကူ ပန်းစည်း",
    "nv": "Bó hoa đồng tiền gói giấy kraft",
-   "nt": "ช่อดอกเจอร์เบอร่าห่อกระดาษคราฟต์"
+   "nt": "ช่อดอกเจอร์เบอร่าห่อกระดาษคราฟต์",
+   "nms": "Gerbera dan jambangan kertas kraf"
   },
   {
    "f": "bg166.jpg",
@@ -4368,7 +4658,8 @@
    "nl": "Krus na may Liryo at Biblia",
    "nm": "လီလီပန်း၊ လက်ဝါးကပ်တိုင်နှင့် သမ္မာကျမ်းစာ",
    "nv": "Hoa huệ, thập tự giá và Kinh Thánh",
-   "nt": "ไม้กางเขน ดอกลิลลี่ และพระคัมภีร์"
+   "nt": "ไม้กางเขน ดอกลิลลี่ และพระคัมภีร์",
+   "nms": "Bunga lili, salib dan Alkitab"
   },
   {
    "f": "bg167.jpg",
@@ -4383,7 +4674,8 @@
    "nl": "Pusong Kristal at mga Sakura",
    "nm": "ဆာကူရာပန်းနှင့် ပုလဲဖန် နှလုံးသား",
    "nv": "Hoa anh đào và trái tim pha lê",
-   "nt": "หัวใจคริสตัลกับดอกซากุระ"
+   "nt": "หัวใจคริสตัลกับดอกซากุระ",
+   "nms": "Bunga sakura dan hati kristal"
   },
   {
    "f": "bg168.jpg",
@@ -4398,7 +4690,8 @@
    "nl": "Basket ng mga Liryo ng Lambak",
    "nm": "ချိုင့်ဝှမ်းလီလီပန်းခြင်း",
    "nv": "Giỏ hoa linh lan",
-   "nt": "ตะกร้าดอกลิลลี่ออฟเดอะวัลเลย์"
+   "nt": "ตะกร้าดอกลิลลี่ออฟเดอะวัลเลย์",
+   "nms": "Bakul bunga lili lembah"
   },
   {
    "f": "bg169.jpg",
@@ -4413,7 +4706,8 @@
    "nl": "Pulang Rosas sa Terasa sa Paglubog ng Araw",
    "nm": "နှင်းဆီနီများ နေဝင်ချိန် ဝရန်တာ",
    "nv": "Hoa hồng đỏ trên sân thượng lúc hoàng hôn",
-   "nt": "ระเบียงกุหลาบแดงยามอาทิตย์ตก"
+   "nt": "ระเบียงกุหลาบแดงยามอาทิตย์ตก",
+   "nms": "Mawar merah di teres waktu senja"
   },
   {
    "f": "bg170.jpg",
@@ -4428,7 +4722,8 @@
    "nl": "Pusong Puting Orkidyas na Phalaenopsis",
    "nm": "သစ်ခွဖြူနှင့် နှလုံးသား",
    "nv": "Hoa lan hồ điệp trắng và trái tim",
-   "nt": "หัวใจกล้วยไม้ฟาแลนอปซิสสีขาว"
+   "nt": "หัวใจกล้วยไม้ฟาแลนอปซิสสีขาว",
+   "nms": "Orkid rama-rama putih dan hati"
   },
   {
    "f": "bg171.jpg",
@@ -4443,7 +4738,8 @@
    "nl": "Mga Dahlia at Maiinit na Tsaa sa Taglagas",
    "nm": "ဒါလီယာပန်းများနှင့် ဆောင်းဦးလက်ဖက်ရည်ပူ",
    "nv": "Hoa thược dược và tách trà ấm mùa thu",
-   "nt": "ดอกรักเร่กับชาร้อนอุ่นๆ ยามฤดูใบไม้ร่วง"
+   "nt": "ดอกรักเร่กับชาร้อนอุ่นๆ ยามฤดูใบไม้ร่วง",
+   "nms": "Bunga dahlia dan teh hangat musim luruh"
   },
   {
    "f": "bg172.jpg",
@@ -4458,7 +4754,8 @@
    "nl": "Pilak na Kahon ng Kuwintas na may Anemone",
    "nm": "ရန်နန်ကူလပ်စ်ပန်းနှင့် ငွေလည်ဆွဲသေတ္တာ",
    "nv": "Hoa mao lương và hộp mề đay bạc",
-   "nt": "กล่องสร้อยคอสีเงินกับดอกอะนีโมน"
+   "nt": "กล่องสร้อยคอสีเงินกับดอกอะนีโมน",
+   "nms": "Bunga ranunculus dan loket perak"
   },
   {
    "f": "bg173.jpg",
@@ -4473,7 +4770,8 @@
    "nl": "Bulaklak sa Pagsikat ng Araw na may Dalawang Puso",
    "nm": "နေထွက်ချိန် ပန်းစည်းနှင့် နှလုံးနှစ်ခု",
    "nv": "Bó hoa bình minh và hai trái tim",
-   "nt": "ช่อดอกไม้ยามอรุณรุ่งกับหัวใจคู่"
+   "nt": "ช่อดอกไม้ยามอรุณรุ่งกับหัวใจคู่",
+   "nms": "Jambangan bunga waktu matahari terbit dan dua hati"
   },
   {
    "f": "bg174.jpg",
@@ -4488,7 +4786,8 @@
    "nl": "Pusong Kahoy na may Koronang Bulaklak na Lila at Rosas",
    "nm": "ခရမ်းနှင့်ပန်းရောင်ပန်းကွင်းနှင့် သစ်သားနှလုံး",
    "nv": "Vòng hoa tím hồng và trái tim gỗ",
-   "nt": "หัวใจไม้กับพวงมาลัยดอกไม้สีม่วงชมพู"
+   "nt": "หัวใจไม้กับพวงมาลัยดอกไม้สีม่วงชมพู",
+   "nms": "Hati kayu berkalungan bunga ungu dan merah jambu"
   }
  ],
  "cats": [
@@ -4503,7 +4802,8 @@
    "nl": "Mga Kuwento sa Biblia",
    "nm": "သမ္မာကျမ်းစာ ဇာတ်လမ်းများ",
    "nv": "Câu chuyện Kinh Thánh",
-   "nt": "เรื่องราวในพระคัมภีร์"
+   "nt": "เรื่องราวในพระคัมภีร์",
+   "nms": "Kisah Alkitab"
   },
   {
    "id": "scenery",
@@ -4516,7 +4816,8 @@
    "nl": "Mga Tanawin",
    "nm": "ရှုခင်းများ",
    "nv": "Phong cảnh",
-   "nt": "ทิวทัศน์"
+   "nt": "ทิวทัศน์",
+   "nms": "Pemandangan"
   },
   {
    "id": "cross",
@@ -4529,7 +4830,8 @@
    "nl": "Krus",
    "nm": "လက်ဝါးကပ်တိုင်",
    "nv": "Thập tự giá",
-   "nt": "ไม้กางเขน"
+   "nt": "ไม้กางเขน",
+   "nms": "Salib"
   },
   {
    "id": "cats",
@@ -4542,7 +4844,8 @@
    "nl": "Mga Pusa",
    "nm": "ကြောင်များ",
    "nv": "Mèo",
-   "nt": "แมว"
+   "nt": "แมว",
+   "nms": "Kucing"
   },
   {
    "id": "dogs",
@@ -4555,7 +4858,8 @@
    "nl": "Mga Aso",
    "nm": "ခွေးများ",
    "nv": "Chó",
-   "nt": "สุนัข"
+   "nt": "สุนัข",
+   "nms": "Anjing"
   },
   {
    "id": "gifts",
@@ -4568,7 +4872,8 @@
    "nl": "Mga Regalo",
    "nm": "လက်ဆောင်များ",
    "nv": "Quà tặng",
-   "nt": "ของขวัญ"
+   "nt": "ของขวัญ",
+   "nms": "Hadiah"
   },
   {
    "id": "cakes",
@@ -4581,7 +4886,8 @@
    "nl": "Mga Cake",
    "nm": "ကိတ်မုန့်များ",
    "nv": "Bánh kem",
-   "nt": "เค้ก"
+   "nt": "เค้ก",
+   "nms": "Kek"
   }
  ]
 }
