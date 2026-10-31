@@ -23,7 +23,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.29.2';
+const VERSION = 'v2.30.0';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -6145,6 +6145,7 @@ async function viewCompanion(v){
         ${b ? `<span class="chatctx" style="margin:0">${esc(L.ctx(bname(b), RD.ch))}</span>` : ''}
         <button class="qs-toggle" id="audBtn" style="margin:0"></button>
         <button class="qs-toggle" id="pfBtn" style="margin:0"></button>
+        <button class="qs-toggle" id="pfNext" style="margin:0" hidden title="switch">🔄</button>
         <button class="qs-toggle" id="qsBtn" style="margin:0">💡 ${esc(L.examples)}</button>
       </div>
       <div class="segbtns" id="lenSeg" style="justify-content:flex-start;align-items:center;margin:0 0 6px"></div>
@@ -6269,7 +6270,7 @@ async function viewCompanion(v){
     const sendB = $('#chatSend', v); if (sendB) sendB.addEventListener('click', () => { if (xzOptsOpen) setOpts(false); });
     const inB = $('#chatIn', v); if (inB) inB.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && xzOptsOpen) setOpts(false); });
   })();
-  { const pb = $('#pfBtn', v); const paintPf = () => { pb.textContent = '👤 ' + (pfNick() || L3('我的資料', '我的资料', 'About me')) + (pfAny() ? ' ✓' : ''); }; paintPf(); pb.onclick = () => openProfile(() => { paintPf(); try{ paintAud(); }catch(e){} }); }
+  { const pb = $('#pfBtn', v), pn = $('#pfNext', v); const paintPf = () => { pb.textContent = '👤 ' + (pfNick() || L3('我的資料', '我的资料', 'About me')) + (pfAny() ? ' ✓' : ''); if (pn) pn.hidden = pfList().length < 2; }; const re = () => { paintPf(); try{ paintAud(); }catch(e){} try{ paintQs(); }catch(e){} }; paintPf(); pb.onclick = () => openProfile(re); if (pn) pn.onclick = () => pfNext(re); }
   $('#audBtn', v).onclick = () => { const ap = $('#audPanel', v); ap.hidden = !ap.hidden; if (!ap.hidden) panel.hidden = true; };
   paintChat();
   $('#chatSend', v).onclick = () => sendChat($('#chatIn').value);
@@ -6558,13 +6559,26 @@ const PF_FIELDS = [
 ];
 const pfOpt = (f, k) => { const o = f.o.find(x => x[0] === k); return o ? L3(o[1], o[2], o[3]) : ''; };
 const pfLabel = f => L3(f.t[0], f.t[1], f.t[2]);
-const pfGet = () => { const p = state.profile; return (p && typeof p === 'object') ? p : {}; };
-const pfAny = () => { const p = pfGet(); return !!(p.nick || p.gender || p.age || p.marital || p.work || p.study || p.faith || p.note); };
+/* 多個資料檔（家人共用一支手機）：state.profiles 陣列＋state.pfIdx；舊版單一 state.profile 自動轉入 */
+const pfList = () => {
+  if (!Array.isArray(state.profiles) || !state.profiles.length){
+    state.profiles = [(state.profile && typeof state.profile === 'object') ? state.profile : {}];
+    state.pfIdx = 0;
+  }
+  if (!(state.pfIdx >= 0 && state.pfIdx < state.profiles.length)) state.pfIdx = 0;
+  return state.profiles;
+};
+const pfGet = () => { const a = pfList(); return a[state.pfIdx] || {}; };
+const pfSet = p => { const a = pfList(); a[state.pfIdx] = p; state.profile = p; };
+const pfName = (p, i) => (p && p.nick) ? p.nick : (L3('資料', '资料', 'Profile ') + (i + 1));
+/* 12 歲以下：只送暱稱，其餘（含讀經紀錄、畫線、語氣）一律不送 */
+const pfIsChild = p => { p = p || pfGet(); const age = +p.age || 0; return !!((age && age < 12) || p.study === 'preK' || p.study === 'primary'); };
+const pfAny = () => { const p = pfGet(); return !!(p.nick || p.gender || p.age || p.marital || p.work || p.study || p.faith || p.note || p.tone); };
 const pfNick = () => { const p = pfGet(); return (p.nick || '').trim(); };
 /* 資料 → 建議的「回答對象」 */
-const pfSuggestAud = () => {
-  const p = pfGet(), age = +p.age || 0;
-  if (age && age < 12 || p.study === 'preK' || p.study === 'primary') return 'kid';
+const pfSuggestAud = p => {
+  p = p || pfGet(); const age = +p.age || 0;
+  if (pfIsChild(p)) return 'kid';
   if (age && age < 19 || p.study === 'junior' || p.study === 'senior') return 'teen';
   if (p.faith === 'pastor') return 'pastor';
   if (p.faith === 'seeker' || p.faith === 'unbeliever') return 'seeker';
@@ -6593,9 +6607,33 @@ const PF_ZH = {
   work:{ boss:'老闆：決策、責任、管家職分、誠信、領導的孤單', manager:'主管：帶團隊、上下夾擊的壓力、公平', employee:'員工：職場人際、上司、職場呼召、疲憊', homemaker:'家管：家務的價值與尊嚴，用日常生活舉例', selfemp:'自僱：收入不穩、自律、信靠', retired:'退休：生命意義、傳承、健康、含飴弄孫', jobless:'待業：溫柔、盼望、工作之外的身分、實際的鼓勵' },
   study:{ preK:'幼兒園年紀：非常簡單的短句、用故事', primary:'小學年紀：淺白用字、具體故事與遊戲', junior:'初中年紀：真實、貼近、不居高臨下', senior:'高中年紀：考試、未來、自我認同、友誼', univ:'大學生：獨立、選系與職涯、感情、疑問', grad:'研究生：研究壓力、指導教授、較深的推理' }
 };
+const PF_TONE = {
+  gentle:{ en:'TONE: gentle and encouraging — warm, patient, comfort first; affirm what is good, invite small doable steps, never shame.', zh:'語氣偏好：溫柔鼓勵——溫暖、有耐心，先安慰；肯定他做得好的地方，邀請做得到的小步驟，絕不羞辱。' },
+  direct:{ en:'TONE: direct and challenging — honest and straight; name the real issue clearly, call for a concrete decision or action, and stay loving (never harsh, mocking or shaming).', zh:'語氣偏好：直接挑戰——誠實直率；清楚點出真正的問題，呼召具體的決定或行動，但仍帶著愛（不苛刻、不嘲諷、不羞辱）。' }
+};
+/* 最近讀經與畫線：讓小智接得上他最近讀的內容（12 歲以下不送） */
+const pfContext = () => {
+  const en = isEP(), out = [];
+  try{
+    const last = user.last && BOOK[user.last.book] ? `${bname(BOOK[user.last.book])} ${user.last.ch}` : '';
+    const rec = Object.keys(user.progress || {}).map(k => [k, user.progress[k]]).filter(x => x[1] > 1e9).sort((a, b) => b[1] - a[1]).slice(0, 4)
+      .map(x => { const i = x[0].lastIndexOf('-'), id = x[0].slice(0, i), ch = x[0].slice(i + 1); return BOOK[id] ? `${bname(BOOK[id])} ${ch}` : ''; }).filter(Boolean);
+    if (last) out.push((en ? 'Currently reading: ' : '目前讀到：') + last);
+    if (rec.length) out.push((en ? 'Chapters finished most recently: ' : '最近讀完：') + rec.join(en ? ', ' : '、'));
+    const hls = Object.values(user.hl || {}).filter(h => h && h.t && h.b && BOOK[h.b]).sort((a, b) => (b.ts || 0) - (a.ts || 0)).slice(0, 3);
+    if (hls.length) out.push((en ? 'Recently highlighted: ' : '最近畫線：') + hls.map(h => `${cardRef(h)}「${String(h.t).replace(/\s+/g, ' ').slice(0, 70)}」` + (h.n ? (en ? ` (own note: ${String(h.n).slice(0, 60)})` : `（他的默想：${String(h.n).slice(0, 60)}）`) : '')).join(en ? '; ' : '；'));
+  }catch(e){}
+  return out.length ? ((en ? ' READING CONTEXT (so you can connect to what they have been reading; mention only when relevant): ' : ' 讀經背景（讓你接得上他最近讀的內容；相關時再提，不要硬扯）：') + out.join(en ? ' | ' : '｜') + (en ? '.' : '。')) : '';
+};
 const PROFILE_SYS = () => {
   const p = pfGet(); if (!pfAny()) return '';
   const en = isEP();
+  /* 兒童保護：12 歲以下只送暱稱，並提醒用適合孩子的方式說話 */
+  if (pfIsChild(p)){
+    const nk = String(p.nick || '').slice(0, 20);
+    return en ? ' READER: a young child' + (nk ? ' whose nickname is "' + nk + '" (you may call them that now and then)' : '') + '. Keep everything child-safe, simple and kind.'
+              : ' 讀者：年幼的孩子' + (nk ? '，暱稱「' + nk + '」（可偶爾這樣稱呼）' : '') + '。內容務必適合孩子、簡單、溫柔。';
+  }
   const G = en ? PF_GUIDE : PF_ZH;
   const L = [];
   if (p.nick) L.push((en ? 'Nickname: ' : '暱稱：') + String(p.nick).slice(0, 20));
@@ -6603,41 +6641,73 @@ const PROFILE_SYS = () => {
   if (+p.age) L.push((en ? 'Age: ' : '年齡：') + (+p.age));
   ['marital', 'work', 'study', 'faith'].forEach(k => { if (p[k] && G[k] && G[k][p[k]]) L.push((en ? PF_FIELDS.find(f => f.k === k).t[2] : PF_FIELDS.find(f => f.k === k).t[0]) + ' → ' + G[k][p[k]]); });
   if (p.note) L.push((en ? 'What they most want help with right now: ' : '目前最想得到幫助的事：') + String(p.note).slice(0, 160));
-  if (!L.length) return '';
-  return en
+  const tone = PF_TONE[p.tone] ? (en ? PF_TONE[p.tone].en : PF_TONE[p.tone].zh) : '';
+  const ctx = (p.ctx !== false) ? pfContext() : '';
+  if (!L.length && !tone && !ctx) return '';
+  return (L.length ? (en
     ? ' READER PROFILE (use it to tailor the answer; do not recite it back): ' + L.join(' | ') + '. Personalise: address them by nickname only now and then (not every sentence); choose vocabulary, length, examples and tone that fit their age, study level, work, family situation and faith stage; offer practical steps they can really do this week. Use correct gendered words where the language needs them. Never assume facts that are not listed, never mention their age or gender unless it matters, and keep the Scripture and gospel truth unchanged. If this profile conflicts with the selected answer audience, keep the audience\'s tone and format but use the profile for the content.'
-    : ' 讀者資料（請據此量身回答，但不要照念）：' + L.join('｜') + '。請：偶爾以暱稱稱呼（不要每句都叫）；依年齡、學歷階段、職場角色、家庭處境與信仰階段，選擇合適的用字、長度、舉例與語氣；給他這個星期真的做得到的具體步驟；語言需要時使用正確的性別用字。不要假設資料裡沒有的事，除非必要不提年齡或性別，經文與福音真理不可更動。若資料與所選「回答對象」衝突，語氣與格式依回答對象，內容依讀者資料。';
+    : ' 讀者資料（請據此量身回答，但不要照念）：' + L.join('｜') + '。請：偶爾以暱稱稱呼（不要每句都叫）；依年齡、學歷階段、職場角色、家庭處境與信仰階段，選擇合適的用字、長度、舉例與語氣；給他這個星期真的做得到的具體步驟；語言需要時使用正確的性別用字。不要假設資料裡沒有的事，除非必要不提年齡或性別，經文與福音真理不可更動。若資料與所選「回答對象」衝突，語氣與格式依回答對象，內容依讀者資料。') : '')
+    + (tone ? ' ' + tone : '') + ctx;
 };
 function openProfile(after){
   const old = document.getElementById('pfMask'); if (old) old.remove();
-  const p = Object.assign({}, pfGet());
+  pfList();
   const m = document.createElement('div'); m.id = 'pfMask';
   m.style.cssText = 'position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center';
+  let p = Object.assign({}, pfGet());
+  const commit = () => { pfSet(Object.assign({}, p)); saveState(); };
   const draw = () => {
+    const kid = pfIsChild(p);
     const sg = f => `<div style="margin:12px 0 4px;font-weight:700;font-size:13px">${esc(pfLabel(f))}</div><div class="segbtns" data-f="${f.k}" style="justify-content:flex-start">${f.o.map(o => `<button class="${p[f.k] === o[0] ? 'on' : ''}" data-k="${o[0]}">${esc(pfOpt(f, o[0]))}</button>`).join('')}</div>`;
-    const sa = pfSuggestAud();
+    const sa = pfSuggestAud(p);
+    const tabs = state.profiles.map((q, i) => `<button class="${i === state.pfIdx ? 'on' : ''}" data-i="${i}">${esc(pfName(i === state.pfIdx ? p : q, i))}</button>`).join('')
+      + (state.profiles.length < 6 ? `<button id="pfAdd">＋ ${esc(L3('新增', '新增', 'Add'))}</button>` : '');
+    const inp = 'padding:9px 10px;border:1px solid var(--border);border-radius:10px;font:inherit;background:var(--surface-alt);color:var(--ink)';
+    const tone = ['gentle', 'direct'].map(k => `<button class="${p.tone === k ? 'on' : ''}" data-k="${k}">${esc(k === 'gentle' ? L3('溫柔鼓勵', '温柔鼓励', 'Gentle & encouraging') : L3('直接挑戰', '直接挑战', 'Direct & challenging'))}</button>`).join('');
     m.innerHTML = `<div style="background:var(--surface,#fff);color:var(--ink);width:100%;max-width:640px;max-height:88vh;overflow:auto;border-radius:18px 18px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom))">
       <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:16px">👤 ${esc(L3('讀者資料（小智量身回答）', '读者资料（小智量身回答）', 'About me (personalised answers)'))}</b><button id="pfX" class="btn" style="padding:4px 12px">✕</button></div>
-      <div class="muted" style="font-size:12px;line-height:1.6;margin:6px 0 0">${esc(L3('全部選填，只存在這支手機；小智回答時會把這些資料一併傳給 AI 服務，讓答案更貼近你。想停用隨時清除。', '全部选填，只存在这部手机；小智回答时会把这些资料一并传给 AI 服务，让答案更贴近你。想停用随时清除。', 'All optional and stored only on this phone. When Xiaozhi answers, these details are sent along to the AI service so the answer fits you. Clear them any time.'))}</div>
+      <div class="segbtns" id="pfTabs" style="justify-content:flex-start;margin-top:10px">${tabs}</div>
+      <div class="muted" style="font-size:12px;line-height:1.6;margin:8px 0 0">${esc(L3('全部選填，只存在這支手機；小智回答時會把這些資料一併傳給 AI 服務，讓答案更貼近你。想停用隨時清除。', '全部选填，只存在这部手机；小智回答时会把这些资料一并传给 AI 服务，让答案更贴近你。想停用随时清除。', 'All optional and stored only on this phone. When Xiaozhi answers, these details are sent along to the AI service so the answer fits you. Clear them any time.'))}</div>
       <div style="margin:12px 0 4px;font-weight:700;font-size:13px">${esc(L3('暱稱', '昵称', 'Nickname'))}</div>
-      <input id="pfNick" maxlength="20" value="${esc(p.nick || '')}" style="width:100%;box-sizing:border-box;padding:9px 10px;border:1px solid var(--border);border-radius:10px;font:inherit;background:var(--surface-alt);color:var(--ink)">
-      ${sg(PF_FIELDS[0])}
+      <input id="pfNick" maxlength="20" value="${esc(p.nick || '')}" style="width:100%;box-sizing:border-box;${inp}">
       <div style="margin:12px 0 4px;font-weight:700;font-size:13px">${esc(L3('年齡', '年龄', 'Age'))}</div>
-      <input id="pfAge" type="number" inputmode="numeric" min="3" max="110" value="${esc(p.age || '')}" style="width:120px;padding:9px 10px;border:1px solid var(--border);border-radius:10px;font:inherit;background:var(--surface-alt);color:var(--ink)">
-      ${PF_FIELDS.slice(1).map(sg).join('')}
+      <input id="pfAge" type="number" inputmode="numeric" min="3" max="110" value="${esc(p.age || '')}" style="width:120px;${inp}">
+      ${kid ? `<div class="muted" style="font-size:12.5px;line-height:1.7;margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--surface-alt)">🧸 ${esc(L3('12 歲以下的孩子：只會把暱稱傳給 AI，其他資料、讀經紀錄與畫線一律不傳；小智會用適合孩子的方式回答。', '12 岁以下的孩子：只会把昵称传给 AI，其他资料、读经记录与画线一律不传；小智会用适合孩子的方式回答。', 'For children under 12, only the nickname is shared with the AI. Nothing else — details, reading history or highlights — is sent. Xiaozhi answers in a child-friendly way.'))}</div>`
+      : `${sg(PF_FIELDS[0])}${PF_FIELDS.slice(1).map(sg).join('')}
       <div style="margin:12px 0 4px;font-weight:700;font-size:13px">${esc(L3('目前最想得到幫助的事（選填）', '目前最想得到帮助的事（选填）', 'What I most want help with now (optional)'))}</div>
-      <textarea id="pfNote" rows="2" maxlength="160" placeholder="${esc(L3('例：工作壓力大、和孩子溝通、想建立靈修習慣…', '例：工作压力大、和孩子沟通、想建立灵修习惯…', 'e.g. work stress, talking with my kids, building a devotional habit…'))}" style="width:100%;box-sizing:border-box;padding:9px 10px;border:1px solid var(--border);border-radius:10px;font:inherit;background:var(--surface-alt);color:var(--ink)">${esc(p.note || '')}</textarea>
+      <textarea id="pfNote" rows="2" maxlength="160" placeholder="${esc(L3('例：工作壓力大、和孩子溝通、想建立靈修習慣…', '例：工作压力大、和孩子沟通、想建立灵修习惯…', 'e.g. work stress, talking with my kids, building a devotional habit…'))}" style="width:100%;box-sizing:border-box;${inp}">${esc(p.note || '')}</textarea>
+      <div style="margin:12px 0 4px;font-weight:700;font-size:13px">${esc(L3('語氣偏好', '语气偏好', 'Tone'))}</div>
+      <div class="segbtns" id="pfTone" style="justify-content:flex-start">${tone}</div>
+      <label style="display:flex;gap:8px;align-items:flex-start;margin-top:14px;font-size:13px;line-height:1.5"><input type="checkbox" id="pfCtx" ${p.ctx !== false ? 'checked' : ''} style="margin-top:3px"><span>${esc(L3('讓小智參考我最近的讀經進度與畫線，接得上我讀的內容', '让小智参考我最近的读经进度与画线，接得上我读的内容', 'Let Xiaozhi see my recent reading and highlights so it can connect to what I read'))}</span></label>`}
       <div class="muted" id="pfAud" style="font-size:12px;margin-top:10px">${esc(L3('依你的資料，建議的回答對象：', '依你的资料，建议的回答对象：', 'Suggested answer audience: '))}${AUD_ICON[sa]} ${esc(AUD_NAME()[sa])} <button class="btn" id="pfApplyAud" style="padding:3px 10px;margin-left:6px">${esc(L3('套用', '套用', 'Apply'))}</button></div>
-      <div style="display:flex;gap:8px;margin-top:14px"><button class="btn primary block" id="pfSave" style="flex:1">${esc(L3('儲存', '保存', 'Save'))}</button><button class="btn" id="pfClear">${esc(L3('全部清除', '全部清除', 'Clear all'))}</button></div></div>`;
-    const grab = () => { p.nick = $('#pfNick', m).value.trim(); const a = parseInt($('#pfAge', m).value, 10); p.age = (a >= 3 && a <= 110) ? a : ''; p.note = $('#pfNote', m).value.trim(); };
+      <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap"><button class="btn primary" id="pfSave" style="flex:1">${esc(L3('儲存', '保存', 'Save'))}</button><button class="btn" id="pfClear">${esc(L3('清除這份資料', '清除这份资料', 'Clear this profile'))}</button>${state.profiles.length > 1 ? `<button class="btn" id="pfDel">${esc(L3('刪除這份', '删除这份', 'Delete this profile'))}</button>` : ''}</div></div>`;
+    const grab = () => {
+      p.nick = $('#pfNick', m).value.trim();
+      const a = parseInt($('#pfAge', m).value, 10); p.age = (a >= 3 && a <= 110) ? a : '';
+      const n = $('#pfNote', m); if (n) p.note = n.value.trim();
+      const c = $('#pfCtx', m); if (c) p.ctx = c.checked;
+    };
     $$('.segbtns[data-f] button', m).forEach(b => b.onclick = () => { grab(); const f = b.parentNode.dataset.f; p[f] = (p[f] === b.dataset.k) ? '' : b.dataset.k; draw(); });
+    $$('#pfTone button', m).forEach(b => b.onclick = () => { grab(); p.tone = (p.tone === b.dataset.k) ? '' : b.dataset.k; draw(); });
+    $('#pfAge', m).onchange = () => { grab(); setTimeout(() => { if (m.isConnected) draw(); }, 0); };
+    $$('#pfTabs button[data-i]', m).forEach(b => b.onclick = () => { grab(); commit(); state.pfIdx = +b.dataset.i; p = Object.assign({}, pfGet()); saveState(); draw(); });
+    const add = $('#pfAdd', m); if (add) add.onclick = () => { grab(); commit(); state.profiles.push({}); state.pfIdx = state.profiles.length - 1; p = {}; saveState(); draw(); };
     $('#pfX', m).onclick = () => m.remove();
     m.onclick = e => { if (e.target === m) m.remove(); };
-    $('#pfApplyAud', m).onclick = () => { grab(); state.profile = Object.assign({}, p); state.audience = pfSuggestAud(); saveState(); toast(L3('回答對象：', '回答对象：', 'Answering for: ') + AUD_NAME()[state.audience], 1800); if (after) after(); draw(); };
-    $('#pfSave', m).onclick = () => { grab(); state.profile = Object.assign({}, p); saveState(); m.remove(); toast(L3('已儲存，小智會依你的資料回答', '已保存，小智会依你的资料回答', 'Saved — Xiaozhi will tailor answers to you'), 2200); if (after) after(); };
-    $('#pfClear', m).onclick = () => { state.profile = {}; saveState(); m.remove(); toast(L3('已清除讀者資料', '已清除读者资料', 'Profile cleared'), 1800); if (after) after(); };
+    const finish = msg => { saveState(); m.remove(); toast(msg, 2200); if (after) after(); };
+    $('#pfApplyAud', m).onclick = () => { grab(); commit(); state.audience = pfSuggestAud(p); saveState(); toast(L3('回答對象：', '回答对象：', 'Answering for: ') + AUD_NAME()[state.audience], 1800); if (after) after(); draw(); };
+    $('#pfSave', m).onclick = () => { grab(); commit(); if (pfIsChild(p)) state.audience = 'kid'; finish(L3('已儲存，小智會依你的資料回答', '已保存，小智会依你的资料回答', 'Saved — Xiaozhi will tailor answers to you')); };
+    $('#pfClear', m).onclick = () => { pfSet({}); finish(L3('已清除這份資料', '已清除这份资料', 'Profile cleared')); };
+    const del = $('#pfDel', m); if (del) del.onclick = () => { state.profiles.splice(state.pfIdx, 1); state.pfIdx = 0; state.profile = state.profiles[0]; finish(L3('已刪除', '已删除', 'Deleted')); };
   };
   document.body.appendChild(m); draw();
+}
+/* 一鍵切換下一份資料（家人共用手機）並套用該份建議的回答對象 */
+function pfNext(after){
+  const a = pfList(); if (a.length < 2) return false;
+  state.pfIdx = (state.pfIdx + 1) % a.length; state.profile = a[state.pfIdx];
+  if (pfAny()) state.audience = pfSuggestAud();
+  saveState(); toast('👤 ' + pfName(a[state.pfIdx], state.pfIdx), 1800); if (after) after(); return true;
 }
 const AUD_SYS = () => {
   const a = state.audience;
