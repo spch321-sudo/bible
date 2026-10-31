@@ -23,7 +23,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.28.2';
+const VERSION = 'v2.28.3';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -3301,11 +3301,12 @@ function drawBeautyFace(cx, vid, sx, sy, side, R){
 /* 畫布上的字型也要分語言。Noto Serif TC／Sans TC 裡沒有簡體才有的字
    （创、虚、灵、运、开、诸、将、这、结、发、类、树…），canvas 會一個字一個字
    換字型頂替，頂到黑體，卡片上就變成一句話裡粗細不一。 */
-const CARD_SERIF0 = () => isZS()
+const MY_FONTS = '"Myanmar Sangam MN","Noto Sans Myanmar","Myanmar Text","Padauk","Pyidaungsu"';
+const CARD_SERIF0 = () => isMY() ? MY_FONTS + ',sans-serif' : isZS()
   ? '"Noto Serif SC","Source Han Serif SC","Songti SC","STSong","SimSun",Georgia,serif'
   : (isJA() ? '"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho","YuMincho","MS PMincho",serif' : isKO() ? '"Noto Serif KR","Nanum Myeongjo","AppleMyungjo","Batang",Georgia,serif' : isEN() ? 'Georgia,"Times New Roman",serif'
             : '"Noto Serif TC","Songti TC","STSong","PMingLiU",Georgia,serif');
-const CARD_SANS0 = () => isZS()
+const CARD_SANS0 = () => isMY() ? MY_FONTS + ',sans-serif' : isZS()
   ? '"Noto Sans SC","PingFang SC","Microsoft YaHei","Heiti SC",sans-serif'
   : (isJA() ? '"Noto Sans JP","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif' : isKO() ? '"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif' : isEN() ? '-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif'
             : '"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif');
