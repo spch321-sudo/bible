@@ -220,6 +220,7 @@ P.rules = [
  [/^(\d+) multiple-choice questions with instant explanations; misses go to your notebook$/, function(m){ return '객관식 ' + m[1] + '문제 — 풀자마자 해설을 볼 수 있고, 틀린 문제는 오답 노트에 담깁니다'; }],
  [/^(\d+) missed questions to review$/, function(m){ return '복습할 오답 ' + m[1] + '개'; }]
 ];
+P.dict[' and writing your questions…'] = "” 본문을 읽고 문제를 만들고 있어요…";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

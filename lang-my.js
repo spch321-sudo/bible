@@ -217,6 +217,7 @@ P.rules = [
  [/^(\d+) missed questions to review$/, function(m){ return 'ပြန်လေ့ကျင့်ရန် မှားသောမေးခွန်း ' + m[1] + ' ခု'; }]
 ];
 
+P.dict[' and writing your questions…'] = " ပြီး သင့်အတွက် မေးခွန်းများ ရေးနေသည်…";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

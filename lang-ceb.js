@@ -216,6 +216,7 @@ P.rules = [
  [/^(\d+) missed questions to review$/, function(m){ return m[1] + ' ka nasaypan nga pangutana nga susihon'; }]
 ];
 
+P.dict[' and writing your questions…'] = " ug nagsulat og mga pangutana alang kanimo…";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

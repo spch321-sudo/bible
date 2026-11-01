@@ -217,6 +217,7 @@ P.rules = [
  [/^(\d+) missed questions to review$/, function(m){ return 'समीक्षाका लागि ' + m[1] + ' वटा छुटेका प्रश्न'; }]
 ];
 
+P.dict[' and writing your questions…'] = " र तपाईंका लागि प्रश्न बनाउँदैछ…";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

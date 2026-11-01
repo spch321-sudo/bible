@@ -216,6 +216,7 @@ P.rules = [
  [/^(\d+) missed questions to review$/, function(m){ return m[1] + (Number(m[1]) === 1 ? ' falsch beantwortete Frage' : ' falsch beantwortete Fragen') + ' zum Wiederholen'; }]
 ];
 
+P.dict[' and writing your questions…'] = " und schreibt Fragen dazu…";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

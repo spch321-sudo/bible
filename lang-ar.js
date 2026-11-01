@@ -219,6 +219,7 @@ P.rules = [
  [/^(\d+) missed questions to review$/, function(m){ return cnt(m[1],'سؤال خاطئ','سؤالان خاطئان','أسئلة خاطئة','سؤالًا خاطئًا') + ' للمراجعة'; }]
 ];
 
+P.dict[' and writing your questions…'] = " ويكتب أسئلتك…";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

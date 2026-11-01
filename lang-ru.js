@@ -218,6 +218,7 @@ P.rules = [
  [/^(\d+) missed questions to review$/, function(m){ return 'Для повторения: ' + m[1] + ' ' + _plR(m[1], 'вопрос с ошибкой', 'вопроса с ошибками', 'вопросов с ошибками'); }]
 ];
 
+P.dict[' and writing your questions…'] = " и составляет для вас вопросы…";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;
