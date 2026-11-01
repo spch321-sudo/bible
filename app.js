@@ -38,7 +38,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.47.2';
+const VERSION = 'v2.47.3';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -2032,8 +2032,9 @@ async function checkPlanRemind(){
 const SENT_TAIL = /[」』）〕”’«»"'\)\]\s]+$/;
 function isSentEnd(el){
   if (isHE() && el.parentElement && el.parentElement.classList.contains('dline')) return true;   /* 希伯來文詩篇標題自成一句 */
-  if (isEL()){   /* 希臘文長句（如太 1 的家譜）可橫跨多節：每節結尾也算一句的終點，跟讀才會逐句亮 */
+  {   /* 句子橫跨超過一節（如太 1 家譜、希臘文長句）就改成逐節跟讀：每節結尾也算一個單位的終點。希臘文長句（如太 1 的家譜）可橫跨多節：每節結尾也算一句的終點，跟讀才會逐句亮 */
     let nx = el.nextElementSibling; while (nx && !nx.classList.contains('sent')) nx = nx.nextElementSibling;
+    if (!nx && el.parentElement && el.parentElement.nextElementSibling) nx = el.parentElement.nextElementSibling.querySelector('.sent');   /* 下一段的第一個 .sent */
     if (nx && nx.dataset.v && el.dataset.v && nx.dataset.v !== el.dataset.v) return true;
   }
   if (isTH()) return true;   /* 泰文沒有句號：每一節（.sent）自成一句，跟讀才會一句一句亮 */
