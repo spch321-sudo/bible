@@ -9,6 +9,7 @@
 const KO_DIRECTIVE = '\n\nIMPORTANT — LANGUAGE (this overrides any earlier instruction about reply language): write your entire reply in natural, warm, elegant Korean (한국어), using the vocabulary of the Korean Protestant church (하나님, 예수 그리스도, 성령님, 은혜, 구원, 기도). When you quote Scripture, use the wording of the 개역한글 (Korean Revised Version, 1961) and give references with Korean book names, for example 요한복음 3:16. Do not answer in English or Chinese unless the user explicitly asks. Wherever this prompt mentions the reader\'s language, script or Chinese/English wording, it means Korean.';
 const JA_DIRECTIVE = '\n\nIMPORTANT — LANGUAGE (this overrides any earlier instruction about reply language): write your entire reply in natural, warm, elegant Japanese (日本語, polite です・ます style), using the vocabulary of the Japanese Protestant church (神, 主イエス・キリスト, 聖霊, 恵み, 救い, 祈り, 福音). When you quote Scripture, use the wording of the 口語訳聖書 (Japanese Colloquial Bible, 1955) and give references with Japanese book names, for example ヨハネによる福音書 3:16. Do not answer in English or Chinese unless the user explicitly asks. Wherever this prompt mentions the reader\'s language, script or Chinese/English wording, it means Japanese.';
 const ID_DIRECTIVE = '\n\nIMPORTANT — LANGUAGE (this overrides any earlier instruction about reply language): write your entire reply in natural, warm, elegant Indonesian (Bahasa Indonesia baku yang hangat), using the vocabulary of Indonesian Protestant/Evangelical churches (Allah, Tuhan, TUHAN, Tuhan Yesus, Roh Kudus, Injil, firman Tuhan, pertobatan, anugerah). When you quote Scripture, follow the wording of the Alkitab Yang Terbuka (AYT) / Terjemahan Baru and name books as in AYT (e.g. Yohanes 3:16, Kisah Para Rasul, Wahyu). Keep Xiaozhi as the name of the companion. Everything else in the instructions stays the same.';
+const ES_DIRECTIVE = '\n\nIMPORTANT — LANGUAGE (this overrides any earlier instruction about reply language): write your entire reply in natural, warm, elegant, standard international Spanish (español neutro; Latin American and Spain readers) — correct accents, ¿…? and ¡…! punctuation, no regionalisms or slang. Address the reader with “tú” (and “ustedes” for groups). When you quote Scripture, quote it in Spanish in the style of the Reina-Valera tradition (Reina-Valera 1960 / 1909 wording is fine) and name books as in it (e.g. Juan 3:16, Salmos 23, Apocalipsis); use Dios, Señor, Jesucristo, Espíritu Santo, evangelio in the usual Spanish church vocabulary. Be respectful to readers of every background (including Catholic, Evangelical, Muslim, folk-belief, agnostic and atheist readers) and never disparage another faith or denomination. Keep Xiaozhi in Latin letters as the name of the companion, and use Western digits 0-9. Everything else in the instructions stays the same.';
 const CEB_DIRECTIVE = '\n\nIMPORTANT — LANGUAGE (this overrides any earlier instruction about reply language): write your entire reply in natural, warm, elegant standard modern Cebuano (Binisaya / Sinugboanon, Latin script) — not Tagalog or Filipino, and avoid heavy Taglish. Address the reader respectfully as kamo/ninyo. When you quote Scripture, quote it in Cebuano in the style of the common Cebuano Bible (Ang Pulong sa Dios / Balaan nga Bibliya) and name books as in it (e.g. Juan 3:16, Mga Salmo 23, Pinadayag); use Dios, Ginoo, Jesu-Cristo, Balaang Espiritu, Maayong Balita in the usual Cebuano church vocabulary. Be respectful to readers of every background (including Catholic, Protestant, Muslim, Iglesia ni Cristo and folk-belief readers) and never disparage another faith or denomination. Keep Xiaozhi in Latin letters as the name of the companion, and use Western digits 0-9. Everything else in the instructions stays the same.';
 const LO_DIRECTIVE = '\n\nIMPORTANT — LANGUAGE (this overrides any earlier instruction about reply language): write your entire reply in natural, warm, elegant standard modern Lao (Lao script, ພາສາລາວ — not Thai; use Lao spellings, never Thai letters). Address the reader respectfully as ທ່ານ. When you quote Scripture, quote it in Lao in the style of the common Lao Bible and name books as in it (e.g. ໂຢຮັນ 3:16, ເພງສັນລະເສີນ 23, ພຣະນິມິດ); use ພຣະເຈົ້າ, ອົງພຣະຜູ້ເປັນເຈົ້າ, ພຣະເຢຊູຄຣິດເຈົ້າ, ພຣະວິນຍານບໍລິສຸດ, ຂ່າວປະເສີດ in the usual Lao church vocabulary. Be respectful to readers of every background (including Buddhist, spirit-belief and other faith readers) and never disparage another faith. Keep Xiaozhi in Latin letters as the name of the companion, and use Western digits 0-9. Everything else in the instructions stays the same.';
 const NE_DIRECTIVE = '\n\nIMPORTANT — LANGUAGE (this overrides any earlier instruction about reply language): write your entire reply in natural, warm, elegant standard modern Nepali (Devanagari script, नेपाली — not Hindi). Address the reader respectfully as तपाईं. When you quote Scripture, quote it in Nepali in the style of the Nepali Bible (Open Nepali Contemporary Version, ONCV) and name books as in it (e.g. यूहन्ना 3:16, भजनसंग्रह 23, प्रकाश); use परमेश्‍वर, प्रभु, प्रभु येशू ख्रीष्ट, पवित्र आत्मा, सुसमाचार in the usual Nepali church vocabulary. Be respectful to readers of every background (including Hindu, Buddhist, Kirat, Muslim and Christian-background readers) and never disparage another faith. Keep Xiaozhi in Latin letters as the name of the companion, and use Western digits 0-9. Everything else in the instructions stays the same.';
@@ -19,7 +20,7 @@ const TH_DIRECTIVE = '\n\nIMPORTANT — LANGUAGE (this overrides any earlier ins
 const VI_DIRECTIVE = '\n\nIMPORTANT — LANGUAGE (this overrides any earlier instruction about reply language): write your entire reply in natural, warm, elegant modern Vietnamese (Tiếng Việt, as used in Vietnamese churches), with correct diacritics. When you quote Scripture, follow the wording of the Vietnamese Bible 1934 (Kinh Thánh Tiếng Việt, Bản Dịch 1925/1934) and name books as in it (e.g. Giăng 3:16, Thi-thiên, Khải-huyền, Công-vụ các Sứ-đồ). Use Đức Chúa Trời, Chúa Giê-su, Đức Thánh Linh, Tin Lành in the usual church vocabulary. Keep Xiaozhi in Latin letters as the name of the companion. Everything else in the instructions stays the same.';
 const MY_DIRECTIVE = '\n\nIMPORTANT — LANGUAGE (this overrides any earlier instruction about reply language): write your entire reply in natural, warm, elegant modern Burmese (Myanmar language, Myanmar script, as used in Myanmar churches), with Burmese punctuation (၊ ။). Use Arabic digits for numbers. When you quote Scripture, follow the wording of the Judson Burmese Bible (1840) and name books as in it (e.g. ရှင်ယောဟန်ခရစ်ဝင် 3:16, ဆာလံကျမ်း, ဗျာဒိတ်ကျမ်း). Keep Xiaozhi in Latin letters as the name of the companion. Everything else in the instructions stays the same.';
 const TL_DIRECTIVE = '\n\nIMPORTANT — LANGUAGE (this overrides any earlier instruction about reply language): write your entire reply in natural, warm, elegant Filipino (Tagalog, standard Filipino as used in Philippine churches), using the vocabulary of Philippine Christian churches (Diyos, Panginoon, Jesus, Espiritu Santo, Ebanghelyo, salita ng Diyos, pagsisisi, biyaya). When you quote Scripture, follow the wording of Ang Dating Biblia (1905) and name books as in it (e.g. Juan 3:16, Mga Gawa, Apocalipsis). Keep Xiaozhi as the name of the companion. Everything else in the instructions stays the same.';
-const koSys = x => (state.lang === 'ceb') ? String(x == null ? '' : x) + CEB_DIRECTIVE : (state.lang === 'lo') ? String(x == null ? '' : x) + LO_DIRECTIVE : (state.lang === 'ne') ? String(x == null ? '' : x) + NE_DIRECTIVE : (state.lang === 'hi') ? String(x == null ? '' : x) + HI_DIRECTIVE : (state.lang === 'ar') ? String(x == null ? '' : x) + AR_DIRECTIVE : (state.lang === 'ms') ? String(x == null ? '' : x) + MS_DIRECTIVE : (state.lang === 'th') ? String(x == null ? '' : x) + TH_DIRECTIVE : (state.lang === 'vi') ? String(x == null ? '' : x) + VI_DIRECTIVE : (state.lang === 'my') ? String(x == null ? '' : x) + MY_DIRECTIVE : (state.lang === 'tl') ? String(x == null ? '' : x) + TL_DIRECTIVE : (state.lang === 'id') ? String(x == null ? '' : x) + ID_DIRECTIVE : (state.lang === 'ko') ? String(x == null ? '' : x) + KO_DIRECTIVE : (state.lang === 'ja') ? String(x == null ? '' : x) + JA_DIRECTIVE : x;
+const koSys = x => (state.lang === 'es') ? String(x == null ? '' : x) + ES_DIRECTIVE : (state.lang === 'ceb') ? String(x == null ? '' : x) + CEB_DIRECTIVE : (state.lang === 'lo') ? String(x == null ? '' : x) + LO_DIRECTIVE : (state.lang === 'ne') ? String(x == null ? '' : x) + NE_DIRECTIVE : (state.lang === 'hi') ? String(x == null ? '' : x) + HI_DIRECTIVE : (state.lang === 'ar') ? String(x == null ? '' : x) + AR_DIRECTIVE : (state.lang === 'ms') ? String(x == null ? '' : x) + MS_DIRECTIVE : (state.lang === 'th') ? String(x == null ? '' : x) + TH_DIRECTIVE : (state.lang === 'vi') ? String(x == null ? '' : x) + VI_DIRECTIVE : (state.lang === 'my') ? String(x == null ? '' : x) + MY_DIRECTIVE : (state.lang === 'tl') ? String(x == null ? '' : x) + TL_DIRECTIVE : (state.lang === 'id') ? String(x == null ? '' : x) + ID_DIRECTIVE : (state.lang === 'ko') ? String(x == null ? '' : x) + KO_DIRECTIVE : (state.lang === 'ja') ? String(x == null ? '' : x) + JA_DIRECTIVE : x;
 const API = {
   chat: 'https://xiaozhi-proxy.spch321.workers.dev',   // {system, messages:[{role,content}]}
   tts : 'https://azure-tts.spch321.workers.dev',       // {voice, rate, sil, silc, sile, text}
@@ -31,7 +32,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.38.1';
+const VERSION = 'v2.39.0';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -394,14 +395,15 @@ const isHI = () => state.lang === 'hi';
 const isNE = () => state.lang === 'ne';
 const isLO = () => state.lang === 'lo';
 const isCB = () => state.lang === 'ceb';
+const isES = () => state.lang === 'es';
 /* 「語言包」語言（韓、日）：UI 文字先查 lang-xx.js 對照表（英文原句→該語言），查不到就維持英文 */
-const isX = () => state.lang === 'ko' || state.lang === 'ja' || state.lang === 'id' || state.lang === 'tl' || state.lang === 'my' || state.lang === 'vi' || state.lang === 'th' || state.lang === 'ms' || state.lang === 'ar' || state.lang === 'hi' || state.lang === 'ne' || state.lang === 'lo' || state.lang === 'ceb';
+const isX = () => state.lang === 'ko' || state.lang === 'ja' || state.lang === 'id' || state.lang === 'tl' || state.lang === 'my' || state.lang === 'vi' || state.lang === 'th' || state.lang === 'ms' || state.lang === 'ar' || state.lang === 'hi' || state.lang === 'ne' || state.lang === 'lo' || state.lang === 'ceb' || state.lang === 'es';
 /* 提示詞／內容底稿用英文的語言（英、韓、日）；排版仍各走各的（日文走 CJK 排版） */
-const isEP = () => state.lang === 'en' || state.lang === 'ko' || state.lang === 'ja' || state.lang === 'id' || state.lang === 'tl' || state.lang === 'my' || state.lang === 'vi' || state.lang === 'th' || state.lang === 'ms' || state.lang === 'ar' || state.lang === 'hi' || state.lang === 'ne' || state.lang === 'lo' || state.lang === 'ceb';
+const isEP = () => state.lang === 'en' || state.lang === 'ko' || state.lang === 'ja' || state.lang === 'id' || state.lang === 'tl' || state.lang === 'my' || state.lang === 'vi' || state.lang === 'th' || state.lang === 'ms' || state.lang === 'ar' || state.lang === 'hi' || state.lang === 'ne' || state.lang === 'lo' || state.lang === 'ceb' || state.lang === 'es';
 /* 「西文排版」：斷句、空白、標點、量詞都走英文那一套——韓文（有空格、句點結尾）也走這一條 */
-const isEN = () => state.lang === 'en' || state.lang === 'ko' || state.lang === 'id' || state.lang === 'tl' || state.lang === 'my' || state.lang === 'vi' || state.lang === 'th' || state.lang === 'ms' || state.lang === 'ar' || state.lang === 'hi' || state.lang === 'ne' || state.lang === 'lo' || state.lang === 'ceb';
+const isEN = () => state.lang === 'en' || state.lang === 'ko' || state.lang === 'id' || state.lang === 'tl' || state.lang === 'my' || state.lang === 'vi' || state.lang === 'th' || state.lang === 'ms' || state.lang === 'ar' || state.lang === 'hi' || state.lang === 'ne' || state.lang === 'lo' || state.lang === 'ceb' || state.lang === 'es';
 /* 韓文 UI 字串：先查 lang-ko.js 的對照表（英文原句→韓文），查不到就維持英文 */
-const koT = (zh, en) => { const P = state.lang === 'ceb' ? window.CEB_PACK : state.lang === 'lo' ? window.LO_PACK : state.lang === 'ne' ? window.NE_PACK : state.lang === 'hi' ? window.HI_PACK : state.lang === 'ar' ? window.AR_PACK : state.lang === 'ms' ? window.MS_PACK : state.lang === 'th' ? window.TH_PACK : state.lang === 'vi' ? window.VI_PACK : state.lang === 'my' ? window.MY_PACK : state.lang === 'tl' ? window.TL_PACK : state.lang === 'id' ? window.ID_PACK : state.lang === 'ja' ? window.JA_PACK : window.KO_PACK; return (P && typeof en === 'string') ? P.t(zh, en) : en; };
+const koT = (zh, en) => { const P = state.lang === 'es' ? window.ES_PACK : state.lang === 'ceb' ? window.CEB_PACK : state.lang === 'lo' ? window.LO_PACK : state.lang === 'ne' ? window.NE_PACK : state.lang === 'hi' ? window.HI_PACK : state.lang === 'ar' ? window.AR_PACK : state.lang === 'ms' ? window.MS_PACK : state.lang === 'th' ? window.TH_PACK : state.lang === 'vi' ? window.VI_PACK : state.lang === 'my' ? window.MY_PACK : state.lang === 'tl' ? window.TL_PACK : state.lang === 'id' ? window.ID_PACK : state.lang === 'ja' ? window.JA_PACK : window.KO_PACK; return (P && typeof en === 'string') ? P.t(zh, en) : en; };
 const isZS = () => state.lang === 'zs';
 /* 三語挑字：L3(繁, 简, 英) */
 const L3 = (zh, zs, en) => isX() ? koT(zh, en) : (isEN() ? en : (isZS() ? zs : zh));
@@ -414,6 +416,9 @@ const HL_SWATCH = {gold:'#D9B168', green:'#6FAE71', blue:'#6C93D1', pink:'#E58FA
                    purple:'#A48AC9', maroon:'#8C4A4E', brown:'#8A6740', charcoal:'#54534E'};
 /* 與姊妹App共用的 Azure 真人語音；順序＝預設值在最前（zh 雲哲、zs 云帆） */
 const VOICES = {
+  es: [{n:'Dalia', v:'es-MX-DaliaNeural'},
+       {n:'Jorge', v:'es-MX-JorgeNeural'},
+       {n:'Elvira', v:'es-ES-ElviraNeural'}],
   ceb: [{n:'Angelo', v:'fil-PH-AngeloNeural'},
        {n:'Blessica', v:'fil-PH-BlessicaNeural'}],
   lo: [{n:'Keomany', v:'lo-LA-KeomanyNeural'},
@@ -457,7 +462,7 @@ const VOICES = {
 const DEFAULTS = { lang:'zh', font:0, theme:0, flow:false, shCh:true, shV:true, hidenote:false,
                    cardTpl:'plain', cardSize:'p', cardBorder:'none', cardFs:1.45, cardFont:'auto', cardInk:'',
                    cardTop:'', cardSign:'', cardTo:'親愛的家人：平安！', cardGreet:'', photoLast:'', photoMode:'full',
-                   voice:{zh:0, zs:0, en:0, ko:0, ja:0, id:0, tl:0, my:0, vi:0, th:0, ms:0, ar:0, hi:0, ne:0, lo:0, ceb:0}, ttsAutoNext:false, beauty:true, planRemindOn:false,
+                   voice:{zh:0, zs:0, en:0, ko:0, ja:0, id:0, tl:0, my:0, vi:0, th:0, ms:0, ar:0, hi:0, ne:0, lo:0, ceb:0, es:0}, ttsAutoNext:false, beauty:true, planRemindOn:false,
                    audience:'adult', alen:'mid', skbg:'none' };
 /* 「淨」鍵依序切換的四種組合：[整卷連讀?, 顯示章號?] */
 /* 「淨」鍵循環的四種常用讀法：[整卷連讀, 顯示章, 顯示節] */
@@ -525,13 +530,13 @@ function applyChrome(){
   const th = THEMES[state.theme] || 'auto';
   if (th === 'auto') h.removeAttribute('data-theme'); else h.setAttribute('data-theme', th);
   h.setAttribute('dir', isAR() ? 'rtl' : 'ltr');
-  h.setAttribute('lang', isCB() ? 'ceb' : isLO() ? 'lo' : isNE() ? 'ne' : isHI() ? 'hi' : isAR() ? 'ar' : isMS() ? 'ms' : isTH() ? 'th' : isVI() ? 'vi' : isMY() ? 'my' : isTL() ? 'fil' : isID() ? 'id' : isJA() ? 'ja' : isKO() ? 'ko' : (isEN() ? 'en' : (isZS() ? 'zh-Hans' : 'zh-Hant')));
+  h.setAttribute('lang', isES() ? 'es' : isCB() ? 'ceb' : isLO() ? 'lo' : isNE() ? 'ne' : isHI() ? 'hi' : isAR() ? 'ar' : isMS() ? 'ms' : isTH() ? 'th' : isVI() ? 'vi' : isMY() ? 'my' : isTL() ? 'fil' : isID() ? 'id' : isJA() ? 'ja' : isKO() ? 'ko' : (isEN() ? 'en' : (isZS() ? 'zh-Hans' : 'zh-Hant')));
   h.setAttribute('data-lang', state.lang);
   $('#brandName').textContent = t().app;
   document.title = t().app;
   ['today','books','search','companion','team','me'].forEach(k => { const e = $('#tab-' + k); if (e) e.textContent = t()[k]; });
   $$('#langswitch button[data-lang], #langPanel button[data-lang]').forEach(b => b.classList.toggle('active', b.dataset.lang === state.lang));
-  { const mb = $('#langMore'), mt = $('#langMoreTxt'); if (mb){ const SH = {ko:'한', ja:'日', id:'ID', tl:'TL', my:'မြန်', vi:'VI', th:'ไทย', ms:'MS', ar:'ع', hi:'हि', ne:'ने', lo:'ລາວ', ceb:'CEB'}; const o = SH[state.lang]; mb.classList.toggle('active', !!o); if (mt) mt.textContent = o || '▾'; } }
+  { const mb = $('#langMore'), mt = $('#langMoreTxt'); if (mb){ const SH = {ko:'한', ja:'日', id:'ID', tl:'TL', my:'မြန်', vi:'VI', th:'ไทย', ms:'MS', ar:'ع', hi:'हि', ne:'ने', lo:'ລາວ', ceb:'CEB', es:'ES'}; const o = SH[state.lang]; mb.classList.toggle('active', !!o); if (mt) mt.textContent = o || '▾'; } }
   syncHeaderH();
 }
 /* 頂欄高度會因安全區域（瀏海／圓角）而不同機型不一樣，量實際高度存成 CSS 變數，
@@ -591,7 +596,8 @@ async function loadTOC(){
     const hb2 = window.HI_PACK && HI_PACK.books[b.id]; if (hb2){ b.hin = hb2.hin; b.ahi = hb2.ahi; }
     const nb2 = window.NE_PACK && NE_PACK.books[b.id]; if (nb2){ b.nen = nb2.nen; b.ane = nb2.ane; }
     const lb2 = window.LO_PACK && LO_PACK.books[b.id]; if (lb2){ b.lon = lb2.lon; b.alo = lb2.alo; }
-    const cb2 = window.CEB_PACK && CEB_PACK.books[b.id]; if (cb2){ b.cbn = cb2.cbn; b.acb = cb2.acb; } });
+    const cb2 = window.CEB_PACK && CEB_PACK.books[b.id]; if (cb2){ b.cbn = cb2.cbn; b.acb = cb2.acb; }
+    const es2 = window.ES_PACK && ES_PACK.books[b.id]; if (es2){ b.esn = es2.esn; b.aes = es2.aes; } });
 }
 async function loadShard(lang, shard){
   if (lang === 'lo') lang = 'en';   /* 寮語經文待授權：暫用英文 WEB */
@@ -612,8 +618,8 @@ async function getChapter(bookId, ch){
   const arr = d[bookId]; if (!arr || !arr[ch - 1]) return null;
   return arr[ch - 1];
 }
-const bname = b => isCB() ? (b.cbn || b.en || b.zh) : isLO() ? (b.lon || b.en || b.zh) : isNE() ? (b.nen || b.en || b.zh) : isHI() ? (b.hin || b.en || b.zh) : isAR() ? (b.arn || b.en || b.zh) : isMS() ? (b.msn || b.en || b.zh) : isTH() ? (b.thn || b.en || b.zh) : isVI() ? (b.vin || b.en || b.zh) : isMY() ? (b.mmn || b.en || b.zh) : isTL() ? (b.tln || b.en || b.zh) : isID() ? (b.idn || b.en || b.zh) : isJA() ? (b.ja || b.en || b.zh) : isKO() ? (b.ko || b.en || b.zh) : (isEN() ? (b.en || b.zh) : (isZS() ? b.zs : b.zh));
-const babbr = b => isCB() ? (b.acb || b.aen || b.azh) : isLO() ? (b.alo || b.aen || b.azh) : isNE() ? (b.ane || b.aen || b.azh) : isHI() ? (b.ahi || b.aen || b.azh) : isAR() ? (b.aar || b.aen || b.azh) : isMS() ? (b.ams || b.aen || b.azh) : isTH() ? (b.ath || b.aen || b.azh) : isVI() ? (b.avi || b.aen || b.azh) : isMY() ? (b.amm || b.aen || b.azh) : isTL() ? (b.atl || b.aen || b.azh) : isID() ? (b.aid || b.aen || b.azh) : isJA() ? (b.aja || b.aen || b.azh) : isKO() ? (b.ako || b.aen || b.azh) : (isEN() ? (b.aen || b.azh) : (isZS() ? b.azs : b.azh));
+const bname = b => isES() ? (b.esn || b.en || b.zh) : isCB() ? (b.cbn || b.en || b.zh) : isLO() ? (b.lon || b.en || b.zh) : isNE() ? (b.nen || b.en || b.zh) : isHI() ? (b.hin || b.en || b.zh) : isAR() ? (b.arn || b.en || b.zh) : isMS() ? (b.msn || b.en || b.zh) : isTH() ? (b.thn || b.en || b.zh) : isVI() ? (b.vin || b.en || b.zh) : isMY() ? (b.mmn || b.en || b.zh) : isTL() ? (b.tln || b.en || b.zh) : isID() ? (b.idn || b.en || b.zh) : isJA() ? (b.ja || b.en || b.zh) : isKO() ? (b.ko || b.en || b.zh) : (isEN() ? (b.en || b.zh) : (isZS() ? b.zs : b.zh));
+const babbr = b => isES() ? (b.aes || b.aen || b.azh) : isCB() ? (b.acb || b.aen || b.azh) : isLO() ? (b.alo || b.aen || b.azh) : isNE() ? (b.ane || b.aen || b.azh) : isHI() ? (b.ahi || b.aen || b.azh) : isAR() ? (b.aar || b.aen || b.azh) : isMS() ? (b.ams || b.aen || b.azh) : isTH() ? (b.ath || b.aen || b.azh) : isVI() ? (b.avi || b.aen || b.azh) : isMY() ? (b.amm || b.aen || b.azh) : isTL() ? (b.atl || b.aen || b.azh) : isID() ? (b.aid || b.aen || b.azh) : isJA() ? (b.aja || b.aen || b.azh) : isKO() ? (b.ako || b.aen || b.azh) : (isEN() ? (b.aen || b.azh) : (isZS() ? b.azs : b.azh));
 
 const GROUPS = [
   { zh:'摩西五經',   zs:'摩西五经',   en:'The Law',              a:0,  b:5  },
@@ -626,7 +632,7 @@ const GROUPS = [
   { zh:'一般書信',   zs:'一般书信',   en:'General Letters',      a:57, b:65 },
   { zh:'啟示錄',     zs:'启示录',     en:'Revelation',           a:65, b:66 }
 ];
-const gname = g => isCB() ? (g.cbn || g.en) : isLO() ? (g.lon || g.en) : isNE() ? (g.nen || g.en) : isHI() ? (g.hin || g.en) : isAR() ? (g.arn || g.en) : isMS() ? (g.msn || g.en) : isTH() ? (g.thn || g.en) : isVI() ? (g.vin || g.en) : isMY() ? (g.mmn || g.en) : isTL() ? (g.tln || g.en) : isID() ? (g.idn || g.en) : isJA() ? (g.ja || g.en) : isKO() ? (g.ko || g.en) : (isEN() ? g.en : (isZS() ? g.zs : g.zh));
+const gname = g => isES() ? (g.esn || g.en) : isCB() ? (g.cbn || g.en) : isLO() ? (g.lon || g.en) : isNE() ? (g.nen || g.en) : isHI() ? (g.hin || g.en) : isAR() ? (g.arn || g.en) : isMS() ? (g.msn || g.en) : isTH() ? (g.thn || g.en) : isVI() ? (g.vin || g.en) : isMY() ? (g.mmn || g.en) : isTL() ? (g.tln || g.en) : isID() ? (g.idn || g.en) : isJA() ? (g.ja || g.en) : isKO() ? (g.ko || g.en) : (isEN() ? g.en : (isZS() ? g.zs : g.zh));
 
 /* 今日默想輪替的經卷章（皆為歷代信徒所愛的篇章） */
 const DAILY = [
@@ -2233,7 +2239,7 @@ function openHlSheet(el){
       h.c = color; h.n = ta.value.trim(); saveUser(); mask.remove();
       /* 記下這一題是從哪一節來的，答完才分享得出「經文＋答案」 */
       chatSrc = { t:h.t, b:RD.book, ch:cno, v:h.v || 0, v2:h.v2 || 0 };
-      chatPending = isCB() ? `Tabangi ko sa pagpamalandong niini nga bersikulo: “${h.t}”` : isLO() ? `ກະລຸນາຊ່ວຍຂ້ອຍໄຕ່ຕອງຂໍ້ພຣະຄຳພີນີ້: “${h.t}”` : isNE() ? `यो पदमा मनन गर्न मलाई सहायता गर्नुहोस्: “${h.t}”` : isHI() ? `इस पद पर मनन करने में मेरी सहायता कीजिए: “${h.t}”` : isAR() ? `ساعدني في التأمل في هذه الآية: «${h.t}»` : isMS() ? `Tolong bantu saya merenungkan ayat ini: “${h.t}”` : isTH() ? `ช่วยฉันใคร่ครวญข้อพระคัมภีร์นี้หน่อย: “${h.t}”` : isVI() ? `Hãy giúp tôi suy ngẫm câu Kinh Thánh này: “${h.t}”` : isMY() ? `ဤကျမ်းချက်ကို ဆင်ခြင်သုံးသပ်နိုင်ရန် ကူညီပါ — “${h.t}”` : isTL() ? `Tulungan mo akong magnilay sa talatang ito: “${h.t}”` : isID() ? `Tolong bantu saya merenungkan bagian ini: “${h.t}”` : isJA() ? `この箇所を黙想できるよう助けてください：「${h.t}」` : isKO() ? `이 말씀으로 묵상하도록 도와주세요: “${h.t}”` : isEN() ? `Help me meditate on this verse: “${h.t}”`
+      chatPending = isES() ? `Ayúdame a meditar este versículo: “${h.t}”` : isCB() ? `Tabangi ko sa pagpamalandong niini nga bersikulo: “${h.t}”` : isLO() ? `ກະລຸນາຊ່ວຍຂ້ອຍໄຕ່ຕອງຂໍ້ພຣະຄຳພີນີ້: “${h.t}”` : isNE() ? `यो पदमा मनन गर्न मलाई सहायता गर्नुहोस्: “${h.t}”` : isHI() ? `इस पद पर मनन करने में मेरी सहायता कीजिए: “${h.t}”` : isAR() ? `ساعدني في التأمل في هذه الآية: «${h.t}»` : isMS() ? `Tolong bantu saya merenungkan ayat ini: “${h.t}”` : isTH() ? `ช่วยฉันใคร่ครวญข้อพระคัมภีร์นี้หน่อย: “${h.t}”` : isVI() ? `Hãy giúp tôi suy ngẫm câu Kinh Thánh này: “${h.t}”` : isMY() ? `ဤကျမ်းချက်ကို ဆင်ခြင်သုံးသပ်နိုင်ရန် ကူညီပါ — “${h.t}”` : isTL() ? `Tulungan mo akong magnilay sa talatang ito: “${h.t}”` : isID() ? `Tolong bantu saya merenungkan bagian ini: “${h.t}”` : isJA() ? `この箇所を黙想できるよう助けてください：「${h.t}」` : isKO() ? `이 말씀으로 묵상하도록 도와주세요: “${h.t}”` : isEN() ? `Help me meditate on this verse: “${h.t}”`
                 : `${isZS() ? '请就这句经文帮助我默想：' : '請就這句經文幫助我默想：'}「${h.t}」`;
       go('#/companion');
     }
@@ -2702,11 +2708,11 @@ const HYM_L = {
 };
 const hl_ = () => HYM_L[state.lang] || (isX() ? HYM_L.en : HYM_L.zh);
 /* 一首歌的顯示名稱（三語，沒填就用中文那個） */
-const songName = s => (isCB() ? (s.ncb || s.ne || s.n) : isLO() ? (s.nlo || s.ne || s.n) : isNE() ? (s.nne || s.ne || s.n) : isHI() ? (s.nhi || s.ne || s.n) : isAR() ? (s.nar || s.ne || s.n) : isMS() ? (s.nms || s.ne || s.n) : isTH() ? (s.nt || s.ne || s.n) : isVI() ? (s.nv || s.ne || s.n) : isMY() ? (s.nm || s.ne || s.n) : isTL() ? (s.nl || s.ne || s.n) : isID() ? (s.ni || s.ne || s.n) : isJA() ? (s.nj || s.ne || s.n) : isKO() ? (s.nk || s.ne || s.n) : isEN() ? (s.ne || s.n) : (isZS() ? (s.ns || s.n) : s.n)) || s.f || '';
+const songName = s => (isES() ? (s.nes || s.ne || s.n) : isCB() ? (s.ncb || s.ne || s.n) : isLO() ? (s.nlo || s.ne || s.n) : isNE() ? (s.nne || s.ne || s.n) : isHI() ? (s.nhi || s.ne || s.n) : isAR() ? (s.nar || s.ne || s.n) : isMS() ? (s.nms || s.ne || s.n) : isTH() ? (s.nt || s.ne || s.n) : isVI() ? (s.nv || s.ne || s.n) : isMY() ? (s.nm || s.ne || s.n) : isTL() ? (s.nl || s.ne || s.n) : isID() ? (s.ni || s.ne || s.n) : isJA() ? (s.nj || s.ne || s.n) : isKO() ? (s.nk || s.ne || s.n) : isEN() ? (s.ne || s.n) : (isZS() ? (s.ns || s.n) : s.n)) || s.f || '';
 /* 出處與分類也跟著語言走（music.json 的 bs／be、ts／te；沒填就用中文那個） */
-const songBy  = s => (isCB() ? (s.bcb || s.be || s.by) : isLO() ? (s.blo || s.be || s.by) : isNE() ? (s.bne || s.be || s.by) : isHI() ? (s.bhi || s.be || s.by) : isAR() ? (s.bar || s.be || s.by) : isMS() ? (s.bms || s.be || s.by) : isTH() ? (s.bt || s.be || s.by) : isVI() ? (s.bv || s.be || s.by) : isMY() ? (s.bm || s.be || s.by) : isTL() ? (s.bl || s.be || s.by) : isID() ? (s.bi || s.be || s.by) : isJA() ? (s.bj || s.be || s.by) : isKO() ? (s.bk || s.be || s.by) : isEN() ? (s.be || s.by) : (isZS() ? (s.bs || s.by) : s.by)) || '';
+const songBy  = s => (isES() ? (s.bes || s.be || s.by) : isCB() ? (s.bcb || s.be || s.by) : isLO() ? (s.blo || s.be || s.by) : isNE() ? (s.bne || s.be || s.by) : isHI() ? (s.bhi || s.be || s.by) : isAR() ? (s.bar || s.be || s.by) : isMS() ? (s.bms || s.be || s.by) : isTH() ? (s.bt || s.be || s.by) : isVI() ? (s.bv || s.be || s.by) : isMY() ? (s.bm || s.be || s.by) : isTL() ? (s.bl || s.be || s.by) : isID() ? (s.bi || s.be || s.by) : isJA() ? (s.bj || s.be || s.by) : isKO() ? (s.bk || s.be || s.by) : isEN() ? (s.be || s.by) : (isZS() ? (s.bs || s.by) : s.by)) || '';
 const tagName = (s, tg) => { const L = (hymnList || []).find(x => x.tag === tg) || s || {};
-  return (isCB() ? (L.tcb || L.te || tg) : isLO() ? (L.tlo || L.te || tg) : isNE() ? (L.tne || L.te || tg) : isHI() ? (L.thi || L.te || tg) : isAR() ? (L.tar || L.te || tg) : isMS() ? (L.tms || L.te || tg) : isTH() ? (L.tt || L.te || tg) : isVI() ? (L.tv || L.te || tg) : isMY() ? (L.tm || L.te || tg) : isTL() ? (L.tl || L.te || tg) : isID() ? (L.ti || L.te || tg) : isJA() ? (L.tj || L.te || tg) : isKO() ? (L.tk || L.te || tg) : isEN() ? (L.te || tg) : (isZS() ? (L.ts || tg) : tg)) || ''; };
+  return (isES() ? (L.tes || L.te || tg) : isCB() ? (L.tcb || L.te || tg) : isLO() ? (L.tlo || L.te || tg) : isNE() ? (L.tne || L.te || tg) : isHI() ? (L.thi || L.te || tg) : isAR() ? (L.tar || L.te || tg) : isMS() ? (L.tms || L.te || tg) : isTH() ? (L.tt || L.te || tg) : isVI() ? (L.tv || L.te || tg) : isMY() ? (L.tm || L.te || tg) : isTL() ? (L.tl || L.te || tg) : isID() ? (L.ti || L.te || tg) : isJA() ? (L.tj || L.te || tg) : isKO() ? (L.tk || L.te || tg) : isEN() ? (L.te || tg) : (isZS() ? (L.ts || tg) : tg)) || ''; };
 
 let hymnList = null;          // null = 還沒抓過
 let bgmCredit = '';           // 「詩歌：〈歌名〉／出處」，會印在影片下緣
@@ -3051,8 +3057,8 @@ async function bgLoadList(){
   }catch(e){ bgList = []; bgCats = []; }
   return bgList;
 }
-const bgCatName = c => (isCB() ? (c.ncb || c.ne || c.n) : isLO() ? (c.nlo || c.ne || c.n) : isNE() ? (c.nne || c.ne || c.n) : isHI() ? (c.nhi || c.ne || c.n) : isAR() ? (c.nar || c.ne || c.n) : isMS() ? (c.nms || c.ne || c.n) : isTH() ? (c.nt || c.ne || c.n) : isVI() ? (c.nv || c.ne || c.n) : isMY() ? (c.nm || c.ne || c.n) : isTL() ? (c.nl || c.ne || c.n) : isID() ? (c.ni || c.ne || c.n) : isJA() ? (c.nj || c.ne || c.n) : isKO() ? (c.nk || c.ne || c.n) : isEN() ? (c.ne || c.n) : (isZS() ? (c.ns || c.n) : c.n)) || '';
-const bgName = b => (isCB() ? (b.ncb || b.ne || b.n) : isLO() ? (b.nlo || b.ne || b.n) : isNE() ? (b.nne || b.ne || b.n) : isHI() ? (b.nhi || b.ne || b.n) : isAR() ? (b.nar || b.ne || b.n) : isMS() ? (b.nms || b.ne || b.n) : isTH() ? (b.nt || b.ne || b.n) : isVI() ? (b.nv || b.ne || b.n) : isMY() ? (b.nm || b.ne || b.n) : isTL() ? (b.nl || b.ne || b.n) : isID() ? (b.ni || b.ne || b.n) : isJA() ? (b.nj || b.ne || b.n) : isKO() ? (b.nk || b.ne || b.n) : isEN() ? (b.ne || b.n) : (isZS() ? (b.ns || b.n) : b.n)) || '';
+const bgCatName = c => (isES() ? (c.nes || c.ne || c.n) : isCB() ? (c.ncb || c.ne || c.n) : isLO() ? (c.nlo || c.ne || c.n) : isNE() ? (c.nne || c.ne || c.n) : isHI() ? (c.nhi || c.ne || c.n) : isAR() ? (c.nar || c.ne || c.n) : isMS() ? (c.nms || c.ne || c.n) : isTH() ? (c.nt || c.ne || c.n) : isVI() ? (c.nv || c.ne || c.n) : isMY() ? (c.nm || c.ne || c.n) : isTL() ? (c.nl || c.ne || c.n) : isID() ? (c.ni || c.ne || c.n) : isJA() ? (c.nj || c.ne || c.n) : isKO() ? (c.nk || c.ne || c.n) : isEN() ? (c.ne || c.n) : (isZS() ? (c.ns || c.n) : c.n)) || '';
+const bgName = b => (isES() ? (b.nes || b.ne || b.n) : isCB() ? (b.ncb || b.ne || b.n) : isLO() ? (b.nlo || b.ne || b.n) : isNE() ? (b.nne || b.ne || b.n) : isHI() ? (b.nhi || b.ne || b.n) : isAR() ? (b.nar || b.ne || b.n) : isMS() ? (b.nms || b.ne || b.n) : isTH() ? (b.nt || b.ne || b.n) : isVI() ? (b.nv || b.ne || b.n) : isMY() ? (b.nm || b.ne || b.n) : isTL() ? (b.nl || b.ne || b.n) : isID() ? (b.ni || b.ne || b.n) : isJA() ? (b.nj || b.ne || b.n) : isKO() ? (b.nk || b.ne || b.n) : isEN() ? (b.ne || b.n) : (isZS() ? (b.ns || b.n) : b.n)) || '';
 function bgImgLoad(file){
   return new Promise((res, rej) => {
     const tryAt = (bases) => {
@@ -3182,7 +3188,7 @@ const cardToVal = () => { const v = (state.cardTo || '').trim(); return (v === '
 const DEF_SIGN = () => L3('願上帝賜福你！', '愿上帝赐福你！', 'God bless you!');
 /* 詩篇用「篇」／Psalm，其餘用「章」／Chapter */
 function chapLabel(bookId, n){
-  if (bookId === 'Psalms') return isCB() ? `Salmo ${n}` : isLO() ? `ເພງສັນລະເສີນ ${n}` : isNE() ? `भजन ${n}` : isHI() ? `भजन ${n}` : isAR() ? `المزمور ${n}` : isMS() ? `Mazmur ${n}` : isTH() ? `สดุดี ${n}` : isVI() ? `Thi-thiên ${n}` : isMY() ? `ဆာလံ ${n}` : isTL() ? `Awit ${n}` : isID() ? `Mazmur ${n}` : isJA() ? `第${n}篇` : isKO() ? `${n}편` : isEN() ? `Psalm ${n}` : L3(`第 ${n} 篇`, `第 ${n} 篇`, '');
+  if (bookId === 'Psalms') return isES() ? `Salmo ${n}` : isCB() ? `Salmo ${n}` : isLO() ? `ເພງສັນລະເສີນ ${n}` : isNE() ? `भजन ${n}` : isHI() ? `भजन ${n}` : isAR() ? `المزمور ${n}` : isMS() ? `Mazmur ${n}` : isTH() ? `สดุดี ${n}` : isVI() ? `Thi-thiên ${n}` : isMY() ? `ဆာလံ ${n}` : isTL() ? `Awit ${n}` : isID() ? `Mazmur ${n}` : isJA() ? `第${n}篇` : isKO() ? `${n}편` : isEN() ? `Psalm ${n}` : L3(`第 ${n} 篇`, `第 ${n} 篇`, '');
   return t().chapter(n);
 }
 function cardRef(h){
@@ -6300,7 +6306,7 @@ async function viewCompanion(v){
     if (el.hidden) return;
     const nm = SKBG_NAME();
     el.innerHTML = `<span class="muted" style="font-size:12px;font-weight:700">${esc(L3('信仰背景：', '信仰背景：', 'Background: '))}</span>`
-      + SKBG_KEYS.map(k => `<button class="${state.skbg === k ? 'on' : ''}" data-k="${k}">${SKBG_ICON[k]} ${esc(nm[k])}</button>`).join('');
+      + SKBG_KEYS.map(k => `<button class="${state.skbg === k ? 'on' : ''}" data-k="${k}">${(isES() ? ES_SKBG_ICON : SKBG_ICON)[k]} ${esc(nm[k])}</button>`).join('');
     $$('#bgSeg button', v).forEach(b => b.onclick = () => {
       if (state.skbg === b.dataset.k) return;
       state.skbg = b.dataset.k; saveState(); paintBg(); paintQs();
@@ -6615,14 +6621,22 @@ const AUD_HINT = () => ({
 /* v2.18.30：慕道友的信仰背景——小智依對方背景調整說法（只在回答對象＝慕道友時使用） */
 const SKBG_KEYS = ['none','buddhism','folk','yiguandao','muslim','atheist'];
 const SKBG_ICON = { none:'🌱', buddhism:'☸️', folk:'🏮', yiguandao:'🕯️', muslim:'☪️', atheist:'🔬' };
-const SKBG_NAME = () => ({
+const ES_SKBG_NAME = { none:'Sin fe', buddhism:'Trasfondo católico', folk:'Religiosidad popular', yiguandao:'Espiritual, sin religión', muslim:'Agnóstico', atheist:'Ateo' };
+const ES_SKBG_ICON = { none:'🌱', buddhism:'⛪', folk:'🕯️', yiguandao:'✨', muslim:'❓', atheist:'🔬' };
+const ES_SKBG_TXT = {
+  buddhism: { en: "The seeker's faith background: Catholic upbringing (baptized, perhaps not practising). Be warm and respectful; never belittle the Virgin Mary, the saints, the Mass, the rosary or family devotion, and avoid accusing words such as 'idolatry'. First affirm what you share — faith in one God, Jesus Christ, the Creed, reverence for Scripture, prayer, love for family — then gently explain the Bible's centre: salvation as a free gift of grace through Christ alone, direct access to God through the one Mediator (1 Timothy 2:5), and the Scriptures as the final authority. Use simple Spanish church vocabulary they know (Padre, Hijo, gracia, perdón). If unsure of their experience, invite them to share it first." },
+  folk: { en: "The seeker's faith background: popular religiosity and folk beliefs common in the Spanish-speaking world (devotion to saints, Santa Muerte, San Judas, Día de Muertos, offerings, spiritual cleansings, curanderos, tarot, amulets). Be respectful and never mock family traditions or the fear/hope behind them; avoid accusing words such as 'superstition'. First affirm what you share — longing for protection, remembering the departed, belonging to family and community — then gently explain the Bible's view: one loving God who is greater than every power, Christ's victory over fear and death, grace rather than bargaining or offerings, and a safe way to honour loved ones. Ask about their own experience before correcting anything." },
+  yiguandao: { en: "The seeker's faith background: spiritual but not religious (belief in energy, the universe, karma, yoga or meditation, without a church). Be respectful; never belittle their search. First affirm what you share — a sense that there is more than the material, inner peace, compassion — then gently explain the Bible's view: a personal Creator rather than an impersonal force, grace instead of karma, relationship rather than technique. Do not misuse their vocabulary; if unsure what they mean by 'energy' or 'the universe', ask them to explain." },
+  muslim: { en: "The seeker's faith background: agnostic (not sure God exists, or thinks it cannot be known). Respect honest uncertainty; never pressure or say 'just believe'. Affirm that honest questions are welcome and that Scripture itself contains doubters (Thomas, Psalms). Offer reasons, not slogans: the order and fine-tuning of the universe, moral intuition, the meaning of life, and the historical records of Jesus; explain the background when you cite the Bible. Keep the tone curious, equal and unhurried, inviting them to explore together." }
+};
+const SKBG_NAME = () => isES() ? ES_SKBG_NAME : ({
   none: L3('沒有信仰','没有信仰','No faith'), buddhism: L3('佛教','佛教','Buddhism'),
   folk: L3('民間信仰','民间信仰','Folk religion'), yiguandao: L3('一貫道','一贯道','Yiguandao'),
   muslim: L3('穆斯林','穆斯林','Muslim'), atheist: L3('無神論','无神论','Atheist') });
 const SKBG_TXT = {"none": {"zh": "回答對象的信仰背景：沒有信仰。對方沒有特定宗教，可能從未接觸過聖經或教會。不預設他懂任何宗教詞彙，從他的生活處境與真實疑問出發；對信仰的好奇、猶豫或不確定都不評論對錯，用一個簡單的比喻說明，每次只講一個重點，不施壓、不催決志。", "en": "The seeker's faith background: no religious faith. They follow no particular religion and may never have met the Bible or a church. Assume no religious vocabulary; start from their real life situation and questions. Never judge curiosity, hesitation or uncertainty; explain with one simple picture, one main point at a time, with no pressure and no rush to decide.", "zs": "回答对象的信仰背景：没有信仰。对方没有特定宗教，可能从未接触过圣经或教会。不预设他懂任何宗教词汇，从他的生活处境与真实疑问出发；对信仰的好奇、犹豫或不确定都不评论对错，用一个简单的比喻说明，每次只讲一个重点，不施压、不催决志。"}, "buddhism": {"zh": "回答對象的信仰背景：佛教。請全程尊重，不貶低佛陀、佛教或他的修行，不用「拜偶像」「迷信」這類帶責備的字眼。先肯定共同關心的課題（苦、無常、慈悲、放下、心的平安），再溫和說明聖經的觀點：宇宙有位有位格的創造主，神主動愛人；救恩是白白的恩典，不是靠自己累積功德；人有一世的生命，死後要面對神，而不是輪迴。不要亂用佛教專有名詞；不確定他的宗派或想法時，先請他說說自己怎麼理解。", "en": "The seeker's faith background: Buddhism. Be respectful throughout; never belittle the Buddha, Buddhism or their practice, and avoid accusing words such as 'idolatry' or 'superstition'. First affirm what you share — suffering, impermanence, compassion, letting go, peace of heart — then gently explain the Bible's view: a personal Creator who takes the initiative to love people; salvation as a free gift of grace, not merit we accumulate; one life, then facing God, rather than rebirth. Do not misuse Buddhist terms; if unsure of their school or understanding, ask them to share it first.", "zs": "回答对象的信仰背景：佛教。请全程尊重，不贬低佛陀、佛教或他的修行，不用“拜偶像”“迷信”这类带责备的字眼。先肯定共同关心的课题（苦、无常、慈悲、放下、心的平安），再温和说明圣经的观点：宇宙有位有位格的创造主，神主动爱人；救恩是白白的恩典，不是靠自己累积功德；人有一世的生命，死后要面对神，而不是轮回。不要乱用佛教专有名词；不确定他的宗派或想法时，先请他说说自己怎么理解。"}, "folk": {"zh": "回答對象的信仰背景：民間信仰（拜拜、祭祖、神明、媽祖、風水、算命等）。請尊重他對家人、祖先與神明的敬重與孝心，不嘲笑、不恐嚇。先肯定聖經本來就教導孝敬父母，再溫和說明：敬拜只歸給創造天地的獨一真神；並關心他拜拜背後真正的需要，像是平安、保佑、被關愛、對未來的不安。用生活化的例子，回答他實際的疑惑（例如祭祖與追思的差別），不要要求他立刻改變家人的習慣。", "en": "The seeker's faith background: folk religion (temple offerings, ancestor rites, local deities such as Mazu, feng shui, fortune-telling). Honour their respect for family, ancestors and the gods, and their filial devotion; never mock or frighten. First affirm that the Bible itself teaches honouring parents, then gently explain that worship belongs to the one true God who made heaven and earth; care about the real need behind the offerings — peace, protection, being loved, anxiety about the future. Use everyday examples, answer their practical questions (for example, ancestor rites versus remembrance), and do not ask them to change the family's customs at once.", "zs": "回答对象的信仰背景：民间信仰（拜拜、祭祖、神明、妈祖、风水、算命等）。请尊重他对家人、祖先与神明的敬重与孝心，不嘲笑、不恐吓。先肯定圣经本来就教导孝敬父母，再温和说明：敬拜只归给创造天地的独一真神；并关心他拜拜背后真正的需要，像是平安、保佑、被关爱、对未来的不安。用生活化的例子，回答他实际的疑惑（例如祭祖与追思的差别），不要要求他立刻改变家人的习惯。"}, "yiguandao": {"zh": "回答對象的信仰背景：一貫道。請尊重他吃素、重倫理道德、修身行善的認真，不批評他的師尊、道場或儀式。他多半敬畏「天」或「上帝」，也聽過「五教同源、萬教歸一」，可以從這份對天的敬畏與向善的心談起。對一貫道的教義細節（如無極老母、三期末劫、道場規矩）不要自己推斷或批評；不確定時請他說說自己的理解。再溫和、誠實地說明聖經的核心：神是有位格的創造主，藉著耶穌基督主動來到人間；耶穌說：「我就是道路、真理、生命」（約翰福音 14:6），救恩是白白的恩典。", "en": "The seeker's faith background: Yiguandao (Way of Pervading Unity). Respect their vegetarianism, their seriousness about ethics and self-cultivation, and their good deeds; never criticise their teachers, halls or rituals. They typically revere Heaven or the Supreme Lord and have heard 'five religions share one source'; begin from that reverence and desire to do good. Do not guess at or criticise doctrinal details (such as the Eternal Mother, the three ages, hall rules); if unsure, ask them to explain their understanding. Then, gently and honestly, state the Bible's heart: a personal Creator who came to us in Jesus Christ; Jesus said, 'I am the way, the truth and the life' (John 14:6); salvation is a free gift of grace.", "zs": "回答对象的信仰背景：一贯道。请尊重他吃素、重伦理道德、修身行善的认真，不批评他的师尊、道场或仪式。他多半敬畏“天”或“上帝”，也听过“五教同源、万教归一”，可以从这份对天的敬畏与向善的心谈起。对一贯道的教义细节（如无极老母、三期末劫、道场规矩）不要自己推断或批评；不确定时请他说说自己的理解。再温和、诚实地说明圣经的核心：神是有位格的创造主，借着耶稣基督主动来到人间；耶稣说：“我就是道路、真理、生命”（约翰福音 14:6），救恩是白白的恩典。"}, "muslim": {"zh": "回答對象的信仰背景：穆斯林。請以最大的敬意對待他的信仰、古蘭經與先知，不辱罵、不嘲諷、不貶低，也不要用施壓或「勸你改教」的口氣；他可能要為此付出家庭與社群的代價，要體貼。先肯定共同點：信獨一的神，也尊敬亞伯拉罕、摩西、大衛，以及童女所生的先知爾薩（耶穌）。只引用聖經，說明聖經如何看耶穌（神的道成了肉身，是神的兒子），並清楚說明基督徒信的是獨一真神，不是三個神；也溫和比較「靠行為得救」與「靠恩典得救」的不同。避免用豬肉、酒、圖像這類容易冒犯的比喻。不確定他的教派或想法時，先請他分享。", "en": "The seeker's faith background: Muslim. Treat their faith, the Qur'an and the Prophet with the highest respect; never insult, mock or belittle, and never press or urge them to convert — they may pay a heavy price in family and community, so be considerate. First affirm common ground: belief in one God, and respect for Abraham, Moses, David and the virgin-born prophet Isa (Jesus). Quote only the Bible, explain how it sees Jesus (the Word made flesh, the Son of God), make clear that Christians worship the one true God, not three gods, and gently contrast salvation by works with salvation by grace. Avoid illustrations involving pork, alcohol or images that easily offend. If unsure of their tradition or views, ask them to share first.", "zs": "回答对象的信仰背景：穆斯林。请以最大的敬意对待他的信仰、古兰经与先知，不辱骂、不嘲讽、不贬低，也不要用施压或“劝你改教”的口气；他可能要为此付出家庭与社群的代价，要体贴。先肯定共同点：信独一的神，也尊敬亚伯拉罕、摩西、大卫，以及童女所生的先知尔萨（耶稣）。只引用圣经，说明圣经如何看耶稣（神的道成了肉身，是神的儿子），并清楚说明基督徒信的是独一真神，不是三个神；也温和比较“靠行为得救”与“靠恩典得救”的不同。避免用猪肉、酒、图像这类容易冒犯的比喻。不确定他的教派或想法时，先请他分享。"}, "atheist": {"zh": "回答對象的信仰背景：無神論者。請尊重他靠理性、證據與誠實思考的態度，不說教，不說「你只要相信就好」。不把無神論說成稻草人，也不說科學與信仰一定對立。誠實承認哪些質疑很有力（如苦難、惡、宗教歷史上的錯誤），哪些事無法用科學證明，不誇大也不迴避；可以從道德直覺、生命的意義、宇宙的秩序與耶穌的歷史記載談起，引用聖經時也說明它的背景。語氣平等、好奇、不防衛，邀請他一起探索，而不是要他認輸。", "en": "The seeker's faith background: atheist. Respect their reliance on reason, evidence and honest thinking; do not preach or say 'just believe'. Do not caricature atheism or claim science and faith must be at war. Honestly admit which objections are strong (suffering, evil, historical failures of religion) and which things science cannot prove, without exaggerating or dodging; you may start from moral intuition, meaning, the order of the universe and the historical records of Jesus, and explain the background when you cite the Bible. Keep the tone equal, curious and undefensive, inviting them to explore together rather than to concede.", "zs": "回答对象的信仰背景：无神论者。请尊重他靠理性、证据与诚实思考的态度，不说教，不说“你只要相信就好”。不把无神论说成稻草人，也不说科学与信仰一定对立。诚实承认哪些质疑很有力（如苦难、恶、宗教历史上的错误），哪些事无法用科学证明，不夸大也不回避；可以从道德直觉、生命的意义、宇宙的秩序与耶稣的历史记载谈起，引用圣经时也说明他的背景。语气平等、好奇、不防卫，邀请他一起探索，而不是要他认输。"}};
 const SKBG_SYS = () => {
   if (state.audience !== 'seeker') return '';
-  const t = SKBG_TXT[state.skbg] || SKBG_TXT.none;
+  const t = (isES() && ES_SKBG_TXT[state.skbg]) || SKBG_TXT[state.skbg] || SKBG_TXT.none;
   return ' ' + (isEP() ? t.en : isZS() ? t.zs : t.zh) + (isEP()
     ? ' Always speak with respect and love, never mock any belief, never put them under pressure; state Christian convictions honestly but gently, and answer their actual question first.'
     : isZS() ? ' 一律带着尊重与爱心，不嘲笑任何信仰、不施压；诚实而温和地说明基督信仰的立场，并先回答他真正的问题。'
@@ -6677,7 +6691,8 @@ const PF_REL_BY = {
   hi:['hindu','muslim','sikh','buddhism','jain','catholic','folk','nonreligious','agnostic','atheist'],
   ne:['hindu','buddhism','kirat','muslim','catholic','folk','nonreligious','agnostic','atheist'],
   lo:['buddhism','spirit','folk','ancestor','catholic','nonreligious','atheist'],
-  ceb:['catholic','inc','muslim','folk','buddhism','nonreligious','atheist']
+  ceb:['catholic','inc','muslim','folk','buddhism','nonreligious','atheist'],
+  es:['catholic','folk','nonreligious','agnostic','atheist','muslim','jewish','buddhism']
 };
 const pfRelField = () => { const ks = PF_REL_BY[state.lang] || PF_REL_BY.en; return Object.assign({}, PF_REL, { o: ks.map(k => PF_REL.o.find(x => x[0] === k)).filter(Boolean) }); };
 const pfSeeking = p => p.faith === 'seeker' || p.faith === 'unbeliever';
@@ -7553,6 +7568,7 @@ async function viewMe(v){
         <button class="${state.lang === 'hi' ? 'on' : ''}" data-l="hi">हिन्दी</button>
         <button class="${state.lang === 'ne' ? 'on' : ''}" data-l="ne">नेपाली</button>
         <button class="${state.lang === 'ceb' ? 'on' : ''}" data-l="ceb">Cebuano</button>
+        <button class="${state.lang === 'es' ? 'on' : ''}" data-l="es">Español</button>
         </div></div>
       <div class="setrow"><div class="sl">${esc(L3('小智回答對象', '小智回答对象', 'Xiaozhi answers for'))}
         <div class="muted" style="font-size:11.5px;line-height:1.6">${esc(AUD_HINT()[state.audience])}</div></div>
@@ -7628,7 +7644,7 @@ async function viewMe(v){
     </details>
 
     <div class="muted" style="text-align:center;margin:18px 0 8px">
-      ${esc(L.app)} ${VERSION}<br>${esc(L3('和合本聖經屬公有領域，沒有版權限制','和合本圣经属公有领域，没有版权限制','The Chinese Union Version and the World English Bible are in the public domain.'))}${state.lang === 'ceb' ? '<br>Ang Bibliya sa Cebuano: Balaan nga Bibliya (Unlocked Literal Bible) © 2019 Door43 World Missions Community, ug Biblica® Open Ang Pulong sa Dios © 2009, 2010, 2014, 2024 Biblica, Inc. — CC BY-SA 4.0 (www.biblica.com · open.bible). Giusab ang pagpahimutang sa mga bersikulo aron motakdo sa numero sa bersikulo niini nga app.' : ''}${state.lang === 'lo' ? '<br>ຂໍ້ພຣະຄຳພີສະແດງເປັນພາສາອັງກິດ (World English Bible, ສາທາລະນະສົມບັດ) ຊົ່ວຄາວ ຈົນກວ່າຈະໄດ້ຮັບອະນຸຍາດໃຊ້ພຣະຄຳພີພາສາລາວ.' : ''}${state.lang === 'ne' ? '<br>नेपाली बाइबल: Biblica® नेपाली समकालीन सर्वसुलभ संस्करण (ONCV) © 1998, 2006, 2021, 2024 Biblica, Inc. — CC BY-SA 4.0 (www.biblica.com · open.bible)। उत्पत्ति 24:29–30, रोमी 2:19–20, 1 थेसलोनिकी 4:3–4 र हिब्रू 6:1–2 स्रोतमा नभएकाले 321 ले ONCV को शैलीमा अनुवाद गरी थपेको हो।' : state.lang === 'hi' ? '<br>हिन्दी बाइबल: Indian Revised Version (IRV) Hindi 2019 © Bridge Connectivity Solutions — CC BY-SA 4.0। अध्ययन-टिप्पणियाँ हटाई गई हैं।' : ''}</div>`;
+      ${esc(L.app)} ${VERSION}<br>${esc(L3('和合本聖經屬公有領域，沒有版權限制','和合本圣经属公有领域，没有版权限制','The Chinese Union Version and the World English Bible are in the public domain.'))}${state.lang === 'es' ? '<br>Escritura: Santa Biblia Reina-Valera 1909 (dominio público); ortografía actualizada por 321.' : ''}${state.lang === 'ceb' ? '<br>Ang Bibliya sa Cebuano: Balaan nga Bibliya (Unlocked Literal Bible) © 2019 Door43 World Missions Community, ug Biblica® Open Ang Pulong sa Dios © 2009, 2010, 2014, 2024 Biblica, Inc. — CC BY-SA 4.0 (www.biblica.com · open.bible). Giusab ang pagpahimutang sa mga bersikulo aron motakdo sa numero sa bersikulo niini nga app.' : ''}${state.lang === 'lo' ? '<br>ຂໍ້ພຣະຄຳພີສະແດງເປັນພາສາອັງກິດ (World English Bible, ສາທາລະນະສົມບັດ) ຊົ່ວຄາວ ຈົນກວ່າຈະໄດ້ຮັບອະນຸຍາດໃຊ້ພຣະຄຳພີພາສາລາວ.' : ''}${state.lang === 'ne' ? '<br>नेपाली बाइबल: Biblica® नेपाली समकालीन सर्वसुलभ संस्करण (ONCV) © 1998, 2006, 2021, 2024 Biblica, Inc. — CC BY-SA 4.0 (www.biblica.com · open.bible)। उत्पत्ति 24:29–30, रोमी 2:19–20, 1 थेसलोनिकी 4:3–4 र हिब्रू 6:1–2 स्रोतमा नभएकाले 321 ले ONCV को शैलीमा अनुवाद गरी थपेको हो।' : state.lang === 'hi' ? '<br>हिन्दी बाइबल: Indian Revised Version (IRV) Hindi 2019 © Bridge Connectivity Solutions — CC BY-SA 4.0। अध्ययन-टिप्पणियाँ हटाई गई हैं।' : ''}</div>`;
 
   $$('#setLang button', v).forEach(b => b.onclick = () => switchLang(b.dataset.l));
   const dg = $('#diagBtn', v); if (dg) dg.onclick = () => runDiag();
@@ -7814,9 +7830,9 @@ function refTable(){
   if (_refRe && _refLang === state.lang) return { re:_refRe, map:_refMap };
   const map = {};
   (TOC || []).forEach(b => {
-    const full = isCB() ? (b.cbn || b.en) : isLO() ? (b.lon || b.en) : isNE() ? (b.nen || b.en) : isHI() ? (b.hin || b.en) : isAR() ? (b.arn || b.en) : isMS() ? (b.msn || b.en) : isTH() ? (b.thn || b.en) : isVI() ? (b.vin || b.en) : isMY() ? (b.mmn || b.en) : isTL() ? (b.tln || b.en) : isID() ? (b.idn || b.en) : isJA() ? (b.ja || b.en) : isKO() ? (b.ko || b.en) : isEN() ? b.en : (isZS() ? b.zs : b.zh);
+    const full = isES() ? (b.esn || b.en) : isCB() ? (b.cbn || b.en) : isLO() ? (b.lon || b.en) : isNE() ? (b.nen || b.en) : isHI() ? (b.hin || b.en) : isAR() ? (b.arn || b.en) : isMS() ? (b.msn || b.en) : isTH() ? (b.thn || b.en) : isVI() ? (b.vin || b.en) : isMY() ? (b.mmn || b.en) : isTL() ? (b.tln || b.en) : isID() ? (b.idn || b.en) : isJA() ? (b.ja || b.en) : isKO() ? (b.ko || b.en) : isEN() ? b.en : (isZS() ? b.zs : b.zh);
     const val = { full, ps: b.id === 'Psalms' };
-    const keys = isCB() ? [b.cbn, b.acb] : isLO() ? [b.lon, b.alo] : isNE() ? [b.nen, b.ane] : isHI() ? [b.hin, b.ahi] : isAR() ? [b.arn, b.aar] : isMS() ? [b.msn, b.ams] : isTH() ? [b.thn, b.ath] : isVI() ? [b.vin, b.avi] : isMY() ? [b.mmn, b.amm] : isTL() ? [b.tln, b.atl] : isID() ? [b.idn, b.aid] : isJA() ? [b.ja, b.aja] : isKO() ? [b.ko, b.ako] : isEN() ? [b.en, b.aen] : [(isZS() ? b.zs : b.zh), (isZS() ? b.azs : b.azh)];
+    const keys = isES() ? [b.esn, b.aes] : isCB() ? [b.cbn, b.acb] : isLO() ? [b.lon, b.alo] : isNE() ? [b.nen, b.ane] : isHI() ? [b.hin, b.ahi] : isAR() ? [b.arn, b.aar] : isMS() ? [b.msn, b.ams] : isTH() ? [b.thn, b.ath] : isVI() ? [b.vin, b.avi] : isMY() ? [b.mmn, b.amm] : isTL() ? [b.tln, b.atl] : isID() ? [b.idn, b.aid] : isJA() ? [b.ja, b.aja] : isKO() ? [b.ko, b.ako] : isEN() ? [b.en, b.aen] : [(isZS() ? b.zs : b.zh), (isZS() ? b.azs : b.azh)];
     keys.forEach(k => { if (k) map[k] = val; });
   });
   const ks = Object.keys(map).sort((a, b) => b.length - a.length)
@@ -7842,6 +7858,7 @@ function ttsRef(x){
     if (bk.length === 1 && off > 0 && (CJK_RE.test(src.charAt(off - 1)) || /[\u3040-\u30FF]/.test(src.charAt(off - 1)) || /[\uAC00-\uD7A3]/.test(src.charAt(off - 1)))) return m;
     if (isEN() && off > 0 && /[A-Za-z]/.test(src.charAt(off - 1))) return m;
     const it = r.map[bk] || { full:bk, ps:false };
+    if (isES()){ const head = it.ps ? ('Salmo ' + c) : (it.full + ' ' + c); return head + ':' + v + (v2 ? '–' + v2 : ''); }
     if (isCB()){ const head = it.ps ? ('Salmo ' + c) : (it.full + ' ' + c); return head + ':' + v + (v2 ? '–' + v2 : ''); }
     if (isLO()){ const head = it.ps ? ('ເພງສັນລະເສີນ ' + c) : (it.full + ' ບົດທີ ' + c); return head + (v2 ? ' ຂໍ້ ' + v + '–' + v2 : ' ຂໍ້ ' + v); }
     if (isNE()){ const head = it.ps ? ('भजन ' + c) : (it.full + ' अध्याय ' + c); return head + (v2 ? ' पद ' + v + ' देखि ' + v2 : ' पद ' + v); }
@@ -8238,17 +8255,17 @@ function ttsNativeFrom(i, gen){
   if (!spk.native){ spk.native = true;
     let msg = t().ttsFallback + (ttsLastErr ? '（' + ttsLastErr + '）' : '');
     try{
-      const want = isCB() ? 'fil' : isLO() ? 'lo' : isNE() ? 'ne' : isHI() ? 'hi' : isAR() ? 'ar' : isMS() ? 'ms' : isTH() ? 'th' : isVI() ? 'vi' : isMY() ? 'my' : isTL() ? 'fil' : isID() ? 'id' : isJA() ? 'ja' : isKO() ? 'ko' : '';
+      const want = isES() ? 'es' : isCB() ? 'fil' : isLO() ? 'lo' : isNE() ? 'ne' : isHI() ? 'hi' : isAR() ? 'ar' : isMS() ? 'ms' : isTH() ? 'th' : isVI() ? 'vi' : isMY() ? 'my' : isTL() ? 'fil' : isID() ? 'id' : isJA() ? 'ja' : isKO() ? 'ko' : '';
       const vs = speechSynthesis.getVoices() || [];
       if (want && vs.length && !vs.some(v => ((v.lang || '').toLowerCase().replace('_', '-').indexOf(want) === 0 || (want === 'fil' && (v.lang || '').toLowerCase().indexOf('tl') === 0))))
-        msg = (isCB() ? 'Walay Filipino nga tingog niini nga device. I-download kini sa Settings → Accessibility → Spoken Content → Voices → Filipino.' : isLO() ? 'ອຸປະກອນນີ້ບໍ່ມີສຽງພາສາລາວ. ໄປທີ່ ຕັ້ງຄ່າ → ການເຂົ້າເຖິງ → ເນື້ອຫາທີ່ອ່ານອອກສຽງ → ສຽງ → ດາວໂຫຼດພາສາລາວ.' : isNE() ? 'यो उपकरणमा नेपाली आवाज छैन। सेटिङ्स → पहुँच (Accessibility) → बोलिने सामग्री → आवाज → नेपाली डाउनलोड गर्नुहोस्।' : isHI() ? 'इस डिवाइस में हिन्दी आवाज़ नहीं है। इसे सेटिंग्स → एक्सेसिबिलिटी → बोली गई सामग्री → आवाज़ें → हिन्दी में डाउनलोड करें।' : isAR() ? 'لا يوجد على هذا الجهاز صوت عربي. نزِّله من الإعدادات ← تسهيلات الاستخدام ← المحتوى المنطوق ← الأصوات ← العربية.' : isMS() ? 'Peranti ini tiada suara Bahasa Melayu. Sila muat turun di Tetapan → Kebolehcapaian → Kandungan Dituturkan → Suara → Melayu.' : isTH() ? 'อุปกรณ์นี้ยังไม่มีเสียงอ่านภาษาไทย โปรดดาวน์โหลดที่ ตั้งค่า → การช่วยการเข้าถึง → เนื้อหาที่พูด → เสียง → ไทย' : isVI() ? 'Thiết bị này chưa có giọng đọc tiếng Việt. Hãy tải về tại Cài đặt → Trợ năng → Nội dung được đọc → Giọng nói → Tiếng Việt.' : isMY() ? 'ဤစက်တွင် မြန်မာဘာသာအသံ မရှိပါ။ Settings → Accessibility → Spoken Content → Voices → Myanmar တွင် ဒေါင်းလုဒ်လုပ်ပါ။' : isTL() ? 'Walang boses na Filipino sa device na ito. I-download sa Settings → Accessibility → Spoken Content → Voices → Filipino.' : isID() ? 'Perangkat ini belum punya suara bahasa Indonesia. Unduh di Pengaturan → Aksesibilitas → Konten Lisan → Suara → Indonesia.' : isJA() ? 'この端末に日本語の音声がありません。設定→アクセシビリティ→読み上げコンテンツ→声 から日本語を追加してください。' : '이 기기에 한국어 음성이 없습니다. 설정 → 손쉬운 사용 → 음성 콘텐츠 → 음성에서 추가하세요.');
+        msg = (isES() ? 'Este dispositivo no tiene una voz en español. Descárgala en Ajustes → Accesibilidad → Contenido hablado → Voces → Español.' : isCB() ? 'Walay Filipino nga tingog niini nga device. I-download kini sa Settings → Accessibility → Spoken Content → Voices → Filipino.' : isLO() ? 'ອຸປະກອນນີ້ບໍ່ມີສຽງພາສາລາວ. ໄປທີ່ ຕັ້ງຄ່າ → ການເຂົ້າເຖິງ → ເນື້ອຫາທີ່ອ່ານອອກສຽງ → ສຽງ → ດາວໂຫຼດພາສາລາວ.' : isNE() ? 'यो उपकरणमा नेपाली आवाज छैन। सेटिङ्स → पहुँच (Accessibility) → बोलिने सामग्री → आवाज → नेपाली डाउनलोड गर्नुहोस्।' : isHI() ? 'इस डिवाइस में हिन्दी आवाज़ नहीं है। इसे सेटिंग्स → एक्सेसिबिलिटी → बोली गई सामग्री → आवाज़ें → हिन्दी में डाउनलोड करें।' : isAR() ? 'لا يوجد على هذا الجهاز صوت عربي. نزِّله من الإعدادات ← تسهيلات الاستخدام ← المحتوى المنطوق ← الأصوات ← العربية.' : isMS() ? 'Peranti ini tiada suara Bahasa Melayu. Sila muat turun di Tetapan → Kebolehcapaian → Kandungan Dituturkan → Suara → Melayu.' : isTH() ? 'อุปกรณ์นี้ยังไม่มีเสียงอ่านภาษาไทย โปรดดาวน์โหลดที่ ตั้งค่า → การช่วยการเข้าถึง → เนื้อหาที่พูด → เสียง → ไทย' : isVI() ? 'Thiết bị này chưa có giọng đọc tiếng Việt. Hãy tải về tại Cài đặt → Trợ năng → Nội dung được đọc → Giọng nói → Tiếng Việt.' : isMY() ? 'ဤစက်တွင် မြန်မာဘာသာအသံ မရှိပါ။ Settings → Accessibility → Spoken Content → Voices → Myanmar တွင် ဒေါင်းလုဒ်လုပ်ပါ။' : isTL() ? 'Walang boses na Filipino sa device na ito. I-download sa Settings → Accessibility → Spoken Content → Voices → Filipino.' : isID() ? 'Perangkat ini belum punya suara bahasa Indonesia. Unduh di Pengaturan → Aksesibilitas → Konten Lisan → Suara → Indonesia.' : isJA() ? 'この端末に日本語の音声がありません。設定→アクセシビリティ→読み上げコンテンツ→声 から日本語を追加してください。' : '이 기기에 한국어 음성이 없습니다. 설정 → 손쉬운 사용 → 음성 콘텐츠 → 음성에서 추가하세요.');
     }catch(e){}
     toast(msg); }
   if (!spk.on || spk.abort || i >= spk.items.length){ ttsStop(i >= spk.items.length); return; }
   spk.idx = i; raShow(spk.items[i]); ttsBtn('playing');
   const say = ttsPrep(spk.items[i].text);
   const u = new SpeechSynthesisUtterance(say);
-  u.lang = isCB() ? 'fil-PH' : isLO() ? 'lo-LA' : isNE() ? 'ne-NP' : isHI() ? 'hi-IN' : isAR() ? 'ar-SA' : isMS() ? 'ms-MY' : isTH() ? 'th-TH' : isVI() ? 'vi-VN' : isMY() ? 'my-MM' : isTL() ? 'fil-PH' : isID() ? 'id-ID' : isJA() ? 'ja-JP' : isKO() ? 'ko-KR' : (isEN() ? 'en-US' : (isZS() ? 'zh-CN' : 'zh-TW')); u.rate = .95;
+  u.lang = isES() ? 'es-MX' : isCB() ? 'fil-PH' : isLO() ? 'lo-LA' : isNE() ? 'ne-NP' : isHI() ? 'hi-IN' : isAR() ? 'ar-SA' : isMS() ? 'ms-MY' : isTH() ? 'th-TH' : isVI() ? 'vi-VN' : isMY() ? 'my-MM' : isTL() ? 'fil-PH' : isID() ? 'id-ID' : isJA() ? 'ja-JP' : isKO() ? 'ko-KR' : (isEN() ? 'en-US' : (isZS() ? 'zh-CN' : 'zh-TW')); u.rate = .95;
   /* 裝置語音給得到字元位置，就直接照位置換句子 */
   u.onboundary = e => {
     if (!spk.on || spk.abort || spk.idx !== i || gen !== spk.gen) return;
@@ -8376,7 +8393,7 @@ async function ttsSpeakText(text, id){
   }catch(e){
     if ('speechSynthesis' in window){
       const u = new SpeechSynthesisUtterance(clean);
-      u.lang = isCB() ? 'fil-PH' : isLO() ? 'lo-LA' : isNE() ? 'ne-NP' : isHI() ? 'hi-IN' : isAR() ? 'ar-SA' : isMS() ? 'ms-MY' : isTH() ? 'th-TH' : isVI() ? 'vi-VN' : isMY() ? 'my-MM' : isTL() ? 'fil-PH' : isID() ? 'id-ID' : isJA() ? 'ja-JP' : isKO() ? 'ko-KR' : (isEN() ? 'en-US' : (isZS() ? 'zh-CN' : 'zh-TW'));
+      u.lang = isES() ? 'es-MX' : isCB() ? 'fil-PH' : isLO() ? 'lo-LA' : isNE() ? 'ne-NP' : isHI() ? 'hi-IN' : isAR() ? 'ar-SA' : isMS() ? 'ms-MY' : isTH() ? 'th-TH' : isVI() ? 'vi-VN' : isMY() ? 'my-MM' : isTL() ? 'fil-PH' : isID() ? 'id-ID' : isJA() ? 'ja-JP' : isKO() ? 'ko-KR' : (isEN() ? 'en-US' : (isZS() ? 'zh-CN' : 'zh-TW'));
       u.onend = done; u.onerror = done;
       speechSynthesis.speak(u); toast(t().ttsFallback);
     } else { toast(t().ttsErr); done(); }
@@ -8541,16 +8558,16 @@ function amenOnly(s){
 
 /* ---------- 小智回答說成自然口吻（朗讀用） ---------- */
 function mdSpeak(md){
-  const zh = !isEN(), ja = isJA(), idn = isID(), tl = isTL(), my = isMY(), vi = isVI(), th = isTH(), ms = isMS(), ar = isAR(), hi = isHI(), ne = isNE(), lo = isLO(), cb = isCB();
+  const zh = !isEN(), ja = isJA(), idn = isID(), tl = isTL(), my = isMY(), vi = isVI(), th = isTH(), ms = isMS(), ar = isAR(), hi = isHI(), ne = isNE(), lo = isLO(), cb = isCB(), es = isES();
   const tbl = mdTableMap(String(md || ''), function (head, rows){
     const lead = L3('我們用一個對照來整理。', '我们用一个对照来整理。', 'Here is a quick comparison.');
     const body = rows.map((r, ri) => {
       const cells = r.map((c, j) => {
         const h = (head[j] || '').trim();
         if (!c) return '';
-        return h ? (zh ? h + (ja ? 'は' : '是') + c : h + (cb ? ' mao ang ' : lo ? ' ແມ່ນ ' : ne ? ': ' : hi ? ' है ' : ar ? ': ' : ms ? ' ialah ' : th ? ' คือ ' : vi ? ' là ' : my ? ' သည် ' : tl ? ' ay ' : idn ? ' adalah ' : ' is ') + c) : c;
+        return h ? (zh ? h + (ja ? 'は' : '是') + c : h + (es ? ' es ' : cb ? ' mao ang ' : lo ? ' ແມ່ນ ' : ne ? ': ' : hi ? ' है ' : ar ? ': ' : ms ? ' ialah ' : th ? ' คือ ' : vi ? ' là ' : my ? ' သည် ' : tl ? ' ay ' : idn ? ' adalah ' : ' is ') + c) : c;
       }).filter(Boolean).join(ja ? '、' : zh ? '，' : ', ');
-      const pre = (rows.length > 1 && ri === rows.length - 1) ? (ja ? '最後に、' : zh ? '最後，' : cb ? 'Sa kataposan, ' : lo ? 'ສຸດທ້າຍ ' : ne ? 'अन्तमा, ' : hi ? 'अंत में, ' : ar ? 'وأخيرًا، ' : ms ? 'Akhir sekali, ' : th ? 'สุดท้าย ' : vi ? 'Cuối cùng, ' : my ? 'နောက်ဆုံးအနေဖြင့် ' : tl ? 'Panghuli, ' : idn ? 'Terakhir, ' : 'Finally, ') : '';
+      const pre = (rows.length > 1 && ri === rows.length - 1) ? (ja ? '最後に、' : zh ? '最後，' : es ? 'Por último, ' : cb ? 'Sa kataposan, ' : lo ? 'ສຸດທ້າຍ ' : ne ? 'अन्तमा, ' : hi ? 'अंत में, ' : ar ? 'وأخيرًا، ' : ms ? 'Akhir sekali, ' : th ? 'สุดท้าย ' : vi ? 'Cuối cùng, ' : my ? 'နောက်ဆုံးအနေဖြင့် ' : tl ? 'Panghuli, ' : idn ? 'Terakhir, ' : 'Finally, ') : '';
       return pre + cells + (zh ? '。' : '.');
     }).join('\n');
     return lead + '\n' + body;
@@ -8584,7 +8601,7 @@ function mdSpeak(md){
     } else if (b.k === 'p'){ if (!(cur && cur.numbered)) cur = null; }
     else if (b.k !== 'br'){ cur = null; }
   });
-  const isKW = /想更多|延伸|多想|再想|深思|もっと考え|さらに考え|思いを深め|think more|renungkan lebih|pikirkan lebih|pag-isipan pa|mas malalim|ပိုမိုနက်|ဆင်ခြင်ရန်|suy ngẫm thêm|nghĩ sâu hơn|nghĩ thêm|ใคร่ครวญ|คิดให้ลึก|renung lebih|fikir lebih|تتأمل أكثر|تأمل أعمق|فكّر أكثر|और गहराई|और सोचें|अझ गहिरो|थप मनन|ຄິດເລິກຂຶ້ນ|ໄຕ່ຕອງເພີ່ມ|pamalandong pa|hunahunaa pa/i, isPR = /禱告|祷告|祈り|pray|berdoa|doa\b|manalangin|panalangin|ဆုတောင်း|cầu nguyện|Cầu nguyện|อธิษฐาน|berdoa|doa\b|صلّ|نصلّي|صلاة|الصلاة|प्रार्थना|ອະທິຖານ|pag-ampo|mag-ampo/i;
+  const isKW = /想更多|延伸|多想|再想|深思|もっと考え|さらに考え|思いを深め|think more|renungkan lebih|pikirkan lebih|pag-isipan pa|mas malalim|ပိုမိုနက်|ဆင်ခြင်ရန်|suy ngẫm thêm|nghĩ sâu hơn|nghĩ thêm|ใคร่ครวญ|คิดให้ลึก|renung lebih|fikir lebih|تتأمل أكثر|تأمل أعمق|فكّر أكثر|और गहराई|और सोचें|अझ गहिरो|थप मनन|ຄິດເລິກຂຶ້ນ|ໄຕ່ຕອງເພີ່ມ|pamalandong pa|hunahunaa pa|piensa más|reflexiona más|profundiza más/i, isPR = /禱告|祷告|祈り|pray|berdoa|doa\b|manalangin|panalangin|ဆုတောင်း|cầu nguyện|Cầu nguyện|อธิษฐาน|berdoa|doa\b|صلّ|نصلّي|صلاة|الصلاة|प्रार्थना|ອະທິຖານ|pag-ampo|mag-ampo|oración|orar\b|oremos|ora\b/i;
   const normalH = blocks.filter(b => b.k === 'h' && !isKW.test(b.t) && !isPR.test(b.t));
   let hn = 0, qn = 0;
   const startsLead = /^(首先|其次|另外|最後|最后|第[一二三四五六七八九十]|まず|次に|つぎに|最後に|さらに|pertama|kedua|ketiga|terakhir|selanjutnya|una|ikalawa|ikatlo|panghuli|susunod|first|second|third|finally|next)/i;
@@ -8601,7 +8618,9 @@ function mdSpeak(md){
     return 'plain';
   };
   groups.forEach(g => { g.mode = modeOf(g); });
-  const LEAD = cb
+  const LEAD = es
+    ? { first:'Primero, ', mid:['Luego, ', 'Además, '], last:'Por último, ', only2last:'Por último, ' }
+    : cb
     ? { first:'Una, ', mid:['Dayon, ', 'Dugang pa, '], last:'Sa kataposan, ', only2last:'Sa kataposan, ' }
     : lo
     ? { first:'ກ່ອນອື່ນ ', mid:['ຕໍ່ມາ ', 'ນອກຈາກນັ້ນ '], last:'ສຸດທ້າຍ ', only2last:'ສຸດທ້າຍ ' }
@@ -8632,11 +8651,14 @@ function mdSpeak(md){
   blocks.forEach(b => {
     if (b.k === 'br') return;
     if (b.k === 'h'){
-      if (isKW.test(b.t)) out.push(cb ? 'Kon gusto ninyong magpamalandong pa gayod, ania ang usa ka hunahuna.' : lo ? 'ຖ້າທ່ານຢາກໄຕ່ຕອງໃຫ້ເລິກຂຶ້ນ, ນີ້ແມ່ນແນວຄິດໜຶ່ງ.' : ne ? 'यदि तपाईं अझ गहिरो मनन गर्न चाहनुहुन्छ भने, यो एउटा विचार हो।' : hi ? 'यदि आप और गहराई से मनन करना चाहें, तो यह एक विचार है।' : ar ? 'إن أردتَ أن تتأمل أكثر، فإليك هذه الفكرة.' : ms ? 'Jika anda mahu merenung lebih mendalam, ini satu buah fikiran.' : th ? 'หากอยากใคร่ครวญให้ลึกขึ้นอีกหน่อย ลองดูความคิดนี้' : vi ? 'Nếu bạn muốn suy ngẫm sâu hơn, đây là một ý nghĩ.' : my ? 'ပိုမိုနက်နက်ရှိုင်းရှိုင်း ဆင်ခြင်လိုပါက ဤအတွေးကို ကြည့်ပါ။' : tl ? 'Kung nais mong pag-isipan pa nang mas malalim, narito ang isang kaisipan.' : idn ? 'Jika Anda ingin merenungkannya lebih jauh, ada satu pemikiran.' : ja ? 'もう少し考えてみたい方へ、こんな見方もあります。' : zh ? '如果想更多一點，可以這樣想。' : 'If you want to think a little further, here is a thought.');
-      else if (isPR.test(b.t)) out.push(cb ? 'Tara, mag-ampo kita nga magkauban.' : lo ? 'ມາເຮົາອະທິຖານນຳກັນເທາະ.' : ne ? 'आउनुहोस्, हामी सँगै प्रार्थना गरौँ।' : hi ? 'आइए, हम साथ मिलकर प्रार्थना करें।' : ar ? 'هيّا نصلّي معًا.' : ms ? 'Marilah kita berdoa bersama-sama.' : th ? 'ขอให้เราอธิษฐานด้วยกัน' : vi ? 'Chúng ta hãy cùng cầu nguyện.' : my ? 'အတူတကွ ဆုတောင်းကြပါစို့။' : tl ? 'Manalangin tayo nang sama-sama.' : idn ? 'Marilah kita berdoa bersama.' : ja ? 'いっしょに祈りましょう。' : zh ? '讓我們一起禱告。' : 'Let us pray together.');
+      if (isKW.test(b.t)) out.push(es ? 'Si quieres reflexionar un poco más, aquí tienes una idea.' : cb ? 'Kon gusto ninyong magpamalandong pa gayod, ania ang usa ka hunahuna.' : lo ? 'ຖ້າທ່ານຢາກໄຕ່ຕອງໃຫ້ເລິກຂຶ້ນ, ນີ້ແມ່ນແນວຄິດໜຶ່ງ.' : ne ? 'यदि तपाईं अझ गहिरो मनन गर्न चाहनुहुन्छ भने, यो एउटा विचार हो।' : hi ? 'यदि आप और गहराई से मनन करना चाहें, तो यह एक विचार है।' : ar ? 'إن أردتَ أن تتأمل أكثر، فإليك هذه الفكرة.' : ms ? 'Jika anda mahu merenung lebih mendalam, ini satu buah fikiran.' : th ? 'หากอยากใคร่ครวญให้ลึกขึ้นอีกหน่อย ลองดูความคิดนี้' : vi ? 'Nếu bạn muốn suy ngẫm sâu hơn, đây là một ý nghĩ.' : my ? 'ပိုမိုနက်နက်ရှိုင်းရှိုင်း ဆင်ခြင်လိုပါက ဤအတွေးကို ကြည့်ပါ။' : tl ? 'Kung nais mong pag-isipan pa nang mas malalim, narito ang isang kaisipan.' : idn ? 'Jika Anda ingin merenungkannya lebih jauh, ada satu pemikiran.' : ja ? 'もう少し考えてみたい方へ、こんな見方もあります。' : zh ? '如果想更多一點，可以這樣想。' : 'If you want to think a little further, here is a thought.');
+      else if (isPR.test(b.t)) out.push(es ? 'Oremos juntos.' : cb ? 'Tara, mag-ampo kita nga magkauban.' : lo ? 'ມາເຮົາອະທິຖານນຳກັນເທາະ.' : ne ? 'आउनुहोस्, हामी सँगै प्रार्थना गरौँ।' : hi ? 'आइए, हम साथ मिलकर प्रार्थना करें।' : ar ? 'هيّا نصلّي معًا.' : ms ? 'Marilah kita berdoa bersama-sama.' : th ? 'ขอให้เราอธิษฐานด้วยกัน' : vi ? 'Chúng ta hãy cùng cầu nguyện.' : my ? 'အတူတကွ ဆုတောင်းကြပါစို့။' : tl ? 'Manalangin tayo nang sama-sama.' : idn ? 'Marilah kita berdoa bersama.' : ja ? 'いっしょに祈りましょう。' : zh ? '讓我們一起禱告。' : 'Let us pray together.');
       else {
         const n = normalH.length, i = hn++, t = b.t.replace(/^\d+[.)、]\s*/, '');
-        if (cb){
+        if (es){
+          const w = n === 1 ? 'Hablemos de ' : (i === 0 ? 'Empecemos con ' : ((n >= 3 && i === n - 1) ? 'Por último, ' : ['Luego, veamos ', 'Después, ', 'Ahora, '][(i - 1) % 3]));
+          out.push(w + t + '.');
+        } else if (cb){
           const w = n === 1 ? 'Atong pamulongan ang ' : (i === 0 ? 'Magsugod kita sa ' : ((n >= 3 && i === n - 1) ? 'Sa kataposan, ' : ['Sunod, atong tan-awon ang ', 'Dayon, ', 'Karon, '][(i - 1) % 3]));
           out.push(w + t + '.');
         } else if (lo){
@@ -8684,7 +8706,7 @@ function mdSpeak(md){
     }
     if (b.k === 'q'){
       const i = qn++;
-      const lead = cb ? (i === 0 ? (scripture(b.t) ? 'Giingon sa Bibliya: ' : 'Aduna kitay hinumdoman: ') : 'Ug usa pa ka butang: ') : lo ? (i === 0 ? (scripture(b.t) ? 'ພຣະຄຳພີກ່າວວ່າ: ' : 'ມີຂໍ້ໜຶ່ງທີ່ຄວນຈື່: ') : 'ແລະອີກຂໍ້ໜຶ່ງ: ') : ne ? (i === 0 ? (scripture(b.t) ? 'बाइबल भन्छ: ' : 'एउटा कुरा सम्झन लायक छ: ') : 'अनि अर्को कुरा: ') : hi ? (i === 0 ? (scripture(b.t) ? 'बाइबल कहती है: ' : 'एक बात याद रखने योग्य है: ') : 'और एक बात: ') : ar ? (i === 0 ? (scripture(b.t) ? 'يقول الكتاب المقدس: ' : 'هناك كلمة تستحق أن نتذكرها: ') : 'وأخرى: ') : ms ? (i === 0 ? (scripture(b.t) ? 'Alkitab berkata: ' : 'Ada satu ayat yang patut diingat: ') : 'Dan satu lagi: ') : th ? (i === 0 ? (scripture(b.t) ? 'พระคัมภีร์กล่าวว่า ' : 'มีถ้อยคำหนึ่งที่ควรจดจำ: ') : 'และอีกข้อหนึ่ง: ') : vi ? (i === 0 ? (scripture(b.t) ? 'Kinh Thánh chép: ' : 'Có một câu đáng ghi nhớ: ') : 'Và còn một câu nữa: ') : my ? (i === 0 ? (scripture(b.t) ? 'ကျမ်းစာတွင် ဤသို့ဆိုထား၏ — ' : 'မှတ်သားထိုက်သော စကားတစ်ခွန်းရှိသည် — ') : 'နောက်တစ်ခုမှာ — ') : tl ? (i === 0 ? (scripture(b.t) ? 'Sinasabi ng Biblia: ' : 'May isang pangungusap na dapat tandaan: ') : 'At isa pa: ') : idn ? (i === 0 ? (scripture(b.t) ? 'Alkitab berkata: ' : 'Ada satu kalimat yang layak diingat: ') : 'Dan satu lagi: ') : ja ? (i === 0 ? (scripture(b.t) ? '聖書にはこうあります。' : '心に留めたい言葉があります。') : 'もうひとつ。') : zh ? (i === 0 ? (scripture(b.t) ? '聖經說：' : '有一句話特別要記住：') : '還有一句：')
+      const lead = es ? (i === 0 ? (scripture(b.t) ? 'La Biblia dice: ' : 'Recordemos esto: ') : 'Y algo más: ') : cb ? (i === 0 ? (scripture(b.t) ? 'Giingon sa Bibliya: ' : 'Aduna kitay hinumdoman: ') : 'Ug usa pa ka butang: ') : lo ? (i === 0 ? (scripture(b.t) ? 'ພຣະຄຳພີກ່າວວ່າ: ' : 'ມີຂໍ້ໜຶ່ງທີ່ຄວນຈື່: ') : 'ແລະອີກຂໍ້ໜຶ່ງ: ') : ne ? (i === 0 ? (scripture(b.t) ? 'बाइबल भन्छ: ' : 'एउटा कुरा सम्झन लायक छ: ') : 'अनि अर्को कुरा: ') : hi ? (i === 0 ? (scripture(b.t) ? 'बाइबल कहती है: ' : 'एक बात याद रखने योग्य है: ') : 'और एक बात: ') : ar ? (i === 0 ? (scripture(b.t) ? 'يقول الكتاب المقدس: ' : 'هناك كلمة تستحق أن نتذكرها: ') : 'وأخرى: ') : ms ? (i === 0 ? (scripture(b.t) ? 'Alkitab berkata: ' : 'Ada satu ayat yang patut diingat: ') : 'Dan satu lagi: ') : th ? (i === 0 ? (scripture(b.t) ? 'พระคัมภีร์กล่าวว่า ' : 'มีถ้อยคำหนึ่งที่ควรจดจำ: ') : 'และอีกข้อหนึ่ง: ') : vi ? (i === 0 ? (scripture(b.t) ? 'Kinh Thánh chép: ' : 'Có một câu đáng ghi nhớ: ') : 'Và còn một câu nữa: ') : my ? (i === 0 ? (scripture(b.t) ? 'ကျမ်းစာတွင် ဤသို့ဆိုထား၏ — ' : 'မှတ်သားထိုက်သော စကားတစ်ခွန်းရှိသည် — ') : 'နောက်တစ်ခုမှာ — ') : tl ? (i === 0 ? (scripture(b.t) ? 'Sinasabi ng Biblia: ' : 'May isang pangungusap na dapat tandaan: ') : 'At isa pa: ') : idn ? (i === 0 ? (scripture(b.t) ? 'Alkitab berkata: ' : 'Ada satu kalimat yang layak diingat: ') : 'Dan satu lagi: ') : ja ? (i === 0 ? (scripture(b.t) ? '聖書にはこうあります。' : '心に留めたい言葉があります。') : 'もうひとつ。') : zh ? (i === 0 ? (scripture(b.t) ? '聖經說：' : '有一句話特別要記住：') : '還有一句：')
                       : (i === 0 ? (scripture(b.t) ? 'The Bible says: ' : 'One line is worth remembering: ') : 'And another: ');
       out.push(lead + endP(b.t)); return;
     }
@@ -8693,16 +8715,16 @@ function mdSpeak(md){
       if (g.mode === 'short'){
         if (i > 0) return;
         const ts = g.items.map(x => x.t);
-        out.push(endP(ts.length === 2 ? ts.join(ja ? 'と' : zh ? '和' : cb ? ' ug ' : lo ? ' ແລະ ' : ne ? ' र ' : hi ? ' और ' : ar ? ' و' : ms ? ' dan ' : th ? ' และ ' : vi ? ' và ' : my ? ' နှင့် ' : tl ? ' at ' : idn ? ' dan ' : ' and ') : ts.slice(0, -1).join(zh ? '、' : ', ') + (ja ? '、そして' : zh ? '，還有' : cb ? ', ug ' : lo ? ' ແລະຍັງມີ ' : ne ? ', अनि ' : hi ? ', और ' : ar ? '، و' : ms ? ', dan ' : th ? ' และ ' : vi ? ', và ' : my ? '၊ နှင့် ' : tl ? ', at ' : idn ? ', dan ' : ', and ') + ts[ts.length - 1]));
+        out.push(endP(ts.length === 2 ? ts.join(ja ? 'と' : zh ? '和' : es ? ' y ' : cb ? ' ug ' : lo ? ' ແລະ ' : ne ? ' र ' : hi ? ' और ' : ar ? ' و' : ms ? ' dan ' : th ? ' และ ' : vi ? ' và ' : my ? ' နှင့် ' : tl ? ' at ' : idn ? ' dan ' : ' and ') : ts.slice(0, -1).join(zh ? '、' : ', ') + (ja ? '、そして' : zh ? '，還有' : es ? ', y ' : cb ? ', ug ' : lo ? ' ແລະຍັງມີ ' : ne ? ', अनि ' : hi ? ', और ' : ar ? '، و' : ms ? ', dan ' : th ? ' และ ' : vi ? ', và ' : my ? '၊ နှင့် ' : tl ? ', at ' : idn ? ', dan ' : ', and ') + ts[ts.length - 1]));
         return;
       }
       let lead = '', text = b.t;
       if (g.mode === 'num'){
         const k = b.num || (i + 1);
-        lead = cb ? (['', 'Una', 'Ikaduha', 'Ikatulo', 'Ikaupat', 'Ikalima', 'Ikaunom', 'Ikapito', 'Ikawalo', 'Ikasiyam', 'Ikanapulo'][k] || 'Numero ' + k) + ', ' : lo ? (['', 'ທຳອິດ', 'ທີສອງ', 'ທີສາມ', 'ທີສີ່', 'ທີຫ້າ', 'ທີຫົກ', 'ທີເຈັດ', 'ທີແປດ', 'ທີເກົ້າ', 'ທີສິບ'][k] || 'ຂໍ້ທີ ' + k) + ' ' : ne ? (['', 'पहिलो', 'दोस्रो', 'तेस्रो', 'चौथो', 'पाँचौँ', 'छैटौँ', 'सातौँ', 'आठौँ', 'नवौँ', 'दशौँ'][k] || 'संख्या ' + k) + ', ' : hi ? (['', 'पहला', 'दूसरा', 'तीसरा', 'चौथा', 'पाँचवाँ', 'छठा', 'सातवाँ', 'आठवाँ', 'नौवाँ', 'दसवाँ'][k] || 'संख्या ' + k) + ', ' : ar ? (['', 'أولًا', 'ثانيًا', 'ثالثًا', 'رابعًا', 'خامسًا', 'سادسًا', 'سابعًا', 'ثامنًا', 'تاسعًا', 'عاشرًا'][k] || 'رقم ' + k) + '، ' : ms ? (['', 'Pertama', 'Kedua', 'Ketiga', 'Keempat', 'Kelima', 'Keenam', 'Ketujuh', 'Kelapan', 'Kesembilan', 'Kesepuluh'][k] || 'Nombor ' + k) + ', ' : th ? (['', 'ข้อที่หนึ่ง', 'ข้อที่สอง', 'ข้อที่สาม', 'ข้อที่สี่', 'ข้อที่ห้า', 'ข้อที่หก', 'ข้อที่เจ็ด', 'ข้อที่แปด', 'ข้อที่เก้า', 'ข้อที่สิบ'][k] || 'ข้อที่ ' + k) + ' ' : vi ? (['', 'Thứ nhất', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy', 'Thứ tám', 'Thứ chín', 'Thứ mười'][k] || 'Số ' + k) + ', ' : my ? (['', 'ပထမ', 'ဒုတိယ', 'တတိယ', 'စတုတ္ထ', 'ပဉ္စမ', 'ဆဋ္ဌမ', 'သတ္တမ', 'အဋ္ဌမ', 'နဝမ', 'ဒသမ'][k] || 'အမှတ် ' + k) + '၊ ' : tl ? (['', 'Una', 'Ikalawa', 'Ikatlo', 'Ikaapat', 'Ikalima', 'Ikaanim', 'Ikapito', 'Ikawalo', 'Ikasiyam', 'Ikasampu'][k] || 'Bilang ' + k) + ', ' : idn ? (['', 'Pertama', 'Kedua', 'Ketiga', 'Keempat', 'Kelima', 'Keenam', 'Ketujuh', 'Kedelapan', 'Kesembilan', 'Kesepuluh'][k] || 'Nomor ' + k) + ', ' : ja ? (k <= 10 ? NUMS.charAt(k) + 'つ目、' : k + '番目、') : zh ? '第' + (k <= 10 ? NUMS.charAt(k) : k) + '，' : (['', 'First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth'][k] || 'Number ' + k) + ', ';
+        lead = es ? (['', 'Primero', 'Segundo', 'Tercero', 'Cuarto', 'Quinto', 'Sexto', 'Séptimo', 'Octavo', 'Noveno', 'Décimo'][k] || 'Número ' + k) + ', ' : cb ? (['', 'Una', 'Ikaduha', 'Ikatulo', 'Ikaupat', 'Ikalima', 'Ikaunom', 'Ikapito', 'Ikawalo', 'Ikasiyam', 'Ikanapulo'][k] || 'Numero ' + k) + ', ' : lo ? (['', 'ທຳອິດ', 'ທີສອງ', 'ທີສາມ', 'ທີສີ່', 'ທີຫ້າ', 'ທີຫົກ', 'ທີເຈັດ', 'ທີແປດ', 'ທີເກົ້າ', 'ທີສິບ'][k] || 'ຂໍ້ທີ ' + k) + ' ' : ne ? (['', 'पहिलो', 'दोस्रो', 'तेस्रो', 'चौथो', 'पाँचौँ', 'छैटौँ', 'सातौँ', 'आठौँ', 'नवौँ', 'दशौँ'][k] || 'संख्या ' + k) + ', ' : hi ? (['', 'पहला', 'दूसरा', 'तीसरा', 'चौथा', 'पाँचवाँ', 'छठा', 'सातवाँ', 'आठवाँ', 'नौवाँ', 'दसवाँ'][k] || 'संख्या ' + k) + ', ' : ar ? (['', 'أولًا', 'ثانيًا', 'ثالثًا', 'رابعًا', 'خامسًا', 'سادسًا', 'سابعًا', 'ثامنًا', 'تاسعًا', 'عاشرًا'][k] || 'رقم ' + k) + '، ' : ms ? (['', 'Pertama', 'Kedua', 'Ketiga', 'Keempat', 'Kelima', 'Keenam', 'Ketujuh', 'Kelapan', 'Kesembilan', 'Kesepuluh'][k] || 'Nombor ' + k) + ', ' : th ? (['', 'ข้อที่หนึ่ง', 'ข้อที่สอง', 'ข้อที่สาม', 'ข้อที่สี่', 'ข้อที่ห้า', 'ข้อที่หก', 'ข้อที่เจ็ด', 'ข้อที่แปด', 'ข้อที่เก้า', 'ข้อที่สิบ'][k] || 'ข้อที่ ' + k) + ' ' : vi ? (['', 'Thứ nhất', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy', 'Thứ tám', 'Thứ chín', 'Thứ mười'][k] || 'Số ' + k) + ', ' : my ? (['', 'ပထမ', 'ဒုတိယ', 'တတိယ', 'စတုတ္ထ', 'ပဉ္စမ', 'ဆဋ္ဌမ', 'သတ္တမ', 'အဋ္ဌမ', 'နဝမ', 'ဒသမ'][k] || 'အမှတ် ' + k) + '၊ ' : tl ? (['', 'Una', 'Ikalawa', 'Ikatlo', 'Ikaapat', 'Ikalima', 'Ikaanim', 'Ikapito', 'Ikawalo', 'Ikasiyam', 'Ikasampu'][k] || 'Bilang ' + k) + ', ' : idn ? (['', 'Pertama', 'Kedua', 'Ketiga', 'Keempat', 'Kelima', 'Keenam', 'Ketujuh', 'Kedelapan', 'Kesembilan', 'Kesepuluh'][k] || 'Nomor ' + k) + ', ' : ja ? (k <= 10 ? NUMS.charAt(k) + 'つ目、' : k + '番目、') : zh ? '第' + (k <= 10 ? NUMS.charAt(k) : k) + '，' : (['', 'First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth'][k] || 'Number ' + k) + ', ';
       } else if (g.mode === 'label'){
         if (b.lab){
-          const w = cb ? (i === 0 ? 'Ang una mao ang ' : (i === n - 1 ? 'Ang katapusan mao ang ' : 'Dayon ')) : lo ? (i === 0 ? 'ອັນທຳອິດແມ່ນ ' : (i === n - 1 ? 'ອັນສຸດທ້າຍແມ່ນ ' : 'ຕໍ່ມາ ')) : ne ? (i === 0 ? 'पहिलो हो ' : (i === n - 1 ? 'अन्तिम हो ' : 'त्यसपछि ')) : hi ? (i === 0 ? 'पहला है ' : (i === n - 1 ? 'अंतिम है ' : 'फिर ')) : ar ? (i === 0 ? 'الأول هو ' : (i === n - 1 ? 'والأخير هو ' : 'ثم ')) : ms ? (i === 0 ? 'Pertama ialah ' : (i === n - 1 ? 'Terakhir ialah ' : 'Kemudian ')) : th ? (i === 0 ? 'ประการแรกคือ ' : (i === n - 1 ? 'ประการสุดท้ายคือ ' : 'จากนั้นคือ ')) : vi ? (i === 0 ? 'Trước hết là ' : (i === n - 1 ? 'Cuối cùng là ' : 'Rồi đến ')) : my ? (i === 0 ? 'ပထမမှာ ' : (i === n - 1 ? 'နောက်ဆုံးမှာ ' : 'ထို့နောက် ')) : tl ? (i === 0 ? 'Una ay ' : (i === n - 1 ? 'Panghuli ay ' : 'Pagkatapos ')) : idn ? (i === 0 ? 'Pertama adalah ' : (i === n - 1 ? 'Terakhir adalah ' : 'Lalu ')) : ja ? (i === 0 ? 'まずは' : (i === n - 1 ? '最後は' : '次は')) : zh ? (i === 0 ? '首先是' : (i === n - 1 ? '最後是' : '再來是')) : (i === 0 ? 'First is ' : (i === n - 1 ? 'Last is ' : 'Then '));
+          const w = es ? (i === 0 ? 'Lo primero es ' : (i === n - 1 ? 'Lo último es ' : 'Luego, ')) : cb ? (i === 0 ? 'Ang una mao ang ' : (i === n - 1 ? 'Ang katapusan mao ang ' : 'Dayon ')) : lo ? (i === 0 ? 'ອັນທຳອິດແມ່ນ ' : (i === n - 1 ? 'ອັນສຸດທ້າຍແມ່ນ ' : 'ຕໍ່ມາ ')) : ne ? (i === 0 ? 'पहिलो हो ' : (i === n - 1 ? 'अन्तिम हो ' : 'त्यसपछि ')) : hi ? (i === 0 ? 'पहला है ' : (i === n - 1 ? 'अंतिम है ' : 'फिर ')) : ar ? (i === 0 ? 'الأول هو ' : (i === n - 1 ? 'والأخير هو ' : 'ثم ')) : ms ? (i === 0 ? 'Pertama ialah ' : (i === n - 1 ? 'Terakhir ialah ' : 'Kemudian ')) : th ? (i === 0 ? 'ประการแรกคือ ' : (i === n - 1 ? 'ประการสุดท้ายคือ ' : 'จากนั้นคือ ')) : vi ? (i === 0 ? 'Trước hết là ' : (i === n - 1 ? 'Cuối cùng là ' : 'Rồi đến ')) : my ? (i === 0 ? 'ပထမမှာ ' : (i === n - 1 ? 'နောက်ဆုံးမှာ ' : 'ထို့နောက် ')) : tl ? (i === 0 ? 'Una ay ' : (i === n - 1 ? 'Panghuli ay ' : 'Pagkatapos ')) : idn ? (i === 0 ? 'Pertama adalah ' : (i === n - 1 ? 'Terakhir adalah ' : 'Lalu ')) : ja ? (i === 0 ? 'まずは' : (i === n - 1 ? '最後は' : '次は')) : zh ? (i === 0 ? '首先是' : (i === n - 1 ? '最後是' : '再來是')) : (i === 0 ? 'First is ' : (i === n - 1 ? 'Last is ' : 'Then '));
           out.push(w + b.lab + (b.desc ? (ja ? '、' : zh ? '，' : ', ') + endP(b.desc) : (zh ? '。' : '.'))); return;
         }
       } else if (g.mode === 'plain'){
@@ -8933,7 +8955,7 @@ function embedBoot(){
     const it = o.item;
     studioItem = { b:'', ch:0, v:0, t:String(it.t || ''), ref:String(it.ref || ''), n:String(it.n || ''), x:1 };
     studioNote = studioItem.n; fullBless = ''; blessOwn = '';
-    if (['zh', 'zs', 'en', 'ko', 'ja', 'id', 'tl', 'my', 'vi', 'th', 'ms', 'ar', 'hi', 'ne', 'lo', 'ceb'].includes(o.lang) && state.lang !== o.lang){ state.lang = o.lang; saveState(); applyChrome(); }
+    if (['zh', 'zs', 'en', 'ko', 'ja', 'id', 'tl', 'my', 'vi', 'th', 'ms', 'ar', 'hi', 'ne', 'lo', 'ceb', 'es'].includes(o.lang) && state.lang !== o.lang){ state.lang = o.lang; saveState(); applyChrome(); }
   }
   /* 外層換了文字來源（經文／亮光／宣告…）就直接換，不重新載入 */
   window.addEventListener('message', e => {
@@ -9114,7 +9136,7 @@ function crGo(pg, keep){
   ttsStop(); go(`#/read/${pg.b}/${pg.c}`);
 }
 /* ---- 定位：章＋節＋該節第幾句（同語系用原本的段落／句序，不同語系靠節號對齊） ---- */
-const crGrp = lg => lg === 'en' ? 'en' : (lg === 'ko' ? 'ko' : (lg === 'ja' ? 'ja' : (lg === 'id' ? 'id' : (lg === 'tl' ? 'tl' : (lg === 'my' ? 'my' : (lg === 'vi' ? 'vi' : (lg === 'th' ? 'th' : (lg === 'ms' ? 'ms' : (lg === 'ar' ? 'ar' : (lg === 'hi' ? 'hi' : (lg === 'ne' ? 'ne' : (lg === 'lo' ? 'lo' : (lg === 'ceb' ? 'ceb' : 'zh')))))))))))));
+const crGrp = lg => lg === 'en' ? 'en' : (lg === 'ko' ? 'ko' : (lg === 'ja' ? 'ja' : (lg === 'id' ? 'id' : (lg === 'tl' ? 'tl' : (lg === 'my' ? 'my' : (lg === 'vi' ? 'vi' : (lg === 'th' ? 'th' : (lg === 'ms' ? 'ms' : (lg === 'ar' ? 'ar' : (lg === 'hi' ? 'hi' : (lg === 'ne' ? 'ne' : (lg === 'lo' ? 'lo' : (lg === 'ceb' ? 'ceb' : (lg === 'es' ? 'es' : 'zh'))))))))))))));
 function crWhere(el){
   const c = +el.dataset.c, v = +el.dataset.v || 0;
   const same = v ? $$('#reader .sent').filter(e => +e.dataset.c === c && (+e.dataset.v || 0) === v) : [el];
@@ -9315,6 +9337,22 @@ async function boot(){
   setTimeout(checkPlanRemind, 3000);              // 開 App 當下也順便檢查一次
 }
 /* ---- 한국어 팩: lang-ko.js 의 내용을 각 언어 표에 연결 (파일이 없으면 통째로 건너뜀) ---- */
+(function attachES(){
+  const P = window.ES_PACK; if (!P) return;
+  I18N.es = P.I18N.es;
+  PIC_L.es = P.PIC; HYM_L.es = P.HYM; TWEAK_L.es = P.TWEAK; TEAM_L.es = P.TEAM; CR_TX.es = P.CR;
+  QBANK.es = P.QBANK;
+  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].es = P.Q20[k]; });
+  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].es = P.Q20SK[k]; });
+  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].es = P.QAUD[k]; });
+  Object.keys(P.AUD2).forEach(k => {
+    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
+    o.es = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
+  });
+  FU_BANK.es = {};
+  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.es[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
+  GROUPS.forEach((g, i) => { g.esn = P.groups[i]; });
+})();
 (function attachCEB(){
   const P = window.CEB_PACK; if (!P) return;
   I18N.ceb = P.I18N.ceb;
