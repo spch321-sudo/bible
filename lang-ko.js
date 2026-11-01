@@ -221,6 +221,10 @@ P.rules = [
  [/^(\d+) missed questions to review$/, function(m){ return '복습할 오답 ' + m[1] + '개'; }]
 ];
 P.dict[' and writing your questions…'] = "” 본문을 읽고 문제를 만들고 있어요…";
+P.dict["Very short"] = "매우 짧게";
+P.dict["Short"] = "짧게";
+P.dict["Long"] = "길게";
+P.dict["Very long"] = "매우 길게";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

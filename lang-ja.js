@@ -219,6 +219,10 @@ P.rules = [
 ];
 
 P.dict[' and writing your questions…'] = "」を読んで、問題を作っています…";
+P.dict["Very short"] = "極短";
+P.dict["Short"] = "短め";
+P.dict["Long"] = "長め";
+P.dict["Very long"] = "極長";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

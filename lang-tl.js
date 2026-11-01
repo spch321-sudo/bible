@@ -220,6 +220,10 @@ P.rules = [
 
 P.dict[' and writing your questions…'] = " at sinusulat ang iyong mga tanong…";
 P.dict['Single parent'] = 'Solong magulang';
+P.dict["Very short"] = "Napakaikli";
+P.dict["Short"] = "Maikli";
+P.dict["Long"] = "Mahaba";
+P.dict["Very long"] = "Napakahaba";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

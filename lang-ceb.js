@@ -217,6 +217,10 @@ P.rules = [
 ];
 
 P.dict[' and writing your questions…'] = " ug nagsulat og mga pangutana alang kanimo…";
+P.dict["Very short"] = "Hilabihang mubo";
+P.dict["Short"] = "Mubo";
+P.dict["Long"] = "Taas";
+P.dict["Very long"] = "Hilabihang taas";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

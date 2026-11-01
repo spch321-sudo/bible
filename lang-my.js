@@ -218,6 +218,10 @@ P.rules = [
 ];
 
 P.dict[' and writing your questions…'] = " ပြီး သင့်အတွက် မေးခွန်းများ ရေးနေသည်…";
+P.dict["Very short"] = "အလွန်တို";
+P.dict["Short"] = "တို";
+P.dict["Long"] = "ရှည်";
+P.dict["Very long"] = "အလွန်ရှည်";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

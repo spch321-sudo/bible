@@ -36,7 +36,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.44.1';
+const VERSION = 'v2.45.0';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -510,7 +510,8 @@ function loadState(){
     delete state.chnum;
     state.flow = !!state.flow; state.shCh = !!state.shCh; state.shV = !!state.shV;
     if (!['adult','teen','kid','seeker','elder','single_parent','single','parent','couple','pastor'].includes(state.audience)) state.audience = 'adult';
-    if (!['brief','mid','full'].includes(state.alen)) state.alen = 'mid';
+    if (state.alen === 'brief') state.alen = 's'; else if (state.alen === 'full') state.alen = 'long';   // v2.45：三段改五段，舊設定對應過去
+    if (!['xs','s','mid','long','xl'].includes(state.alen)) state.alen = 'mid';
     if (!['none','buddhism','folk','yiguandao','muslim','atheist'].includes(state.skbg)) state.skbg = 'none';
   }catch(e){ state = Object.assign({}, DEFAULTS); }
 }
@@ -6694,21 +6695,37 @@ const SKBG_SYS = () => {
     : isZS() ? ' 一律带着尊重与爱心，不嘲笑任何信仰、不施压；诚实而温和地说明基督信仰的立场，并先回答他真正的问题。'
     : ' 一律帶著尊重與愛心，不嘲笑任何信仰、不施壓；誠實而溫和地說明基督信仰的立場，並先回答他真正的問題。');
 };
-/* v2.18.28：小智回答長度——簡要／適中／詳細 */
-const LEN_KEYS = ['brief','mid','full'];
-const LEN_NAME = () => ({ brief:L3('簡要','简要','Brief'), mid:L3('適中','适中','Medium'), full:L3('詳細','详细','Detailed') });
+/* v2.45.0：小智回答長度——極短／短／中／長／極長（五段；預設「中」） */
+const LEN_KEYS = ['xs','s','mid','long','xl'];
+const LEN_NAME = () => ({ xs:L3('極短','极短','Very short'), s:L3('短','短','Short'), mid:L3('中','中','Medium'), long:L3('長','长','Long'), xl:L3('極長','极长','Very long') });
 const LEN_SYS = () => {
-  const k = state.alen || 'mid';
-  if (k === 'mid') return '';
-  if (isEP()) return k === 'brief'
-    ? ' Length: BRIEF. Keep the whole answer to about 3–5 short sentences (roughly 120 words): the core answer, one key verse or picture, and a one-line prayer or step. No tables, no long lists.'
-    : ' Length: DETAILED. Give a fuller, well-organised answer (roughly 600–900 words): the passage context, the meaning of key words, cross-references, a clear 3-2-1 application, a practical step for this week, and a closing prayer. Short headings are welcome.';
-  if (isZS()) return k === 'brief'
-    ? ' 回答长度：简要。整段回答控制在 3～5 句话（约 150 字内）：直接给核心答案、一句关键经文或一个比喻，最后一句祷告或一个小步骤。不用表格、不列长清单。'
-    : ' 回答长度：详细。请完整、有条理地回答（约 800～1200 字）：说明经文脉络、关键字词的意思、相关经文对照、清楚的321应用、这星期可以操练的具体步骤，最后以祷告结束。可用简短小标题。';
-  return k === 'brief'
-    ? ' 回答長度：簡要。整段回答控制在 3～5 句話（約 150 字內）：直接給核心答案、一句關鍵經文或一個比喻，最後一句禱告或一個小步驟。不用表格、不列長清單。'
-    : ' 回答長度：詳細。請完整、有條理地回答（約 800～1200 字）：說明經文脈絡、關鍵字詞的意思、相關經文對照、清楚的321應用、這星期可以操練的具體步驟，最後以禱告結束。可用簡短小標題。';
+  const k = LEN_KEYS.includes(state.alen) ? state.alen : 'mid';
+  const easy = (state.audience === 'kid' || state.audience === 'elder') && (k === 'long' || k === 'xl');
+  if (isEP()){
+    const T = {
+      xs:' Length: VERY SHORT. The whole answer must stay within about 60 words: the core answer, one key verse, and a one-line prayer. No headings, tables or lists.',
+      s:' Length: SHORT. About 120–180 words: answer directly, add one key verse or one picture, and end with one small step. No tables or long lists.',
+      mid:' Length: MEDIUM. About 300–350 words: the passage context, the main points, a clear 3-2-1 application, one practical step for this week, and a closing prayer.',
+      long:' Length: LONG. About 600–750 words. Short headings are welcome. Cover the passage context, the meaning of key words, cross-references, a clear 3-2-1 application, a practical step for this week, and a closing prayer.',
+      xl:' Length: VERY LONG. At least 1,200 words and no more than about 2,000 words. Use short headings and organise it as: background, passage analysis, key words, cross-references, theological points, 3-2-1 application, discussion questions, and a closing prayer.'
+    };
+    return T[k] + (easy ? ' Use plain words and short paragraphs so it is easy to read.' : '');
+  }
+  const zs = isZS();
+  const T = zs ? {
+    xs:' 回答长度：极短。整段回答控制在 100 字内：只给核心答案、一节关键经文、一句祷告；不用标题、表格与清单。',
+    s:' 回答长度：短。约 200～300 字：直接回答，加一节关键经文或一个比喻，最后给一个小步骤；不用表格、不列长清单。',
+    mid:' 回答长度：中。约 500～600 字：依序说明经文脉络、重点、清楚的321应用、这星期一个具体步骤，最后以祷告结束。',
+    long:' 回答长度：长。约 1000～1200 字：可用简短小标题，包含经文脉络、关键字词的意思、相关经文对照、清楚的321应用、这星期的具体步骤，最后以祷告结束。',
+    xl:' 回答长度：极长。2000 字以上，不超过 3000 字。分段并用小标题，依序为：背景、段落分析、关键字词、经文对照、神学重点、321应用、讨论题、祷告。'
+  } : {
+    xs:' 回答長度：極短。整段回答控制在 100 字內：只給核心答案、一節關鍵經文、一句禱告；不用標題、表格與清單。',
+    s:' 回答長度：短。約 200～300 字：直接回答，加一節關鍵經文或一個比喻，最後給一個小步驟；不用表格、不列長清單。',
+    mid:' 回答長度：中。約 500～600 字：依序說明經文脈絡、重點、清楚的321應用、這星期一個具體步驟，最後以禱告結束。',
+    long:' 回答長度：長。約 1000～1200 字：可用簡短小標題，包含經文脈絡、關鍵字詞的意思、相關經文對照、清楚的321應用、這星期的具體步驟，最後以禱告結束。',
+    xl:' 回答長度：極長。2000 字以上，不超過 3000 字。分段並用小標題，依序為：背景、段落分析、關鍵字詞、經文對照、神學重點、321應用、討論題、禱告。'
+  };
+  return T[k] + (easy ? (zs ? ' 用浅白的话和短段落，让人容易读。' : ' 用淺白的話和短段落，讓人容易讀。') : '');
 };
 /* ===== v2.29.0：讀者資料——小智依暱稱、性別、年齡、身分、就職、在學、信仰與目前處境量身回答 ===== */
 const PF_FIELDS = [

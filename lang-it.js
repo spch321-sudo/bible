@@ -217,6 +217,10 @@ P.rules = [
 ];
 
 P.dict[' and writing your questions…'] = " e sta scrivendo le tue domande…";
+P.dict["Very short"] = "Brevissima";
+P.dict["Short"] = "Breve";
+P.dict["Long"] = "Lunga";
+P.dict["Very long"] = "Lunghissima";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;
