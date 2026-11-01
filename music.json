@@ -46,7 +46,10 @@
    "tt": "ความหวัง",
    "nms": "Matahari Terbit yang Jernih",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Harapan"
+   "tms": "Harapan",
+   "nar": "شروق الشمس في صباح صافٍ",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "الرجاء"
   },
   {
    "f": "m02.mp3",
@@ -82,7 +85,10 @@
    "tt": "ความหวัง",
    "nms": "Harapan – Matahari Terbit yang Jernih",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Harapan"
+   "tms": "Harapan",
+   "nar": "الرجاء – شروق الشمس في الصباح الباكر",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "الرجاء"
   },
   {
    "f": "m03.mp3",
@@ -118,7 +124,10 @@
    "tt": "ความหวัง",
    "nms": "Harapan 2 – Ciptaan, Gunung dan Lautan",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Harapan"
+   "tms": "Harapan",
+   "nar": "الرجاء 2 – الخليقة والجبال والبحار",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "الرجاء"
   },
   {
    "f": "m04.mp3",
@@ -154,7 +163,10 @@
    "tt": "ความหวัง",
    "nms": "Harapan 3 – Hening, Renungan dan Doa",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Harapan"
+   "tms": "Harapan",
+   "nar": "الرجاء 3 – تأمّل هادئ وصلاة",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "الرجاء"
   },
   {
    "f": "m05.mp3",
@@ -190,7 +202,10 @@
    "tt": "ความหวัง",
    "nms": "Harapan 4 – Penyembahan dan Kemuliaan",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Harapan"
+   "tms": "Harapan",
+   "nar": "الرجاء 4 – العبادة والمجد",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "الرجاء"
   },
   {
    "f": "m06.mp3",
@@ -226,7 +241,10 @@
    "tt": "ความเชื่อ",
    "nms": "Iman 1 – Hidup oleh Iman",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Iman"
+   "tms": "Iman",
+   "nar": "الإيمان 1 – السلوك بالإيمان",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "الإيمان"
   },
   {
    "f": "m07.mp3",
@@ -262,7 +280,10 @@
    "tt": "ความเชื่อ",
    "nms": "Iman 2 – Iman Sebesar Biji Sesawi",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Iman"
+   "tms": "Iman",
+   "nar": "الإيمان 2 – إيمان كحبة الخردل",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "الإيمان"
   },
   {
    "f": "m08.mp3",
@@ -298,7 +319,10 @@
    "tt": "ความรัก",
    "nms": "Kasih 1 – Allah Mengasihi Dunia",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Kasih"
+   "tms": "Kasih",
+   "nar": "المحبة 1 – هكذا أحبّ الله العالم",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "المحبة"
   },
   {
    "f": "m09.mp3",
@@ -334,7 +358,10 @@
    "tt": "ความรัก",
    "nms": "Kasih 2 – Kasih yang Terbesar, Dia Menyerahkan Nyawa-Nya bagi Saya",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Kasih"
+   "tms": "Kasih",
+   "nar": "المحبة 2 – أسمى المحبة، بذل نفسه عني",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "المحبة"
   },
   {
    "f": "m10.mp3",
@@ -370,7 +397,10 @@
    "tt": "ความรัก",
    "nms": "Kasih 3 – Makna Sebenar Kasih",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Kasih"
+   "tms": "Kasih",
+   "nar": "المحبة 3 – حقيقة المحبة",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "المحبة"
   },
   {
    "f": "m11.mp3",
@@ -406,7 +436,10 @@
    "tt": "ความรัก",
    "nms": "Kasih 4 – Saling Mengasihi",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Kasih"
+   "tms": "Kasih",
+   "nar": "المحبة 4 – أحبّوا بعضكم بعضًا",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "المحبة"
   },
   {
    "f": "m12.mp3",
@@ -442,7 +475,10 @@
    "tt": "ความรัก",
    "nms": "Kasih 5 – Kasih Menutupi Banyak Dosa",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Kasih"
+   "tms": "Kasih",
+   "nar": "المحبة 5 – المحبة تستر كثرة من الخطايا",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "المحبة"
   },
   {
    "f": "m13.mp3",
@@ -478,7 +514,10 @@
    "tt": "พระพร",
    "nms": "Berkat 1 – Janji Berkat Allah",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Berkat"
+   "tms": "Berkat",
+   "nar": "البركة 1 – وعد الله بالبركة",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "البركة"
   },
   {
    "f": "m14.mp3",
@@ -514,7 +553,10 @@
    "tt": "พระพร",
    "nms": "Berkat 2 – Berkat Imam",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Berkat"
+   "tms": "Berkat",
+   "nar": "البركة 2 – بركة الكهنة",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "البركة"
   },
   {
    "f": "m15.mp3",
@@ -550,7 +592,10 @@
    "tt": "พระคุณ",
    "nms": "Anugerah 1 – Diselamatkan oleh Anugerah",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Anugerah"
+   "tms": "Anugerah",
+   "nar": "النعمة 1 – بالنعمة مخلَّصون",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "النعمة"
   },
   {
    "f": "m16.mp3",
@@ -586,7 +631,10 @@
    "tt": "พระคุณ",
    "nms": "Anugerah 2 – Anugerah di Kayu Salib",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Anugerah"
+   "tms": "Anugerah",
+   "nar": "النعمة 2 – النعمة عند الصليب",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "النعمة"
   },
   {
    "f": "m17.mp3",
@@ -622,7 +670,10 @@
    "tt": "สันติสุข",
    "nms": "Damai 1 – Damai yang Kristus Berikan",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Damai"
+   "tms": "Damai",
+   "nar": "السلام 1 – السلام الذي يمنحه المسيح",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "السلام"
   },
   {
    "f": "m18.mp3",
@@ -658,7 +709,10 @@
    "tt": "สันติสุข",
    "nms": "Damai 2 – Damai di Tengah Badai",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Damai"
+   "tms": "Damai",
+   "nar": "السلام 2 – السلام وسط العاصفة",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "السلام"
   },
   {
    "f": "m19.mp3",
@@ -694,7 +748,10 @@
    "tt": "ความชื่นชมยินดี",
    "nms": "Sukacita 1 – Bersukacitalah dalam Tuhan Senantiasa",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Sukacita"
+   "tms": "Sukacita",
+   "nar": "الفرح 1 – افرحوا في الرب كل حين",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "الفرح"
   },
   {
    "f": "m20.mp3",
@@ -730,7 +787,10 @@
    "tt": "ความชื่นชมยินดี",
    "nms": "Sukacita 2 – Sorak-sorai di Waktu Pagi",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Sukacita"
+   "tms": "Sukacita",
+   "nar": "الفرح 2 – في الصباح ترنّم",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "الفرح"
   },
   {
    "f": "m21.mp3",
@@ -766,7 +826,10 @@
    "tt": "ความชื่นชมยินดี",
    "nms": "Sukacita 3 – Menyanyi Memuji dengan Gembira",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Sukacita"
+   "tms": "Sukacita",
+   "nar": "الفرح 3 – ترنيمة حمد وابتهاج",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "الفرح"
   },
   {
    "f": "m22.mp3",
@@ -802,7 +865,10 @@
    "tt": "ความชื่นชมยินดี",
    "nms": "Sukacita 4 – Menari Kegirangan",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Sukacita"
+   "tms": "Sukacita",
+   "nar": "الفرح 4 – رقص الفرح",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "الفرح"
   },
   {
    "f": "m23.mp3",
@@ -838,7 +904,10 @@
    "tt": "ความชื่นชมยินดี",
    "nms": "Sukacita 5 – Sukacita dalam Tuhan Ialah Kekuatan Saya",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Sukacita"
+   "tms": "Sukacita",
+   "nar": "الفرح 5 – فرح الرب هو قوتي",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "الفرح"
   },
   {
    "f": "m24.mp3",
@@ -874,7 +943,10 @@
    "tt": "การรอคอย",
    "nms": "Menanti 1 – Menanti TUHAN",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Menanti"
+   "tms": "Menanti",
+   "nar": "الانتظار 1 – انتظار الرب",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "الانتظار"
   },
   {
    "f": "m25.mp3",
@@ -910,7 +982,10 @@
    "tt": "การรอคอย",
    "nms": "Menanti 2 – Seperti Burung Helang Mengepak Sayap",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Menanti"
+   "tms": "Menanti",
+   "nar": "الانتظار 2 – كالنسور بأجنحة",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "الانتظار"
   },
   {
    "f": "m26.mp3",
@@ -946,7 +1021,10 @@
    "tt": "การรอคอย",
    "nms": "Menanti 4 – Berdiam Diri dan Bersandar pada-Nya",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Menanti"
+   "tms": "Menanti",
+   "nar": "الانتظار 4 – السكون والاتكال عليه",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "الانتظار"
   },
   {
    "f": "m27.mp3",
@@ -982,7 +1060,10 @@
    "tt": "การเล้าโลมในยามเจ็บป่วย",
    "nms": "Penghiburan dalam Sakit 2 – Air Mata dalam Kesakitan",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Penghiburan dalam Sakit"
+   "tms": "Penghiburan dalam Sakit",
+   "nar": "العزاء في المرض 2 – دموع في وجه الألم",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "العزاء في المرض"
   },
   {
    "f": "m28.mp3",
@@ -1018,7 +1099,10 @@
    "tt": "การเล้าโลมในยามเจ็บป่วย",
    "nms": "Berdiam Diri bersama Allah dalam Sakit",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Penghiburan dalam Sakit"
+   "tms": "Penghiburan dalam Sakit",
+   "nar": "سكون في المرض مع الله",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "العزاء في المرض"
   },
   {
    "f": "m29.mp3",
@@ -1054,7 +1138,10 @@
    "tt": "ฉลองวันเกิด",
    "nms": "Meraikan Hari Lahir – Hari Lahir Bermula, Berkat Menyusul",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Meraikan Hari Lahir"
+   "tms": "Meraikan Hari Lahir",
+   "nar": "احتفال بعيد الميلاد – يبدأ العيد وتنهمر البركات",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "احتفال بعيد الميلاد"
   },
   {
    "f": "m30.mp3",
@@ -1090,7 +1177,10 @@
    "tt": "ฉลองวันเกิด",
    "nms": "Hari Lahir Bermula, Berkat Dibuka",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Meraikan Hari Lahir"
+   "tms": "Meraikan Hari Lahir",
+   "nar": "يبدأ عيد الميلاد وتنفتح البركات",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "احتفال بعيد الميلاد"
   },
   {
    "f": "m31.mp3",
@@ -1126,7 +1216,10 @@
    "tt": "ฉลองวันเกิด",
    "nms": "Lagu Selamat Hari Lahir",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Meraikan Hari Lahir"
+   "tms": "Meraikan Hari Lahir",
+   "nar": "أنشودة عيد ميلاد سعيد",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "احتفال بعيد الميلاد"
   },
   {
    "f": "m32.mp3",
@@ -1162,7 +1255,10 @@
    "tt": "ฉลองวันเกิด",
    "nms": "Perayaan",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Meraikan Hari Lahir"
+   "tms": "Meraikan Hari Lahir",
+   "nar": "احتفال",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "احتفال بعيد الميلاد"
   },
   {
    "f": "m33.mp3",
@@ -1198,7 +1294,10 @@
    "tt": "การเล้าโลมในยามเจ็บป่วย",
    "nms": "Penghiburan dalam Sakit 5",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Penghiburan dalam Sakit"
+   "tms": "Penghiburan dalam Sakit",
+   "nar": "العزاء في المرض 5",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "العزاء في المرض"
   },
   {
    "f": "m34.mp3",
@@ -1234,7 +1333,10 @@
    "tt": "ฉลองวันเกิด",
    "nms": "Kegembiraan",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Meraikan Hari Lahir"
+   "tms": "Meraikan Hari Lahir",
+   "nar": "ابتهاج",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "احتفال بعيد الميلاد"
   },
   {
    "f": "m35.mp3",
@@ -1270,7 +1372,10 @@
    "tt": "ความหวัง",
    "nms": "Harapan",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Harapan"
+   "tms": "Harapan",
+   "nar": "الرجاء",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "الرجاء"
   },
   {
    "f": "m36.mp3",
@@ -1306,7 +1411,10 @@
    "tt": "สันติสุข",
    "nms": "Damai",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Damai"
+   "tms": "Damai",
+   "nar": "السلام",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "السلام"
   },
   {
    "f": "m37.mp3",
@@ -1342,7 +1450,10 @@
    "tt": "ความรัก",
    "nms": "Kasih Setia",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Kasih"
+   "tms": "Kasih",
+   "nar": "المحبة الحانية",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "المحبة"
   },
   {
    "f": "m38.mp3",
@@ -1378,7 +1489,10 @@
    "tt": "ความรัก",
    "nms": "Kelembutan",
    "bms": "Muzik Latar 321 Alkitab Interaktif",
-   "tms": "Kasih"
+   "tms": "Kasih",
+   "nar": "اللطف",
+   "bar": "موسيقى 321 الكتاب المقدس التفاعلي",
+   "tar": "المحبة"
   }
  ]
 }

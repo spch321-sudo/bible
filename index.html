@@ -117,6 +117,17 @@ header.topbar .spacer{flex:1;}
 #langPanel[hidden]{display:none}
 #langPanel button{border:1px solid var(--border); background:var(--surface-alt,var(--surface)); color:var(--ink); border-radius:10px; padding:10px 8px; font-size:14px; font-weight:600; text-align:center;}
 #langPanel button.active{background:var(--accent); color:#fff; border-color:var(--accent);}
+html[lang="ar"] body, html[lang="ar"] button, html[lang="ar"] input, html[lang="ar"] textarea{font-family:"Noto Naskh Arabic","Geeza Pro","Damascus","Noto Sans Arabic","Segoe UI",Tahoma,system-ui,sans-serif;}
+html[lang="ar"] .reader p{line-height:2.25; text-align:justify; hyphens:none; overflow-wrap:break-word; font-size:1.05em;}
+html[lang="ar"] .hitem .q, html[lang="ar"] .bubble, html[lang="ar"] .msg{line-height:2;}
+html[lang="ar"] nav.tabbar a{font-size:10px;}
+html[lang="ar"] .reader p.prose{text-indent:0; padding-inline-start:1.6em;}
+html[lang="ar"] .reader .vn{margin:0 .06em 0 .22em;}
+html[lang="ar"] .chhead h1, html[lang="ar"] .hero-cover .hc-title, html[lang="ar"] .reader h2.ch{letter-spacing:0;}
+html[lang="ar"] #langPanel{right:auto; left:10px;}
+html[lang="ar"] #langswitch{direction:ltr;}
+html[lang="ar"] #langPanel button{direction:ltr;} html[lang="ar"] #langPanel button[data-lang="ar"]{direction:rtl;}
+html[lang="ar"] .reader .vn, html[lang="ar"] .reader p .sent{unicode-bidi:isolate;}
 html[lang="th"] body, html[lang="th"] button, html[lang="th"] input, html[lang="th"] textarea{font-family:"Sarabun","Noto Sans Thai","Thonburi","Leelawadee UI",system-ui,sans-serif;}
 html[lang="th"] .reader p{line-height:2.1; text-align:left; overflow-wrap:break-word;}
 html[lang="th"] .hitem .q, html[lang="th"] .bubble, html[lang="th"] .msg{line-height:1.9;}
@@ -562,7 +573,7 @@ select.cardinput{appearance:none; -webkit-appearance:none;
     <button data-lang="zh">繁</button><button data-lang="zs">简</button><button data-lang="en">EN</button><button id="langMore" aria-haspopup="true" aria-expanded="false" title="Languages">🌐 <span id="langMoreTxt">▾</span></button>
   </div>
   <div id="langPanel" role="menu" hidden>
-    <button data-lang="ko">한국어</button><button data-lang="ja">日本語</button><button data-lang="id">Bahasa Indonesia</button><button data-lang="tl">Filipino</button><button data-lang="my">မြန်မာဘာသာ</button><button data-lang="vi">Tiếng Việt</button><button data-lang="th">ภาษาไทย</button><button data-lang="ms">Bahasa Malaysia</button>
+    <button data-lang="ko">한국어</button><button data-lang="ja">日本語</button><button data-lang="id">Bahasa Indonesia</button><button data-lang="tl">Filipino</button><button data-lang="my">မြန်မာဘာသာ</button><button data-lang="vi">Tiếng Việt</button><button data-lang="th">ภาษาไทย</button><button data-lang="ms">Bahasa Malaysia</button><button data-lang="ar" lang="ar" dir="rtl">العربية</button>
   </div>
 </header>
 
@@ -597,7 +608,7 @@ select.cardinput{appearance:none; -webkit-appearance:none;
 
 <script>
 /* 程式檔帶上更新時間戳（?u=…）載入：更新後重整的那一次一定抓到最新的 app.js，不會被瀏覽器或 CDN 的舊快取擋住 */
-(function(){var m=location.search.match(/[?&]u=(\d+)/);document.write('<script src="lang-ko.js'+'?v=2.33.1'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-ja.js'+'?v=2.33.1'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-id.js'+'?v=2.33.1'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-tl.js'+'?v=2.33.1'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-my.js'+'?v=2.33.1'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-vi.js'+'?v=2.33.1'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-th.js'+'?v=2.33.1'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-ms.js'+'?v=2.33.1'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-pf.js'+'?v=2.33.1'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="app.js'+'?v=2.33.1'+(m?'&u='+m[1]:'')+'"><\/script>');})();
+(function(){var m=location.search.match(/[?&]u=(\d+)/);document.write('<script src="lang-ko.js'+'?v=2.34.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-ja.js'+'?v=2.34.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-id.js'+'?v=2.34.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-tl.js'+'?v=2.34.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-my.js'+'?v=2.34.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-vi.js'+'?v=2.34.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-th.js'+'?v=2.34.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-ms.js'+'?v=2.34.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-ar.js'+'?v=2.34.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-pf.js'+'?v=2.34.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="app.js'+'?v=2.34.0'+(m?'&u='+m[1]:'')+'"><\/script>');})();
 </script>
 </body>
 </html>
