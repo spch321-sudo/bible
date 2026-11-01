@@ -1,8 +1,8 @@
 /* 321互動聖經 — Service Worker
    每次改動內容或程式，務必把 VERSION 往上加（也要同步 app.js 的 VERSION 與 version.json），
    否則已安裝的使用者不會看到更新。 */
-const VERSION = 'ib-v2.47.1';
-const VER = 'v2.47.1';
+const VERSION = 'ib-v2.47.2';
+const VER = 'v2.47.2';
 
 const SHELL = [
   './', './index.html', './app.js', './lang-ko.js', './lang-ja.js', './lang-id.js', './lang-tl.js', './lang-my.js', './lang-vi.js', './lang-th.js', './lang-ms.js', './lang-ar.js', './lang-he.js', './lang-el.js', './lang-hi.js', './lang-ne.js', './lang-ceb.js', './lang-es.js', './lang-fr.js', './lang-de.js', './lang-it.js', './lang-ru.js', './lang-pf.js', './peerjs.min.js', './qrcode.js', './manifest.json', './toc.json', './plans.json', './cover.jpg', './wxpay.jpg',
