@@ -128,6 +128,14 @@ html[lang="ar"] #langPanel{right:auto; left:10px;}
 html[lang="ar"] #langswitch{direction:ltr;}
 html[lang="ar"] #langPanel button{direction:ltr;} html[lang="ar"] #langPanel button[data-lang="ar"]{direction:rtl;}
 html[lang="ar"] .reader .vn, html[lang="ar"] .reader p .sent{unicode-bidi:isolate;}
+html[lang="hi"] body, html[lang="hi"] button, html[lang="hi"] input, html[lang="hi"] textarea{font-family:"Kohinoor Devanagari","Devanagari Sangam MN","Noto Sans Devanagari","Nirmala UI","Mangal",system-ui,sans-serif;}
+html[lang="hi"] .reader p{line-height:2.15; text-align:left; hyphens:none; overflow-wrap:break-word;}
+html[lang="hi"] .hitem .q, html[lang="hi"] .bubble, html[lang="hi"] .msg{line-height:1.95;}
+html[lang="hi"] nav.tabbar a{font-size:9.5px;}
+html[lang="hi"] .reader p.prose{text-indent:1.6em;}
+html[lang="hi"] .reader .vn{margin:0 .22em 0 .06em;}
+html[lang="hi"] .chhead h1, html[lang="hi"] .hero-cover .hc-title{letter-spacing:0;}
+html[lang="hi"] .reader h2.ch{letter-spacing:.05em;}
 html[lang="th"] body, html[lang="th"] button, html[lang="th"] input, html[lang="th"] textarea{font-family:"Sarabun","Noto Sans Thai","Thonburi","Leelawadee UI",system-ui,sans-serif;}
 html[lang="th"] .reader p{line-height:2.1; text-align:left; overflow-wrap:break-word;}
 html[lang="th"] .hitem .q, html[lang="th"] .bubble, html[lang="th"] .msg{line-height:1.9;}
@@ -573,7 +581,7 @@ select.cardinput{appearance:none; -webkit-appearance:none;
     <button data-lang="zh">繁</button><button data-lang="zs">简</button><button data-lang="en">EN</button><button id="langMore" aria-haspopup="true" aria-expanded="false" title="Languages">🌐 <span id="langMoreTxt">▾</span></button>
   </div>
   <div id="langPanel" role="menu" hidden>
-    <button data-lang="ko">한국어</button><button data-lang="ja">日本語</button><button data-lang="id">Bahasa Indonesia</button><button data-lang="tl">Filipino</button><button data-lang="my">မြန်မာဘာသာ</button><button data-lang="vi">Tiếng Việt</button><button data-lang="th">ภาษาไทย</button><button data-lang="ms">Bahasa Malaysia</button><button data-lang="ar" lang="ar" dir="rtl">العربية</button>
+    <button data-lang="ko">한국어</button><button data-lang="ja">日本語</button><button data-lang="id">Bahasa Indonesia</button><button data-lang="tl">Filipino</button><button data-lang="my">မြန်မာဘာသာ</button><button data-lang="vi">Tiếng Việt</button><button data-lang="th">ภาษาไทย</button><button data-lang="ms">Bahasa Malaysia</button><button data-lang="ar" lang="ar" dir="rtl">العربية</button><button data-lang="hi" lang="hi">हिन्दी</button>
   </div>
 </header>
 
@@ -608,7 +616,7 @@ select.cardinput{appearance:none; -webkit-appearance:none;
 
 <script>
 /* 程式檔帶上更新時間戳（?u=…）載入：更新後重整的那一次一定抓到最新的 app.js，不會被瀏覽器或 CDN 的舊快取擋住 */
-(function(){var m=location.search.match(/[?&]u=(\d+)/);document.write('<script src="lang-ko.js'+'?v=2.34.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-ja.js'+'?v=2.34.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-id.js'+'?v=2.34.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-tl.js'+'?v=2.34.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-my.js'+'?v=2.34.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-vi.js'+'?v=2.34.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-th.js'+'?v=2.34.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-ms.js'+'?v=2.34.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-ar.js'+'?v=2.34.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-pf.js'+'?v=2.34.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="app.js'+'?v=2.34.0'+(m?'&u='+m[1]:'')+'"><\/script>');})();
+(function(){var m=location.search.match(/[?&]u=(\d+)/);document.write('<script src="lang-ko.js'+'?v=2.35.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-ja.js'+'?v=2.35.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-id.js'+'?v=2.35.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-tl.js'+'?v=2.35.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-my.js'+'?v=2.35.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-vi.js'+'?v=2.35.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-th.js'+'?v=2.35.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-ms.js'+'?v=2.35.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-ar.js'+'?v=2.35.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-hi.js'+'?v=2.35.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="lang-pf.js'+'?v=2.35.0'+(m?'&u='+m[1]:'')+'"><\/script>');document.write('<script src="app.js'+'?v=2.35.0'+(m?'&u='+m[1]:'')+'"><\/script>');})();
 </script>
 </body>
 </html>
