@@ -28,7 +28,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.35.0';
+const VERSION = 'v2.35.1';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -3184,13 +3184,13 @@ function myUnits(w){
   return w.split(/(?<!\u1039)(?=[\u1000-\u1021\u1023-\u102A\u103F](?![\u103A\u1039]))/).filter(Boolean);
 }
 /* iOS Safari 的 canvas 對緬甸文做 center／right 對齊時會算錯寬度，文字全擠到右邊；
-   緬甸文改成自己量寬度、用 left 對齊畫。 */
+   緬甸文改成自己量寬度、用 left 對齊畫。泰文、印地文（天城文）同樣有這個問題，一併處理。 */
 (function(){
   try{
     const P = CanvasRenderingContext2D.prototype, ft = P.fillText, st = P.strokeText;
     const fix = fn => function(t, x, y, mw){
       const al = this.textAlign;
-      if (typeof isMY === 'function' && isMY() && (al === 'center' || al === 'right' || al === 'end') && /[\u1000-\u109F]/.test(t)){
+      if ((al === 'center' || al === 'right' || al === 'end') && ((typeof isMY === 'function' && isMY() && /[\u1000-\u109F]/.test(t)) || (typeof isTH === 'function' && isTH() && /[\u0E00-\u0E7F]/.test(t)) || (typeof isHI === 'function' && isHI() && /[\u0900-\u097F]/.test(t)))){
         const w = this.measureText(t).width;
         this.textAlign = 'left';
         try{ fn.call(this, t, al === 'center' ? x - w / 2 : x - w, y, mw); } finally { this.textAlign = al; }
