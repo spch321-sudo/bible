@@ -25,7 +25,8 @@
    "nne": "एदेनको बगैँचा",
    "ncb": "Ang Tanaman sa Eden",
    "nes": "El jardín del Edén",
-   "nfr": "Le jardin d’Éden"
+   "nfr": "Le jardin d’Éden",
+   "nde": "Der Garten Eden"
   },
   {
    "f": "bg286.jpg",
@@ -47,7 +48,8 @@
    "nne": "जहाजबाट बाहिर निस्कँदै नूह",
    "ncb": "Si Noe nga migawas sa arka",
    "nes": "Noé sale del arca",
-   "nfr": "Noé sort de l’arche"
+   "nfr": "Noé sort de l’arche",
+   "nde": "Noah verlässt die Arche"
   },
   {
    "f": "bg287.jpg",
@@ -69,7 +71,8 @@
    "nne": "सपनाको अर्थ खोलिदिँदै यूसुफ",
    "ncb": "Si Jose nga nagpasabot sa mga damgo",
    "nes": "José interpreta los sueños",
-   "nfr": "Joseph interprète les songes du pharaon"
+   "nfr": "Joseph interprète les songes du pharaon",
+   "nde": "Joseph deutet Träume"
   },
   {
    "f": "bg288.jpg",
@@ -91,7 +94,8 @@
    "nne": "याकुबको सपनाको भर्‍याङ",
    "ncb": "Ang hagdan ni Jacob",
    "nes": "La escalera de Jacob",
-   "nfr": "L’échelle de Jacob"
+   "nfr": "L’échelle de Jacob",
+   "nde": "Die Jakobsleiter"
   },
   {
    "f": "bg289.jpg",
@@ -113,7 +117,8 @@
    "nne": "ताराहरू गन्दै अब्राहाम",
    "ncb": "Si Abraham nga nag-ihap sa mga bituon",
    "nes": "Abraham contando las estrellas",
-   "nfr": "Abraham compte les étoiles"
+   "nfr": "Abraham compte les étoiles",
+   "nde": "Abraham zählt die Sterne"
   },
   {
    "f": "bg290.jpg",
@@ -135,7 +140,8 @@
    "nne": "खेतमा बाला टिप्दै रूथ",
    "ncb": "Si Ruth nga nagtigom sa mga nahulog nga uhay",
    "nes": "Rut recoge espigas",
-   "nfr": "Ruth glane dans les champs"
+   "nfr": "Ruth glane dans les champs",
+   "nde": "Rut liest Ähren auf"
   },
   {
    "f": "bg291.jpg",
@@ -157,7 +163,8 @@
    "nne": "रातो समुद्र पार गर्दै मोशा",
    "ncb": "Si Moises sa pagtabok sa Dagat nga Pula",
    "nes": "Moisés cruza el mar Rojo",
-   "nfr": "La traversée de la mer Rouge"
+   "nfr": "La traversée de la mer Rouge",
+   "nde": "Der Durchzug durch das Rote Meer"
   },
   {
    "f": "bg292.jpg",
@@ -179,7 +186,8 @@
    "nne": "बलिरहेको झाडी",
    "ncb": "Ang nagdilaab nga sapinit",
    "nes": "La zarza ardiente",
-   "nfr": "Le buisson ardent"
+   "nfr": "Le buisson ardent",
+   "nde": "Der brennende Dornbusch"
   },
   {
    "f": "bg293.jpg",
@@ -201,7 +209,8 @@
    "nne": "गल्यातसँग लड्दै दाऊद",
    "ncb": "Si David nga nakig-away kang Goliat",
    "nes": "David lucha contra Goliat",
-   "nfr": "David affronte Goliath"
+   "nfr": "David affronte Goliath",
+   "nde": "David besiegt Goliat"
   },
   {
    "f": "bg294.jpg",
@@ -223,7 +232,8 @@
    "nne": "बालक शमूएलको बोलावट",
    "ncb": "Ang batang si Samuel nga gitawag sa Dios",
    "nes": "El niño Samuel es llamado por Dios",
-   "nfr": "Le jeune Samuel appelé par Dieu"
+   "nfr": "Le jeune Samuel appelé par Dieu",
+   "nde": "Der junge Samuel wird berufen"
   },
   {
    "f": "bg295.jpg",
@@ -245,7 +255,8 @@
    "nne": "एलियालाई रोटी ल्याइदिने कागहरू",
    "ncb": "Ang mga uwak nga nagdala ug tinapay ngadto kang Elias",
    "nes": "Los cuervos llevan pan a Elías",
-   "nfr": "Les corbeaux nourrissent Élie"
+   "nfr": "Les corbeaux nourrissent Élie",
+   "nde": "Raben bringen Elia Brot"
   },
   {
    "f": "bg296.jpg",
@@ -267,7 +278,8 @@
    "nne": "सिंहको खोरमा दानिएल",
    "ncb": "Si Daniel sa lungib sa mga leon",
    "nes": "Daniel en el foso de los leones",
-   "nfr": "Daniel dans la fosse aux lions"
+   "nfr": "Daniel dans la fosse aux lions",
+   "nde": "Daniel in der Löwengrube"
   },
   {
    "f": "bg297.jpg",
@@ -289,7 +301,8 @@
    "nne": "किनारमा पुगेका योना",
    "ncb": "Si Jonas nga mibangon sa baybayon",
    "nes": "Jonás llega a la orilla",
-   "nfr": "Jonas rejeté sur le rivage"
+   "nfr": "Jonas rejeté sur le rivage",
+   "nde": "Jona wird an Land gespien"
   },
   {
    "f": "bg298.jpg",
@@ -311,7 +324,8 @@
    "nne": "आँधी र छालहरू शान्त पार्दै येशू",
    "ncb": "Si Jesus nga nagpahilom sa hangin ug mga balod",
    "nes": "Jesús calma la tempestad",
-   "nfr": "Jésus apaise la tempête"
+   "nfr": "Jésus apaise la tempête",
+   "nde": "Jesus stillt den Sturm"
   },
   {
    "f": "bg299.jpg",
@@ -333,7 +347,8 @@
    "nne": "येशूको बप्तिस्मा",
    "ncb": "Ang bunyag ni Jesus",
    "nes": "El bautismo de Jesús",
-   "nfr": "Le baptême de Jésus"
+   "nfr": "Le baptême de Jésus",
+   "nde": "Die Taufe Jesu"
   },
   {
    "f": "bg300.jpg",
@@ -355,7 +370,8 @@
    "nne": "येशूको जन्म",
    "ncb": "Ang pagkatawo ni Jesus",
    "nes": "El nacimiento de Jesús",
-   "nfr": "La Nativité"
+   "nfr": "La Nativité",
+   "nde": "Die Geburt Jesu"
   },
   {
    "f": "bg301.jpg",
@@ -377,7 +393,8 @@
    "nne": "घर फर्केको उडन्ते छोरो",
    "ncb": "Ang pagbalik sa walay-kabuhatan nga anak",
    "nes": "El regreso del hijo pródigo",
-   "nfr": "Le fils prodigue"
+   "nfr": "Le fils prodigue",
+   "nde": "Der verlorene Sohn"
   },
   {
    "f": "bg302.jpg",
@@ -399,7 +416,8 @@
    "nne": "असल सामरी",
    "ncb": "Ang Maayong Samaritano",
    "nes": "El buen samaritano",
-   "nfr": "Le bon Samaritain"
+   "nfr": "Le bon Samaritain",
+   "nde": "Der barmherzige Samariter"
   },
   {
    "f": "bg303.jpg",
@@ -421,7 +439,8 @@
    "nne": "पाँच रोटी र दुई माछा",
    "ncb": "Lima ka tinapay ug duha ka isda",
    "nes": "Cinco panes y dos peces",
-   "nfr": "Cinq pains et deux poissons"
+   "nfr": "Cinq pains et deux poissons",
+   "nde": "Fünf Brote und zwei Fische"
   },
   {
    "f": "bg304.jpg",
@@ -443,7 +462,8 @@
    "nne": "पुनरुत्थानको बिहान",
    "ncb": "Ang buntag sa Pagkabanhaw",
    "nes": "La mañana de la resurrección",
-   "nfr": "Le matin de la résurrection"
+   "nfr": "Le matin de la résurrection",
+   "nde": "Der Morgen der Auferstehung"
   },
   {
    "f": "bg305.jpg",
@@ -465,7 +485,8 @@
    "nne": "पानी पाउँदै हाजिरा र इश्माएल",
    "ncb": "Si Hagar ug si Ismael nga nakakita ug tubig",
    "nes": "Agar e Ismael encuentran agua",
-   "nfr": "Agar et Ismaël trouvent de l’eau"
+   "nfr": "Agar et Ismaël trouvent de l’eau",
+   "nde": "Hagar und Ismael finden Wasser"
   },
   {
    "f": "bg306.jpg",
@@ -487,7 +508,8 @@
    "nne": "नर्कटको बीचमा शिशु मोशा",
    "ncb": "Ang bata nga si Moises taliwala sa mga tangbo",
    "nes": "El niño Moisés entre los juncos",
-   "nfr": "Le petit Moïse dans les roseaux"
+   "nfr": "Le petit Moïse dans les roseaux",
+   "nde": "Der kleine Mose im Schilf"
   },
   {
    "f": "bg307.jpg",
@@ -509,7 +531,8 @@
    "nne": "दाजुभाइहरूसँग चिनापर्ची गर्दै यूसुफ",
    "ncb": "Si Jose nga nagpaila sa iyang mga igsoon",
    "nes": "José se da a conocer a sus hermanos",
-   "nfr": "Joseph retrouve ses frères"
+   "nfr": "Joseph retrouve ses frères",
+   "nde": "Joseph gibt sich seinen Brüdern zu erkennen"
   },
   {
    "f": "bg308.jpg",
@@ -531,7 +554,8 @@
    "nne": "इनारमा पानी भर्दै रिबेका",
    "ncb": "Si Rebeca nga nag-igo ug tubig sa atabay",
    "nes": "Rebeca saca agua del pozo",
-   "nfr": "Rebecca puise de l’eau au puits"
+   "nfr": "Rebecca puise de l’eau au puits",
+   "nde": "Rebekka schöpft Wasser am Brunnen"
   },
   {
    "f": "bg309.jpg",
@@ -553,7 +577,8 @@
    "nne": "मोशाका हात थाम्दै हारून र हूर",
    "ncb": "Si Aaron ug si Hur nga nagsapnay sa mga kamot ni Moises",
    "nes": "Aarón y Hur sostienen las manos de Moisés",
-   "nfr": "Aaron et Hur soutiennent les mains de Moïse"
+   "nfr": "Aaron et Hur soutiennent les mains de Moïse",
+   "nde": "Aaron und Hur stützen die Hände des Mose"
   },
   {
    "f": "bg310.jpg",
@@ -575,7 +600,8 @@
    "nne": "चट्टानबाट बगेको पानी",
    "ncb": "Ang tubig nga migawas gikan sa bato",
    "nes": "El agua que brota de la roca",
-   "nfr": "L’eau jaillit du rocher"
+   "nfr": "L’eau jaillit du rocher",
+   "nde": "Das Wasser aus dem Felsen"
   },
   {
    "f": "bg311.jpg",
@@ -597,7 +623,8 @@
    "nne": "मन्ना बटुल्दै इस्राएलीहरू",
    "ncb": "Ang mga Israelinhon nga nagtigom ug mana",
    "nes": "Los israelitas recogen el maná",
-   "nfr": "Les Israélites ramassent la manne"
+   "nfr": "Les Israélites ramassent la manne",
+   "nde": "Die Israeliten sammeln das Manna"
   },
   {
    "f": "bg312.jpg",
@@ -619,7 +646,8 @@
    "nne": "स्वर्गदूतबाट बोलाइँदै गिदोन",
    "ncb": "Si Gideon nga gitawag sa anghel",
    "nes": "Gedeón es llamado por el ángel",
-   "nfr": "Gédéon appelé par l’ange"
+   "nfr": "Gédéon appelé par l’ange",
+   "nde": "Gideon wird vom Engel berufen"
   },
   {
    "f": "bg313.jpg",
@@ -641,7 +669,8 @@
    "nne": "उद्धार पाएको राहाबको परिवार",
    "ncb": "Ang pamilya ni Rahab nga naluwas",
    "nes": "La familia de Rahab es salvada",
-   "nfr": "La famille de Rahab est sauvée"
+   "nfr": "La famille de Rahab est sauvée",
+   "nde": "Rahabs Familie wird gerettet"
   },
   {
    "f": "bg314.jpg",
@@ -663,7 +692,8 @@
    "nne": "करारको सन्दुक बोकेर यर्दन तर्दै",
    "ncb": "Ang pagdala sa Lungsan sa Kasabotan tabok sa Jordan",
    "nes": "El arca del pacto cruza el Jordán",
-   "nfr": "L’arche de l’alliance traverse le Jourdain"
+   "nfr": "L’arche de l’alliance traverse le Jourdain",
+   "nde": "Die Bundeslade wird durch den Jordan getragen"
   },
   {
    "f": "bg315.jpg",
@@ -685,7 +715,8 @@
    "nne": "विधवाको तेल कहिल्यै नसकिएको",
    "ncb": "Ang lana sa balo nga wala mahurot",
    "nes": "El aceite de la viuda que no se agota",
-   "nfr": "L’huile de la veuve qui ne s’épuise pas"
+   "nfr": "L’huile de la veuve qui ne s’épuise pas",
+   "nde": "Das Öl der Witwe geht nicht aus"
   },
   {
    "f": "bg316.jpg",
@@ -707,7 +738,8 @@
    "nne": "दाऊदलाई आफ्नो ओढ्ने दिँदै योनातान",
    "ncb": "Si Jonatan nga naghatag ug bisti kang David",
    "nes": "Jonatán da su manto a David",
-   "nfr": "Jonathan donne son manteau à David"
+   "nfr": "Jonathan donne son manteau à David",
+   "nde": "Jonatan schenkt David seinen Mantel"
   },
   {
    "f": "bg317.jpg",
@@ -729,7 +761,8 @@
    "nne": "मन्दिरमा प्रार्थना गर्दै हन्ना",
    "ncb": "Si Ana nga nag-ampo sa templo",
    "nes": "Ana ora en el templo",
-   "nfr": "Anne prie dans le temple"
+   "nfr": "Anne prie dans le temple",
+   "nde": "Hanna betet im Tempel"
   },
   {
    "f": "bg318.jpg",
@@ -751,7 +784,8 @@
    "nne": "काना गाउँको विवाहभोजमा पानी दाखमद्य बनेको",
    "ncb": "Ang tubig nga nahimong bino sa kasal sa Cana",
    "nes": "El agua convertida en vino en las bodas de Caná",
-   "nfr": "L’eau changée en vin à Cana"
+   "nfr": "L’eau changée en vin à Cana",
+   "nde": "Wasser wird zu Wein bei der Hochzeit zu Kana"
   },
   {
    "f": "bg319.jpg",
@@ -773,7 +807,8 @@
    "nne": "राजाको सामु एस्तर",
    "ncb": "Si Ester sa atubangan sa hari",
    "nes": "Ester ante el rey",
-   "nfr": "Esther devant le roi"
+   "nfr": "Esther devant le roi",
+   "nde": "Ester vor dem König"
   },
   {
    "f": "bg320.jpg",
@@ -795,7 +830,8 @@
    "nne": "यर्दन नदीमा शुद्ध भएका नामान",
    "ncb": "Si Naaman nga nahinloan sa Suba sa Jordan",
    "nes": "Naamán es sanado en el río Jordán",
-   "nfr": "Naaman purifié dans le Jourdain"
+   "nfr": "Naaman purifié dans le Jourdain",
+   "nde": "Naaman wird im Jordan rein"
   },
   {
    "f": "bg321.jpg",
@@ -817,7 +853,8 @@
    "nne": "इनारको छेउमा सामरी स्त्री",
    "ncb": "Ang babaye nga Samaritana sa atbang sa atabay",
    "nes": "La mujer samaritana junto al pozo",
-   "nfr": "La Samaritaine au puits"
+   "nfr": "La Samaritaine au puits",
+   "nde": "Die Samariterin am Brunnen"
   },
   {
    "f": "bg322.jpg",
@@ -839,7 +876,8 @@
    "nne": "याइरकी छोरी पुनर्जीवित भएकी",
    "ncb": "Ang anak nga babaye ni Jairo nga gibanhaw",
    "nes": "La hija de Jairo resucita",
-   "nfr": "La fille de Jaïrus ressuscitée"
+   "nfr": "La fille de Jaïrus ressuscitée",
+   "nde": "Die Tochter des Jaïrus wird auferweckt"
   },
   {
    "f": "bg323.jpg",
@@ -861,7 +899,8 @@
    "nne": "साना बालबालिकालाई आशिष् दिँदै येशू",
    "ncb": "Si Jesus nga nagpanalangin sa mga bata",
    "nes": "Jesús bendice a los niños",
-   "nfr": "Jésus bénit les enfants"
+   "nfr": "Jésus bénit les enfants",
+   "nde": "Jesus segnet die Kinder"
   },
   {
    "f": "bg324.jpg",
@@ -883,7 +922,8 @@
    "nne": "चेलाहरूका खुट्टा धोइदिँदै येशू",
    "ncb": "Si Jesus nga naghugas sa mga tiil sa mga tinun-an",
    "nes": "Jesús lava los pies de los discípulos",
-   "nfr": "Jésus lave les pieds de ses disciples"
+   "nfr": "Jésus lave les pieds de ses disciples",
+   "nde": "Jesus wäscht seinen Jüngern die Füße"
   },
   {
    "f": "bg325.jpg",
@@ -905,7 +945,8 @@
    "nne": "कारागारमा स्तुति गाउँदै पावल र सीलास",
    "ncb": "Si Pablo ug si Silas nga nagdayeg sa Dios sulod sa bilanggoan",
    "nes": "Pablo y Silas alaban a Dios en la cárcel",
-   "nfr": "Paul et Silas louent Dieu en prison"
+   "nfr": "Paul et Silas louent Dieu en prison",
+   "nde": "Paulus und Silas loben Gott im Gefängnis"
   },
   {
    "f": "bg326.jpg",
@@ -927,7 +968,8 @@
    "nne": "जन्मैदेखि लङ्गडो मानिसलाई निको पार्दै पत्रुस",
    "ncb": "Si Pedro nga nag-ayo sa tawo nga ba-ad sukad pa sa pagkatawo",
    "nes": "Pedro sana al hombre cojo de nacimiento",
-   "nfr": "Pierre guérit l’infirme de naissance"
+   "nfr": "Pierre guérit l’infirme de naissance",
+   "nde": "Petrus heilt den von Geburt an Gelähmten"
   },
   {
    "f": "bg327.jpg",
@@ -949,7 +991,8 @@
    "nne": "इम्माउसको बाटोमा",
    "ncb": "Sa dalan paingon sa Emaus",
    "nes": "En el camino a Emaús",
-   "nfr": "Sur le chemin d’Emmaüs"
+   "nfr": "Sur le chemin d’Emmaüs",
+   "nde": "Auf dem Weg nach Emmaus"
   },
   {
    "f": "bg328.jpg",
@@ -971,7 +1014,8 @@
    "nne": "बेथेस्दा पोखरीको छेउमा बिरामी मानिस",
    "ncb": "Ang masakiton sa daplin sa linaw sa Bethesda",
    "nes": "El enfermo junto al estanque de Betesda",
-   "nfr": "Le malade au bord de la piscine de Bethesda"
+   "nfr": "Le malade au bord de la piscine de Bethesda",
+   "nde": "Der Kranke am Teich Betesda"
   },
   {
    "f": "bg329.jpg",
@@ -993,7 +1037,8 @@
    "nne": "तुतको रूखमा चढ्दै जक्कै",
    "ncb": "Si Zaqueo nga mitungas sa kahoy nga sikomoro",
    "nes": "Zaqueo sube al sicómoro",
-   "nfr": "Zachée dans le sycomore"
+   "nfr": "Zachée dans le sycomore",
+   "nde": "Zachäus auf dem Maulbeerbaum"
   },
   {
    "f": "bg330.jpg",
@@ -1015,7 +1060,8 @@
    "nne": "शिशु येशूलाई काखमा लिएका सिमियोन",
    "ncb": "Si Simeon nga nagkugos sa Bata nga si Jesus",
    "nes": "Simeón sostiene en brazos al niño Jesús",
-   "nfr": "Siméon tient l’enfant Jésus dans ses bras"
+   "nfr": "Siméon tient l’enfant Jésus dans ses bras",
+   "nde": "Simeon hält das Jesuskind im Arm"
   },
   {
    "f": "bg331.jpg",
@@ -1037,7 +1083,8 @@
    "nne": "तारा पछ्याउँदै आएका पूर्वका ज्ञानी पुरुषहरू",
    "ncb": "Ang mga maalamon gikan sa Sidlakan nga mosunod sa bituon",
    "nes": "Los magos siguen la estrella",
-   "nfr": "Les mages suivent l’étoile"
+   "nfr": "Les mages suivent l’étoile",
+   "nde": "Die Weisen aus dem Morgenland folgen dem Stern"
   },
   {
    "f": "bg332.jpg",
@@ -1059,7 +1106,8 @@
    "nne": "पर्खाल पुनर्निर्माण गर्दै नहेमिया",
    "ncb": "Si Nehemias nga nagtukod pag-usab sa paril sa siyudad",
    "nes": "Nehemías reconstruye la muralla de la ciudad",
-   "nfr": "Néhémie reconstruit la muraille"
+   "nfr": "Néhémie reconstruit la muraille",
+   "nde": "Nehemia baut die Mauer wieder auf"
   },
   {
    "f": "bg333.jpg",
@@ -1081,7 +1129,8 @@
    "nne": "शूनेमकी स्त्रीको छोरा पुनर्जीवित भएको",
    "ncb": "Ang anak sa babaye sa Sunem nga gibanhaw",
    "nes": "El hijo de la mujer de Sunem vuelve a la vida",
-   "nfr": "Le fils de la Sunamite ramené à la vie"
+   "nfr": "Le fils de la Sunamite ramené à la vie",
+   "nde": "Der Sohn der Sunamitin wird auferweckt"
   },
   {
    "f": "bg334.jpg",
@@ -1103,7 +1152,8 @@
    "nne": "होरेब पर्वतको गुफाको मुखमा एलिया",
    "ncb": "Si Elias sa ganghaan sa langub sa Bukid sa Horeb",
    "nes": "Elías a la entrada de la cueva en el monte Horeb",
-   "nfr": "Élie à l’entrée de la grotte, sur le mont Horeb"
+   "nfr": "Élie à l’entrée de la grotte, sur le mont Horeb",
+   "nde": "Elia am Eingang der Höhle am Berg Horeb"
   },
   {
    "f": "bg335.jpg",
@@ -1125,7 +1175,8 @@
    "nne": "मन्दिर समर्पण गर्दा प्रार्थना गर्दै सुलेमान",
    "ncb": "Ang pag-ampo ni Solomon sa paghalad sa templo",
    "nes": "La oración de Salomón en la dedicación del templo",
-   "nfr": "La prière de Salomon à la dédicace du temple"
+   "nfr": "La prière de Salomon à la dédicace du temple",
+   "nde": "Salomos Gebet bei der Tempelweihe"
   },
   {
    "f": "bg336.jpg",
@@ -1147,7 +1198,8 @@
    "nne": "मपीबोशेतमाथि कृपा देखाउँदै दाऊद",
    "ncb": "Si David nga mipakita ug kaluoy kang Mefiboset",
    "nes": "David muestra bondad a Mefiboset",
-   "nfr": "David témoigne sa bonté à Mephibosheth"
+   "nfr": "David témoigne sa bonté à Mephibosheth",
+   "nde": "David erweist Mephiboseth Güte"
   },
   {
    "f": "bg337.jpg",
@@ -1169,7 +1221,8 @@
    "nne": "नाति ओबेदलाई काखमा लिएकी नाओमी",
    "ncb": "Si Naomi nga nagkugos sa iyang apo nga si Obed",
    "nes": "Noemí abraza a su nieto Obed",
-   "nfr": "Naomi serre son petit-fils Obed dans ses bras"
+   "nfr": "Naomi serre son petit-fils Obed dans ses bras",
+   "nde": "Naemi hält ihren Enkel Obed im Arm"
   },
   {
    "f": "bg338.jpg",
@@ -1191,7 +1244,8 @@
    "nne": "रूथसँग भोजन गर्दै बोअज",
    "ncb": "Si Boaz ug si Ruth nga nagkaon nga magkauban",
    "nes": "Booz y Rut comen juntos",
-   "nfr": "Boaz et Ruth partagent un repas"
+   "nfr": "Boaz et Ruth partagent un repas",
+   "nde": "Boas und Rut teilen eine Mahlzeit"
   },
   {
    "f": "bg339.jpg",
@@ -1213,7 +1267,8 @@
    "nne": "दश आज्ञा लिएर सीनै पर्वतबाट ओर्लँदै मोशा",
    "ncb": "Si Moises nga mikanaog sa Bukid sa Sinai nga dala ang Napulo ka Sugo",
    "nes": "Moisés baja del monte Sinaí con los diez mandamientos",
-   "nfr": "Moïse descend du Sinaï avec les tables de la loi"
+   "nfr": "Moïse descend du Sinaï avec les tables de la loi",
+   "nde": "Mose bringt die Zehn Gebote vom Sinai herab"
   },
   {
    "f": "bg340.jpg",
@@ -1235,7 +1290,8 @@
    "nne": "मिश्रबाट प्रस्थानको यात्रा",
    "ncb": "Ang panaw sa paggawas gikan sa Egipto",
    "nes": "La travesía del éxodo",
-   "nfr": "La traversée de l’Exode"
+   "nfr": "La traversée de l’Exode",
+   "nde": "Die Reise des Auszugs aus Ägypten"
   },
   {
    "f": "bg341.jpg",
@@ -1257,7 +1313,8 @@
    "nne": "आफ्ना पिता याकुबको पालनपोषण गर्दै यूसुफ",
    "ncb": "Si Jose nga nag-atiman sa iyang amahan nga si Jacob",
    "nes": "José cuida de su padre Jacob",
-   "nfr": "Joseph prend soin de son père Jacob"
+   "nfr": "Joseph prend soin de son père Jacob",
+   "nde": "Joseph versorgt seinen Vater Jakob"
   },
   {
    "f": "bg342.jpg",
@@ -1279,7 +1336,8 @@
    "nne": "एसावसँग मेलमिलाप गर्दै याकुब",
    "ncb": "Ang pagpasig-uli ni Jacob ug ni Esau",
    "nes": "La reconciliación de Jacob y Esaú",
-   "nfr": "Jacob et Ésaü se réconcilient"
+   "nfr": "Jacob et Ésaü se réconcilient",
+   "nde": "Jakob und Esau versöhnen sich"
   },
   {
    "f": "bg343.jpg",
@@ -1301,7 +1359,8 @@
    "nne": "रिबेकालाई स्वागत गर्दै इसहाक",
    "ncb": "Si Isaac nga nag-abiabi kang Rebeca",
    "nes": "Isaac recibe a Rebeca",
-   "nfr": "Isaac accueille Rebecca"
+   "nfr": "Isaac accueille Rebecca",
+   "nde": "Isaak empfängt Rebekka"
   },
   {
    "f": "bg344.jpg",
@@ -1323,7 +1382,8 @@
    "nne": "तीन पाहुनालाई सत्कार गर्दै अब्राहाम",
    "ncb": "Si Abraham nga nag-abiabi sa tulo ka bisita",
    "nes": "Abraham recibe a tres visitantes",
-   "nfr": "Abraham accueille trois visiteurs"
+   "nfr": "Abraham accueille trois visiteurs",
+   "nde": "Abraham bewirtet drei Gäste"
   },
   {
    "f": "bg195.jpg",
@@ -1345,7 +1405,8 @@
    "nne": "चुनढुङ्गाका सिँढीदार पोखरी",
    "ncb": "Hagdan-hagdang linaw nga travertine",
    "nes": "Terrazas de travertino",
-   "nfr": "Vasques de travertin en terrasses"
+   "nfr": "Vasques de travertin en terrasses",
+   "nde": "Travertinterrassen"
   },
   {
    "f": "bg196.jpg",
@@ -1367,7 +1428,8 @@
    "nne": "गुलाबी नुनिलो ताल",
    "ncb": "Rosas nga lanaw nga asin",
    "nes": "Lago salado rosado",
-   "nfr": "Lac salé rose"
+   "nfr": "Lac salé rose",
+   "nde": "Rosa Salzsee"
   },
   {
    "f": "bg197.jpg",
@@ -1389,7 +1451,8 @@
    "nne": "कालो बेसाल्ट चट्टानी किनारमा सूर्योदय",
    "ncb": "Pagsubang sa adlaw sa baybayon nga basalto",
    "nes": "Amanecer en una costa de basalto",
-   "nfr": "Lever de soleil sur une côte de basalte"
+   "nfr": "Lever de soleil sur une côte de basalte",
+   "nde": "Sonnenaufgang an einer Basaltküste"
   },
   {
    "f": "bg198.jpg",
@@ -1411,7 +1474,8 @@
    "nne": "रातो चट्टानका स्तम्भ",
    "ncb": "Mga hoodoo nga pula nga bato",
    "nes": "Torres de roca roja",
-   "nfr": "Pitons de roche rouge"
+   "nfr": "Pitons de roche rouge",
+   "nde": "Rote Felstürme"
   },
   {
    "f": "bg199.jpg",
@@ -1433,7 +1497,8 @@
    "nne": "हिमनदीको उपत्यका",
    "ncb": "Walog sa glasyar",
    "nes": "Valle glaciar",
-   "nfr": "Vallée glaciaire"
+   "nfr": "Vallée glaciaire",
+   "nde": "Gletschertal"
   },
   {
    "f": "bg200.jpg",
@@ -1455,7 +1520,8 @@
    "nne": "भोजपत्र र ल्युपिन फूल",
    "ncb": "Mga birch ug lupin",
    "nes": "Abedules y altramuces",
-   "nfr": "Bouleaux et lupins"
+   "nfr": "Bouleaux et lupins",
+   "nde": "Birken und Lupinen"
   },
   {
    "f": "bg201.jpg",
@@ -1477,7 +1543,8 @@
    "nne": "खरीमाटोका सेता समुद्री चट्टान",
    "ncb": "Pangpang sa dagat nga lapok-tisa",
    "nes": "Acantilados de creta junto al mar",
-   "nfr": "Falaises de craie"
+   "nfr": "Falaises de craie",
+   "nde": "Kreidefelsen"
   },
   {
    "f": "bg202.jpg",
@@ -1499,7 +1566,8 @@
    "nne": "बरफको गुफाको निलो छाया",
    "ncb": "Asul nga landong sa langub nga yelo",
    "nes": "Sombras azules en una cueva de hielo",
-   "nfr": "Ombres bleues dans une grotte de glace"
+   "nfr": "Ombres bleues dans une grotte de glace",
+   "nde": "Blaue Schatten in der Eishöhle"
   },
   {
    "f": "bg203.jpg",
@@ -1521,7 +1589,8 @@
    "nne": "म्यानग्रोभ वनले घेरिएको छिपछिपे खाडी",
    "ncb": "Mabaw nga golpo sa kabakhawan",
    "nes": "Bahía poco profunda con manglares",
-   "nfr": "Baie peu profonde bordée de mangroves"
+   "nfr": "Baie peu profonde bordée de mangroves",
+   "nde": "Flaches Mangrovenbecken"
   },
   {
    "f": "bg204.jpg",
@@ -1543,7 +1612,8 @@
    "nne": "कपास-घाँसले भरिएको सिमसार",
    "ncb": "Basang yuta nga adunay mga cotton grass",
    "nes": "Humedal con algodón de pantano",
-   "nfr": "Zone humide aux linaigrettes"
+   "nfr": "Zone humide aux linaigrettes",
+   "nde": "Feuchtgebiet mit Wollgras"
   },
   {
    "f": "bg205.jpg",
@@ -1565,7 +1635,8 @@
    "nne": "शरद ऋतुमा लार्च वन र खोला",
    "ncb": "Sapa taliwala sa mga larch sa ting-ilaw",
    "nes": "Arroyo entre alerces otoñales",
-   "nfr": "Ruisseau parmi les mélèzes en automne"
+   "nfr": "Ruisseau parmi les mélèzes en automne",
+   "nde": "Bach zwischen herbstlichen Lärchen"
   },
   {
    "f": "bg206.jpg",
@@ -1587,7 +1658,8 @@
    "nne": "तालको किनारमा विस्टेरिया फूल",
    "ncb": "Wisteria sa daplin sa lanaw",
    "nes": "Glicinias junto al lago",
-   "nfr": "Glycines au bord du lac"
+   "nfr": "Glycines au bord du lac",
+   "nde": "Glyzinien am See"
   },
   {
    "f": "bg207.jpg",
@@ -1609,7 +1681,8 @@
    "nne": "कार्स्ट चट्टानी पहाड र पानीको दृश्य",
    "ncb": "Tanawon sa mga bukid nga karst ug tubig",
    "nes": "Paisaje kárstico de montañas y agua",
-   "nfr": "Paysage karstique de montagnes et de rivières"
+   "nfr": "Paysage karstique de montagnes et de rivières",
+   "nde": "Karstlandschaft mit Bergen und Flüssen"
   },
   {
    "f": "bg208.jpg",
@@ -1631,7 +1704,8 @@
    "nne": "सूर्यास्तमा प्रवालका ज्वारभाटाका पोखरी",
    "ncb": "Pagsalop sa adlaw sa tidal pool sa korales",
    "nes": "Atardecer en una poza de marea con corales",
-   "nfr": "Coucher de soleil sur une mare de corail"
+   "nfr": "Coucher de soleil sur une mare de corail",
+   "nde": "Sonnenuntergang an einem Korallen-Gezeitentümpel"
   },
   {
    "f": "bg209.jpg",
@@ -1653,7 +1727,8 @@
    "nne": "लालीगुराँस र बादलको सागर",
    "ncb": "Dagat sa panganod ug mga azalea",
    "nes": "Mar de nubes y azaleas",
-   "nfr": "Mer de nuages et rhododendrons"
+   "nfr": "Mer de nuages et rhododendrons",
+   "nde": "Rhododendren über dem Wolkenmeer"
   },
   {
    "f": "bg210.jpg",
@@ -1675,7 +1750,8 @@
    "nne": "सेतो बालुवाको समुद्री किनार",
    "ncb": "Baybayon nga puti ang balas",
    "nes": "Playa de arena blanca",
-   "nfr": "Plage de sable blanc"
+   "nfr": "Plage de sable blanc",
+   "nde": "Weißer Sandstrand"
   },
   {
    "f": "bg211.jpg",
@@ -1697,7 +1773,8 @@
    "nne": "खाडीछेउको घाँसे मैदान",
    "ncb": "Kapatagan sa daplin sa golpo",
    "nes": "Pradera junto a la bahía",
-   "nfr": "Prairie côtière"
+   "nfr": "Prairie côtière",
+   "nde": "Küstenwiese an der Bucht"
   },
   {
    "f": "bg212.jpg",
@@ -1719,7 +1796,8 @@
    "nne": "भूतापीय रङ्गीन ताल",
    "ncb": "Kolor-kolor nga lanaw nga geothermal",
    "nes": "Lago geotérmico de colores",
-   "nfr": "Lac géothermique aux mille couleurs"
+   "nfr": "Lac géothermique aux mille couleurs",
+   "nde": "Farbenfroher Geothermalsee"
   },
   {
    "f": "bg213.jpg",
@@ -1741,7 +1819,8 @@
    "nne": "साँझको घाममा जैतुनको रूख",
    "ncb": "Kilumkilom sa kahoy nga olibo",
    "nes": "Luz del atardecer sobre un olivo",
-   "nfr": "Olivier au soleil couchant"
+   "nfr": "Olivier au soleil couchant",
+   "nde": "Olivenbaum im Abendlicht"
   },
   {
    "f": "bg214.jpg",
@@ -1763,7 +1842,8 @@
    "nne": "जमेको झरना",
    "ncb": "Nagyelong busay",
    "nes": "Cascada congelada",
-   "nfr": "Cascade gelée"
+   "nfr": "Cascade gelée",
+   "nde": "Gefrorener Wasserfall"
   },
   {
    "f": "bg175.jpg",
@@ -1785,7 +1865,8 @@
    "nne": "हिमाली झरना र वनफूल",
    "ncb": "Busay sa bukid nga niyebe ug ihalas nga mga bulak",
    "nes": "Cascada de montaña nevada y flores silvestres",
-   "nfr": "Cascade alpine et fleurs sauvages"
+   "nfr": "Cascade alpine et fleurs sauvages",
+   "nde": "Alpenwasserfall und Wildblumen"
   },
   {
    "f": "bg176.jpg",
@@ -1807,7 +1888,8 @@
    "nne": "खाडीमा सूर्योदय",
    "ncb": "Pagsubang sa adlaw sa golpo",
    "nes": "Amanecer en la bahía",
-   "nfr": "Lever de soleil sur la baie"
+   "nfr": "Lever de soleil sur la baie",
+   "nde": "Sonnenaufgang über der Bucht"
   },
   {
    "f": "bg177.jpg",
@@ -1829,7 +1911,8 @@
    "nne": "रातो मेपलका पात र खोला",
    "ncb": "Sapa taliwala sa pula nga mga dahon sa maple",
    "nes": "Arroyo entre arces rojos",
-   "nfr": "Ruisseau et érables d’automne"
+   "nfr": "Ruisseau et érables d’automne",
+   "nde": "Bach und Ahornbäume im Herbst"
   },
   {
    "f": "bg178.jpg",
@@ -1851,7 +1934,8 @@
    "nne": "बिहानको कुहिरोमा ढुङ्गाको बाटो",
    "ncb": "Dalan nga bato sa mahamog nga buntag",
    "nes": "Sendero de piedra en la niebla de la mañana",
-   "nfr": "Sentier de pierre dans la brume du matin"
+   "nfr": "Sentier de pierre dans la brume du matin",
+   "nde": "Steinpfad im Morgennebel"
   },
   {
    "f": "bg179.jpg",
@@ -1873,7 +1957,8 @@
    "nne": "हिमाली ताल र पर्वतको प्रतिबिम्ब",
    "ncb": "Ang bukid nga niyebe nga makita sa lanaw",
    "nes": "Montaña nevada reflejada en el lago",
-   "nfr": "Reflets d’un lac de montagne enneigée"
+   "nfr": "Reflets d’un lac de montagne enneigée",
+   "nde": "Spiegelung eines verschneiten Bergsees"
   },
   {
    "f": "bg180.jpg",
@@ -1895,7 +1980,8 @@
    "nne": "सिँढीखेत र बादलको सागर",
    "ncb": "Dagat sa panganod sa mga hagdan-hagdang uma",
    "nes": "Mar de nubes sobre terrazas de cultivo",
-   "nfr": "Rizières en terrasses dans une mer de nuages"
+   "nfr": "Rizières en terrasses dans une mer de nuages",
+   "nde": "Reisterrassen im Wolkenmeer"
   },
   {
    "f": "bg181.jpg",
@@ -1917,7 +2003,8 @@
    "nne": "ल्याभेन्डर बगान माथि सूर्योदय",
    "ncb": "Pagsubang sa adlaw sa umahan sa lavender",
    "nes": "Amanecer en un campo de lavanda",
-   "nfr": "Lever de soleil sur un domaine de lavande"
+   "nfr": "Lever de soleil sur un domaine de lavande",
+   "nde": "Sonnenaufgang über einer Lavendelfarm"
   },
   {
    "f": "bg182.jpg",
@@ -1939,7 +2026,8 @@
    "nne": "चेरी फूल फुलेको खोला",
    "ncb": "Sapa ug mga sakura",
    "nes": "Arroyo y flores de cerezo",
-   "nfr": "Ruisseau bordé de cerisiers en fleurs"
+   "nfr": "Ruisseau bordé de cerisiers en fleurs",
+   "nde": "Bach zwischen blühenden Kirschbäumen"
   },
   {
    "f": "bg183.jpg",
@@ -1961,7 +2049,8 @@
    "nne": "उष्ण प्रदेशको खाडी",
    "ncb": "Tropikal nga golpo",
    "nes": "Bahía tropical",
-   "nfr": "Baie tropicale"
+   "nfr": "Baie tropicale",
+   "nde": "Tropische Bucht"
   },
   {
    "f": "bg184.jpg",
@@ -1983,7 +2072,8 @@
    "nne": "उच्च हिमाली फूलका फाँट र तालको दृश्य",
    "ncb": "Kabulakan sa bukid ug tanawon sa lanaw",
    "nes": "Mar de flores alpinas y vista del lago",
-   "nfr": "Prairie alpine fleurie au bord d’un lac"
+   "nfr": "Prairie alpine fleurie au bord d’un lac",
+   "nde": "Blumenwiese am Bergsee"
   },
   {
    "f": "bg185.jpg",
@@ -2005,7 +2095,8 @@
    "nne": "सुनौलो गहुँको खेत",
    "ncb": "Bulawang uma sa trigo",
    "nes": "Campo de trigo dorado",
-   "nfr": "Champ de blé doré"
+   "nfr": "Champ de blé doré",
+   "nde": "Goldenes Weizenfeld"
   },
   {
    "f": "bg186.jpg",
@@ -2027,7 +2118,8 @@
    "nne": "मरुभूमिमा सूर्योदय",
    "ncb": "Pagsubang sa adlaw sa kamingawan",
    "nes": "Amanecer en el desierto",
-   "nfr": "Lever de soleil sur le désert"
+   "nfr": "Lever de soleil sur le désert",
+   "nde": "Sonnenaufgang über der Wüste"
   },
   {
    "f": "bg187.jpg",
@@ -2049,7 +2141,8 @@
    "nne": "फियोर्डको झरना",
    "ncb": "Busay sa fjord",
    "nes": "Cascada en un fiordo",
-   "nfr": "Cascades d’un fjord"
+   "nfr": "Cascades d’un fjord",
+   "nde": "Wasserfälle am Fjord"
   },
   {
    "f": "bg188.jpg",
@@ -2071,7 +2164,8 @@
    "nne": "छालले कुँदेको चट्टानी मेहराबमा साँझको घाम",
    "ncb": "Kilumkilom sa arko nga bato sa dagat",
    "nes": "Atardecer en un arco de roca marino",
-   "nfr": "Coucher de soleil sur une arche marine"
+   "nfr": "Coucher de soleil sur une arche marine",
+   "nde": "Abendsonne an einem Felsentor im Meer"
   },
   {
    "f": "bg189.jpg",
@@ -2093,7 +2187,8 @@
    "nne": "बाँसको वनमा ढुङ्गाको बाटो",
    "ncb": "Dalan nga bato sa kawayanan",
    "nes": "Sendero de piedra en un bosque de bambú",
-   "nfr": "Sentier de pierre dans la forêt de bambous"
+   "nfr": "Sentier de pierre dans la forêt de bambous",
+   "nde": "Steinpfad im Bambuswald"
   },
   {
    "f": "bg190.jpg",
@@ -2115,7 +2210,8 @@
    "nne": "ज्वालामुखी तालमा सूर्योदय",
    "ncb": "Pagsubang sa adlaw sa lanaw sa bulkan",
    "nes": "Amanecer en un lago volcánico",
-   "nfr": "Lever de soleil sur un lac volcanique"
+   "nfr": "Lever de soleil sur un lac volcanique",
+   "nde": "Sonnenaufgang über einem Vulkansee"
   },
   {
    "f": "bg191.jpg",
@@ -2137,7 +2233,8 @@
    "nne": "रातो चट्टानी घाँटी",
    "ncb": "Pula nga bato nga canyon",
    "nes": "Cañón de roca roja",
-   "nfr": "Canyon de roches rouges"
+   "nfr": "Canyon de roches rouges",
+   "nde": "Canyon aus rotem Fels"
   },
   {
    "f": "bg192.jpg",
@@ -2159,7 +2256,8 @@
    "nne": "आकाशगङ्गा, पहाड र ताल",
    "ncb": "Ang Milky Way ibabaw sa lanaw sa bukid",
    "nes": "La Vía Láctea sobre un lago de montaña",
-   "nfr": "Voie lactée sur un lac de montagne"
+   "nfr": "Voie lactée sur un lac de montagne",
+   "nde": "Milchstraße über dem Bergsee"
   },
   {
    "f": "bg193.jpg",
@@ -2181,7 +2279,8 @@
    "nne": "अरोरा र बरफले ढाकिएको ताल",
    "ncb": "Nagyelong lanaw ilalom sa aurora",
    "nes": "Lago helado bajo la aurora boreal",
-   "nfr": "Lac gelé sous les aurores boréales"
+   "nfr": "Lac gelé sous les aurores boréales",
+   "nde": "Zugefrorener See unter Polarlichtern"
   },
   {
    "f": "bg194.jpg",
@@ -2203,7 +2302,8 @@
    "nne": "हिउँ परेको जङ्गलको खोला",
    "ncb": "Sapa sa lasang nga niyebe",
    "nes": "Arroyo en un bosque nevado",
-   "nfr": "Ruisseau en forêt enneigée"
+   "nfr": "Ruisseau en forêt enneigée",
+   "nde": "Bach im verschneiten Wald"
   },
   {
    "f": "bg215.jpg",
@@ -2225,7 +2325,8 @@
    "nne": "रङ्गीन पहाडी थुम्काहरूमा सूर्योदय",
    "ncb": "Pagsubang sa adlaw sa kolor-kolor nga mga bungtod",
    "nes": "Amanecer sobre colinas de colores",
-   "nfr": "Lever de soleil sur des collines colorées"
+   "nfr": "Lever de soleil sur des collines colorées",
+   "nde": "Sonnenaufgang über bunten Hügeln"
   },
   {
    "f": "bg216.jpg",
@@ -2247,7 +2348,8 @@
    "nne": "अर्धचन्द्राकार उपत्यकाको खोला",
    "ncb": "Sapa sa walog nga porma sa tunga-sa-lingin",
    "nes": "Arroyo en un valle semicircular",
-   "nfr": "Ruisseau dans une vallée en demi-cercle"
+   "nfr": "Ruisseau dans une vallée en demi-cercle",
+   "nde": "Bach in einem halbrunden Tal"
   },
   {
    "f": "bg217.jpg",
@@ -2269,7 +2371,8 @@
    "nne": "सेतो बालुवाको थुम्कोमा साँझको धुम्मिलो उज्यालो",
    "ncb": "Gabii-gabii sa puti nga mga bungtod nga balas",
    "nes": "Crepúsculo en dunas de arena blanca",
-   "nfr": "Dunes de sable blanc au crépuscule"
+   "nfr": "Dunes de sable blanc au crépuscule",
+   "nde": "Weiße Sanddünen in der Dämmerung"
   },
   {
    "f": "bg218.jpg",
@@ -2291,7 +2394,8 @@
    "nne": "वर्षावनको भासिएको खाडल",
    "ncb": "Sinkhole sa lasang sa ulan",
    "nes": "Dolina en la selva tropical",
-   "nfr": "Doline dans la forêt tropicale"
+   "nfr": "Doline dans la forêt tropicale",
+   "nde": "Einsturzdoline im Regenwald"
   },
   {
    "f": "bg219.jpg",
@@ -2313,7 +2417,8 @@
    "nne": "सुनौलो घाँटीमा फूलका फाँट",
    "ncb": "Kabulakan sa bulawang canyon",
    "nes": "Mar de flores en un cañón dorado",
-   "nfr": "Canyon doré et mer de fleurs"
+   "nfr": "Canyon doré et mer de fleurs",
+   "nde": "Goldener Canyon und Blumenmeer"
   },
   {
    "f": "bg220.jpg",
@@ -2335,7 +2440,8 @@
    "nne": "गोल ढुङ्गाका समुद्री किनारमा सूर्यास्त",
    "ncb": "Pagsalop sa adlaw sa baybayon nga bato-bato",
    "nes": "Atardecer en una playa de cantos rodados",
-   "nfr": "Coucher de soleil sur une plage de galets"
+   "nfr": "Coucher de soleil sur une plage de galets",
+   "nde": "Sonnenuntergang an einem Kiesstrand"
   },
   {
    "f": "bg221.jpg",
@@ -2357,7 +2463,8 @@
    "nne": "कमलको पोखरीमा बिहानको उज्यालो",
    "ncb": "Pagbuntag sa linaw sa lotus",
    "nes": "Amanecer en un estanque de lotos",
-   "nfr": "Aube sur l’étang de lotus"
+   "nfr": "Aube sur l’étang de lotus",
+   "nde": "Morgenröte über dem Lotosteich"
   },
   {
    "f": "bg222.jpg",
@@ -2379,7 +2486,8 @@
    "nne": "कालो बालुवाको किनारमा बरफका स्फटिक",
    "ncb": "Mga kristal sa yelo sa itom nga baybayon nga balas",
    "nes": "Cristales de hielo en una playa de arena negra",
-   "nfr": "Cristaux de glace sur une plage de sable noir"
+   "nfr": "Cristaux de glace sur une plage de sable noir",
+   "nde": "Eiskristalle am schwarzen Sandstrand"
   },
   {
    "f": "bg223.jpg",
@@ -2401,7 +2509,8 @@
    "nne": "रातो नुनिलो घाँसले ढाकिएको सिमसार",
    "ncb": "Basang yuta nga adunay pula nga glasswort",
    "nes": "Humedal con salicornia roja",
-   "nfr": "Zone humide aux salicornes rouges"
+   "nfr": "Zone humide aux salicornes rouges",
+   "nde": "Feuchtgebiet mit rotem Queller"
   },
   {
    "f": "bg224.jpg",
@@ -2423,7 +2532,8 @@
    "nne": "वर्षावनको तह-तहको झरना",
    "ncb": "Hagdan-hagdang busay sa lasang sa ulan",
    "nes": "Cascadas escalonadas en la selva tropical",
-   "nfr": "Cascades étagées dans la forêt tropicale"
+   "nfr": "Cascades étagées dans la forêt tropicale",
+   "nde": "Stufenwasserfälle im Regenwald"
   },
   {
    "f": "bg46.jpg",
@@ -2445,7 +2555,8 @@
    "nne": "चकलेट केक",
    "ncb": "Keyk nga tsokolate",
    "nes": "Pastel de chocolate",
-   "nfr": "Gâteau au chocolat"
+   "nfr": "Gâteau au chocolat",
+   "nde": "Schokoladenkuchen"
   },
   {
    "f": "bg47.jpg",
@@ -2467,7 +2578,8 @@
    "nne": "स्ट्रबेरी र ताजा क्रिमको केक",
    "ncb": "Keyk nga strawberry ug presko nga krema",
    "nes": "Pastel de fresas y crema fresca",
-   "nfr": "Gâteau à la crème et aux fraises"
+   "nfr": "Gâteau à la crème et aux fraises",
+   "nde": "Erdbeer-Sahne-Torte"
   },
   {
    "f": "bg48.jpg",
@@ -2489,7 +2601,8 @@
    "nne": "गुलाफको केक",
    "ncb": "Keyk nga rosas",
    "nes": "Pastel de rosas",
-   "nfr": "Gâteau aux roses"
+   "nfr": "Gâteau aux roses",
+   "nde": "Rosenkuchen"
   },
   {
    "f": "bg49.jpg",
@@ -2511,7 +2624,8 @@
    "nne": "समुद्री सिपीको आकारको केक",
    "ncb": "Keyk nga porma sa kabibe sa dagat",
    "nes": "Pastel en forma de concha marina",
-   "nfr": "Gâteau coquillages"
+   "nfr": "Gâteau coquillages",
+   "nde": "Muschelkuchen"
   },
   {
    "f": "bg50.jpg",
@@ -2533,7 +2647,8 @@
    "nne": "माचा चिया र तहतहको क्रेप केक",
    "ncb": "Matcha nga mille crepe nga keyk",
    "nes": "Pastel de crepas de té matcha",
-   "nfr": "Gâteau de crêpes au thé matcha"
+   "nfr": "Gâteau de crêpes au thé matcha",
+   "nde": "Matcha-Crêpe-Torte"
   },
   {
    "f": "bg54.jpg",
@@ -2555,7 +2670,8 @@
    "nne": "क्रिम रङको बिरालोको बच्चा",
    "ncb": "Bata nga iring nga kolor krema",
    "nes": "Gatito color crema",
-   "nfr": "Chaton crème"
+   "nfr": "Chaton crème",
+   "nde": "Cremefarbenes Kätzchen"
   },
   {
    "f": "bg55.jpg",
@@ -2577,7 +2693,8 @@
    "nne": "सुन्तला र सेतो रङको बिरालोको बच्चा",
    "ncb": "Bata nga iring nga orange ug puti",
    "nes": "Gatito naranja y blanco",
-   "nfr": "Chaton orange et blanc"
+   "nfr": "Chaton orange et blanc",
+   "nde": "Orange-weißes Kätzchen"
   },
   {
    "f": "bg56.jpg",
@@ -2599,7 +2716,8 @@
    "nne": "खैरो-सिल्भर ब्रिटिस सर्टहेयर बिरालो",
    "ncb": "Silver-gray nga British Shorthair",
    "nes": "Gato británico de pelo corto gris plata",
-   "nfr": "British shorthair gris argenté"
+   "nfr": "British shorthair gris argenté",
+   "nde": "Britisch Kurzhaar in Silbergrau"
   },
   {
    "f": "bg135.jpg",
@@ -2621,7 +2739,8 @@
    "nne": "क्रिम रङको र्‍यागडल बिरालो र गुलाफ",
    "ncb": "Krema nga Ragdoll nga iring ug mga rosas",
    "nes": "Gato ragdoll color crema y rosas",
-   "nfr": "Ragdoll crème et roses"
+   "nfr": "Ragdoll crème et roses",
+   "nde": "Cremefarbene Ragdoll und Rosen"
   },
   {
    "f": "bg136.jpg",
@@ -2643,7 +2762,8 @@
    "nne": "सुन्तला-सेतो बिरालोको बच्चा र डेजी फूलको टोकरी",
    "ncb": "Bata nga iring nga orange ug puti sa basket sa mga daisy",
    "nes": "Gatito naranja y blanco en una cesta de margaritas",
-   "nfr": "Chaton orange et blanc dans un panier de marguerites"
+   "nfr": "Chaton orange et blanc dans un panier de marguerites",
+   "nde": "Orange-weißes Kätzchen im Gänseblümchenkorb"
   },
   {
    "f": "bg137.jpg",
@@ -2665,7 +2785,8 @@
    "nne": "त्रिरङ्गी बिरालो र ट्युलिप",
    "ncb": "Tricolor nga iring ug mga tulip",
    "nes": "Gata tricolor y tulipanes",
-   "nfr": "Chatte tricolore et tulipes"
+   "nfr": "Chatte tricolore et tulipes",
+   "nde": "Dreifarbige Katze und Tulpen"
   },
   {
    "f": "bg57.jpg",
@@ -2687,7 +2808,8 @@
    "nne": "गुलाबी गुलाफको उपहार-बाकस",
    "ncb": "Kahon sa regalo nga adunay rosas nga mga rosas",
    "nes": "Caja de regalo con rosas rosadas",
-   "nfr": "Coffret cadeau aux roses roses"
+   "nfr": "Coffret cadeau aux roses roses",
+   "nde": "Geschenkbox mit rosa Rosen"
   },
   {
    "f": "bg58.jpg",
@@ -2709,7 +2831,8 @@
    "nne": "ल्याभेन्डरको उपहार-बाकस",
    "ncb": "Kahon sa regalo nga adunay lavender",
    "nes": "Caja de regalo con lavanda",
-   "nfr": "Coffret cadeau à la lavande"
+   "nfr": "Coffret cadeau à la lavande",
+   "nde": "Geschenkbox mit Lavendel"
   },
   {
    "f": "bg59.jpg",
@@ -2731,7 +2854,8 @@
    "nne": "खैरो कागजमा डेजी फूलसहितको उपहार-बाकस",
    "ncb": "Kahon sa regalo nga kraft paper uban ang mga daisy",
    "nes": "Caja de regalo de papel kraft con margaritas",
-   "nfr": "Coffret cadeau en papier kraft et marguerites"
+   "nfr": "Coffret cadeau en papier kraft et marguerites",
+   "nde": "Geschenkbox aus Kraftpapier mit Gänseblümchen"
   },
   {
    "f": "bg60.jpg",
@@ -2753,7 +2877,8 @@
    "nne": "बैजनी रातको ताराखचित आकाशको केक",
    "ncb": "Keyk nga lila nga kagabhion sa bituon",
    "nes": "Pastel de noche estrellada morada",
-   "nfr": "Gâteau nuit étoilée violette"
+   "nfr": "Gâteau nuit étoilée violette",
+   "nde": "Kuchen „Violette Sternennacht“"
   },
   {
    "f": "bg61.jpg",
@@ -2775,7 +2900,8 @@
    "nne": "मह र सानो भालुको केक",
    "ncb": "Keyk nga oso nga pukyutan",
    "nes": "Pastel de osito de miel",
-   "nfr": "Gâteau petit ours au miel"
+   "nfr": "Gâteau petit ours au miel",
+   "nde": "Honigbärchen-Kuchen"
   },
   {
    "f": "bg62.jpg",
@@ -2797,7 +2923,8 @@
    "nne": "इन्द्रेणी रङको मिठाइ केक",
    "ncb": "Keyk nga rainbow candy",
    "nes": "Pastel de caramelos de arcoíris",
-   "nfr": "Gâteau aux bonbons arc-en-ciel"
+   "nfr": "Gâteau aux bonbons arc-en-ciel",
+   "nde": "Regenbogen-Bonbon-Torte"
   },
   {
    "f": "bg63.jpg",
@@ -2819,7 +2946,8 @@
    "nne": "सुनौलो तीन तहको केक",
    "ncb": "Bulawang keyk nga tulo ka andana",
    "nes": "Pastel dorado de tres pisos",
-   "nfr": "Gâteau doré à trois étages"
+   "nfr": "Gâteau doré à trois étages",
+   "nde": "Goldene Torte mit drei Etagen"
   },
   {
    "f": "bg64.jpg",
@@ -2841,7 +2969,8 @@
    "nne": "कागतीको बगैँचा केक",
    "ncb": "Keyk nga lemon sa tanaman",
    "nes": "Pastel de limón del jardín",
-   "nfr": "Gâteau citron du jardin"
+   "nfr": "Gâteau citron du jardin",
+   "nde": "Zitronenkuchen aus dem Garten"
   },
   {
    "f": "bg65.jpg",
@@ -2863,7 +2992,8 @@
    "nne": "हिउँदे हिमपातको सेतो चकलेट केक",
    "ncb": "Keyk nga puti nga tsokolate sa niyebeng tingtugnaw",
    "nes": "Pastel de chocolate blanco en una nevada de invierno",
-   "nfr": "Gâteau au chocolat blanc sous la neige d’hiver"
+   "nfr": "Gâteau au chocolat blanc sous la neige d’hiver",
+   "nde": "Weiße Schokoladentorte im Winterschnee"
   },
   {
    "f": "bg66.jpg",
@@ -2885,7 +3015,8 @@
    "nne": "क्यारामेल र ओखरको केक",
    "ncb": "Keyk nga caramel ug walnut",
    "nes": "Pastel de caramelo y nueces",
-   "nfr": "Gâteau au caramel et aux noix"
+   "nfr": "Gâteau au caramel et aux noix",
+   "nde": "Karamell-Walnuss-Kuchen"
   },
   {
    "f": "bg67.jpg",
@@ -2907,7 +3038,8 @@
    "nne": "आँपको केक",
    "ncb": "Keyk nga mangga",
    "nes": "Pastel de mango",
-   "nfr": "Gâteau à la mangue"
+   "nfr": "Gâteau à la mangue",
+   "nde": "Mangokuchen"
   },
   {
    "f": "bg68.jpg",
@@ -2929,7 +3061,8 @@
    "nne": "पियानोका स्वरलिपि आकारको केक",
    "ncb": "Keyk nga adunay nota sa piano",
    "nes": "Pastel con notas de piano",
-   "nfr": "Gâteau piano et notes de musique"
+   "nfr": "Gâteau piano et notes de musique",
+   "nde": "Klavier-und-Noten-Kuchen"
   },
   {
    "f": "bg69.jpg",
@@ -2951,7 +3084,8 @@
    "nne": "तिरामिसु",
    "ncb": "Tiramisu",
    "nes": "Tiramisú",
-   "nfr": "Tiramisu"
+   "nfr": "Tiramisu",
+   "nde": "Tiramisu"
   },
   {
    "f": "bg70.jpg",
@@ -2973,7 +3107,8 @@
    "nne": "आरुको स्वाद र तालको झलक भएको केक",
    "ncb": "Keyk nga milokoton sa kahayag sa lanaw",
    "nes": "Pastel de durazno con reflejos del lago",
-   "nfr": "Gâteau pêche et reflets du lac"
+   "nfr": "Gâteau pêche et reflets du lac",
+   "nde": "Pfirsichkuchen mit Seespiegelung"
   },
   {
    "f": "bg71.jpg",
@@ -2995,7 +3130,8 @@
    "nne": "दीर्घायुको प्रतीक आरु आकारको केक",
    "ncb": "Keyk nga porma sa milagrosong milokoton alang sa taas nga kinabuhi",
    "nes": "Pastel en forma de durazno de la longevidad",
-   "nfr": "Gâteau en forme de pêche de longévité"
+   "nfr": "Gâteau en forme de pêche de longévité",
+   "nde": "Kuchen in Form eines Glückspfirsichs"
   },
   {
    "f": "bg72.jpg",
@@ -3017,7 +3153,8 @@
    "nne": "रातो मखमली मुटु आकारको केक",
    "ncb": "Keyk nga red velvet nga porma sa kasingkasing",
    "nes": "Pastel red velvet en forma de corazón",
-   "nfr": "Gâteau red velvet en forme de cœur"
+   "nfr": "Gâteau red velvet en forme de cœur",
+   "nde": "Red-Velvet-Kuchen in Herzform"
   },
   {
    "f": "bg73.jpg",
@@ -3039,7 +3176,8 @@
    "nne": "फूलको टोकरी आकारको केक",
    "ncb": "Keyk nga basket sa bulak",
    "nes": "Pastel en forma de cesta de flores",
-   "nfr": "Gâteau corbeille de fleurs"
+   "nfr": "Gâteau corbeille de fleurs",
+   "nde": "Blumenkorbkuchen"
   },
   {
    "f": "bg74.jpg",
@@ -3061,7 +3199,8 @@
    "nne": "डाइनोसरको केक",
    "ncb": "Keyk nga dinosaur",
    "nes": "Pastel de dinosaurio",
-   "nfr": "Gâteau dinosaure"
+   "nfr": "Gâteau dinosaure",
+   "nde": "Dinosaurier-Kuchen"
   },
   {
    "f": "bg75.jpg",
@@ -3083,7 +3222,8 @@
    "nne": "ओकको काठको क्रुस र गुलाफ",
    "ncb": "Krus nga kahoyng oak ug mga rosas",
    "nes": "Cruz de roble y rosas",
-   "nfr": "Croix en chêne et roses"
+   "nfr": "Croix en chêne et roses",
+   "nde": "Eichenkreuz und Rosen"
   },
   {
    "f": "bg76.jpg",
@@ -3105,7 +3245,8 @@
    "nne": "पुरानो शैलीको क्रुस र ल्याभेन्डर",
    "ncb": "Karaan nga krus ug lavender",
    "nes": "Cruz rústica y lavanda",
-   "nfr": "Croix rustique et lavande"
+   "nfr": "Croix rustique et lavande",
+   "nde": "Rustikales Kreuz und Lavendel"
   },
   {
    "f": "bg77.jpg",
@@ -3127,7 +3268,8 @@
    "nne": "रातो काठको क्रुस र मोतीफूल",
    "ncb": "Krus nga kahoyng pula ug mga peony",
    "nes": "Cruz de madera roja y peonías",
-   "nfr": "Croix en bois rouge et pivoines"
+   "nfr": "Croix en bois rouge et pivoines",
+   "nde": "Kreuz und Pfingstrosen aus rotem Holz"
   },
   {
    "f": "bg78.jpg",
@@ -3149,7 +3291,8 @@
    "nne": "सुनौलो क्रुस र लिली फूल",
    "ncb": "Bulawang krus ug mga lirio",
    "nes": "Cruz dorada y lirios",
-   "nfr": "Croix dorée et lys"
+   "nfr": "Croix dorée et lys",
+   "nde": "Goldenes Kreuz und Lilien"
   },
   {
    "f": "bg79.jpg",
@@ -3171,7 +3314,8 @@
    "nne": "सेतो क्रुस र डेजी फूल",
    "ncb": "Puti nga krus ug mga daisy",
    "nes": "Cruz blanca y margaritas",
-   "nfr": "Croix blanche et marguerites"
+   "nfr": "Croix blanche et marguerites",
+   "nde": "Weißes Kreuz und Gänseblümchen"
   },
   {
    "f": "bg80.jpg",
@@ -3193,7 +3337,8 @@
    "nne": "क्रुस र रातो गुलाफ, मैनबत्तीको उज्यालोमा",
    "ncb": "Krus ug pula nga rosas sa kahayag sa kandila",
    "nes": "Cruz y rosas rojas a la luz de las velas",
-   "nfr": "Croix, roses rouges et lueur de bougies"
+   "nfr": "Croix, roses rouges et lueur de bougies",
+   "nde": "Kreuz mit roten Rosen im Kerzenschein"
   },
   {
    "f": "bg81.jpg",
@@ -3215,7 +3360,8 @@
    "nne": "ओकको काठको क्रुस र सेतो ट्युलिप",
    "ncb": "Krus nga kahoyng oak ug puti nga mga tulip",
    "nes": "Cruz de roble y tulipanes blancos",
-   "nfr": "Croix en chêne et tulipes blanches"
+   "nfr": "Croix en chêne et tulipes blanches",
+   "nde": "Eichenkreuz und weiße Tulpen"
   },
   {
    "f": "bg82.jpg",
@@ -3237,7 +3383,8 @@
    "nne": "सेतो क्रुस र निलो हाइड्रेन्जिया",
    "ncb": "Puti nga krus ug asul nga mga hydrangea",
    "nes": "Cruz blanca e hortensias azules",
-   "nfr": "Croix blanche et hortensias bleus"
+   "nfr": "Croix blanche et hortensias bleus",
+   "nde": "Weißes Kreuz und blaue Hortensien"
   },
   {
    "f": "bg83.jpg",
@@ -3259,7 +3406,8 @@
    "nne": "ताराखचित आकाशमा सुनौलो क्रुस",
    "ncb": "Bulawang krus sa langit nga puno sa bituon",
    "nes": "Cruz dorada bajo un cielo estrellado",
-   "nfr": "Croix dorée sous les étoiles"
+   "nfr": "Croix dorée sous les étoiles",
+   "nde": "Goldenes Kreuz unter den Sternen"
   },
   {
    "f": "bg84.jpg",
@@ -3281,7 +3429,8 @@
    "nne": "ढुङ्गाको क्रुस र चेरी फूल",
    "ncb": "Krus nga bato ug mga sakura",
    "nes": "Cruz de piedra y flores de cerezo",
-   "nfr": "Croix de pierre et cerisiers en fleurs"
+   "nfr": "Croix de pierre et cerisiers en fleurs",
+   "nde": "Steinkreuz und Kirschblüten"
   },
   {
    "f": "bg85.jpg",
@@ -3303,7 +3452,8 @@
    "nne": "क्रुस र सूर्यमुखी फूल",
    "ncb": "Krus ug mga sunflower",
    "nes": "Cruz y girasoles",
-   "nfr": "Croix et tournesols"
+   "nfr": "Croix et tournesols",
+   "nde": "Kreuz und Sonnenblumen"
   },
   {
    "f": "bg86.jpg",
@@ -3325,7 +3475,8 @@
    "nne": "शरद ऋतुको क्रुस",
    "ncb": "Krus sa ting-ilaw",
    "nes": "Cruz en otoño",
-   "nfr": "Croix en automne"
+   "nfr": "Croix en automne",
+   "nde": "Kreuz im Herbst"
   },
   {
    "f": "bg87.jpg",
@@ -3347,7 +3498,8 @@
    "nne": "क्रुस र गुलाबी गुलाफ",
    "ncb": "Krus ug rosas nga rosas",
    "nes": "Cruz y rosas rosadas",
-   "nfr": "Croix et roses roses"
+   "nfr": "Croix et roses roses",
+   "nde": "Kreuz und rosa Rosen"
   },
   {
    "f": "bg88.jpg",
@@ -3369,7 +3521,8 @@
    "nne": "सेतो क्रुस र एनिमोन फूल",
    "ncb": "Puti nga krus ug mga anemone",
    "nes": "Cruz blanca y anémonas",
-   "nfr": "Croix blanche et renoncules"
+   "nfr": "Croix blanche et renoncules",
+   "nde": "Weißes Kreuz und Ranunkeln"
   },
   {
    "f": "bg89.jpg",
@@ -3391,7 +3544,8 @@
    "nne": "संगमरमरको क्रुस र जर्बेरा",
    "ncb": "Krus nga marmol ug mga gerbera",
    "nes": "Cruz de mármol y gerberas",
-   "nfr": "Croix de marbre et gerberas"
+   "nfr": "Croix de marbre et gerberas",
+   "nde": "Marmorkreuz und Gerbera"
   },
   {
    "f": "bg90.jpg",
@@ -3413,7 +3567,8 @@
    "nne": "सुनौलो क्रुस र ओर्किड, सूर्यास्तमा",
    "ncb": "Bulawang krus ug mga orkid sa pagsalop sa adlaw",
    "nes": "Cruz dorada y orquídeas al atardecer",
-   "nfr": "Croix dorée et orchidées au coucher du soleil"
+   "nfr": "Croix dorée et orchidées au coucher du soleil",
+   "nde": "Goldenes Kreuz und Orchideen im Sonnenuntergang"
   },
   {
    "f": "bg91.jpg",
@@ -3435,7 +3590,8 @@
    "nne": "हिउँदको सेतो क्रुस",
    "ncb": "Puti nga krus sa tingtugnaw",
    "nes": "Cruz blanca en invierno",
-   "nfr": "Croix blanche en hiver"
+   "nfr": "Croix blanche en hiver",
+   "nde": "Weißes Kreuz im Winter"
   },
   {
    "f": "bg92.jpg",
@@ -3457,7 +3613,8 @@
    "nne": "क्रुस र घण्टी-फूल, बिहानको कुहिरोमा",
    "ncb": "Krus ug mga lily of the valley sa mahamog nga buntag",
    "nes": "Cruz y lirios de los valles en la niebla de la mañana",
-   "nfr": "Croix et muguet dans la brume du matin"
+   "nfr": "Croix et muguet dans la brume du matin",
+   "nde": "Kreuz und Maiglöckchen im Morgennebel"
   },
   {
    "f": "bg93.jpg",
@@ -3479,7 +3636,8 @@
    "nne": "क्रुस, बाइबल र सुकेका फूल",
    "ncb": "Krus, Bibliya ug mga garing bulak",
    "nes": "Cruz, Biblia y flores secas",
-   "nfr": "Croix, Bible et fleurs séchées"
+   "nfr": "Croix, Bible et fleurs séchées",
+   "nde": "Kreuz, Bibel und Trockenblumen"
   },
   {
    "f": "bg94.jpg",
@@ -3501,7 +3659,8 @@
    "nne": "तामाको कुँदिएको क्रुस र म्याग्नोलिया",
    "ncb": "Krus nga tumbaga ug mga magnolia",
    "nes": "Cruz de bronce y magnolias",
-   "nfr": "Croix de laiton et magnolias"
+   "nfr": "Croix de laiton et magnolias",
+   "nde": "Messingkreuz und Magnolien"
   },
   {
    "f": "bg345.jpg",
@@ -3523,7 +3682,8 @@
    "nne": "रातो चट्टानी घाँटीमा क्रुस",
    "ncb": "Krus sa pula nga bato nga canyon",
    "nes": "Cruz en un cañón de roca roja",
-   "nfr": "Croix dans le canyon de roches rouges"
+   "nfr": "Croix dans le canyon de roches rouges",
+   "nde": "Kreuz im Canyon aus rotem Fels"
   },
   {
    "f": "bg346.jpg",
@@ -3545,7 +3705,8 @@
    "nne": "हिमनदीको सूर्यास्तमा क्रुस",
    "ncb": "Krus sa pagsalop sa adlaw sa glasyar",
    "nes": "Cruz al atardecer sobre el glaciar",
-   "nfr": "Croix au coucher du soleil sur le glacier"
+   "nfr": "Croix au coucher du soleil sur le glacier",
+   "nde": "Kreuz im Sonnenuntergang am Gletscher"
   },
   {
    "f": "bg347.jpg",
@@ -3567,7 +3728,8 @@
    "nne": "मरुभूमिको हरियो ओयासिसमा क्रुस",
    "ncb": "Krus sa oasis sa kamingawan",
    "nes": "Cruz en un oasis del desierto",
-   "nfr": "Croix au-dessus d’une oasis du désert"
+   "nfr": "Croix au-dessus d’une oasis du désert",
+   "nde": "Kreuz über einer Wüstenoase"
   },
   {
    "f": "bg348.jpg",
@@ -3589,7 +3751,8 @@
    "nne": "सिँढीखेतमा बिहानको कुहिरो, क्रुससहित",
    "ncb": "Krus sa mahamog nga buntag sa mga hagdan-hagdang uma",
    "nes": "Cruz en la niebla de la mañana sobre terrazas de cultivo",
-   "nfr": "Croix au-dessus des rizières en terrasses dans la brume"
+   "nfr": "Croix au-dessus des rizières en terrasses dans la brume",
+   "nde": "Kreuz über den Reisterrassen im Nebel"
   },
   {
    "f": "bg349.jpg",
@@ -3611,7 +3774,8 @@
    "nne": "छालले ठोक्किने चट्टानमाथि क्रुस",
    "ncb": "Krus sa batong tipik taliwala sa mga balod",
    "nes": "Cruz sobre un arrecife entre las olas",
-   "nfr": "Croix près des vagues qui se brisent sur les rochers"
+   "nfr": "Croix près des vagues qui se brisent sur les rochers",
+   "nde": "Kreuz an den Wellen und Felsen"
   },
   {
    "f": "bg350.jpg",
@@ -3633,7 +3797,8 @@
    "nne": "उच्च हिमाली फूल-घाँस र क्रुस",
    "ncb": "Krus taliwala sa mga bulak sa kabukiran",
    "nes": "Cruz entre flores de montaña",
-   "nfr": "Croix dans la prairie alpine"
+   "nfr": "Croix dans la prairie alpine",
+   "nde": "Kreuz auf der Alpenwiese"
   },
   {
    "f": "bg351.jpg",
@@ -3655,7 +3820,8 @@
    "nne": "बैजनी हिद्र फूल र क्रुस",
    "ncb": "Krus ug lilang heather",
    "nes": "Cruz y brezo morado",
-   "nfr": "Croix dans la bruyère violette"
+   "nfr": "Croix dans la bruyère violette",
+   "nde": "Kreuz im violetten Heidekraut"
   },
   {
    "f": "bg352.jpg",
@@ -3677,7 +3843,8 @@
    "nne": "पहाड र पानीमा बिहानको किरण, क्रुससहित",
    "ncb": "Krus sa kahayag sa buntag taliwala sa kabukiran ug katubigan",
    "nes": "Cruz a la luz de la mañana entre montañas y aguas",
-   "nfr": "Croix à la lumière du matin entre monts et eaux"
+   "nfr": "Croix à la lumière du matin entre monts et eaux",
+   "nde": "Kreuz im Morgenlicht zwischen Bergen und Wasser"
   },
   {
    "f": "bg353.jpg",
@@ -3699,7 +3866,8 @@
    "nne": "समुद्री किनारमा सूर्यास्त, क्रुससहित",
    "ncb": "Krus sa pagsalop sa adlaw sa baybayon",
    "nes": "Cruz al atardecer en la costa",
-   "nfr": "Croix au coucher du soleil sur la côte"
+   "nfr": "Croix au coucher du soleil sur la côte",
+   "nde": "Kreuz im Sonnenuntergang an der Küste"
   },
   {
    "f": "bg354.jpg",
@@ -3721,7 +3889,8 @@
    "nne": "जङ्गलको खोलाको किनारमा क्रुस",
    "ncb": "Krus sa sapa sa lasang",
    "nes": "Cruz junto a un arroyo del bosque",
-   "nfr": "Croix près d’un ruisseau en forêt"
+   "nfr": "Croix près d’un ruisseau en forêt",
+   "nde": "Kreuz an einem Waldbach"
   },
   {
    "f": "bg355.jpg",
@@ -3743,7 +3912,8 @@
    "nne": "नुनिलो तालमा साँझको रातो उज्यालो, क्रुससहित",
    "ncb": "Krus sa pagsubang sa adlaw sa lanaw nga asin",
    "nes": "Cruz al amanecer en un lago salado",
-   "nfr": "Croix sur un lac salé aux lueurs du couchant"
+   "nfr": "Croix sur un lac salé aux lueurs du couchant",
+   "nde": "Kreuz am Salzsee im Abendrot"
   },
   {
    "f": "bg356.jpg",
@@ -3765,7 +3935,8 @@
    "nne": "शरद ऋतुको सुनौलो उपत्यकामा क्रुस",
    "ncb": "Krus sa walog nga bulawan sa ting-ilaw",
    "nes": "Cruz en un valle dorado de otoño",
-   "nfr": "Croix dans la vallée aux couleurs dorées de l’automne"
+   "nfr": "Croix dans la vallée aux couleurs dorées de l’automne",
+   "nde": "Kreuz im Tal in goldenen Herbstfarben"
   },
   {
    "f": "bg357.jpg",
@@ -3787,7 +3958,8 @@
    "nne": "तातोपानीको सेतो सिँढीदार पोखरीमा क्रुस",
    "ncb": "Krus sa puti nga hagdan-hagdang bukal nga init",
    "nes": "Cruz en terrazas blancas de aguas termales",
-   "nfr": "Croix devant les terrasses blanches de sources chaudes"
+   "nfr": "Croix devant les terrasses blanches de sources chaudes",
+   "nde": "Kreuz vor weißen Sinterterrassen heißer Quellen"
   },
   {
    "f": "bg358.jpg",
@@ -3809,7 +3981,8 @@
    "nne": "फियोर्डमा क्रुस",
    "ncb": "Krus sa fjord",
    "nes": "Cruz en un fiordo",
-   "nfr": "Croix sur un fjord"
+   "nfr": "Croix sur un fjord",
+   "nde": "Kreuz am Fjord"
   },
   {
    "f": "bg359.jpg",
@@ -3831,7 +4004,8 @@
    "nne": "कमल फूल र बिहानको उज्यालोमा क्रुस",
    "ncb": "Krus ug lotus sa pagbuntag",
    "nes": "Cruz y lotos al amanecer",
-   "nfr": "Croix parmi les lotus à l’aube"
+   "nfr": "Croix parmi les lotus à l’aube",
+   "nde": "Kreuz zwischen Lotosblumen im Morgenlicht"
   },
   {
    "f": "bg360.jpg",
@@ -3853,7 +4027,8 @@
    "nne": "सेता भीरमा डेजी फूल, क्रुससहित",
    "ncb": "Krus ug mga daisy sa puti nga pangpang",
    "nes": "Cruz y margaritas en un acantilado blanco",
-   "nfr": "Croix sur les falaises blanches parmi les marguerites"
+   "nfr": "Croix sur les falaises blanches parmi les marguerites",
+   "nde": "Kreuz auf weißen Klippen zwischen Gänseblümchen"
   },
   {
    "f": "bg361.jpg",
@@ -3875,7 +4050,8 @@
    "nne": "ज्वालामुखी तालको किनारमा क्रुस",
    "ncb": "Krus sa lanaw sa bulkan",
    "nes": "Cruz en un lago volcánico",
-   "nfr": "Croix au bord du lac de cratère"
+   "nfr": "Croix au bord du lac de cratère",
+   "nde": "Kreuz am Kratersee"
   },
   {
    "f": "bg362.jpg",
@@ -3897,7 +4073,8 @@
    "nne": "बादलको सागर र झरनाका बीच क्रुस",
    "ncb": "Krus sa busay ibabaw sa dagat sa panganod",
    "nes": "Cruz junto a una cascada sobre un mar de nubes",
-   "nfr": "Croix au-dessus de la mer de nuages et des chutes d’eau"
+   "nfr": "Croix au-dessus de la mer de nuages et des chutes d’eau",
+   "nde": "Kreuz über Wolkenmeer und Wasserfällen"
   },
   {
    "f": "bg363.jpg",
@@ -3919,7 +4096,8 @@
    "nne": "जैतुनको बगैँचामा सूर्यास्त, क्रुससहित",
    "ncb": "Krus sa pagsalop sa adlaw sa tanaman sa olibo",
    "nes": "Cruz al atardecer en un olivar",
-   "nfr": "Croix dans l’oliveraie au coucher du soleil"
+   "nfr": "Croix dans l’oliveraie au coucher du soleil",
+   "nde": "Kreuz im Olivenhain bei Sonnenuntergang"
   },
   {
    "f": "bg364.jpg",
@@ -3941,7 +4119,8 @@
    "nne": "हिउँले ढाकिएको भोजपत्रको वनमा क्रुस",
    "ncb": "Krus sa lasang sa birch sa niyebe",
    "nes": "Cruz en un abedular nevado",
-   "nfr": "Croix dans une forêt de bouleaux enneigée"
+   "nfr": "Croix dans une forêt de bouleaux enneigée",
+   "nde": "Kreuz im verschneiten Birkenwald"
   },
   {
    "f": "bg95.jpg",
@@ -3963,7 +4142,8 @@
    "nne": "गुलाबी रेशमी रिबन, गुलाफ र झ्यालको दृश्यसहितको उपहार-बाकस",
    "ncb": "Kahon sa regalo nga adunay rosas nga satin nga laso ug mga rosas sa tanawon sa bintana",
    "nes": "Caja de regalo con lazo de satén rosa y rosas junto a la ventana",
-   "nfr": "Coffret cadeau au ruban rose, roses et vue de fenêtre"
+   "nfr": "Coffret cadeau au ruban rose, roses et vue de fenêtre",
+   "nde": "Geschenkbox mit rosa Satinband, Rosen und Fensterblick"
   },
   {
    "f": "bg96.jpg",
@@ -3985,7 +4165,8 @@
    "nne": "सुनौलो रेशमी रिबन र लिली फूलसहितको गोलो उपहार-बाकस",
    "ncb": "Lingin nga kahon sa regalo nga adunay bulawang satin nga laso ug mga lirio",
    "nes": "Caja de regalo redonda con lazo de satén dorado y lirios",
-   "nfr": "Coffret cadeau rond au ruban doré et aux lys"
+   "nfr": "Coffret cadeau rond au ruban doré et aux lys",
+   "nde": "Runde Geschenkbox mit goldenem Band und Lilien"
   },
   {
    "f": "bg97.jpg",
@@ -4007,7 +4188,8 @@
    "nne": "डेजी फूल र सुतलीले बाँधिएको उपहार-बाकस",
    "ncb": "Kahon sa regalo nga adunay mga daisy ug pisi nga abaka",
    "nes": "Caja de regalo con margaritas y cordel de yute",
-   "nfr": "Coffret cadeau à la ficelle de chanvre et aux marguerites"
+   "nfr": "Coffret cadeau à la ficelle de chanvre et aux marguerites",
+   "nde": "Geschenkbox mit Hanfband und Gänseblümchen"
   },
   {
    "f": "bg98.jpg",
@@ -4029,7 +4211,8 @@
    "nne": "ल्याभेन्डर बगानको उपहार-बाकस",
    "ncb": "Kahon sa regalo nga adunay umahan sa lavender",
    "nes": "Caja de regalo con campos de lavanda",
-   "nfr": "Coffret cadeau du domaine de lavande"
+   "nfr": "Coffret cadeau du domaine de lavande",
+   "nde": "Geschenkbox von der Lavendelfarm"
   },
   {
    "f": "bg99.jpg",
@@ -4051,7 +4234,8 @@
    "nne": "ट्युलिप र हरियो रेशमी रिबनको उपहार-बाकस",
    "ncb": "Kahon sa regalo nga adunay mga tulip ug lunhaw nga satin nga laso",
    "nes": "Caja de regalo con tulipanes y lazo de satén verde",
-   "nfr": "Coffret cadeau au ruban vert et tulipes"
+   "nfr": "Coffret cadeau au ruban vert et tulipes",
+   "nde": "Geschenkbox mit grünem Band und Tulpen"
   },
   {
    "f": "bg100.jpg",
@@ -4073,7 +4257,8 @@
    "nne": "हाइड्रेन्जिया र समुद्री किनारको निलो उपहार-बाकस",
    "ncb": "Asul nga kahon sa regalo nga adunay mga hydrangea sa baybayon",
    "nes": "Caja de regalo azul con hortensias de la costa",
-   "nfr": "Coffret cadeau bleu côtier aux hortensias"
+   "nfr": "Coffret cadeau bleu côtier aux hortensias",
+   "nde": "Geschenkbox in Küstenblau mit Hortensien"
   },
   {
    "f": "bg101.jpg",
@@ -4095,7 +4280,8 @@
    "nne": "प्रवाल रङका मोतीफूलको उपहार-बाकस",
    "ncb": "Kahon sa regalo nga kolor korales uban ang mga peony",
    "nes": "Caja de regalo color coral con peonías",
-   "nfr": "Coffret cadeau aux pivoines corail"
+   "nfr": "Coffret cadeau aux pivoines corail",
+   "nde": "Geschenkbox mit korallfarbenen Pfingstrosen"
   },
   {
    "f": "bg102.jpg",
@@ -4117,7 +4303,8 @@
    "nne": "चेरी फूल र जापानी शैलीको उपहार-बाकस",
    "ncb": "Kahon sa regalo nga estilo Hapon uban ang mga sakura",
    "nes": "Caja de regalo de estilo japonés con flores de cerezo",
-   "nfr": "Coffret cadeau de style japonais aux fleurs de cerisier"
+   "nfr": "Coffret cadeau de style japonais aux fleurs de cerisier",
+   "nde": "Geschenkbox im japanischen Stil mit Kirschblüten"
   },
   {
    "f": "bg103.jpg",
@@ -4139,7 +4326,8 @@
    "nne": "सूर्यमुखी रङको पहेँलो उपहार-बाकस",
    "ncb": "Dilaw nga kahon sa regalo nga kolor sunflower",
    "nes": "Caja de regalo amarillo girasol",
-   "nfr": "Coffret cadeau jaune tournesol"
+   "nfr": "Coffret cadeau jaune tournesol",
+   "nde": "Sonnenblumengelbe Geschenkbox"
   },
   {
    "f": "bg104.jpg",
@@ -4161,7 +4349,8 @@
    "nne": "मखमली र माणिकको उपहार-बाकस",
    "ncb": "Kahon sa regalo nga pula nga ruby velvet",
    "nes": "Caja de regalo de terciopelo rojo rubí",
-   "nfr": "Coffret cadeau en velours rouge rubis"
+   "nfr": "Coffret cadeau en velours rouge rubis",
+   "nde": "Geschenkbox aus rotem Samt in Rubinfarbe"
   },
   {
    "f": "bg105.jpg",
@@ -4183,7 +4372,8 @@
    "nne": "मुटु आकारको गुलाबी उपहार-बाकस",
    "ncb": "Rosas nga kahon sa regalo nga porma sa kasingkasing",
    "nes": "Caja de regalo rosa en forma de corazón",
-   "nfr": "Coffret cadeau rose en forme de cœur"
+   "nfr": "Coffret cadeau rose en forme de cœur",
+   "nde": "Rosa Geschenkbox in Herzform"
   },
   {
    "f": "bg106.jpg",
@@ -4205,7 +4395,8 @@
    "nne": "एनिमोन फूलको बुट्टा भएको उपहार-बाकस",
    "ncb": "Kahon sa regalo nga adunay disenyo sa anemone",
    "nes": "Caja de regalo con estampado de anémonas",
-   "nfr": "Coffret cadeau aux renoncules"
+   "nfr": "Coffret cadeau aux renoncules",
+   "nde": "Geschenkbox mit Ranunkelmuster"
   },
   {
    "f": "bg107.jpg",
@@ -4227,7 +4418,8 @@
    "nne": "गाढा निलो र सुनौला ताराको उपहार-बाकस",
    "ncb": "Kahon sa regalo nga navy blue nga adunay bulawang mga bituon",
    "nes": "Caja de regalo azul marino con estrellas doradas",
-   "nfr": "Coffret cadeau bleu marine à l’étoile dorée"
+   "nfr": "Coffret cadeau bleu marine à l’étoile dorée",
+   "nde": "Marineblaue Geschenkbox mit goldenem Stern"
   },
   {
    "f": "bg108.jpg",
@@ -4249,7 +4441,8 @@
    "nne": "ओर्किड र बैजनी जालीको उपहार-बाकस",
    "ncb": "Kahon sa regalo nga adunay lila nga tul ug mga orkid",
    "nes": "Caja de regalo con tul morado y orquídeas",
-   "nfr": "Coffret cadeau en organza violet et orchidées"
+   "nfr": "Coffret cadeau en organza violet et orchidées",
+   "nde": "Geschenkbox mit Orchideen und violettem Organza"
   },
   {
    "f": "bg109.jpg",
@@ -4271,7 +4464,8 @@
    "nne": "हिउँदको बुनेको उपहार-बाकस",
    "ncb": "Gisulod nga regalo nga hinimo sa lana sa tingtugnaw",
    "nes": "Caja de regalo de punto invernal",
-   "nfr": "Coffret cadeau en tricot d’hiver"
+   "nfr": "Coffret cadeau en tricot d’hiver",
+   "nde": "Winterliche Geschenkbox mit Strickmuster"
   },
   {
    "f": "bg110.jpg",
@@ -4293,7 +4487,8 @@
    "nne": "शरद ऋतुको मेपल र तामा रङको रेशमी उपहार-बाकस",
    "ncb": "Kahon sa regalo nga tumbaga ug satin sa kolor sa maple sa ting-ilaw",
    "nes": "Caja de regalo de cobre y satén en tonos de arce otoñal",
-   "nfr": "Coffret cadeau cuivré aux couleurs des érables d’automne"
+   "nfr": "Coffret cadeau cuivré aux couleurs des érables d’automne",
+   "nde": "Kupferfarbene Geschenkbox in Ahornfarben"
   },
   {
    "f": "bg111.jpg",
@@ -4315,7 +4510,8 @@
    "nne": "जर्बेरा र थोप्ला बुट्टाको उपहार-बाकस",
    "ncb": "Kahon sa regalo nga adunay tulbok ug mga gerbera",
    "nes": "Caja de regalo de lunares con gerberas",
-   "nfr": "Coffret cadeau à pois et gerberas"
+   "nfr": "Coffret cadeau à pois et gerberas",
+   "nde": "Geschenkbox mit Tupfen und Gerbera"
   },
   {
    "f": "bg112.jpg",
@@ -4337,7 +4533,8 @@
    "nne": "घण्टी-फूल र बिहानको उज्यालोको उपहार-बाकस",
    "ncb": "Kahon sa regalo nga adunay mga lily of the valley sa kahayag sa buntag",
    "nes": "Caja de regalo con muguete a la luz de la mañana",
-   "nfr": "Coffret cadeau au muguet dans la lumière du matin"
+   "nfr": "Coffret cadeau au muguet dans la lumière du matin",
+   "nde": "Geschenkbox mit Maiglöckchen im Morgenlicht"
   },
   {
    "f": "bg113.jpg",
@@ -4359,7 +4556,8 @@
    "nne": "वाइन रङको खैरो कागजमा बेरिएको उपहार-बाकस",
    "ncb": "Kahon sa regalo nga kraft paper nga kolor bino",
    "nes": "Caja de regalo de papel kraft color vino",
-   "nfr": "Coffret cadeau en papier kraft bordeaux"
+   "nfr": "Coffret cadeau en papier kraft bordeaux",
+   "nde": "Geschenkbox aus weinrotem Kraftpapier"
   },
   {
    "f": "bg114.jpg",
@@ -4381,7 +4579,8 @@
    "nne": "सुनौलो म्याग्नोलियाको उपहार-बाकस",
    "ncb": "Kahon sa regalo nga adunay bulawang mga magnolia",
    "nes": "Caja de regalo con magnolias doradas",
-   "nfr": "Coffret cadeau doré aux magnolias"
+   "nfr": "Coffret cadeau doré aux magnolias",
+   "nde": "Geschenkbox mit goldenen Magnolien"
   },
   {
    "f": "bg138.jpg",
@@ -4403,7 +4602,8 @@
    "nne": "सेतो पर्सियन बिरालो र ल्याभेन्डर",
    "ncb": "Puti nga Persian nga iring ug lavender",
    "nes": "Gato persa blanco y lavanda",
-   "nfr": "Chat persan blanc et lavande"
+   "nfr": "Chat persan blanc et lavande",
+   "nde": "Weiße Perserkatze und Lavendel"
   },
   {
    "f": "bg139.jpg",
@@ -4425,7 +4625,8 @@
    "nne": "खैरो-सिल्भर ब्रिटिस सर्टहेयर बिरालो र हाइड्रेन्जिया",
    "ncb": "Silver-gray nga British Shorthair ug mga hydrangea",
    "nes": "Gato británico de pelo corto gris plata e hortensias",
-   "nfr": "British shorthair gris argenté et hortensias"
+   "nfr": "British shorthair gris argenté et hortensias",
+   "nde": "Britisch Kurzhaar in Silbergrau und Hortensien"
   },
   {
    "f": "bg140.jpg",
@@ -4447,7 +4648,8 @@
    "nne": "र्‍यागडल बिरालो र मोतीफूलको उपहार-बाकस",
    "ncb": "Ragdoll nga iring ug kahon sa regalo nga adunay peony",
    "nes": "Gato ragdoll y caja de regalo con peonías",
-   "nfr": "Ragdoll et coffret cadeau aux pivoines"
+   "nfr": "Ragdoll et coffret cadeau aux pivoines",
+   "nde": "Ragdoll und Geschenkbox mit Pfingstrosen"
   },
   {
    "f": "bg141.jpg",
@@ -4469,7 +4671,8 @@
    "nne": "धर्के बिरालो र सूर्यमुखी फूल",
    "ncb": "Tabby nga iring ug mga sunflower",
    "nes": "Gato atigrado y girasoles",
-   "nfr": "Chat tigré et tournesols"
+   "nfr": "Chat tigré et tournesols",
+   "nde": "Getigerte Katze und Sonnenblumen"
   },
   {
    "f": "bg142.jpg",
@@ -4491,7 +4694,8 @@
    "nne": "वर्षाले भिजेको झ्यालमा अँगालो हालेका बिरालाका बच्चा",
    "ncb": "Mga bata nga iring nga nagkugos sa bintana nga giulanan",
    "nes": "Gatitos abrazados en una ventana con lluvia",
-   "nfr": "Chatons blottis l’un contre l’autre près d’une fenêtre pluvieuse"
+   "nfr": "Chatons blottis l’un contre l’autre près d’une fenêtre pluvieuse",
+   "nde": "Aneinandergekuschelte Kätzchen am Regenfenster"
   },
   {
    "f": "bg143.jpg",
@@ -4513,7 +4717,8 @@
    "nne": "शरद ऋतुको टोकरीमा सुन्तला रङको बिरालो",
    "ncb": "Orange nga iring sa basket sa ting-ilaw",
    "nes": "Gato naranja en una cesta de otoño",
-   "nfr": "Chaton roux dans un panier en automne"
+   "nfr": "Chaton roux dans un panier en automne",
+   "nde": "Rotes Kätzchen im Herbstkorb"
   },
   {
    "f": "bg144.jpg",
@@ -4535,7 +4740,8 @@
    "nne": "तालको किनारमा सियामी बिरालो",
    "ncb": "Siamese nga iring sa daplin sa lanaw",
    "nes": "Gato siamés junto al lago",
-   "nfr": "Chat siamois au bord du lac"
+   "nfr": "Chat siamois au bord du lac",
+   "nde": "Siamkatze am See"
   },
   {
    "f": "bg145.jpg",
@@ -4557,7 +4763,8 @@
    "nne": "कालो बिरालो, सेतो गुलाफ र मोती",
    "ncb": "Itom nga iring, puti nga mga rosas ug mga perlas",
    "nes": "Gato negro, rosas blancas y perlas",
-   "nfr": "Chat noir, roses blanches et perles"
+   "nfr": "Chat noir, roses blanches et perles",
+   "nde": "Schwarze Katze, weiße Rosen und Perlen"
   },
   {
    "f": "bg146.jpg",
@@ -4579,7 +4786,8 @@
    "nne": "समुद्र किनारमा निलो-सेतो लामो रौँको बिरालो",
    "ncb": "Asul ug puti nga taas ug balhibo nga iring sa baybayon",
    "nes": "Gato de pelo largo azul y blanco en la costa",
-   "nfr": "Chat à poil long bleu et blanc au bord de la mer"
+   "nfr": "Chat à poil long bleu et blanc au bord de la mer",
+   "nde": "Blau-weiße Langhaarkatze an der Küste"
   },
   {
    "f": "bg147.jpg",
@@ -4601,7 +4809,8 @@
    "nne": "जुम्ल्याहा बिरालाका बच्चा र चेरी फूल",
    "ncb": "Kaluha nga bata nga iring ug mga sakura",
    "nes": "Gatitos gemelos y flores de cerezo",
-   "nfr": "Chatons jumeaux et cerisiers en fleurs"
+   "nfr": "Chatons jumeaux et cerisiers en fleurs",
+   "nde": "Kätzchenzwillinge und Kirschblüten"
   },
   {
    "f": "bg148.jpg",
@@ -4623,7 +4832,8 @@
    "nne": "रातो गलबन्दी लगाएको बिरालोको बच्चा, हिउँ परेको झ्यालमा",
    "ncb": "Bata nga iring nga adunay pula nga bufanda sa niyebeng bintana",
    "nes": "Gatito con bufanda roja en una ventana nevada",
-   "nfr": "Chaton à l’écharpe rouge devant une fenêtre enneigée"
+   "nfr": "Chaton à l’écharpe rouge devant une fenêtre enneigée",
+   "nde": "Kätzchen mit rotem Schal vor verschneitem Fenster"
   },
   {
    "f": "bg149.jpg",
@@ -4645,7 +4855,8 @@
    "nne": "धर्के बिरालोको बच्चा र किताब",
    "ncb": "Bata nga tabby nga iring ug libro",
    "nes": "Gatito atigrado y libro",
-   "nfr": "Chaton tigré et livre"
+   "nfr": "Chaton tigré et livre",
+   "nde": "Getigertes Kätzchen mit Buch"
   },
   {
    "f": "bg150.jpg",
@@ -4667,7 +4878,8 @@
    "nne": "डेजी फूलको फाँटमा त्रिरङ्गी बिरालोको बच्चा",
    "ncb": "Tricolor nga bata nga iring sa uma sa mga bulak nga daisy",
    "nes": "Gatito tricolor en un campo de margaritas",
-   "nfr": "Chaton tricolore dans un champ de marguerites"
+   "nfr": "Chaton tricolore dans un champ de marguerites",
+   "nde": "Dreifarbiges Kätzchen im Gänseblümchenfeld"
   },
   {
    "f": "bg151.jpg",
@@ -4689,7 +4901,8 @@
    "nne": "सुन्तला-सेतो बिरालोको बच्चा र मुटु",
    "ncb": "Bata nga iring nga orange ug puti uban ang kasingkasing",
    "nes": "Gatito naranja y blanco con un corazón",
-   "nfr": "Chaton orange et blanc avec un cœur"
+   "nfr": "Chaton orange et blanc avec un cœur",
+   "nde": "Orange-weißes Kätzchen mit Herz"
   },
   {
    "f": "bg152.jpg",
@@ -4711,7 +4924,8 @@
    "nne": "र्‍यागडल बिरालो र हायसिन्थ",
    "ncb": "Ragdoll nga iring ug mga hyacinth",
    "nes": "Gato ragdoll y jacintos",
-   "nfr": "Ragdoll et jacinthes"
+   "nfr": "Ragdoll et jacinthes",
+   "nde": "Ragdoll und Hyazinthen"
   },
   {
    "f": "bg153.jpg",
@@ -4733,7 +4947,8 @@
    "nne": "सेतो आमा बिरालो र बच्चाहरू, गुलाफको बगैँचामा",
    "ncb": "Inahang puti nga iring ug mga bata sa tanaman sa rosas",
    "nes": "Gata blanca con sus gatitos en un jardín de rosas",
-   "nfr": "Chatte blanche et son chaton dans une roseraie"
+   "nfr": "Chatte blanche et son chaton dans une roseraie",
+   "nde": "Weiße Katzenmutter und Kätzchen im Rosengarten"
   },
   {
    "f": "bg154.jpg",
@@ -4755,7 +4970,8 @@
    "nne": "तालको किनारमा सूर्योदयमा चिन्चिला बिरालो",
    "ncb": "Chinchilla nga iring sa pagsubang sa adlaw sa daplin sa lanaw",
    "nes": "Gato chinchilla al amanecer junto al lago",
-   "nfr": "Chat chinchilla doré au lever du soleil au bord du lac"
+   "nfr": "Chat chinchilla doré au lever du soleil au bord du lac",
+   "nde": "Chinchilla-Katze bei Sonnenaufgang am See"
   },
   {
    "f": "bg245.jpg",
@@ -4777,7 +4993,8 @@
    "nne": "साइबेरियन बिरालो र ओर्किडको ग्रीनहाउस",
    "ncb": "Siberian nga iring ug greenhouse sa mga orkid",
    "nes": "Gato siberiano e invernadero de orquídeas",
-   "nfr": "Chat sibérien dans une serre d’orchidées"
+   "nfr": "Chat sibérien dans une serre d’orchidées",
+   "nde": "Sibirische Katze im Orchideengewächshaus"
   },
   {
    "f": "bg246.jpg",
@@ -4799,7 +5016,8 @@
    "nne": "अबिसिनियन बिरालो र फोहोरा, साँझको घाममा",
    "ncb": "Abyssinian nga iring ug bukal sa kilumkilom",
    "nes": "Gato abisinio y fuente al atardecer",
-   "nfr": "Chat abyssin et fontaine au soleil couchant"
+   "nfr": "Chat abyssin et fontaine au soleil couchant",
+   "nde": "Abessinier und Brunnen im Sonnenuntergang"
   },
   {
    "f": "bg247.jpg",
@@ -4821,7 +5039,8 @@
    "nne": "मेन कुन बिरालो र विस्टेरियाको मण्डप",
    "ncb": "Maine Coon nga iring ug ang trellis sa wisteria",
    "nes": "Gato Maine Coon y pérgola de glicinias",
-   "nfr": "Maine coon sous une pergola de glycines"
+   "nfr": "Maine coon sous une pergola de glycines",
+   "nde": "Maine Coon unter einer Glyzinienlaube"
   },
   {
    "f": "bg248.jpg",
@@ -4843,7 +5062,8 @@
    "nne": "नर्वेजियन फरेस्ट बिरालो र तालको किनारमा बिहानीको उज्यालो",
    "ncb": "Norwegian Forest nga iring ug pagbuntag sa daplin sa lanaw",
    "nes": "Gato del bosque de Noruega y amanecer junto al lago",
-   "nfr": "Chat des forêts norvégiennes et aube au bord du lac"
+   "nfr": "Chat des forêts norvégiennes et aube au bord du lac",
+   "nde": "Norwegische Waldkatze und Morgenröte am See"
   },
   {
    "f": "bg249.jpg",
@@ -4865,7 +5085,8 @@
    "nne": "सेतो बिरालो र ट्युलिपका पातहरू",
    "ncb": "Puti nga iring ug mga talulot sa tulip",
    "nes": "Gato blanco y pétalos de tulipán",
-   "nfr": "Chat blanc et pétales de tulipes"
+   "nfr": "Chat blanc et pétales de tulipes",
+   "nde": "Weiße Katze und Tulpenblätter"
   },
   {
    "f": "bg250.jpg",
@@ -4887,7 +5108,8 @@
    "nne": "रुसी निलो बिरालो र नीलो-सेतो चिनियाँ माटोको झ्यालको दृश्य",
    "ncb": "Russian Blue nga iring ug tanawon sa bintana nga adunay asul ug puti nga porselana",
    "nes": "Gato azul ruso y vista de una ventana con porcelana azul y blanca",
-   "nfr": "Chat bleu russe et fenêtre aux porcelaines bleues et blanches"
+   "nfr": "Chat bleu russe et fenêtre aux porcelaines bleues et blanches",
+   "nde": "Russisch Blau und Fenster mit blau-weißem Porzellan"
   },
   {
    "f": "bg251.jpg",
@@ -4909,7 +5131,8 @@
    "nne": "बङ्गाल बिरालो र वर्षावनको सानो पुल",
    "ncb": "Bengal nga iring ug gamayng taytayan sa lasang sa ulan",
    "nes": "Gato de Bengala y puentecito en la selva tropical",
-   "nfr": "Chat du Bengale et petit pont dans la forêt tropicale"
+   "nfr": "Chat du Bengale et petit pont dans la forêt tropicale",
+   "nde": "Bengalkatze und Brücke im Regenwald"
   },
   {
    "f": "bg252.jpg",
@@ -4931,7 +5154,8 @@
    "nne": "इजिप्सियन माउ बिरालो र कमलको पोखरी",
    "ncb": "Egyptian Mau nga iring ug linaw sa lotus",
    "nes": "Gato mau egipcio y estanque de lotos",
-   "nfr": "Mau égyptien et bassin de lotus"
+   "nfr": "Mau égyptien et bassin de lotus",
+   "nde": "Ägyptische Mau und Lotosteich"
   },
   {
    "f": "bg253.jpg",
@@ -4953,7 +5177,8 @@
    "nne": "सोमाली बिरालो र रातो चट्टानी घाँटी",
    "ncb": "Somali nga iring ug pula nga bato nga canyon",
    "nes": "Gato somalí y cañón de roca roja",
-   "nfr": "Chat somali et canyon de roches rouges"
+   "nfr": "Chat somali et canyon de roches rouges",
+   "nde": "Somali und Canyon aus rotem Fels"
   },
   {
    "f": "bg254.jpg",
@@ -4975,7 +5200,8 @@
    "nne": "टर्किस भान बिरालो र पाल भएको डुङ्गा, साँझको सूर्यास्तमा",
    "ncb": "Turkish Van nga iring ug layagan sa kilumkilom",
    "nes": "Gato Van turco y velero al atardecer",
-   "nfr": "Chat turc de Van et voilier au soleil couchant"
+   "nfr": "Chat turc de Van et voilier au soleil couchant",
+   "nde": "Türkisch Van und Segelboot im Abendrot"
   },
   {
    "f": "bg255.jpg",
@@ -4997,7 +5223,8 @@
    "nne": "कर्निश रेक्स बिरालो र बन्दरगाहतिरको झ्यालको सिल",
    "ncb": "Cornish Rex nga iring sa bintana nga nag-atubang sa pantalan",
    "nes": "Gato Cornish Rex en una ventana frente al puerto",
-   "nfr": "Cornish rex à la fenêtre donnant sur le port"
+   "nfr": "Cornish rex à la fenêtre donnant sur le port",
+   "nde": "Cornish Rex am Fenster zum Hafen"
   },
   {
    "f": "bg256.jpg",
@@ -5019,7 +5246,8 @@
    "nne": "डेभन रेक्स बिरालो र ताराखचित आकाशतिर फर्काइएको दूरबिन",
    "ncb": "Devon Rex nga iring ug teleskopyo sa langit nga puno sa bituon",
    "nes": "Gato Devon Rex y telescopio bajo un cielo estrellado",
-   "nfr": "Devon rex et télescope sous un ciel étoilé"
+   "nfr": "Devon rex et télescope sous un ciel étoilé",
+   "nde": "Devon Rex und Teleskop unter dem Sternenhimmel"
   },
   {
    "f": "bg257.jpg",
@@ -5041,7 +5269,8 @@
    "nne": "ओसिकेट बिरालो र माटाका भाँडा बनाउने कार्यशाला",
    "ncb": "Ocicat nga iring ug pottery workshop",
    "nes": "Gato ocicat y taller de cerámica",
-   "nfr": "Ocicat et atelier de poterie"
+   "nfr": "Ocicat et atelier de poterie",
+   "nde": "Ocicat in der Töpferwerkstatt"
   },
   {
    "f": "bg258.jpg",
@@ -5063,7 +5292,8 @@
    "nne": "बर्मिज बिरालो र कमलको पोखरीमा लालटिन",
    "ncb": "Burmese nga iring ug mga parol sa linaw sa lotus",
    "nes": "Gato birmano y farolillos en un estanque de lotos",
-   "nfr": "Chat burmese, étang de lotus et lanternes"
+   "nfr": "Chat burmese, étang de lotus et lanternes",
+   "nde": "Burmakatze, Lotosteich und Laternen"
   },
   {
    "f": "bg259.jpg",
@@ -5085,7 +5315,8 @@
    "nne": "सिंगापुरा बिरालो र ओर्किडले घेरिएको मण्डप",
    "ncb": "Singapura nga iring ug payag nga adunay mga orkid",
    "nes": "Gato singapura y pabellón de orquídeas",
-   "nfr": "Singapura et pavillon d’orchidées"
+   "nfr": "Singapura et pavillon d’orchidées",
+   "nde": "Singapura und Orchideenpavillon"
   },
   {
    "f": "bg260.jpg",
@@ -5107,7 +5338,8 @@
    "nne": "सेल्किर्क रेक्स बिरालो र बादलको सागर",
    "ncb": "Selkirk Rex nga iring ug dagat sa panganod",
    "nes": "Gato Selkirk Rex y mar de nubes",
-   "nfr": "Selkirk rex et mer de nuages"
+   "nfr": "Selkirk rex et mer de nuages",
+   "nde": "Selkirk Rex über dem Wolkenmeer"
   },
   {
    "f": "bg261.jpg",
@@ -5129,7 +5361,8 @@
    "nne": "ब्रिटिस सर्टहेयर निलो बिरालो र जडीबुटीको बगैँचा",
    "ncb": "British Shorthair nga asul nga iring ug tanaman sa mga yerba",
    "nes": "Gato británico de pelo corto azul y jardín de hierbas aromáticas",
-   "nfr": "British shorthair bleu et jardin d’aromatiques"
+   "nfr": "British shorthair bleu et jardin d’aromatiques",
+   "nde": "Britisch Kurzhaar in Blau und Kräutergarten"
   },
   {
    "f": "bg262.jpg",
@@ -5151,7 +5384,8 @@
    "nne": "ब्रिटिस सर्टहेयर सिल्भर शेडेड बिरालो र हिमनदीतिर खुलेको झ्याल",
    "ncb": "British Shorthair nga silver shaded nga iring ug tanawon sa glasyar sa bintana",
    "nes": "Gato británico de pelo corto plata sombreado y vista de un glaciar desde la ventana",
-   "nfr": "British shorthair argenté et vue de fenêtre sur un glacier"
+   "nfr": "British shorthair argenté et vue de fenêtre sur un glacier",
+   "nde": "Britisch Kurzhaar in Silber-Schattiert und Fensterblick auf einen Gletscher"
   },
   {
    "f": "bg263.jpg",
@@ -5173,7 +5407,8 @@
    "nne": "जापानी बबटेल बिरालो र रातो मेपलको बगैँचा",
    "ncb": "Japanese Bobtail nga iring ug tanaman sa pula nga mga dahon sa maple",
    "nes": "Gato bobtail japonés y jardín de arces rojos",
-   "nfr": "Bobtail japonais et jardin aux érables rouges"
+   "nfr": "Bobtail japonais et jardin aux érables rouges",
+   "nde": "Japanese Bobtail und Garten mit rotem Ahorn"
   },
   {
    "f": "bg264.jpg",
@@ -5195,7 +5430,8 @@
    "nne": "अमेरिकन कर्ल बिरालो र तातो हावाको बेलुन",
    "ncb": "American Curl nga iring ug mga lobo nga ibabaw sa hangin",
    "nes": "Gato American Curl y globos aerostáticos",
-   "nfr": "American curl et montgolfières"
+   "nfr": "American curl et montgolfières",
+   "nde": "American Curl und Heißluftballons"
   },
   {
    "f": "bg51.jpg",
@@ -5217,7 +5453,8 @@
    "nne": "कोर्गी कुकुरको छाउरो",
    "ncb": "Bata nga iro nga Corgi",
    "nes": "Cachorro corgi",
-   "nfr": "Chiot corgi"
+   "nfr": "Chiot corgi",
+   "nde": "Corgi-Welpe"
   },
   {
    "f": "bg52.jpg",
@@ -5239,7 +5476,8 @@
    "nne": "पमेरेनियन कुकुरको छाउरो",
    "ncb": "Bata nga iro nga Pomeranian",
    "nes": "Cachorro pomerania",
-   "nfr": "Chiot spitz nain"
+   "nfr": "Chiot spitz nain",
+   "nde": "Zwergspitz-Welpe"
   },
   {
    "f": "bg53.jpg",
@@ -5261,7 +5499,8 @@
    "nne": "पूडल कुकुरको छाउरो",
    "ncb": "Bata nga iro nga Poodle",
    "nes": "Cachorro caniche",
-   "nfr": "Chiot caniche"
+   "nfr": "Chiot caniche",
+   "nde": "Pudelwelpe"
   },
   {
    "f": "bg115.jpg",
@@ -5283,7 +5522,8 @@
    "nne": "गोल्डेन रिट्रिभरको छाउरो र गुलाफ",
    "ncb": "Bata nga Golden Retriever ug mga rosas",
    "nes": "Cachorro golden retriever y rosas",
-   "nfr": "Chiot golden retriever et roses"
+   "nfr": "Chiot golden retriever et roses",
+   "nde": "Golden-Retriever-Welpe und Rosen"
   },
   {
    "f": "bg116.jpg",
@@ -5305,7 +5545,8 @@
    "nne": "पूडल कुकुर र ल्याभेन्डर",
    "ncb": "Poodle ug lavender",
    "nes": "Caniche y lavanda",
-   "nfr": "Caniche et lavande"
+   "nfr": "Caniche et lavande",
+   "nde": "Pudel und Lavendel"
   },
   {
    "f": "bg117.jpg",
@@ -5327,7 +5568,8 @@
    "nne": "सेतो पमेरेनियन र हाइड्रेन्जिया",
    "ncb": "Puti nga Pomeranian ug mga hydrangea",
    "nes": "Pomerania blanco e hortensias",
-   "nfr": "Spitz nain blanc et hortensias"
+   "nfr": "Spitz nain blanc et hortensias",
+   "nde": "Weißer Zwergspitz und Hortensien"
   },
   {
    "f": "bg118.jpg",
@@ -5349,7 +5591,8 @@
    "nne": "कोर्गी कुकुर र डेजी फूलको टोकरी",
    "ncb": "Corgi ug basket sa mga daisy",
    "nes": "Corgi y cesta de margaritas",
-   "nfr": "Corgi et panier de marguerites"
+   "nfr": "Corgi et panier de marguerites",
+   "nde": "Corgi und Gänseblümchenkorb"
   },
   {
    "f": "bg119.jpg",
@@ -5371,7 +5614,8 @@
    "nne": "शिबा इनु कुकुर र सूर्यमुखी फूल",
    "ncb": "Shiba Inu ug mga sunflower",
    "nes": "Shiba inu y girasoles",
-   "nfr": "Shiba et tournesols"
+   "nfr": "Shiba et tournesols",
+   "nde": "Shiba Inu und Sonnenblumen"
   },
   {
    "f": "bg120.jpg",
@@ -5393,7 +5637,8 @@
    "nne": "वर्षाले भिजेको झ्यालमा ल्याब्राडोरको छाउरो",
    "ncb": "Bata nga Labrador sa bintana nga giulanan",
    "nes": "Cachorro labrador en una ventana con lluvia",
-   "nfr": "Petits labradors endormis près d’une fenêtre pluvieuse"
+   "nfr": "Petits labradors endormis près d’une fenêtre pluvieuse",
+   "nde": "Kleine Labradorwelpen am Regenfenster"
   },
   {
    "f": "bg121.jpg",
@@ -5415,7 +5660,8 @@
    "nne": "बीगल कुकुर र ट्युलिप",
    "ncb": "Beagle ug mga tulip",
    "nes": "Beagle y tulipanes",
-   "nfr": "Beagle et tulipes"
+   "nfr": "Beagle et tulipes",
+   "nde": "Beagle und Tulpen"
   },
   {
    "f": "bg122.jpg",
@@ -5437,7 +5683,8 @@
    "nne": "तालको किनारमा बोर्डर कोली",
    "ncb": "Border Collie sa daplin sa lanaw",
    "nes": "Border collie junto al lago",
-   "nfr": "Border collie au bord du lac"
+   "nfr": "Border collie au bord du lac",
+   "nde": "Border Collie am See"
   },
   {
    "f": "bg123.jpg",
@@ -5459,7 +5706,8 @@
    "nne": "कालो ल्याब्राडोर र सेतो गुलाफ",
    "ncb": "Itom nga Labrador ug puti nga mga rosas",
    "nes": "Labrador negro y rosas blancas",
-   "nfr": "Labrador noir et roses blanches"
+   "nfr": "Labrador noir et roses blanches",
+   "nde": "Schwarzer Labrador und weiße Rosen"
   },
   {
    "f": "bg124.jpg",
@@ -5481,7 +5729,8 @@
    "nne": "यर्कशायर टेरियर र मोतीफूल",
    "ncb": "Yorkshire Terrier ug mga peony",
    "nes": "Yorkshire terrier y peonías",
-   "nfr": "Yorkshire et pivoines"
+   "nfr": "Yorkshire et pivoines",
+   "nde": "Yorkshire Terrier und Pfingstrosen"
   },
   {
    "f": "bg125.jpg",
@@ -5503,7 +5752,8 @@
    "nne": "जुम्ल्याहा गोल्डेन रिट्रिभर र चेरी फूल",
    "ncb": "Kaluha nga Golden Retriever ug mga sakura",
    "nes": "Golden retrievers gemelos y flores de cerezo",
-   "nfr": "Chiots golden retriever jumeaux et cerisiers en fleurs"
+   "nfr": "Chiots golden retriever jumeaux et cerisiers en fleurs",
+   "nde": "Golden-Retriever-Zwillingswelpen und Kirschblüten"
   },
   {
    "f": "bg126.jpg",
@@ -5525,7 +5775,8 @@
    "nne": "सामोयेड कुकुर र रातो गलबन्दी",
    "ncb": "Samoyed nga adunay pula nga bufanda",
    "nes": "Samoyedo con bufanda roja",
-   "nfr": "Samoyède à l’écharpe rouge"
+   "nfr": "Samoyède à l’écharpe rouge",
+   "nde": "Samojede mit rotem Schal"
   },
   {
    "f": "bg127.jpg",
@@ -5547,7 +5798,8 @@
    "nne": "शरद ऋतुमा क्याभेलियर किङ चार्ल्स स्प्यानियल",
    "ncb": "Cavalier King Charles Spaniel sa ting-ilaw",
    "nes": "Cavalier King Charles spaniel en otoño",
-   "nfr": "Cavalier King Charles en automne"
+   "nfr": "Cavalier King Charles en automne",
+   "nde": "Cavalier King Charles Spaniel im Herbst"
   },
   {
    "f": "bg128.jpg",
@@ -5569,7 +5821,8 @@
    "nne": "माल्टिज कुकुर र डेजी फूलको फाँट",
    "ncb": "Maltese ug uma sa mga daisy",
    "nes": "Maltés y campo de margaritas",
-   "nfr": "Bichon maltais dans un champ de marguerites"
+   "nfr": "Bichon maltais dans un champ de marguerites",
+   "nde": "Malteser im Gänseblümchenfeld"
   },
   {
    "f": "bg129.jpg",
@@ -5591,7 +5844,8 @@
    "nne": "डाक्सहन्ड कुकुर र मुटु",
    "ncb": "Dachshund ug kasingkasing",
    "nes": "Perro salchicha y corazón",
-   "nfr": "Teckel et cœur"
+   "nfr": "Teckel et cœur",
+   "nde": "Dackel und Herz"
   },
   {
    "f": "bg130.jpg",
@@ -5613,7 +5867,8 @@
    "nne": "समुद्र किनारमा साइबेरियन हस्की",
    "ncb": "Siberian Husky sa baybayon",
    "nes": "Husky siberiano en la costa",
-   "nfr": "Husky sibérien sur la côte"
+   "nfr": "Husky sibérien sur la côte",
+   "nde": "Sibirischer Husky an der Küste"
   },
   {
    "f": "bg131.jpg",
@@ -5635,7 +5890,8 @@
    "nne": "ठूलो कुकुर र सानो कुकुर, गुलाफको बगैँचामा",
    "ncb": "Dako nga iro ug bata nga iro sa tanaman sa rosas",
    "nes": "Perro grande y cachorro en un jardín de rosas",
-   "nfr": "Grand chien et chiot dans une roseraie"
+   "nfr": "Grand chien et chiot dans une roseraie",
+   "nde": "Großer Hund und Welpe im Rosengarten"
   },
   {
    "f": "bg132.jpg",
@@ -5657,7 +5913,8 @@
    "nne": "बिचोन फ्रिज कुकुर र बैजनी फूल",
    "ncb": "Bichon Frise ug lilang mga bulak",
    "nes": "Bichón frisé y flores moradas",
-   "nfr": "Bichon et fleurs violettes"
+   "nfr": "Bichon et fleurs violettes",
+   "nde": "Bichon und violette Blumen"
   },
   {
    "f": "bg133.jpg",
@@ -5679,7 +5936,8 @@
    "nne": "पग कुकुर र किताब",
    "ncb": "Pug ug libro",
    "nes": "Carlino y libro",
-   "nfr": "Carlin et livre"
+   "nfr": "Carlin et livre",
+   "nde": "Mops mit Buch"
   },
   {
    "f": "bg134.jpg",
@@ -5701,7 +5959,8 @@
    "nne": "सूर्यास्तमा कक्कर स्प्यानियल",
    "ncb": "Cocker Spaniel sa pagsalop sa adlaw",
    "nes": "Cocker spaniel al atardecer",
-   "nfr": "Cocker spaniel au coucher du soleil"
+   "nfr": "Cocker spaniel au coucher du soleil",
+   "nde": "Cocker Spaniel im Sonnenuntergang"
   },
   {
    "f": "bg265.jpg",
@@ -5723,7 +5982,8 @@
    "nne": "डल्मेसियन कुकुर र पवित्र टापुका सेता घर",
    "ncb": "Dalmatian ug ang puti nga balay sa balaang pulo",
    "nes": "Dálmata y las casas blancas de Santorini",
-   "nfr": "Dalmatien et maisons blanches de Santorin"
+   "nfr": "Dalmatien et maisons blanches de Santorin",
+   "nde": "Dalmatiner und weiße Häuser auf Santorin"
   },
   {
    "f": "bg266.jpg",
@@ -5745,7 +6005,8 @@
    "nne": "आयरिश उल्फहाउन्ड र रातो मेपलका पातले सजिएको ढुङ्गाको पुल",
    "ncb": "Irish Setter ug ang taytayan nga bato sa pula nga mga dahon sa maple",
    "nes": "Setter irlandés y puente de piedra entre arces rojos",
-   "nfr": "Setter irlandais et pont de pierre parmi les érables rouges"
+   "nfr": "Setter irlandais et pont de pierre parmi les érables rouges",
+   "nde": "Irish Setter und Steinbrücke zwischen rotem Ahorn"
   },
   {
    "f": "bg267.jpg",
@@ -5767,7 +6028,8 @@
    "nne": "इटालियन ग्रेहाउन्ड र टस्कनीको दृश्य",
    "ncb": "Italian Greyhound ug ang Tuscany",
    "nes": "Galgo italiano y la Toscana",
-   "nfr": "Petit lévrier italien en Toscane"
+   "nfr": "Petit lévrier italien en Toscane",
+   "nde": "Italienisches Windspiel in der Toskana"
   },
   {
    "f": "bg268.jpg",
@@ -5789,7 +6051,8 @@
    "nne": "पापिलन कुकुर र तालको किनारमा हाइड्रेन्जिया",
    "ncb": "Papillon ug mga hydrangea sa daplin sa lanaw",
    "nes": "Papillon e hortensias junto al lago",
-   "nfr": "Papillon et hortensias au bord du lac"
+   "nfr": "Papillon et hortensias au bord du lac",
+   "nde": "Papillon und Hortensien am See"
   },
   {
    "f": "bg269.jpg",
@@ -5811,7 +6074,8 @@
    "nne": "समुद्री चट्टानका घाँस-फूलमा केरी ब्लु टेरियर",
    "ncb": "Kerry Blue Terrier taliwala sa mga balili ug bulak sa pangpang sa dagat",
    "nes": "Kerry blue terrier entre hierbas y flores de un acantilado junto al mar",
-   "nfr": "Kerry blue-terrier parmi les herbes et les fleurs d’une falaise"
+   "nfr": "Kerry blue-terrier parmi les herbes et les fleurs d’une falaise",
+   "nde": "Kerry Blue Terrier zwischen Küstenblumen und Gräsern auf den Klippen"
   },
   {
    "f": "bg270.jpg",
@@ -5833,7 +6097,8 @@
    "nne": "फिनिश ल्यापहन्ड कुकुर र अरोरा",
    "ncb": "Finnish Lapphund ug ang aurora",
    "nes": "Lapphund finlandés y aurora boreal",
-   "nfr": "Chien finnois de Laponie et aurores boréales"
+   "nfr": "Chien finnois de Laponie et aurores boréales",
+   "nde": "Finnischer Lapphund und Polarlichter"
   },
   {
    "f": "bg271.jpg",
@@ -5855,7 +6120,8 @@
    "nne": "अकिता कुकुर र जिन्कगोका पातले ढाकिएको पुरानो गल्ली",
    "ncb": "Akita ug karaang dalan nga adunay mga ginkgo",
    "nes": "Akita y calle antigua con ginkgos",
-   "nfr": "Akita et vieille rue bordée de ginkgos"
+   "nfr": "Akita et vieille rue bordée de ginkgos",
+   "nde": "Akita und alte Gasse mit Ginkgobäumen"
   },
   {
    "f": "bg272.jpg",
@@ -5877,7 +6143,8 @@
    "nne": "ग्रेट पिरिनीज कुकुर र ल्याभेन्डरले भरिएको पहाडी सहर",
    "ncb": "Great Pyrenees ug lungsod sa bukid nga napalibotan sa lavender",
    "nes": "Gran Pirineo y pueblo de montaña rodeado de lavanda",
-   "nfr": "Montagne des Pyrénées et village de montagne parmi la lavande"
+   "nfr": "Montagne des Pyrénées et village de montagne parmi la lavande",
+   "nde": "Pyrenäenberghund und Bergdorf im Lavendel"
   },
   {
    "f": "bg273.jpg",
@@ -5899,7 +6166,8 @@
    "nne": "न्युफाउन्डल्यान्ड कुकुर र तालको किनारको घाट",
    "ncb": "Newfoundland ug ang pantalan sa daplin sa lanaw",
    "nes": "Terranova y embarcadero junto al lago",
-   "nfr": "Terre-neuve sur un ponton au bord du lac"
+   "nfr": "Terre-neuve sur un ponton au bord du lac",
+   "nde": "Neufundländer am Steg am See"
   },
   {
    "f": "bg274.jpg",
@@ -5921,7 +6189,8 @@
    "nne": "ओल्ड इङ्लिस शीपडग र पानीघट्टको छेउमा आइरिस फूल",
    "ncb": "Old English Sheepdog ug mga iris tapad sa ligid sa tubig",
    "nes": "Antiguo pastor inglés e iris junto a una noria",
-   "nfr": "Bobtail et iris près d’un moulin à eau"
+   "nfr": "Bobtail et iris près d’un moulin à eau",
+   "nde": "Altenglischer Schäferhund und Schwertlilien an der Wassermühle"
   },
   {
    "f": "bg275.jpg",
@@ -5943,7 +6212,8 @@
    "nne": "वेइमरानर कुकुर र भोजपत्रको वनमा बिहानको कुहिरो",
    "ncb": "Weimaraner ug mga birch sa mahamog nga buntag",
    "nes": "Weimaraner y abedules en la niebla de la mañana",
-   "nfr": "Braque de Weimar et bouleaux dans la brume du matin"
+   "nfr": "Braque de Weimar et bouleaux dans la brume du matin",
+   "nde": "Weimaraner und Birken im Morgennebel"
   },
   {
    "f": "bg276.jpg",
@@ -5965,7 +6235,8 @@
    "nne": "भिज्स्ला कुकुर र सूर्यमुखी फूलले घेरिएको पवनचक्की",
    "ncb": "Vizsla ug ang ligid sa hangin taliwala sa mga sunflower",
    "nes": "Vizsla y molino de viento entre girasoles",
-   "nfr": "Braque hongrois, tournesols et moulin à vent"
+   "nfr": "Braque hongrois, tournesols et moulin à vent",
+   "nde": "Ungarischer Vorstehhund, Sonnenblumen und Windmühle"
   },
   {
    "f": "bg277.jpg",
@@ -5987,7 +6258,8 @@
    "nne": "रोडेसियन रिजब्याक कुकुर र रातो चट्टानी घाँटी",
    "ncb": "Rhodesian Ridgeback ug pula nga bato nga canyon",
    "nes": "Rhodesian ridgeback y cañón de roca roja",
-   "nfr": "Rhodesian ridgeback et canyon de roches rouges"
+   "nfr": "Rhodesian ridgeback et canyon de roches rouges",
+   "nde": "Rhodesian Ridgeback und Canyon aus rotem Fels"
   },
   {
    "f": "bg278.jpg",
@@ -6009,7 +6281,8 @@
    "nne": "बासेन्जी कुकुर र अफ्रिकाको घाँसे मैदान",
    "ncb": "Basenji ug ang kapatagan sa Africa",
    "nes": "Basenji y la sabana africana",
-   "nfr": "Basenji et savane africaine"
+   "nfr": "Basenji et savane africaine",
+   "nde": "Basenji und afrikanische Savanne"
   },
   {
    "f": "bg279.jpg",
@@ -6031,7 +6304,8 @@
    "nne": "स्कटिश टेरियर र किताबघर भएको पुरानो किल्ला",
    "ncb": "Scottish Terrier ug karaang kastilyo nga adunay librarya",
    "nes": "Scottish terrier y castillo antiguo con biblioteca",
-   "nfr": "Scottish-terrier dans la bibliothèque d’un vieux château"
+   "nfr": "Scottish-terrier dans la bibliothèque d’un vieux château",
+   "nde": "Scottish Terrier in der Bibliothek einer alten Burg"
   },
   {
    "f": "bg280.jpg",
@@ -6053,7 +6327,8 @@
    "nne": "वेस्ट हाइल्यान्ड वाइट टेरियर र बन्दरगाहको सानो घर",
    "ncb": "West Highland White Terrier ug gamay nga balay sa pantalan",
    "nes": "West Highland white terrier y casita en el puerto",
-   "nfr": "West highland white terrier et cabanes du port"
+   "nfr": "West highland white terrier et cabanes du port",
+   "nde": "West Highland White Terrier und Hafenhütten"
   },
   {
    "f": "bg281.jpg",
@@ -6075,7 +6350,8 @@
    "nne": "बर्नीज माउन्टेन कुकुर र आल्प्सका फूलका फाँट",
    "ncb": "Bernese Mountain Dog ug ang kabulakan sa Alps",
    "nes": "Boyero de Berna y un mar de flores en los Alpes",
-   "nfr": "Bouvier bernois et mer de fleurs alpines"
+   "nfr": "Bouvier bernois et mer de fleurs alpines",
+   "nde": "Berner Sennenhund und Alpenblumenmeer"
   },
   {
    "f": "bg282.jpg",
@@ -6097,7 +6373,8 @@
    "nne": "शेटल्यान्ड शीपडग र हिद्र फूलका बीचको किल्ला",
    "ncb": "Shetland Sheepdog ug ang kastilyo taliwala sa mga heather",
    "nes": "Pastor de Shetland y castillo entre brezos",
-   "nfr": "Berger des Shetland et château dans la bruyère"
+   "nfr": "Berger des Shetland et château dans la bruyère",
+   "nde": "Sheltie und Burg im Heidekraut"
   },
   {
    "f": "bg283.jpg",
@@ -6119,7 +6396,8 @@
    "nne": "अस्ट्रेलियन शीपडग र शरद ऋतुको अङ्गुरबारी",
    "ncb": "Australian Shepherd ug ang ubasan sa ting-ilaw",
    "nes": "Pastor australiano y viñedo en otoño",
-   "nfr": "Berger australien dans un vignoble en automne"
+   "nfr": "Berger australien dans un vignoble en automne",
+   "nde": "Australian Shepherd im herbstlichen Weinberg"
   },
   {
    "f": "bg284.jpg",
@@ -6141,7 +6419,8 @@
    "nne": "अफगान हाउन्ड र गुलाफले सजिएको टेरेस",
    "ncb": "Afghan Hound ug terasa nga adunay mga rosas",
    "nes": "Galgo afgano y terraza con rosas",
-   "nfr": "Lévrier afghan et terrasse fleurie de roses"
+   "nfr": "Lévrier afghan et terrasse fleurie de roses",
+   "nde": "Afghanischer Windhund und Rosenterrasse"
   },
   {
    "f": "bg155.jpg",
@@ -6163,7 +6442,8 @@
    "nne": "गुलाबी गुलाफ, मैनबत्ती र काठको मुटु",
    "ncb": "Rosas nga mga rosas ug kasingkasing nga kahoy sa kahayag sa kandila",
    "nes": "Rosas rosadas y corazón de madera a la luz de las velas",
-   "nfr": "Roses roses, bougie et cœur en bois"
+   "nfr": "Roses roses, bougie et cœur en bois",
+   "nde": "Rosa Rosen, Kerze und Holzherz"
   },
   {
    "f": "bg156.jpg",
@@ -6185,7 +6465,8 @@
    "nne": "दूध-सेतो गुलाफको फूलदानी",
    "ncb": "Plorera nga adunay gatas-puti nga mga rosas",
    "nes": "Jarrón con rosas blanco marfil",
-   "nfr": "Vase de roses blanc ivoire"
+   "nfr": "Vase de roses blanc ivoire",
+   "nde": "Vase mit elfenbeinweißen Rosen"
   },
   {
    "f": "bg157.jpg",
@@ -6207,7 +6488,8 @@
    "nne": "गुलाबी ट्युलिपसहितको मुटु आकारको बाकस",
    "ncb": "Kahon nga porma sa kasingkasing uban ang rosas nga mga tulip",
    "nes": "Caja en forma de corazón con tulipanes rosados",
-   "nfr": "Tulipes roses et boîte en forme de cœur"
+   "nfr": "Tulipes roses et boîte en forme de cœur",
+   "nde": "Rosa Tulpen und Herzschachtel"
   },
   {
    "f": "bg158.jpg",
@@ -6229,7 +6511,8 @@
    "nne": "क्यामोमाइलको तातो चिया",
    "ncb": "Init nga tsa nga chamomile",
    "nes": "Té caliente de manzanilla",
-   "nfr": "Tisane chaude à la camomille"
+   "nfr": "Tisane chaude à la camomille",
+   "nde": "Warmer Kamillentee"
   },
   {
    "f": "bg159.jpg",
@@ -6251,7 +6534,8 @@
    "nne": "गुलाबी मोतीफूल र जोडी काठको मुटु",
    "ncb": "Rosas nga mga peony uban ang duha ka kasingkasing nga kahoy",
    "nes": "Peonías rosadas con dos corazones de madera",
-   "nfr": "Pivoines roses et deux cœurs en bois"
+   "nfr": "Pivoines roses et deux cœurs en bois",
+   "nde": "Rosa Pfingstrosen und zwei Holzherzen"
   },
   {
    "f": "bg160.jpg",
@@ -6273,7 +6557,8 @@
    "nne": "ल्याभेन्डर र सेतो माटोको जग",
    "ncb": "Puti nga porselana nga banga uban ang lavender",
    "nes": "Jarra de porcelana blanca con lavanda",
-   "nfr": "Pichet en porcelaine blanche et lavande"
+   "nfr": "Pichet en porcelaine blanche et lavande",
+   "nde": "Weißer Porzellankrug und Lavendel"
   },
   {
    "f": "bg161.jpg",
@@ -6295,7 +6580,8 @@
    "nne": "हाइड्रेन्जिया र सिसाको मुटु, समुद्रको दृश्यसहित",
    "ncb": "Kasingkasing nga salamin uban ang mga hydrangea ug tanawon sa dagat",
    "nes": "Corazón de cristal con hortensias y vista al mar",
-   "nfr": "Hortensias, cœur de verre et vue sur la mer"
+   "nfr": "Hortensias, cœur de verre et vue sur la mer",
+   "nde": "Hortensien, Glasherz und Meerblick"
   },
   {
    "f": "bg162.jpg",
@@ -6317,7 +6603,8 @@
    "nne": "सूर्यमुखी फूलको मुटु आकारको सिरानी",
    "ncb": "Unlan nga porma sa kasingkasing nga adunay sunflower",
    "nes": "Cojín en forma de corazón con girasoles",
-   "nfr": "Coussin en forme de cœur et tournesols"
+   "nfr": "Coussin en forme de cœur et tournesols",
+   "nde": "Herzkissen mit Sonnenblumen"
   },
   {
    "f": "bg163.jpg",
@@ -6339,7 +6626,8 @@
    "nne": "कार्नेसन फूल र मोतीको मुटु",
    "ncb": "Kasingkasing nga perlas ug mga carnation",
    "nes": "Corazón de perlas y claveles",
-   "nfr": "Cœur de perles et œillets"
+   "nfr": "Cœur de perles et œillets",
+   "nde": "Perlenherz und Nelken"
   },
   {
    "f": "bg164.jpg",
@@ -6361,7 +6649,8 @@
    "nne": "हायसिन्थ र खाम",
    "ncb": "Mga hyacinth ug sobre",
    "nes": "Jacintos y sobre",
-   "nfr": "Jacinthe et lettres"
+   "nfr": "Jacinthe et lettres",
+   "nde": "Hyazinthe und Briefe"
   },
   {
    "f": "bg165.jpg",
@@ -6383,7 +6672,8 @@
    "nne": "खैरो कागजमा बेरिएको जर्बेराको गुच्छा",
    "ncb": "Bouquet nga gerbera sa kraft paper",
    "nes": "Ramo de gerberas en papel kraft",
-   "nfr": "Gerberas et cadeau en papier kraft"
+   "nfr": "Gerberas et cadeau en papier kraft",
+   "nde": "Gerbera-Strauß mit Kraftpapier"
   },
   {
    "f": "bg166.jpg",
@@ -6405,7 +6695,8 @@
    "nne": "लिली फूल, क्रुस र बाइबल",
    "ncb": "Krus nga lirio ug Bibliya",
    "nes": "Cruz de lirios y Biblia",
-   "nfr": "Lys, croix et Bible"
+   "nfr": "Lys, croix et Bible",
+   "nde": "Lilien, Kreuz und Bibel"
   },
   {
    "f": "bg167.jpg",
@@ -6427,7 +6718,8 @@
    "nne": "चेरी फूल र स्फटिकको मुटु",
    "ncb": "Kasingkasing nga kristal ug mga sakura",
    "nes": "Corazón de cristal y flores de cerezo",
-   "nfr": "Fleurs de cerisier et cœur de cristal"
+   "nfr": "Fleurs de cerisier et cœur de cristal",
+   "nde": "Kirschblüten und Kristallherz"
   },
   {
    "f": "bg168.jpg",
@@ -6449,7 +6741,8 @@
    "nne": "घण्टी-फूलको टोकरी",
    "ncb": "Basket sa mga lily of the valley",
    "nes": "Cesta de muguete",
-   "nfr": "Corbeille de muguet"
+   "nfr": "Corbeille de muguet",
+   "nde": "Maiglöckchenkorb"
   },
   {
    "f": "bg169.jpg",
@@ -6471,7 +6764,8 @@
    "nne": "सूर्यास्तमा रातो गुलाफ, छतको टेरेसमा",
    "ncb": "Pula nga mga rosas sa terasa sa pagsalop sa adlaw",
    "nes": "Rosas rojas en una terraza al atardecer",
-   "nfr": "Roses rouges sur une terrasse au coucher du soleil"
+   "nfr": "Roses rouges sur une terrasse au coucher du soleil",
+   "nde": "Rote Rosen auf der Terrasse im Sonnenuntergang"
   },
   {
    "f": "bg170.jpg",
@@ -6493,7 +6787,8 @@
    "nne": "सेतो फ्यालेनोप्सिस ओर्किडको मुटु",
    "ncb": "Kasingkasing nga puti nga orkid nga phalaenopsis",
    "nes": "Corazón de orquídeas phalaenopsis blancas",
-   "nfr": "Orchidées phalaenopsis blanches et cœur"
+   "nfr": "Orchidées phalaenopsis blanches et cœur",
+   "nde": "Weiße Phalaenopsis-Orchideen und Herz"
   },
   {
    "f": "bg171.jpg",
@@ -6515,7 +6810,8 @@
    "nne": "डाहलिया फूल र शरद ऋतुको तातो चिया",
    "ncb": "Init nga tsa ug dahlia sa ting-ilaw",
    "nes": "Té caliente y dalias en otoño",
-   "nfr": "Thé chaud et dahlias en automne"
+   "nfr": "Thé chaud et dahlias en automne",
+   "nde": "Dahlien und heißer Tee im Herbst"
   },
   {
    "f": "bg172.jpg",
@@ -6537,7 +6833,8 @@
    "nne": "एनिमोन फूलसहितको चाँदीको हार राख्ने बाकस",
    "ncb": "Pilak nga kahon sa kuwintas nga adunay mga anemone",
    "nes": "Cajita plateada para collar con anémonas",
-   "nfr": "Renoncules et médaillon argenté"
+   "nfr": "Renoncules et médaillon argenté",
+   "nde": "Ranunkeln und silbernes Medaillon"
   },
   {
    "f": "bg173.jpg",
@@ -6559,7 +6856,8 @@
    "nne": "सूर्योदयमा फूलको गुच्छा र जोडी मुटु",
    "ncb": "Pagsubang sa adlaw nga adunay bouquet ug duha ka kasingkasing",
    "nes": "Amanecer con un ramo y dos corazones",
-   "nfr": "Bouquet au lever du soleil et deux cœurs"
+   "nfr": "Bouquet au lever du soleil et deux cœurs",
+   "nde": "Sonnenaufgangsstrauß mit zwei Herzen"
   },
   {
    "f": "bg174.jpg",
@@ -6581,7 +6879,8 @@
    "nne": "बैजनी-गुलाबी फूलको माला र काठको मुटु",
    "ncb": "Kasingkasing nga kahoy uban ang lila ug rosas nga mga bulak",
    "nes": "Corazón de madera con flores moradas y rosadas",
-   "nfr": "Cœur en bois et couronne de fleurs violettes et roses"
+   "nfr": "Cœur en bois et couronne de fleurs violettes et roses",
+   "nde": "Holzherz mit Kranz aus violetten und rosa Blumen"
   }
  ],
  "cats": [
@@ -6603,7 +6902,8 @@
    "nne": "बाइबलका कथा",
    "ncb": "Mga Sugilanon sa Bibliya",
    "nes": "Historias bíblicas",
-   "nfr": "Récits bibliques"
+   "nfr": "Récits bibliques",
+   "nde": "Biblische Szenen"
   },
   {
    "id": "scenery",
@@ -6623,7 +6923,8 @@
    "nne": "प्राकृतिक दृश्य",
    "ncb": "Mga Tanawon sa Kinaiyahan",
    "nes": "Paisajes naturales",
-   "nfr": "Paysages naturels"
+   "nfr": "Paysages naturels",
+   "nde": "Naturlandschaften"
   },
   {
    "id": "cross",
@@ -6643,7 +6944,8 @@
    "nne": "क्रुस",
    "ncb": "Mga Krus",
    "nes": "Cruces",
-   "nfr": "Croix"
+   "nfr": "Croix",
+   "nde": "Kreuze"
   },
   {
    "id": "cats",
@@ -6663,7 +6965,8 @@
    "nne": "बिरालाहरू",
    "ncb": "Mga Iring",
    "nes": "Gatos",
-   "nfr": "Chats"
+   "nfr": "Chats",
+   "nde": "Katzen"
   },
   {
    "id": "dogs",
@@ -6683,7 +6986,8 @@
    "nne": "कुकुरहरू",
    "ncb": "Mga Iro",
    "nes": "Perros",
-   "nfr": "Chiens"
+   "nfr": "Chiens",
+   "nde": "Hunde"
   },
   {
    "id": "gifts",
@@ -6703,7 +7007,8 @@
    "nne": "उपहार",
    "ncb": "Mga Regalo",
    "nes": "Regalos",
-   "nfr": "Cadeaux"
+   "nfr": "Cadeaux",
+   "nde": "Geschenke"
   },
   {
    "id": "cakes",
@@ -6723,7 +7028,8 @@
    "nne": "केक",
    "ncb": "Mga Keyk",
    "nes": "Pasteles",
-   "nfr": "Gâteaux"
+   "nfr": "Gâteaux",
+   "nde": "Kuchen und Torten"
   }
  ]
 }

@@ -64,7 +64,10 @@
    "tes": "Esperanza",
    "nfr": "Lever de soleil radieux",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Espérance"
+   "tfr": "Espérance",
+   "nde": "Strahlender Sonnenaufgang",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Hoffnung"
   },
   {
    "f": "m02.mp3",
@@ -118,7 +121,10 @@
    "tes": "Esperanza",
    "nfr": "Espérance – Au lever du jour",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Espérance"
+   "tfr": "Espérance",
+   "nde": "Hoffnung – Beim Anbruch des Tages",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Hoffnung"
   },
   {
    "f": "m03.mp3",
@@ -172,7 +178,10 @@
    "tes": "Esperanza",
    "nfr": "Espérance 2 – La création, montagnes et mers",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Espérance"
+   "tfr": "Espérance",
+   "nde": "Hoffnung 2 – Die Schöpfung, Berge und Meere",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Hoffnung"
   },
   {
    "f": "m04.mp3",
@@ -226,7 +235,10 @@
    "tes": "Esperanza",
    "nfr": "Espérance 3 – Méditation et prière dans le silence",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Espérance"
+   "tfr": "Espérance",
+   "nde": "Hoffnung 3 – Besinnung und Gebet in der Stille",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Hoffnung"
   },
   {
    "f": "m05.mp3",
@@ -280,7 +292,10 @@
    "tes": "Esperanza",
    "nfr": "Espérance 4 – Adoration et gloire",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Espérance"
+   "tfr": "Espérance",
+   "nde": "Hoffnung 4 – Anbetung und Herrlichkeit",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Hoffnung"
   },
   {
    "f": "m06.mp3",
@@ -334,7 +349,10 @@
    "tes": "Fe",
    "nfr": "Foi 1 – Marcher par la foi",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Foi"
+   "tfr": "Foi",
+   "nde": "Glaube 1 – Im Glauben wandeln",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Glaube"
   },
   {
    "f": "m07.mp3",
@@ -388,7 +406,10 @@
    "tes": "Fe",
    "nfr": "Foi 2 – Une foi comme un grain de moutarde",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Foi"
+   "tfr": "Foi",
+   "nde": "Glaube 2 – Ein Glaube wie ein Senfkorn",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Glaube"
   },
   {
    "f": "m08.mp3",
@@ -442,7 +463,10 @@
    "tes": "Amor",
    "nfr": "Amour 1 – Dieu a tant aimé le monde",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Amour"
+   "tfr": "Amour",
+   "nde": "Liebe 1 – So sehr hat Gott die Welt geliebt",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Liebe"
   },
   {
    "f": "m09.mp3",
@@ -496,7 +520,10 @@
    "tes": "Amor",
    "nfr": "Amour 2 – Le plus grand amour : il a donné sa vie pour moi",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Amour"
+   "tfr": "Amour",
+   "nde": "Liebe 2 – Die größte Liebe: Er gab sein Leben für mich",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Liebe"
   },
   {
    "f": "m10.mp3",
@@ -550,7 +577,10 @@
    "tes": "Amor",
    "nfr": "Amour 3 – Le vrai sens de l’amour",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Amour"
+   "tfr": "Amour",
+   "nde": "Liebe 3 – Der wahre Sinn der Liebe",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Liebe"
   },
   {
    "f": "m11.mp3",
@@ -604,7 +634,10 @@
    "tes": "Amor",
    "nfr": "Amour 4 – Aimez-vous les uns les autres",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Amour"
+   "tfr": "Amour",
+   "nde": "Liebe 4 – Liebt einander",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Liebe"
   },
   {
    "f": "m12.mp3",
@@ -658,7 +691,10 @@
    "tes": "Amor",
    "nfr": "Amour 5 – L’amour couvre une multitude de péchés",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Amour"
+   "tfr": "Amour",
+   "nde": "Liebe 5 – Die Liebe deckt der Sünden Menge zu",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Liebe"
   },
   {
    "f": "m13.mp3",
@@ -712,7 +748,10 @@
    "tes": "Bendición",
    "nfr": "Bénédiction 1 – La promesse de bénédiction de Dieu",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Bénédiction"
+   "tfr": "Bénédiction",
+   "nde": "Segen 1 – Gottes Segensverheißung",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Segen"
   },
   {
    "f": "m14.mp3",
@@ -766,7 +805,10 @@
    "tes": "Bendición",
    "nfr": "Bénédiction 2 – La bénédiction sacerdotale",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Bénédiction"
+   "tfr": "Bénédiction",
+   "nde": "Segen 2 – Der Priestersegen",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Segen"
   },
   {
    "f": "m15.mp3",
@@ -820,7 +862,10 @@
    "tes": "Gracia",
    "nfr": "Grâce 1 – Sauvés par grâce",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Grâce"
+   "tfr": "Grâce",
+   "nde": "Gnade 1 – Aus Gnade gerettet",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Gnade"
   },
   {
    "f": "m16.mp3",
@@ -874,7 +919,10 @@
    "tes": "Gracia",
    "nfr": "Grâce 2 – La grâce à la croix",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Grâce"
+   "tfr": "Grâce",
+   "nde": "Gnade 2 – Die Gnade am Kreuz",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Gnade"
   },
   {
    "f": "m17.mp3",
@@ -928,7 +976,10 @@
    "tes": "Paz",
    "nfr": "Paix 1 – La paix que donne le Christ",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Paix"
+   "tfr": "Paix",
+   "nde": "Frieden 1 – Der Friede, den Christus gibt",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Frieden"
   },
   {
    "f": "m18.mp3",
@@ -982,7 +1033,10 @@
    "tes": "Paz",
    "nfr": "Paix 2 – La paix au cœur de la tempête",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Paix"
+   "tfr": "Paix",
+   "nde": "Frieden 2 – Friede mitten im Sturm",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Frieden"
   },
   {
    "f": "m19.mp3",
@@ -1036,7 +1090,10 @@
    "tes": "Gozo",
    "nfr": "Joie 1 – Réjouissez-vous toujours dans le Seigneur",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Joie"
+   "tfr": "Joie",
+   "nde": "Freude 1 – Freut euch in dem Herrn allewege",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Freude"
   },
   {
    "f": "m20.mp3",
@@ -1090,7 +1147,10 @@
    "tes": "Gozo",
    "nfr": "Joie 2 – Cris de joie au matin",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Joie"
+   "tfr": "Joie",
+   "nde": "Freude 2 – Jubel am Morgen",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Freude"
   },
   {
    "f": "m21.mp3",
@@ -1144,7 +1204,10 @@
    "tes": "Gozo",
    "nfr": "Joie 3 – Chantons la louange avec joie",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Joie"
+   "tfr": "Joie",
+   "nde": "Freude 3 – Lasst uns fröhlich Lob singen",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Freude"
   },
   {
    "f": "m22.mp3",
@@ -1198,7 +1261,10 @@
    "tes": "Gozo",
    "nfr": "Joie 4 – Dansons de joie",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Joie"
+   "tfr": "Joie",
+   "nde": "Freude 4 – Lasst uns vor Freude tanzen",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Freude"
   },
   {
    "f": "m23.mp3",
@@ -1252,7 +1318,10 @@
    "tes": "Gozo",
    "nfr": "Joie 5 – La joie du Seigneur est ma force",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Joie"
+   "tfr": "Joie",
+   "nde": "Freude 5 – Die Freude am HERRN ist meine Stärke",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Freude"
   },
   {
    "f": "m24.mp3",
@@ -1306,7 +1375,10 @@
    "tes": "Espera",
    "nfr": "Attente 1 – Attendre l’Éternel",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Attente"
+   "tfr": "Attente",
+   "nde": "Warten 1 – Auf den HERRN harren",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Warten"
   },
   {
    "f": "m25.mp3",
@@ -1360,7 +1432,10 @@
    "tes": "Espera",
    "nfr": "Attente 2 – S’élever comme sur des ailes d’aigle",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Attente"
+   "tfr": "Attente",
+   "nde": "Warten 2 – Auffahren mit Flügeln wie Adler",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Warten"
   },
   {
    "f": "m26.mp3",
@@ -1414,7 +1489,10 @@
    "tes": "Espera",
    "nfr": "Attente 4 – Se confier en lui dans le silence",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Attente"
+   "tfr": "Attente",
+   "nde": "Warten 4 – Still auf ihn vertrauen",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Warten"
   },
   {
    "f": "m27.mp3",
@@ -1468,7 +1546,10 @@
    "tes": "Consuelo en el dolor",
    "nfr": "Réconfort dans la maladie 2 – Des larmes au cœur de la souffrance",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Réconfort dans la maladie"
+   "tfr": "Réconfort dans la maladie",
+   "nde": "Trost in Krankheit 2 – Tränen mitten im Leid",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Trost in Krankheit"
   },
   {
    "f": "m28.mp3",
@@ -1522,7 +1603,10 @@
    "tes": "Consuelo en el dolor",
    "nfr": "Réconfort dans la maladie – En silence devant la présence de Dieu",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Réconfort dans la maladie"
+   "tfr": "Réconfort dans la maladie",
+   "nde": "Trost in Krankheit – Still vor Gottes Gegenwart",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Trost in Krankheit"
   },
   {
    "f": "m29.mp3",
@@ -1576,7 +1660,10 @@
    "tes": "Celebración de cumpleaños",
    "nfr": "Fête d’anniversaire – Joie d’anniversaire, pluie de bénédictions",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Fête d’anniversaire"
+   "tfr": "Fête d’anniversaire",
+   "nde": "Geburtstagsfeier – Geburtstagsfreude, Segensregen",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Geburtstagsfeier"
   },
   {
    "f": "m30.mp3",
@@ -1630,7 +1717,10 @@
    "tes": "Celebración de cumpleaños",
    "nfr": "Ouverture d’anniversaire – Le début de la bénédiction",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Fête d’anniversaire"
+   "tfr": "Fête d’anniversaire",
+   "nde": "Geburtstagsauftakt – Der Beginn des Segens",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Geburtstagsfeier"
   },
   {
    "f": "m31.mp3",
@@ -1684,7 +1774,10 @@
    "tes": "Celebración de cumpleaños",
    "nfr": "Chant d’anniversaire",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Fête d’anniversaire"
+   "tfr": "Fête d’anniversaire",
+   "nde": "Geburtstagslied",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Geburtstagsfeier"
   },
   {
    "f": "m32.mp3",
@@ -1738,7 +1831,10 @@
    "tes": "Celebración de cumpleaños",
    "nfr": "Fête",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Fête d’anniversaire"
+   "tfr": "Fête d’anniversaire",
+   "nde": "Fest",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Geburtstagsfeier"
   },
   {
    "f": "m33.mp3",
@@ -1792,7 +1888,10 @@
    "tes": "Consuelo en el dolor",
    "nfr": "Réconfort dans la maladie 5",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Réconfort dans la maladie"
+   "tfr": "Réconfort dans la maladie",
+   "nde": "Trost in Krankheit 5",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Trost in Krankheit"
   },
   {
    "f": "m34.mp3",
@@ -1846,7 +1945,10 @@
    "tes": "Celebración de cumpleaños",
    "nfr": "Grande joie",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Fête d’anniversaire"
+   "tfr": "Fête d’anniversaire",
+   "nde": "Große Freude",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Geburtstagsfeier"
   },
   {
    "f": "m35.mp3",
@@ -1900,7 +2002,10 @@
    "tes": "Esperanza",
    "nfr": "Espérance",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Espérance"
+   "tfr": "Espérance",
+   "nde": "Hoffnung",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Hoffnung"
   },
   {
    "f": "m36.mp3",
@@ -1954,7 +2059,10 @@
    "tes": "Paz",
    "nfr": "Paix",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Paix"
+   "tfr": "Paix",
+   "nde": "Frieden",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Frieden"
   },
   {
    "f": "m37.mp3",
@@ -2008,7 +2116,10 @@
    "tes": "Amor",
    "nfr": "Tendre bonté",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Amour"
+   "tfr": "Amour",
+   "nde": "Güte",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Liebe"
   },
   {
    "f": "m38.mp3",
@@ -2062,7 +2173,10 @@
    "tes": "Amor",
    "nfr": "Douceur",
    "bfr": "321 Musique de la Bible interactive",
-   "tfr": "Amour"
+   "tfr": "Amour",
+   "nde": "Sanftmut",
+   "bde": "321 Musik der Interaktiven Bibel",
+   "tde": "Liebe"
   }
  ]
 }
