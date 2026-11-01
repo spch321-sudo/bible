@@ -55,7 +55,10 @@
    "thi": "आशा",
    "nne": "उज्यालो बिहानको सूर्योदय",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "आशा"
+   "tne": "आशा",
+   "ncb": "Masanagon nga Pagsubang sa Adlaw sa Buntag",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Paglaum"
   },
   {
    "f": "m02.mp3",
@@ -100,7 +103,10 @@
    "thi": "आशा",
    "nne": "आशा – बिहानको सूर्योदय",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "आशा"
+   "tne": "आशा",
+   "ncb": "Paglaum – Pagsubang sa Adlaw sa Buntag",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Paglaum"
   },
   {
    "f": "m03.mp3",
@@ -145,7 +151,10 @@
    "thi": "आशा",
    "nne": "आशा 2 – सृष्टि, पहाड र समुद्र",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "आशा"
+   "tne": "आशा",
+   "ncb": "Paglaum 2 – Kamugnaan, Kabukiran ug Kadagatan",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Paglaum"
   },
   {
    "f": "m04.mp3",
@@ -190,7 +199,10 @@
    "thi": "आशा",
    "nne": "आशा 3 – शान्त मनन र प्रार्थना",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "आशा"
+   "tne": "आशा",
+   "ncb": "Paglaum 3 – Hilom nga Pagpamalandong ug Pag-ampo",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Paglaum"
   },
   {
    "f": "m05.mp3",
@@ -235,7 +247,10 @@
    "thi": "आशा",
    "nne": "आशा 4 – आराधना र महिमा",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "आशा"
+   "tne": "आशा",
+   "ncb": "Paglaum 4 – Pagsimba ug Himaya",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Paglaum"
   },
   {
    "f": "m06.mp3",
@@ -280,7 +295,10 @@
    "thi": "विश्वास",
    "nne": "विश्वास 1 – विश्वासले हिँड्ने",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "विश्वास"
+   "tne": "विश्वास",
+   "ncb": "Pagtuo 1 – Paglakaw sa Pagtuo",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Pagtuo"
   },
   {
    "f": "m07.mp3",
@@ -325,7 +343,10 @@
    "thi": "विश्वास",
    "nne": "विश्वास 2 – तोरीको दानाजत्रो विश्वास",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "विश्वास"
+   "tne": "विश्वास",
+   "ncb": "Pagtuo 2 – Pagtuo nga Sama sa Liso sa Mustasa",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Pagtuo"
   },
   {
    "f": "m08.mp3",
@@ -370,7 +391,10 @@
    "thi": "प्रेम",
    "nne": "प्रेम 1 – परमेश्‍वरले संसारलाई यति प्रेम गर्नुभयो",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "प्रेम"
+   "tne": "प्रेम",
+   "ncb": "Gugma 1 – Gihigugma Gayod sa Dios ang Kalibotan",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Gugma"
   },
   {
    "f": "m09.mp3",
@@ -415,7 +439,10 @@
    "thi": "प्रेम",
    "nne": "प्रेम 2 – प्रेमको चरम सीमा, मेरो निम्ति प्राण दिनुभयो",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "प्रेम"
+   "tne": "प्रेम",
+   "ncb": "Gugma 2 – Kinatumyan sa Gugma, Gihatag Niya ang Iyang Kinabuhi Alang Kanako",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Gugma"
   },
   {
    "f": "m10.mp3",
@@ -460,7 +487,10 @@
    "thi": "प्रेम",
    "nne": "प्रेम 3 – प्रेमको सही अर्थ",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "प्रेम"
+   "tne": "प्रेम",
+   "ncb": "Gugma 3 – Ang Tinuod nga Kahulogan sa Gugma",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Gugma"
   },
   {
    "f": "m11.mp3",
@@ -505,7 +535,10 @@
    "thi": "प्रेम",
    "nne": "प्रेम 4 – एकअर्कालाई प्रेम गर",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "प्रेम"
+   "tne": "प्रेम",
+   "ncb": "Gugma 4 – Higugmaa ang Usag Usa",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Gugma"
   },
   {
    "f": "m12.mp3",
@@ -550,7 +583,10 @@
    "thi": "प्रेम",
    "nne": "प्रेम 5 – प्रेमले अनगिन्ती पापलाई ढाक्छ",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "प्रेम"
+   "tne": "प्रेम",
+   "ncb": "Gugma 5 – Ang Gugma Nagatabon sa Daghang Sala",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Gugma"
   },
   {
    "f": "m13.mp3",
@@ -595,7 +631,10 @@
    "thi": "आशीष",
    "nne": "आशिष् 1 – परमेश्‍वरको आशिषको प्रतिज्ञा",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "आशिष्"
+   "tne": "आशिष्",
+   "ncb": "Panalangin 1 – Ang Saad sa Panalangin sa Dios",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Panalangin"
   },
   {
    "f": "m14.mp3",
@@ -640,7 +679,10 @@
    "thi": "आशीष",
    "nne": "आशिष् 2 – पुरोहितको आशीर्वाद",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "आशिष्"
+   "tne": "आशिष्",
+   "ncb": "Panalangin 2 – Ang Panalangin sa Pari",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Panalangin"
   },
   {
    "f": "m15.mp3",
@@ -685,7 +727,10 @@
    "thi": "अनुग्रह",
    "nne": "अनुग्रह 1 – अनुग्रहद्वारा उद्धार",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "अनुग्रह"
+   "tne": "अनुग्रह",
+   "ncb": "Grasya 1 – Naluwas Pinaagi sa Grasya",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Grasya"
   },
   {
    "f": "m16.mp3",
@@ -730,7 +775,10 @@
    "thi": "अनुग्रह",
    "nne": "अनुग्रह 2 – क्रुसमा अनुग्रह",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "अनुग्रह"
+   "tne": "अनुग्रह",
+   "ncb": "Grasya 2 – Grasya diha sa Krus",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Grasya"
   },
   {
    "f": "m17.mp3",
@@ -775,7 +823,10 @@
    "thi": "शान्ति",
    "nne": "शान्ति 1 – ख्रीष्टले दिनुभएको शान्ति",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "शान्ति"
+   "tne": "शान्ति",
+   "ncb": "Kalinaw 1 – Ang Kalinaw nga Gihatag ni Kristo",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Kalinaw"
   },
   {
    "f": "m18.mp3",
@@ -820,7 +871,10 @@
    "thi": "शान्ति",
    "nne": "शान्ति 2 – आँधीबेहरीमा शान्ति",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "शान्ति"
+   "tne": "शान्ति",
+   "ncb": "Kalinaw 2 – Kalinaw sa Taliwala sa Unos",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Kalinaw"
   },
   {
    "f": "m19.mp3",
@@ -865,7 +919,10 @@
    "thi": "आनन्द",
    "nne": "आनन्द 1 – प्रभुमा सधैँ आनन्दित होओ",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "आनन्द"
+   "tne": "आनन्द",
+   "ncb": "Kalipay 1 – Pagkalipay Kanunay diha sa Ginoo",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Kalipay"
   },
   {
    "f": "m20.mp3",
@@ -910,7 +967,10 @@
    "thi": "आनन्द",
    "nne": "आनन्द 2 – बिहानै जयजयकार",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "आनन्द"
+   "tne": "आनन्द",
+   "ncb": "Kalipay 2 – Singgit sa Kalipay sa Buntag",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Kalipay"
   },
   {
    "f": "m21.mp3",
@@ -955,7 +1015,10 @@
    "thi": "आनन्द",
    "nne": "आनन्द 3 – आनन्दले स्तुतिगान गाऔँ",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "आनन्द"
+   "tne": "आनन्द",
+   "ncb": "Kalipay 3 – Mag-awit Kita sa Pagdayeg uban ang Kalipay",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Kalipay"
   },
   {
    "f": "m22.mp3",
@@ -1000,7 +1063,10 @@
    "thi": "आनन्द",
    "nne": "आनन्द 4 – आनन्दले नाचौँ",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "आनन्द"
+   "tne": "आनन्द",
+   "ncb": "Kalipay 4 – Magsayaw Kita sa Kalipay",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Kalipay"
   },
   {
    "f": "m23.mp3",
@@ -1045,7 +1111,10 @@
    "thi": "आनन्द",
    "nne": "आनन्द 5 – प्रभुमा आनन्द नै मेरो बल हो",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "आनन्द"
+   "tne": "आनन्द",
+   "ncb": "Kalipay 5 – Ang Kalipay sa Ginoo mao ang Akong Kusog",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Kalipay"
   },
   {
    "f": "m24.mp3",
@@ -1090,7 +1159,10 @@
    "thi": "प्रतीक्षा",
    "nne": "पर्खाइ 1 – परमप्रभुको बाटो हेर्दै पर्खनु",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "पर्खाइ"
+   "tne": "पर्खाइ",
+   "ncb": "Paghulat 1 – Paghulat sa Dalan sa Ginoo",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Paghulat"
   },
   {
    "f": "m25.mp3",
@@ -1135,7 +1207,10 @@
    "thi": "प्रतीक्षा",
    "nne": "पर्खाइ 2 – गरुडझैँ पखेटा फैलाउनु",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "पर्खाइ"
+   "tne": "पर्खाइ",
+   "ncb": "Paghulat 2 – Pagpakpak nga Sama sa mga Agila",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Paghulat"
   },
   {
    "f": "m26.mp3",
@@ -1180,7 +1255,10 @@
    "thi": "प्रतीक्षा",
    "nne": "पर्खाइ 4 – शान्त भएर उहाँमा भरोसा राख्नु",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "पर्खाइ"
+   "tne": "पर्खाइ",
+   "ncb": "Paghulat 4 – Hilom nga Pagsalig Kaniya",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Paghulat"
   },
   {
    "f": "m27.mp3",
@@ -1225,7 +1303,10 @@
    "thi": "रोग में सान्त्वना",
    "nne": "रोगमा सान्त्वना 2 – पीडाको बीचमा आँसु",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "रोगमा सान्त्वना"
+   "tne": "रोगमा सान्त्वना",
+   "ncb": "Paghupay sa Sakit 2 – Mga Luha sa Taliwala sa Kasakit",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Paghupay sa Sakit"
   },
   {
    "f": "m28.mp3",
@@ -1270,7 +1351,10 @@
    "thi": "रोग में सान्त्वना",
    "nne": "रोगमा मौनता – परमेश्‍वरको उपस्थितिमा",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "रोगमा सान्त्वना"
+   "tne": "रोगमा सान्त्वना",
+   "ncb": "Paghupay sa Sakit – Hilom diha sa Presensya sa Dios",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Paghupay sa Sakit"
   },
   {
    "f": "m29.mp3",
@@ -1315,7 +1399,10 @@
    "thi": "जन्मदिन का उत्सव",
    "nne": "जन्मदिनको उत्सव – जन्मदिनको धुमधाम, आशिषको वर्षा",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "जन्मदिनको उत्सव"
+   "tne": "जन्मदिनको उत्सव",
+   "ncb": "Kasaulogan sa Natawhan – Kasadya sa Adlaw sa Natawhan, Ulan sa Panalangin",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Kasaulogan sa Natawhan"
   },
   {
    "f": "m30.mp3",
@@ -1360,7 +1447,10 @@
    "thi": "जन्मदिन का उत्सव",
    "nne": "जन्मदिनको सुरुवात – आशिषको शुभारम्भ",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "जन्मदिनको उत्सव"
+   "tne": "जन्मदिनको उत्सव",
+   "ncb": "Sinugdan sa Natawhan – Pagsugod sa Panalangin",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Kasaulogan sa Natawhan"
   },
   {
    "f": "m31.mp3",
@@ -1405,7 +1495,10 @@
    "thi": "जन्मदिन का उत्सव",
    "nne": "जन्मदिन मुबारक गीत",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "जन्मदिनको उत्सव"
+   "tne": "जन्मदिनको उत्सव",
+   "ncb": "Awit sa Kumpleanyo",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Kasaulogan sa Natawhan"
   },
   {
    "f": "m32.mp3",
@@ -1450,7 +1543,10 @@
    "thi": "जन्मदिन का उत्सव",
    "nne": "उत्सव",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "जन्मदिनको उत्सव"
+   "tne": "जन्मदिनको उत्सव",
+   "ncb": "Kasaulogan",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Kasaulogan sa Natawhan"
   },
   {
    "f": "m33.mp3",
@@ -1495,7 +1591,10 @@
    "thi": "रोग में सान्त्वना",
    "nne": "रोगमा सान्त्वना 5",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "रोगमा सान्त्वना"
+   "tne": "रोगमा सान्त्वना",
+   "ncb": "Paghupay sa Sakit 5",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Paghupay sa Sakit"
   },
   {
    "f": "m34.mp3",
@@ -1540,7 +1639,10 @@
    "thi": "जन्मदिन का उत्सव",
    "nne": "हर्षोल्लास",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "जन्मदिनको उत्सव"
+   "tne": "जन्मदिनको उत्सव",
+   "ncb": "Dakong Kalipay",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Kasaulogan sa Natawhan"
   },
   {
    "f": "m35.mp3",
@@ -1585,7 +1687,10 @@
    "thi": "आशा",
    "nne": "आशा",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "आशा"
+   "tne": "आशा",
+   "ncb": "Paglaum",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Paglaum"
   },
   {
    "f": "m36.mp3",
@@ -1630,7 +1735,10 @@
    "thi": "शान्ति",
    "nne": "शान्ति",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "शान्ति"
+   "tne": "शान्ति",
+   "ncb": "Kalinaw",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Kalinaw"
   },
   {
    "f": "m37.mp3",
@@ -1675,7 +1783,10 @@
    "thi": "प्रेम",
    "nne": "कोमल प्रेम",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "प्रेम"
+   "tne": "प्रेम",
+   "ncb": "Malumo nga Gugma",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Gugma"
   },
   {
    "f": "m38.mp3",
@@ -1720,7 +1831,10 @@
    "thi": "प्रेम",
    "nne": "नम्रता",
    "bne": "321 इन्टरएक्टिभ बाइबल सङ्गीत",
-   "tne": "प्रेम"
+   "tne": "प्रेम",
+   "ncb": "Pagpaubos",
+   "bcb": "321 Musika sa Interaktibong Bibliya",
+   "tcb": "Gugma"
   }
  ]
 }

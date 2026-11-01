@@ -22,7 +22,8 @@
    "nms": "Taman Eden",
    "nar": "جنة عدن",
    "nhi": "अदन की वाटिका",
-   "nne": "एदेनको बगैँचा"
+   "nne": "एदेनको बगैँचा",
+   "ncb": "Ang Tanaman sa Eden"
   },
   {
    "f": "bg286.jpg",
@@ -41,7 +42,8 @@
    "nms": "Nuh keluar dari bahtera",
    "nar": "نوح يخرج من الفلك",
    "nhi": "नूह का जहाज़ से बाहर आना",
-   "nne": "जहाजबाट बाहिर निस्कँदै नूह"
+   "nne": "जहाजबाट बाहिर निस्कँदै नूह",
+   "ncb": "Si Noe nga migawas sa arka"
   },
   {
    "f": "bg287.jpg",
@@ -60,7 +62,8 @@
    "nms": "Yusuf mentafsir mimpi di hadapan Firaun",
    "nar": "يوسف أمام فرعون يفسّر الحلم",
    "nhi": "फ़िरौन के सामने यूसुफ",
-   "nne": "सपनाको अर्थ खोलिदिँदै यूसुफ"
+   "nne": "सपनाको अर्थ खोलिदिँदै यूसुफ",
+   "ncb": "Si Jose nga nagpasabot sa mga damgo"
   },
   {
    "f": "bg288.jpg",
@@ -79,7 +82,8 @@
    "nms": "Tangga Yakub",
    "nar": "سلّم يعقوب",
    "nhi": "याकूब की सीढ़ी",
-   "nne": "याकुबको सपनाको भर्‍याङ"
+   "nne": "याकुबको सपनाको भर्‍याङ",
+   "ncb": "Ang hagdan ni Jacob"
   },
   {
    "f": "bg289.jpg",
@@ -98,7 +102,8 @@
    "nms": "Abraham mengira bintang",
    "nar": "إبراهيم يعدّ النجوم",
    "nhi": "इब्राहीम तारों को गिनता हुआ",
-   "nne": "ताराहरू गन्दै अब्राहाम"
+   "nne": "ताराहरू गन्दै अब्राहाम",
+   "ncb": "Si Abraham nga nag-ihap sa mga bituon"
   },
   {
    "f": "bg290.jpg",
@@ -117,7 +122,8 @@
    "nms": "Rut memungut bulir gandum",
    "nar": "راعوث تلتقط السنابل",
    "nhi": "बालें बीनती रूत",
-   "nne": "खेतमा बाला टिप्दै रूथ"
+   "nne": "खेतमा बाला टिप्दै रूथ",
+   "ncb": "Si Ruth nga nagtigom sa mga nahulog nga uhay"
   },
   {
    "f": "bg291.jpg",
@@ -136,7 +142,8 @@
    "nms": "Musa menyeberangi Laut Merah",
    "nar": "عبور موسى البحر الأحمر",
    "nhi": "मूसा का लाल समुद्र पार करना",
-   "nne": "रातो समुद्र पार गर्दै मोशा"
+   "nne": "रातो समुद्र पार गर्दै मोशा",
+   "ncb": "Si Moises sa pagtabok sa Dagat nga Pula"
   },
   {
    "f": "bg292.jpg",
@@ -155,7 +162,8 @@
    "nms": "Semak duri yang menyala",
    "nar": "العليقة المتقدة",
    "nhi": "जलती हुई झाड़ी",
-   "nne": "बलिरहेको झाडी"
+   "nne": "बलिरहेको झाडी",
+   "ncb": "Ang nagdilaab nga sapinit"
   },
   {
    "f": "bg293.jpg",
@@ -174,7 +182,8 @@
    "nms": "Daud melawan Goliat",
    "nar": "داود وجليات",
    "nhi": "दाऊद और गोलियत का युद्ध",
-   "nne": "गल्यातसँग लड्दै दाऊद"
+   "nne": "गल्यातसँग लड्दै दाऊद",
+   "ncb": "Si David nga nakig-away kang Goliat"
   },
   {
    "f": "bg294.jpg",
@@ -193,7 +202,8 @@
    "nms": "Samuel kecil dipanggil Tuhan",
    "nar": "دعوة صموئيل الصبي",
    "nhi": "बालक शमूएल का बुलाया जाना",
-   "nne": "बालक शमूएलको बोलावट"
+   "nne": "बालक शमूएलको बोलावट",
+   "ncb": "Ang batang si Samuel nga gitawag sa Dios"
   },
   {
    "f": "bg295.jpg",
@@ -212,7 +222,8 @@
    "nms": "Burung gagak membawa roti kepada Elia",
    "nar": "الغربان تطعم إيليا",
    "nhi": "कौओं द्वारा एलिय्याह को रोटी पहुँचाना",
-   "nne": "एलियालाई रोटी ल्याइदिने कागहरू"
+   "nne": "एलियालाई रोटी ल्याइदिने कागहरू",
+   "ncb": "Ang mga uwak nga nagdala ug tinapay ngadto kang Elias"
   },
   {
    "f": "bg296.jpg",
@@ -231,7 +242,8 @@
    "nms": "Daniel di dalam gua singa",
    "nar": "دانيال في جب الأسود",
    "nhi": "सिंहों की मांद में दानिय्येल",
-   "nne": "सिंहको खोरमा दानिएल"
+   "nne": "सिंहको खोरमा दानिएल",
+   "ncb": "Si Daniel sa lungib sa mga leon"
   },
   {
    "f": "bg297.jpg",
@@ -250,7 +262,8 @@
    "nms": "Yunus tiba di tepi pantai",
    "nar": "يونان على الشاطئ",
    "nhi": "योना का किनारे पर पहुँचना",
-   "nne": "किनारमा पुगेका योना"
+   "nne": "किनारमा पुगेका योना",
+   "ncb": "Si Jonas nga mibangon sa baybayon"
   },
   {
    "f": "bg298.jpg",
@@ -269,7 +282,8 @@
    "nms": "Yesus menenangkan ribut",
    "nar": "يسوع يُسكّن العاصفة",
    "nhi": "यीशु का आँधी और लहरों को शान्त करना",
-   "nne": "आँधी र छालहरू शान्त पार्दै येशू"
+   "nne": "आँधी र छालहरू शान्त पार्दै येशू",
+   "ncb": "Si Jesus nga nagpahilom sa hangin ug mga balod"
   },
   {
    "f": "bg299.jpg",
@@ -288,7 +302,8 @@
    "nms": "Yesus dibaptis",
    "nar": "معمودية يسوع",
    "nhi": "यीशु का बपतिस्मा",
-   "nne": "येशूको बप्तिस्मा"
+   "nne": "येशूको बप्तिस्मा",
+   "ncb": "Ang bunyag ni Jesus"
   },
   {
    "f": "bg300.jpg",
@@ -307,7 +322,8 @@
    "nms": "Kelahiran Yesus",
    "nar": "ميلاد يسوع",
    "nhi": "यीशु का जन्म",
-   "nne": "येशूको जन्म"
+   "nne": "येशूको जन्म",
+   "ncb": "Ang pagkatawo ni Jesus"
   },
   {
    "f": "bg301.jpg",
@@ -326,7 +342,8 @@
    "nms": "Anak yang hilang kembali",
    "nar": "عودة الابن الضال",
    "nhi": "उड़ाऊ पुत्र का लौटना",
-   "nne": "घर फर्केको उडन्ते छोरो"
+   "nne": "घर फर्केको उडन्ते छोरो",
+   "ncb": "Ang pagbalik sa walay-kabuhatan nga anak"
   },
   {
    "f": "bg302.jpg",
@@ -345,7 +362,8 @@
    "nms": "Orang Samaria yang baik hati",
    "nar": "السامري الصالح",
    "nhi": "भला सामरी",
-   "nne": "असल सामरी"
+   "nne": "असल सामरी",
+   "ncb": "Ang Maayong Samaritano"
   },
   {
    "f": "bg303.jpg",
@@ -364,7 +382,8 @@
    "nms": "Lima ketul roti dan dua ekor ikan",
    "nar": "خمسة أرغفة وسمكتان",
    "nhi": "पाँच रोटी और दो मछलियाँ",
-   "nne": "पाँच रोटी र दुई माछा"
+   "nne": "पाँच रोटी र दुई माछा",
+   "ncb": "Lima ka tinapay ug duha ka isda"
   },
   {
    "f": "bg304.jpg",
@@ -383,7 +402,8 @@
    "nms": "Pagi kebangkitan",
    "nar": "صباح القيامة",
    "nhi": "पुनरुत्थान का प्रभात",
-   "nne": "पुनरुत्थानको बिहान"
+   "nne": "पुनरुत्थानको बिहान",
+   "ncb": "Ang buntag sa Pagkabanhaw"
   },
   {
    "f": "bg305.jpg",
@@ -402,7 +422,8 @@
    "nms": "Hagar dan Ismael menerima air",
    "nar": "هاجر وإسماعيل يجدان الماء",
    "nhi": "हाजिरा और इश्माएल को जल की प्राप्ति",
-   "nne": "पानी पाउँदै हाजिरा र इश्माएल"
+   "nne": "पानी पाउँदै हाजिरा र इश्माएल",
+   "ncb": "Si Hagar ug si Ismael nga nakakita ug tubig"
   },
   {
    "f": "bg306.jpg",
@@ -421,7 +442,8 @@
    "nms": "Bayi Musa di celah gelagah",
    "nar": "الطفل موسى بين القصب",
    "nhi": "सरकंडों में शिशु मूसा",
-   "nne": "नर्कटको बीचमा शिशु मोशा"
+   "nne": "नर्कटको बीचमा शिशु मोशा",
+   "ncb": "Ang bata nga si Moises taliwala sa mga tangbo"
   },
   {
    "f": "bg307.jpg",
@@ -440,7 +462,8 @@
    "nms": "Yusuf bertemu semula dengan abang-abangnya",
    "nar": "يوسف يتعرّف إلى إخوته",
    "nhi": "यूसुफ का अपने भाइयों से मिलन",
-   "nne": "दाजुभाइहरूसँग चिनापर्ची गर्दै यूसुफ"
+   "nne": "दाजुभाइहरूसँग चिनापर्ची गर्दै यूसुफ",
+   "ncb": "Si Jose nga nagpaila sa iyang mga igsoon"
   },
   {
    "f": "bg308.jpg",
@@ -459,7 +482,8 @@
    "nms": "Ribka menimba air di perigi",
    "nar": "رفقة تستقي من البئر",
    "nhi": "कुएँ पर पानी भरती रिबका",
-   "nne": "इनारमा पानी भर्दै रिबेका"
+   "nne": "इनारमा पानी भर्दै रिबेका",
+   "ncb": "Si Rebeca nga nag-igo ug tubig sa atabay"
   },
   {
    "f": "bg309.jpg",
@@ -478,7 +502,8 @@
    "nms": "Harun dan Hur menyokong tangan Musa",
    "nar": "هارون وحور يسندان يدي موسى",
    "nhi": "हारून और हूर मूसा के हाथ थामे हुए",
-   "nne": "मोशाका हात थाम्दै हारून र हूर"
+   "nne": "मोशाका हात थाम्दै हारून र हूर",
+   "ncb": "Si Aaron ug si Hur nga nagsapnay sa mga kamot ni Moises"
   },
   {
    "f": "bg310.jpg",
@@ -497,7 +522,8 @@
    "nms": "Air memancar dari batu karang",
    "nar": "الماء من الصخرة",
    "nhi": "चट्टान से जल का निकलना",
-   "nne": "चट्टानबाट बगेको पानी"
+   "nne": "चट्टानबाट बगेको पानी",
+   "ncb": "Ang tubig nga migawas gikan sa bato"
   },
   {
    "f": "bg311.jpg",
@@ -516,7 +542,8 @@
    "nms": "Orang Israel memungut manna",
    "nar": "بنو إسرائيل يلتقطون المنّ",
    "nhi": "इस्राएली मन्ना बटोरते हुए",
-   "nne": "मन्ना बटुल्दै इस्राएलीहरू"
+   "nne": "मन्ना बटुल्दै इस्राएलीहरू",
+   "ncb": "Ang mga Israelinhon nga nagtigom ug mana"
   },
   {
    "f": "bg312.jpg",
@@ -535,7 +562,8 @@
    "nms": "Gideon dipanggil oleh malaikat",
    "nar": "دعوة الملاك لجدعون",
    "nhi": "गिदोन को स्वर्गदूत का बुलावा",
-   "nne": "स्वर्गदूतबाट बोलाइँदै गिदोन"
+   "nne": "स्वर्गदूतबाट बोलाइँदै गिदोन",
+   "ncb": "Si Gideon nga gitawag sa anghel"
   },
   {
    "f": "bg313.jpg",
@@ -554,7 +582,8 @@
    "nms": "Keluarga Rahab diselamatkan",
    "nar": "نجاة بيت راحاب",
    "nhi": "राहाब के परिवार का उद्धार",
-   "nne": "उद्धार पाएको राहाबको परिवार"
+   "nne": "उद्धार पाएको राहाबको परिवार",
+   "ncb": "Ang pamilya ni Rahab nga naluwas"
   },
   {
    "f": "bg314.jpg",
@@ -573,7 +602,8 @@
    "nms": "Membawa Tabut Perjanjian menyeberangi Sungai Yordan",
    "nar": "حمل تابوت العهد عبر نهر الأردن",
    "nhi": "वाचा का सन्दूक उठाए यरदन पार करना",
-   "nne": "करारको सन्दुक बोकेर यर्दन तर्दै"
+   "nne": "करारको सन्दुक बोकेर यर्दन तर्दै",
+   "ncb": "Ang pagdala sa Lungsan sa Kasabotan tabok sa Jordan"
   },
   {
    "f": "bg315.jpg",
@@ -592,7 +622,8 @@
    "nms": "Minyak balu yang tidak habis-habis",
    "nar": "زيت الأرملة الذي لا ينفد",
    "nhi": "विधवा का कभी न घटने वाला तेल",
-   "nne": "विधवाको तेल कहिल्यै नसकिएको"
+   "nne": "विधवाको तेल कहिल्यै नसकिएको",
+   "ncb": "Ang lana sa balo nga wala mahurot"
   },
   {
    "f": "bg316.jpg",
@@ -611,7 +642,8 @@
    "nms": "Yonatan memberikan jubahnya kepada Daud",
    "nar": "يوناثان يعطي داود رداءه",
    "nhi": "योनातान का दाऊद को अपना बागा देना",
-   "nne": "दाऊदलाई आफ्नो ओढ्ने दिँदै योनातान"
+   "nne": "दाऊदलाई आफ्नो ओढ्ने दिँदै योनातान",
+   "ncb": "Si Jonatan nga naghatag ug bisti kang David"
   },
   {
    "f": "bg317.jpg",
@@ -630,7 +662,8 @@
    "nms": "Hanna berdoa di Bait Allah",
    "nar": "حنة تصلي في الهيكل",
    "nhi": "मन्दिर में प्रार्थना करती हन्ना",
-   "nne": "मन्दिरमा प्रार्थना गर्दै हन्ना"
+   "nne": "मन्दिरमा प्रार्थना गर्दै हन्ना",
+   "ncb": "Si Ana nga nag-ampo sa templo"
   },
   {
    "f": "bg318.jpg",
@@ -649,7 +682,8 @@
    "nms": "Air menjadi anggur di pesta perkahwinan di Kana",
    "nar": "تحويل الماء إلى خمر في عرس قانا الجليل",
    "nhi": "काना के विवाह में जल का दाखमधु बनना",
-   "nne": "काना गाउँको विवाहभोजमा पानी दाखमद्य बनेको"
+   "nne": "काना गाउँको विवाहभोजमा पानी दाखमद्य बनेको",
+   "ncb": "Ang tubig nga nahimong bino sa kasal sa Cana"
   },
   {
    "f": "bg319.jpg",
@@ -668,7 +702,8 @@
    "nms": "Ester mengadap raja",
    "nar": "أستير أمام الملك",
    "nhi": "राजा के सामने एस्तेर",
-   "nne": "राजाको सामु एस्तर"
+   "nne": "राजाको सामु एस्तर",
+   "ncb": "Si Ester sa atubangan sa hari"
   },
   {
    "f": "bg320.jpg",
@@ -687,7 +722,8 @@
    "nms": "Naaman disucikan di Sungai Yordan",
    "nar": "نعمان يطهر في نهر الأردن",
    "nhi": "नामान यरदन नदी में शुद्ध हुआ",
-   "nne": "यर्दन नदीमा शुद्ध भएका नामान"
+   "nne": "यर्दन नदीमा शुद्ध भएका नामान",
+   "ncb": "Si Naaman nga nahinloan sa Suba sa Jordan"
   },
   {
    "f": "bg321.jpg",
@@ -706,7 +742,8 @@
    "nms": "Perempuan Samaria di perigi",
    "nar": "المرأة السامرية عند البئر",
    "nhi": "कुएँ पर सामरी स्त्री",
-   "nne": "इनारको छेउमा सामरी स्त्री"
+   "nne": "इनारको छेउमा सामरी स्त्री",
+   "ncb": "Ang babaye nga Samaritana sa atbang sa atabay"
   },
   {
    "f": "bg322.jpg",
@@ -725,7 +762,8 @@
    "nms": "Anak perempuan Yairus dibangkitkan",
    "nar": "قيامة ابنة يايرس",
    "nhi": "याईर की पुत्री का जी उठना",
-   "nne": "याइरकी छोरी पुनर्जीवित भएकी"
+   "nne": "याइरकी छोरी पुनर्जीवित भएकी",
+   "ncb": "Ang anak nga babaye ni Jairo nga gibanhaw"
   },
   {
    "f": "bg323.jpg",
@@ -744,7 +782,8 @@
    "nms": "Yesus memberkati kanak-kanak",
    "nar": "يسوع يبارك الأطفال",
    "nhi": "यीशु का बच्चों को आशीष देना",
-   "nne": "साना बालबालिकालाई आशिष् दिँदै येशू"
+   "nne": "साना बालबालिकालाई आशिष् दिँदै येशू",
+   "ncb": "Si Jesus nga nagpanalangin sa mga bata"
   },
   {
    "f": "bg324.jpg",
@@ -763,7 +802,8 @@
    "nms": "Yesus membasuh kaki murid-murid",
    "nar": "يسوع يغسل أرجل التلاميذ",
    "nhi": "यीशु का चेलों के पाँव धोना",
-   "nne": "चेलाहरूका खुट्टा धोइदिँदै येशू"
+   "nne": "चेलाहरूका खुट्टा धोइदिँदै येशू",
+   "ncb": "Si Jesus nga naghugas sa mga tiil sa mga tinun-an"
   },
   {
    "f": "bg325.jpg",
@@ -782,7 +822,8 @@
    "nms": "Paulus dan Silas memuji Allah di penjara",
    "nar": "بولس وسيلا يسبّحان الله في السجن",
    "nhi": "बन्दीगृह में पौलुस और सीलास की स्तुति",
-   "nne": "कारागारमा स्तुति गाउँदै पावल र सीलास"
+   "nne": "कारागारमा स्तुति गाउँदै पावल र सीलास",
+   "ncb": "Si Pablo ug si Silas nga nagdayeg sa Dios sulod sa bilanggoan"
   },
   {
    "f": "bg326.jpg",
@@ -801,7 +842,8 @@
    "nms": "Petrus menyembuhkan lelaki yang lumpuh sejak lahir",
    "nar": "بطرس يشفي الأعرج منذ ولادته",
    "nhi": "पतरस द्वारा जन्म के लँगड़े का चंगा होना",
-   "nne": "जन्मैदेखि लङ्गडो मानिसलाई निको पार्दै पत्रुस"
+   "nne": "जन्मैदेखि लङ्गडो मानिसलाई निको पार्दै पत्रुस",
+   "ncb": "Si Pedro nga nag-ayo sa tawo nga ba-ad sukad pa sa pagkatawo"
   },
   {
    "f": "bg327.jpg",
@@ -820,7 +862,8 @@
    "nms": "Di jalan ke Emaus",
    "nar": "في طريق عمواس",
    "nhi": "इम्माऊस के मार्ग पर",
-   "nne": "इम्माउसको बाटोमा"
+   "nne": "इम्माउसको बाटोमा",
+   "ncb": "Sa dalan paingon sa Emaus"
   },
   {
    "f": "bg328.jpg",
@@ -839,7 +882,8 @@
    "nms": "Orang sakit di tepi kolam Betesda",
    "nar": "المريض عند بركة بيت حسدا",
    "nhi": "बैतहसदा के कुण्ड पर बीमार मनुष्य",
-   "nne": "बेथेस्दा पोखरीको छेउमा बिरामी मानिस"
+   "nne": "बेथेस्दा पोखरीको छेउमा बिरामी मानिस",
+   "ncb": "Ang masakiton sa daplin sa linaw sa Bethesda"
   },
   {
    "f": "bg329.jpg",
@@ -858,7 +902,8 @@
    "nms": "Zakheus memanjat pokok ara",
    "nar": "زكا يتسلق شجرة الجميز",
    "nhi": "गूलर के पेड़ पर चढ़ा जक्कई",
-   "nne": "तुतको रूखमा चढ्दै जक्कै"
+   "nne": "तुतको रूखमा चढ्दै जक्कै",
+   "ncb": "Si Zaqueo nga mitungas sa kahoy nga sikomoro"
   },
   {
    "f": "bg330.jpg",
@@ -877,7 +922,8 @@
    "nms": "Simeon mendukung bayi Yesus",
    "nar": "سمعان يحمل الطفل يسوع",
    "nhi": "शिमोन की गोद में शिशु यीशु",
-   "nne": "शिशु येशूलाई काखमा लिएका सिमियोन"
+   "nne": "शिशु येशूलाई काखमा लिएका सिमियोन",
+   "ncb": "Si Simeon nga nagkugos sa Bata nga si Jesus"
   },
   {
    "f": "bg331.jpg",
@@ -896,7 +942,8 @@
    "nms": "Orang Majus mengikuti bintang",
    "nar": "المجوس يتبعون النجمة",
    "nhi": "तारे के पीछे चलते ज्योतिषी",
-   "nne": "तारा पछ्याउँदै आएका पूर्वका ज्ञानी पुरुषहरू"
+   "nne": "तारा पछ्याउँदै आएका पूर्वका ज्ञानी पुरुषहरू",
+   "ncb": "Ang mga maalamon gikan sa Sidlakan nga mosunod sa bituon"
   },
   {
    "f": "bg332.jpg",
@@ -915,7 +962,8 @@
    "nms": "Nehemia membina semula tembok kota",
    "nar": "نحميا يعيد بناء السور",
    "nhi": "नहेमायाह द्वारा शहरपनाह का पुनर्निर्माण",
-   "nne": "पर्खाल पुनर्निर्माण गर्दै नहेमिया"
+   "nne": "पर्खाल पुनर्निर्माण गर्दै नहेमिया",
+   "ncb": "Si Nehemias nga nagtukod pag-usab sa paril sa siyudad"
   },
   {
    "f": "bg333.jpg",
@@ -934,7 +982,8 @@
    "nms": "Anak perempuan Sunem dihidupkan semula",
    "nar": "قيامة ابن الشونمية",
    "nhi": "शूनेमी स्त्री के पुत्र का जी उठना",
-   "nne": "शूनेमकी स्त्रीको छोरा पुनर्जीवित भएको"
+   "nne": "शूनेमकी स्त्रीको छोरा पुनर्जीवित भएको",
+   "ncb": "Ang anak sa babaye sa Sunem nga gibanhaw"
   },
   {
    "f": "bg334.jpg",
@@ -953,7 +1002,8 @@
    "nms": "Elia di pintu gua Gunung Horeb",
    "nar": "إيليا عند مدخل المغارة في جبل حوريب",
    "nhi": "होरेब पर्वत की गुफा के मुँह पर एलिय्याह",
-   "nne": "होरेब पर्वतको गुफाको मुखमा एलिया"
+   "nne": "होरेब पर्वतको गुफाको मुखमा एलिया",
+   "ncb": "Si Elias sa ganghaan sa langub sa Bukid sa Horeb"
   },
   {
    "f": "bg335.jpg",
@@ -972,7 +1022,8 @@
    "nms": "Salomo berdoa semasa pengudusan Bait Allah",
    "nar": "صلاة سليمان في تدشين الهيكل",
    "nhi": "मन्दिर के समर्पण पर सुलैमान की प्रार्थना",
-   "nne": "मन्दिर समर्पण गर्दा प्रार्थना गर्दै सुलेमान"
+   "nne": "मन्दिर समर्पण गर्दा प्रार्थना गर्दै सुलेमान",
+   "ncb": "Ang pag-ampo ni Solomon sa paghalad sa templo"
   },
   {
    "f": "bg336.jpg",
@@ -991,7 +1042,8 @@
    "nms": "Daud berbuat baik kepada Mefiboset",
    "nar": "داود يُحسن إلى مفيبوشث",
    "nhi": "दाऊद की मपीबोशेत पर कृपा",
-   "nne": "मपीबोशेतमाथि कृपा देखाउँदै दाऊद"
+   "nne": "मपीबोशेतमाथि कृपा देखाउँदै दाऊद",
+   "ncb": "Si David nga mipakita ug kaluoy kang Mefiboset"
   },
   {
    "f": "bg337.jpg",
@@ -1010,7 +1062,8 @@
    "nms": "Naomi mendukung cucunya Obed",
    "nar": "نعمي تحتضن حفيدها عوبيد",
    "nhi": "नाओमी की गोद में पोता ओबेद",
-   "nne": "नाति ओबेदलाई काखमा लिएकी नाओमी"
+   "nne": "नाति ओबेदलाई काखमा लिएकी नाओमी",
+   "ncb": "Si Naomi nga nagkugos sa iyang apo nga si Obed"
   },
   {
    "f": "bg338.jpg",
@@ -1029,7 +1082,8 @@
    "nms": "Boas dan Rut makan bersama",
    "nar": "بوعز وراعوث يتشاركان الطعام",
    "nhi": "बोअज़ और रूत का साथ भोजन करना",
-   "nne": "रूथसँग भोजन गर्दै बोअज"
+   "nne": "रूथसँग भोजन गर्दै बोअज",
+   "ncb": "Si Boaz ug si Ruth nga nagkaon nga magkauban"
   },
   {
    "f": "bg339.jpg",
@@ -1048,7 +1102,8 @@
    "nms": "Musa turun dari Gunung Sinai membawa Sepuluh Perintah",
    "nar": "موسى ينزل من جبل سيناء ومعه لوحا الوصايا",
    "nhi": "दस आज्ञाओं की पटियाएँ लिए सीनै पर्वत से उतरते मूसा",
-   "nne": "दश आज्ञा लिएर सीनै पर्वतबाट ओर्लँदै मोशा"
+   "nne": "दश आज्ञा लिएर सीनै पर्वतबाट ओर्लँदै मोशा",
+   "ncb": "Si Moises nga mikanaog sa Bukid sa Sinai nga dala ang Napulo ka Sugo"
   },
   {
    "f": "bg340.jpg",
@@ -1067,7 +1122,8 @@
    "nms": "Perjalanan keluar dari Mesir",
    "nar": "رحلة الخروج من مصر",
    "nhi": "मिस्र से निर्गमन की यात्रा",
-   "nne": "मिश्रबाट प्रस्थानको यात्रा"
+   "nne": "मिश्रबाट प्रस्थानको यात्रा",
+   "ncb": "Ang panaw sa paggawas gikan sa Egipto"
   },
   {
    "f": "bg341.jpg",
@@ -1086,7 +1142,8 @@
    "nms": "Yusuf menyara bapanya Yakub",
    "nar": "يوسف يعول أباه يعقوب",
    "nhi": "यूसुफ द्वारा पिता याकूब का पालन-पोषण",
-   "nne": "आफ्ना पिता याकुबको पालनपोषण गर्दै यूसुफ"
+   "nne": "आफ्ना पिता याकुबको पालनपोषण गर्दै यूसुफ",
+   "ncb": "Si Jose nga nag-atiman sa iyang amahan nga si Jacob"
   },
   {
    "f": "bg342.jpg",
@@ -1105,7 +1162,8 @@
    "nms": "Yakub dan Esau berdamai",
    "nar": "مصالحة يعقوب وعيسو",
    "nhi": "याकूब और एसाव का मेल-मिलाप",
-   "nne": "एसावसँग मेलमिलाप गर्दै याकुब"
+   "nne": "एसावसँग मेलमिलाप गर्दै याकुब",
+   "ncb": "Ang pagpasig-uli ni Jacob ug ni Esau"
   },
   {
    "f": "bg343.jpg",
@@ -1124,7 +1182,8 @@
    "nms": "Ishak menyambut Ribka",
    "nar": "إسحاق يستقبل رفقة",
    "nhi": "इसहाक रिबका का स्वागत करता हुआ",
-   "nne": "रिबेकालाई स्वागत गर्दै इसहाक"
+   "nne": "रिबेकालाई स्वागत गर्दै इसहाक",
+   "ncb": "Si Isaac nga nag-abiabi kang Rebeca"
   },
   {
    "f": "bg344.jpg",
@@ -1143,7 +1202,8 @@
    "nms": "Abraham menjamu tiga orang tetamu",
    "nar": "إبراهيم يضيّف ثلاثة زائرين",
    "nhi": "इब्राहीम का तीन अतिथियों का सत्कार",
-   "nne": "तीन पाहुनालाई सत्कार गर्दै अब्राहाम"
+   "nne": "तीन पाहुनालाई सत्कार गर्दै अब्राहाम",
+   "ncb": "Si Abraham nga nag-abiabi sa tulo ka bisita"
   },
   {
    "f": "bg195.jpg",
@@ -1162,7 +1222,8 @@
    "nms": "Kolam travertin bertingkat",
    "nar": "مدرّجات الحجر الجيري الرسوبي",
    "nhi": "ट्रैवर्टीन की सीढ़ीदार सतहें",
-   "nne": "चुनढुङ्गाका सिँढीदार पोखरी"
+   "nne": "चुनढुङ्गाका सिँढीदार पोखरी",
+   "ncb": "Hagdan-hagdang linaw nga travertine"
   },
   {
    "f": "bg196.jpg",
@@ -1181,7 +1242,8 @@
    "nms": "Tasik garam merah jambu",
    "nar": "بحيرة الملح الوردية",
    "nhi": "गुलाबी लवण झील",
-   "nne": "गुलाबी नुनिलो ताल"
+   "nne": "गुलाबी नुनिलो ताल",
+   "ncb": "Rosas nga lanaw nga asin"
   },
   {
    "f": "bg197.jpg",
@@ -1200,7 +1262,8 @@
    "nms": "Matahari terbit di pantai batu basalt",
    "nar": "شروق الشمس على الساحل البازلتي",
    "nhi": "बेसाल्ट तट पर सूर्योदय",
-   "nne": "कालो बेसाल्ट चट्टानी किनारमा सूर्योदय"
+   "nne": "कालो बेसाल्ट चट्टानी किनारमा सूर्योदय",
+   "ncb": "Pagsubang sa adlaw sa baybayon nga basalto"
   },
   {
    "f": "bg198.jpg",
@@ -1219,7 +1282,8 @@
    "nms": "Menara batu merah",
    "nar": "أبراج الصخور الحمراء",
    "nhi": "लाल चट्टानों के शिखर",
-   "nne": "रातो चट्टानका स्तम्भ"
+   "nne": "रातो चट्टानका स्तम्भ",
+   "ncb": "Mga hoodoo nga pula nga bato"
   },
   {
    "f": "bg199.jpg",
@@ -1238,7 +1302,8 @@
    "nms": "Lembah glasier",
    "nar": "وادٍ جليدي",
    "nhi": "हिमनद की घाटी",
-   "nne": "हिमनदीको उपत्यका"
+   "nne": "हिमनदीको उपत्यका",
+   "ncb": "Walog sa glasyar"
   },
   {
    "f": "bg200.jpg",
@@ -1257,7 +1322,8 @@
    "nms": "Pokok birch dan bunga lupin",
    "nar": "أشجار البتولا والترمس",
    "nhi": "बर्च वृक्ष और ल्यूपिन",
-   "nne": "भोजपत्र र ल्युपिन फूल"
+   "nne": "भोजपत्र र ल्युपिन फूल",
+   "ncb": "Mga birch ug lupin"
   },
   {
    "f": "bg201.jpg",
@@ -1276,7 +1342,8 @@
    "nms": "Tebing kapur tepi laut",
    "nar": "جروف طباشيرية بحرية",
    "nhi": "खड़िया की श्वेत समुद्री चट्टानें",
-   "nne": "खरीमाटोका सेता समुद्री चट्टान"
+   "nne": "खरीमाटोका सेता समुद्री चट्टान",
+   "ncb": "Pangpang sa dagat nga lapok-tisa"
   },
   {
    "f": "bg202.jpg",
@@ -1295,7 +1362,8 @@
    "nms": "Bayangan biru di gua ais",
    "nar": "ظلال زرقاء في كهف الجليد",
    "nhi": "बर्फ़ की गुफा की नीली छाया",
-   "nne": "बरफको गुफाको निलो छाया"
+   "nne": "बरफको गुफाको निलो छाया",
+   "ncb": "Asul nga landong sa langub nga yelo"
   },
   {
    "f": "bg203.jpg",
@@ -1314,7 +1382,8 @@
    "nms": "Teluk cetek hutan bakau",
    "nar": "خليج ضحل بين أشجار المانغروف",
    "nhi": "मैन्ग्रोव की उथली खाड़ी",
-   "nne": "म्यानग्रोभ वनले घेरिएको छिपछिपे खाडी"
+   "nne": "म्यानग्रोभ वनले घेरिएको छिपछिपे खाडी",
+   "ncb": "Mabaw nga golpo sa kabakhawan"
   },
   {
    "f": "bg204.jpg",
@@ -1333,7 +1402,8 @@
    "nms": "Tanah lembap rumput kapas",
    "nar": "أرض رطبة من حشيشة القطن",
    "nhi": "कॉटन-ग्रास का दलदली क्षेत्र",
-   "nne": "कपास-घाँसले भरिएको सिमसार"
+   "nne": "कपास-घाँसले भरिएको सिमसार",
+   "ncb": "Basang yuta nga adunay mga cotton grass"
   },
   {
    "f": "bg205.jpg",
@@ -1352,7 +1422,8 @@
    "nms": "Anak sungai pokok larch musim luruh",
    "nar": "جدول بين أشجار الصنوبر المتساقط في الخريف",
    "nhi": "शरद में लार्च वृक्षों के बीच धारा",
-   "nne": "शरद ऋतुमा लार्च वन र खोला"
+   "nne": "शरद ऋतुमा लार्च वन र खोला",
+   "ncb": "Sapa taliwala sa mga larch sa ting-ilaw"
   },
   {
    "f": "bg206.jpg",
@@ -1371,7 +1442,8 @@
    "nms": "Tepi tasik bunga wisteria",
    "nar": "أزهار الغليسين عند البحيرة",
    "nhi": "झील किनारे विस्टीरिया",
-   "nne": "तालको किनारमा विस्टेरिया फूल"
+   "nne": "तालको किनारमा विस्टेरिया फूल",
+   "ncb": "Wisteria sa daplin sa lanaw"
   },
   {
    "f": "bg207.jpg",
@@ -1390,7 +1462,8 @@
    "nms": "Pemandangan gunung dan sungai karst",
    "nar": "جبال وأنهار الكارست",
    "nhi": "कार्स्ट पर्वतों के बीच नदी",
-   "nne": "कार्स्ट चट्टानी पहाड र पानीको दृश्य"
+   "nne": "कार्स्ट चट्टानी पहाड र पानीको दृश्य",
+   "ncb": "Tanawon sa mga bukid nga karst ug tubig"
   },
   {
    "f": "bg208.jpg",
@@ -1409,7 +1482,8 @@
    "nms": "Senja di kolam air pasang terumbu karang",
    "nar": "غروب الشمس عند بركة المدّ المرجانية",
    "nhi": "मूँगे के ज्वारीय कुण्डों पर सूर्यास्त",
-   "nne": "सूर्यास्तमा प्रवालका ज्वारभाटाका पोखरी"
+   "nne": "सूर्यास्तमा प्रवालका ज्वारभाटाका पोखरी",
+   "ncb": "Pagsalop sa adlaw sa tidal pool sa korales"
   },
   {
    "f": "bg209.jpg",
@@ -1428,7 +1502,8 @@
    "nms": "Lautan awan dan bunga rhododendron",
    "nar": "أزاليا وبحر من الغيوم",
    "nhi": "बुरांश के फूलों पर बादलों का सागर",
-   "nne": "लालीगुराँस र बादलको सागर"
+   "nne": "लालीगुराँस र बादलको सागर",
+   "ncb": "Dagat sa panganod ug mga azalea"
   },
   {
    "f": "bg210.jpg",
@@ -1447,7 +1522,8 @@
    "nms": "Pantai pasir putih",
    "nar": "شاطئ الرمل الأبيض",
    "nhi": "श्वेत रेत का समुद्र तट",
-   "nne": "सेतो बालुवाको समुद्री किनार"
+   "nne": "सेतो बालुवाको समुद्री किनार",
+   "ncb": "Baybayon nga puti ang balas"
   },
   {
    "f": "bg211.jpg",
@@ -1466,7 +1542,8 @@
    "nms": "Padang rumput tepi pantai",
    "nar": "مرج ساحلي",
    "nhi": "तटीय घास का मैदान",
-   "nne": "खाडीछेउको घाँसे मैदान"
+   "nne": "खाडीछेउको घाँसे मैदान",
+   "ncb": "Kapatagan sa daplin sa golpo"
   },
   {
    "f": "bg212.jpg",
@@ -1485,7 +1562,8 @@
    "nms": "Tasik geoterma berwarna-warni",
    "nar": "بحيرة حرارية ملوّنة",
    "nhi": "भूतापीय रंगीन झील",
-   "nne": "भूतापीय रङ्गीन ताल"
+   "nne": "भूतापीय रङ्गीन ताल",
+   "ncb": "Kolor-kolor nga lanaw nga geothermal"
   },
   {
    "f": "bg213.jpg",
@@ -1504,7 +1582,8 @@
    "nms": "Pokok zaitun di bawah cahaya senja",
    "nar": "شجرة زيتون في ضوء الغروب",
    "nhi": "ज़ैतून के वृक्ष पर सन्ध्या की लाली",
-   "nne": "साँझको घाममा जैतुनको रूख"
+   "nne": "साँझको घाममा जैतुनको रूख",
+   "ncb": "Kilumkilom sa kahoy nga olibo"
   },
   {
    "f": "bg214.jpg",
@@ -1523,7 +1602,8 @@
    "nms": "Air terjun yang membeku",
    "nar": "شلال متجمّد",
    "nhi": "जमा हुआ जलप्रपात",
-   "nne": "जमेको झरना"
+   "nne": "जमेको झरना",
+   "ncb": "Nagyelong busay"
   },
   {
    "f": "bg175.jpg",
@@ -1542,7 +1622,8 @@
    "nms": "Air terjun gunung dan bunga liar",
    "nar": "شلال جبال الألب والأزهار البرية",
    "nhi": "हिम-पर्वत का जलप्रपात और जंगली फूल",
-   "nne": "हिमाली झरना र वनफूल"
+   "nne": "हिमाली झरना र वनफूल",
+   "ncb": "Busay sa bukid nga niyebe ug ihalas nga mga bulak"
   },
   {
    "f": "bg176.jpg",
@@ -1561,7 +1642,8 @@
    "nms": "Matahari terbit di teluk",
    "nar": "شروق الشمس على الخليج",
    "nhi": "खाड़ी में सूर्योदय",
-   "nne": "खाडीमा सूर्योदय"
+   "nne": "खाडीमा सूर्योदय",
+   "ncb": "Pagsubang sa adlaw sa golpo"
   },
   {
    "f": "bg177.jpg",
@@ -1580,7 +1662,8 @@
    "nms": "Anak sungai dan daun maple musim luruh",
    "nar": "جدول بين أشجار القيقب الخريفية",
    "nhi": "शरद के मेपल वृक्षों के बीच धारा",
-   "nne": "रातो मेपलका पात र खोला"
+   "nne": "रातो मेपलका पात र खोला",
+   "ncb": "Sapa taliwala sa pula nga mga dahon sa maple"
   },
   {
    "f": "bg178.jpg",
@@ -1599,7 +1682,8 @@
    "nms": "Lorong batu berkabus pagi",
    "nar": "طريق حجري في ضباب الصباح",
    "nhi": "भोर की धुंध में पत्थरीली पगडण्डी",
-   "nne": "बिहानको कुहिरोमा ढुङ्गाको बाटो"
+   "nne": "बिहानको कुहिरोमा ढुङ्गाको बाटो",
+   "ncb": "Dalan nga bato sa mahamog nga buntag"
   },
   {
    "f": "bg179.jpg",
@@ -1618,7 +1702,8 @@
    "nms": "Bayangan gunung bersalji di tasik",
    "nar": "انعكاس الجبال الثلجية في البحيرة",
    "nhi": "हिमाच्छादित पर्वत की झील में प्रतिबिम्ब",
-   "nne": "हिमाली ताल र पर्वतको प्रतिबिम्ब"
+   "nne": "हिमाली ताल र पर्वतको प्रतिबिम्ब",
+   "ncb": "Ang bukid nga niyebe nga makita sa lanaw"
   },
   {
    "f": "bg180.jpg",
@@ -1637,7 +1722,8 @@
    "nms": "Sawah padi bertingkat dan lautan awan",
    "nar": "حقول مدرّجة وبحر من الغيوم",
    "nhi": "सीढ़ीदार खेतों पर बादलों का सागर",
-   "nne": "सिँढीखेत र बादलको सागर"
+   "nne": "सिँढीखेत र बादलको सागर",
+   "ncb": "Dagat sa panganod sa mga hagdan-hagdang uma"
   },
   {
    "f": "bg181.jpg",
@@ -1656,7 +1742,8 @@
    "nms": "Matahari terbit di ladang lavender",
    "nar": "شروق الشمس على حقول اللافندر",
    "nhi": "लैवेंडर के खेतों पर सूर्योदय",
-   "nne": "ल्याभेन्डर बगान माथि सूर्योदय"
+   "nne": "ल्याभेन्डर बगान माथि सूर्योदय",
+   "ncb": "Pagsubang sa adlaw sa umahan sa lavender"
   },
   {
    "f": "bg182.jpg",
@@ -1675,7 +1762,8 @@
    "nms": "Anak sungai bunga sakura",
    "nar": "جدول بين أزهار الكرز",
    "nhi": "चेरी ब्लॉसम के बीच बहती धारा",
-   "nne": "चेरी फूल फुलेको खोला"
+   "nne": "चेरी फूल फुलेको खोला",
+   "ncb": "Sapa ug mga sakura"
   },
   {
    "f": "bg183.jpg",
@@ -1694,7 +1782,8 @@
    "nms": "Teluk tropika",
    "nar": "خليج استوائي",
    "nhi": "उष्णकटिबन्धीय खाड़ी",
-   "nne": "उष्ण प्रदेशको खाडी"
+   "nne": "उष्ण प्रदेशको खाडी",
+   "ncb": "Tropikal nga golpo"
   },
   {
    "f": "bg184.jpg",
@@ -1713,7 +1802,8 @@
    "nms": "Tasik dan padang bunga pergunungan",
    "nar": "بحيرة في مرج جبلي مزهر",
    "nhi": "पर्वतीय फूलों के मैदान और झील का दृश्य",
-   "nne": "उच्च हिमाली फूलका फाँट र तालको दृश्य"
+   "nne": "उच्च हिमाली फूलका फाँट र तालको दृश्य",
+   "ncb": "Kabulakan sa bukid ug tanawon sa lanaw"
   },
   {
    "f": "bg185.jpg",
@@ -1732,7 +1822,8 @@
    "nms": "Ladang gandum keemasan",
    "nar": "حقل القمح الذهبي",
    "nhi": "सुनहरा गेहूँ का खेत",
-   "nne": "सुनौलो गहुँको खेत"
+   "nne": "सुनौलो गहुँको खेत",
+   "ncb": "Bulawang uma sa trigo"
   },
   {
    "f": "bg186.jpg",
@@ -1751,7 +1842,8 @@
    "nms": "Matahari terbit di padang pasir",
    "nar": "شروق الشمس في الصحراء",
    "nhi": "मरुभूमि में सूर्योदय",
-   "nne": "मरुभूमिमा सूर्योदय"
+   "nne": "मरुभूमिमा सूर्योदय",
+   "ncb": "Pagsubang sa adlaw sa kamingawan"
   },
   {
    "f": "bg187.jpg",
@@ -1770,7 +1862,8 @@
    "nms": "Air terjun fiord",
    "nar": "شلالات المضيق البحري",
    "nhi": "फ़्योर्ड के जलप्रपात",
-   "nne": "फियोर्डको झरना"
+   "nne": "फियोर्डको झरना",
+   "ncb": "Busay sa fjord"
   },
   {
    "f": "bg188.jpg",
@@ -1789,7 +1882,8 @@
    "nms": "Senja di gerbang batu hakisan laut",
    "nar": "غروب الشمس عند القوس الصخري البحري",
    "nhi": "समुद्री मेहराब पर सूर्यास्त",
-   "nne": "छालले कुँदेको चट्टानी मेहराबमा साँझको घाम"
+   "nne": "छालले कुँदेको चट्टानी मेहराबमा साँझको घाम",
+   "ncb": "Kilumkilom sa arko nga bato sa dagat"
   },
   {
    "f": "bg189.jpg",
@@ -1808,7 +1902,8 @@
    "nms": "Lorong batu di hutan buluh",
    "nar": "طريق حجري في غابة الخيزران",
    "nhi": "बाँस के वन में पत्थर की पगडण्डी",
-   "nne": "बाँसको वनमा ढुङ्गाको बाटो"
+   "nne": "बाँसको वनमा ढुङ्गाको बाटो",
+   "ncb": "Dalan nga bato sa kawayanan"
   },
   {
    "f": "bg190.jpg",
@@ -1827,7 +1922,8 @@
    "nms": "Matahari terbit di tasik gunung berapi",
    "nar": "شروق الشمس على بحيرة البركان",
    "nhi": "ज्वालामुखी झील पर सूर्योदय",
-   "nne": "ज्वालामुखी तालमा सूर्योदय"
+   "nne": "ज्वालामुखी तालमा सूर्योदय",
+   "ncb": "Pagsubang sa adlaw sa lanaw sa bulkan"
   },
   {
    "f": "bg191.jpg",
@@ -1846,7 +1942,8 @@
    "nms": "Ngarai batu merah",
    "nar": "الوادي الصخري الأحمر",
    "nhi": "लाल चट्टानों की घाटी",
-   "nne": "रातो चट्टानी घाँटी"
+   "nne": "रातो चट्टानी घाँटी",
+   "ncb": "Pula nga bato nga canyon"
   },
   {
    "f": "bg192.jpg",
@@ -1865,7 +1962,8 @@
    "nms": "Bima Sakti di atas tasik gunung",
    "nar": "درب التبانة فوق بحيرة جبلية",
    "nhi": "आकाशगंगा और पर्वतीय झील",
-   "nne": "आकाशगङ्गा, पहाड र ताल"
+   "nne": "आकाशगङ्गा, पहाड र ताल",
+   "ncb": "Ang Milky Way ibabaw sa lanaw sa bukid"
   },
   {
    "f": "bg193.jpg",
@@ -1884,7 +1982,8 @@
    "nms": "Tasik ais dan cahaya aurora",
    "nar": "بحيرة جليدية والشفق القطبي",
    "nhi": "ध्रुवीय ज्योति और बर्फ़ीली झील",
-   "nne": "अरोरा र बरफले ढाकिएको ताल"
+   "nne": "अरोरा र बरफले ढाकिएको ताल",
+   "ncb": "Nagyelong lanaw ilalom sa aurora"
   },
   {
    "f": "bg194.jpg",
@@ -1903,7 +2002,8 @@
    "nms": "Anak sungai hutan bersalji",
    "nar": "جدول في الغابة الثلجية",
    "nhi": "बर्फ़ीले वन की धारा",
-   "nne": "हिउँ परेको जङ्गलको खोला"
+   "nne": "हिउँ परेको जङ्गलको खोला",
+   "ncb": "Sapa sa lasang nga niyebe"
   },
   {
    "f": "bg215.jpg",
@@ -1922,7 +2022,8 @@
    "nms": "Matahari terbit di bukit berwarna-warni",
    "nar": "شروق الشمس على التلال الملوّنة",
    "nhi": "रंगीन पहाड़ियों पर सूर्योदय",
-   "nne": "रङ्गीन पहाडी थुम्काहरूमा सूर्योदय"
+   "nne": "रङ्गीन पहाडी थुम्काहरूमा सूर्योदय",
+   "ncb": "Pagsubang sa adlaw sa kolor-kolor nga mga bungtod"
   },
   {
    "f": "bg216.jpg",
@@ -1941,7 +2042,8 @@
    "nms": "Anak sungai di lembah separuh bulatan",
    "nar": "جدول في وادٍ هلالي الشكل",
    "nhi": "अर्धवृत्ताकार घाटी की धारा",
-   "nne": "अर्धचन्द्राकार उपत्यकाको खोला"
+   "nne": "अर्धचन्द्राकार उपत्यकाको खोला",
+   "ncb": "Sapa sa walog nga porma sa tunga-sa-lingin"
   },
   {
    "f": "bg217.jpg",
@@ -1960,7 +2062,8 @@
    "nms": "Senja di bukit pasir putih",
    "nar": "كثبان الرمال البيضاء عند الغروب",
    "nhi": "श्वेत रेत के टीलों पर गोधूलि",
-   "nne": "सेतो बालुवाको थुम्कोमा साँझको धुम्मिलो उज्यालो"
+   "nne": "सेतो बालुवाको थुम्कोमा साँझको धुम्मिलो उज्यालो",
+   "ncb": "Gabii-gabii sa puti nga mga bungtod nga balas"
   },
   {
    "f": "bg218.jpg",
@@ -1979,7 +2082,8 @@
    "nms": "Lubang benam hutan hujan",
    "nar": "حفرة غائرة في الغابة المطيرة",
    "nhi": "वर्षावन का विशाल गर्त",
-   "nne": "वर्षावनको भासिएको खाडल"
+   "nne": "वर्षावनको भासिएको खाडल",
+   "ncb": "Sinkhole sa lasang sa ulan"
   },
   {
    "f": "bg219.jpg",
@@ -1998,7 +2102,8 @@
    "nms": "Ngarai keemasan dan padang bunga",
    "nar": "بحر من الأزهار في الوادي الذهبي",
    "nhi": "फूलों से भरी सुनहरी घाटी",
-   "nne": "सुनौलो घाँटीमा फूलका फाँट"
+   "nne": "सुनौलो घाँटीमा फूलका फाँट",
+   "ncb": "Kabulakan sa bulawang canyon"
   },
   {
    "f": "bg220.jpg",
@@ -2017,7 +2122,8 @@
    "nms": "Matahari terbenam di pantai batu bulat",
    "nar": "غروب الشمس على شاطئ الصخور المستديرة",
    "nhi": "गोल पत्थरों वाले समुद्र तट पर सूर्यास्त",
-   "nne": "गोल ढुङ्गाका समुद्री किनारमा सूर्यास्त"
+   "nne": "गोल ढुङ्गाका समुद्री किनारमा सूर्यास्त",
+   "ncb": "Pagsalop sa adlaw sa baybayon nga bato-bato"
   },
   {
    "f": "bg221.jpg",
@@ -2036,7 +2142,8 @@
    "nms": "Fajar di kolam teratai",
    "nar": "فجر عند بركة اللوتس",
    "nhi": "कमल सरोवर पर भोर",
-   "nne": "कमलको पोखरीमा बिहानको उज्यालो"
+   "nne": "कमलको पोखरीमा बिहानको उज्यालो",
+   "ncb": "Pagbuntag sa linaw sa lotus"
   },
   {
    "f": "bg222.jpg",
@@ -2055,7 +2162,8 @@
    "nms": "Hablur ais di pantai pasir hitam",
    "nar": "بلّورات الجليد على الشاطئ الأسود",
    "nhi": "काली रेत पर बर्फ़ के क्रिस्टल",
-   "nne": "कालो बालुवाको किनारमा बरफका स्फटिक"
+   "nne": "कालो बालुवाको किनारमा बरफका स्फटिक",
+   "ncb": "Mga kristal sa yelo sa itom nga baybayon nga balas"
   },
   {
    "f": "bg223.jpg",
@@ -2074,7 +2182,8 @@
    "nms": "Tanah lembap rumput masin merah",
    "nar": "أرض رطبة من نبات الحَمْض الأحمر",
    "nhi": "लाल नमक-घास का दलदली क्षेत्र",
-   "nne": "रातो नुनिलो घाँसले ढाकिएको सिमसार"
+   "nne": "रातो नुनिलो घाँसले ढाकिएको सिमसार",
+   "ncb": "Basang yuta nga adunay pula nga glasswort"
   },
   {
    "f": "bg224.jpg",
@@ -2093,7 +2202,8 @@
    "nms": "Air terjun bertingkat hutan hujan",
    "nar": "شلالات متدرّجة في الغابة المطيرة",
    "nhi": "वर्षावन के सीढ़ीदार जलप्रपात",
-   "nne": "वर्षावनको तह-तहको झरना"
+   "nne": "वर्षावनको तह-तहको झरना",
+   "ncb": "Hagdan-hagdang busay sa lasang sa ulan"
   },
   {
    "f": "bg46.jpg",
@@ -2112,7 +2222,8 @@
    "nms": "Kek coklat",
    "nar": "كعكة الشوكولاتة",
    "nhi": "चॉकलेट केक",
-   "nne": "चकलेट केक"
+   "nne": "चकलेट केक",
+   "ncb": "Keyk nga tsokolate"
   },
   {
    "f": "bg47.jpg",
@@ -2131,7 +2242,8 @@
    "nms": "Kek krim strawberi",
    "nar": "كعكة الفراولة والكريمة الطازجة",
    "nhi": "स्ट्रॉबेरी क्रीम केक",
-   "nne": "स्ट्रबेरी र ताजा क्रिमको केक"
+   "nne": "स्ट्रबेरी र ताजा क्रिमको केक",
+   "ncb": "Keyk nga strawberry ug presko nga krema"
   },
   {
    "f": "bg48.jpg",
@@ -2150,7 +2262,8 @@
    "nms": "Kek mawar",
    "nar": "كعكة الورد",
    "nhi": "गुलाब केक",
-   "nne": "गुलाफको केक"
+   "nne": "गुलाफको केक",
+   "ncb": "Keyk nga rosas"
   },
   {
    "f": "bg49.jpg",
@@ -2169,7 +2282,8 @@
    "nms": "Kek kulit kerang laut",
    "nar": "كعكة الأصداف البحرية",
    "nhi": "सीपी के आकार का केक",
-   "nne": "समुद्री सिपीको आकारको केक"
+   "nne": "समुद्री सिपीको आकारको केक",
+   "ncb": "Keyk nga porma sa kabibe sa dagat"
   },
   {
    "f": "bg50.jpg",
@@ -2188,7 +2302,8 @@
    "nms": "Kek krep lapis matcha",
    "nar": "كعكة كريب الماتشا",
    "nhi": "माचा मिल-फ़्वी केक",
-   "nne": "माचा चिया र तहतहको क्रेप केक"
+   "nne": "माचा चिया र तहतहको क्रेप केक",
+   "ncb": "Matcha nga mille crepe nga keyk"
   },
   {
    "f": "bg54.jpg",
@@ -2207,7 +2322,8 @@
    "nms": "Anak kucing warna krim",
    "nar": "هرّة صغيرة بلون الكريمة",
    "nhi": "क्रीम रंग की बिल्ली का बच्चा",
-   "nne": "क्रिम रङको बिरालोको बच्चा"
+   "nne": "क्रिम रङको बिरालोको बच्चा",
+   "ncb": "Bata nga iring nga kolor krema"
   },
   {
    "f": "bg55.jpg",
@@ -2226,7 +2342,8 @@
    "nms": "Anak kucing jingga putih",
    "nar": "هرّة صغيرة برتقالية وبيضاء",
    "nhi": "नारंगी-सफ़ेद बिल्ली का बच्चा",
-   "nne": "सुन्तला र सेतो रङको बिरालोको बच्चा"
+   "nne": "सुन्तला र सेतो रङको बिरालोको बच्चा",
+   "ncb": "Bata nga iring nga orange ug puti"
   },
   {
    "f": "bg56.jpg",
@@ -2245,7 +2362,8 @@
    "nms": "Kucing British Shorthair kelabu perak",
    "nar": "قطة بريطانية رمادية فضية",
    "nhi": "चाँदी-धूसर ब्रिटिश शॉर्टहेयर",
-   "nne": "खैरो-सिल्भर ब्रिटिस सर्टहेयर बिरालो"
+   "nne": "खैरो-सिल्भर ब्रिटिस सर्टहेयर बिरालो",
+   "ncb": "Silver-gray nga British Shorthair"
   },
   {
    "f": "bg135.jpg",
@@ -2264,7 +2382,8 @@
    "nms": "Anak kucing Ragdoll warna krim dan mawar",
    "nar": "قطة راغدول كريمية اللون والورود",
    "nhi": "क्रीम रैगडॉल बिल्ली और गुलाब",
-   "nne": "क्रिम रङको र्‍यागडल बिरालो र गुलाफ"
+   "nne": "क्रिम रङको र्‍यागडल बिरालो र गुलाफ",
+   "ncb": "Krema nga Ragdoll nga iring ug mga rosas"
   },
   {
    "f": "bg136.jpg",
@@ -2283,7 +2402,8 @@
    "nms": "Anak kucing jingga putih di bakul daisi",
    "nar": "هرّة صغيرة برتقالية في سلة الأقحوان",
    "nhi": "डेज़ी की टोकरी में नारंगी-सफ़ेद बिल्ली का बच्चा",
-   "nne": "सुन्तला-सेतो बिरालोको बच्चा र डेजी फूलको टोकरी"
+   "nne": "सुन्तला-सेतो बिरालोको बच्चा र डेजी फूलको टोकरी",
+   "ncb": "Bata nga iring nga orange ug puti sa basket sa mga daisy"
   },
   {
    "f": "bg137.jpg",
@@ -2302,7 +2422,8 @@
    "nms": "Kucing calico dan bunga tulip",
    "nar": "قطة مبرقشة وأزهار التوليب",
    "nhi": "तिरंगी बिल्ली और ट्यूलिप",
-   "nne": "त्रिरङ्गी बिरालो र ट्युलिप"
+   "nne": "त्रिरङ्गी बिरालो र ट्युलिप",
+   "ncb": "Tricolor nga iring ug mga tulip"
   },
   {
    "f": "bg57.jpg",
@@ -2321,7 +2442,8 @@
    "nms": "Hadiah kotak mawar merah jambu",
    "nar": "علبة هدية بورود وردية",
    "nhi": "गुलाबी गुलाब का उपहार-डिब्बा",
-   "nne": "गुलाबी गुलाफको उपहार-बाकस"
+   "nne": "गुलाबी गुलाफको उपहार-बाकस",
+   "ncb": "Kahon sa regalo nga adunay rosas nga mga rosas"
   },
   {
    "f": "bg58.jpg",
@@ -2340,7 +2462,8 @@
    "nms": "Hadiah kotak lavender",
    "nar": "علبة هدية بالافندر",
    "nhi": "लैवेंडर का उपहार-डिब्बा",
-   "nne": "ल्याभेन्डरको उपहार-बाकस"
+   "nne": "ल्याभेन्डरको उपहार-बाकस",
+   "ncb": "Kahon sa regalo nga adunay lavender"
   },
   {
    "f": "bg59.jpg",
@@ -2359,7 +2482,8 @@
    "nms": "Hadiah kotak kertas kraf dan bunga daisi",
    "nar": "علبة هدية من الورق البني وأقحوان",
    "nhi": "भूरे कागज़ में डेज़ी का उपहार-डिब्बा",
-   "nne": "खैरो कागजमा डेजी फूलसहितको उपहार-बाकस"
+   "nne": "खैरो कागजमा डेजी फूलसहितको उपहार-बाकस",
+   "ncb": "Kahon sa regalo nga kraft paper uban ang mga daisy"
   },
   {
    "f": "bg60.jpg",
@@ -2378,7 +2502,8 @@
    "nms": "Kek malam berbintang ungu",
    "nar": "كعكة ليلة النجوم البنفسجية",
    "nhi": "बैंगनी तारों भरी रात का केक",
-   "nne": "बैजनी रातको ताराखचित आकाशको केक"
+   "nne": "बैजनी रातको ताराखचित आकाशको केक",
+   "ncb": "Keyk nga lila nga kagabhion sa bituon"
   },
   {
    "f": "bg61.jpg",
@@ -2397,7 +2522,8 @@
    "nms": "Kek anak beruang madu",
    "nar": "كعكة دبّ العسل",
    "nhi": "शहद वाला भालू केक",
-   "nne": "मह र सानो भालुको केक"
+   "nne": "मह र सानो भालुको केक",
+   "ncb": "Keyk nga oso nga pukyutan"
   },
   {
    "f": "bg62.jpg",
@@ -2416,7 +2542,8 @@
    "nms": "Kek gula-gula pelangi",
    "nar": "كعكة الحلوى بألوان قوس قزح",
    "nhi": "इन्द्रधनुषी मिठाई केक",
-   "nne": "इन्द्रेणी रङको मिठाइ केक"
+   "nne": "इन्द्रेणी रङको मिठाइ केक",
+   "ncb": "Keyk nga rainbow candy"
   },
   {
    "f": "bg63.jpg",
@@ -2435,7 +2562,8 @@
    "nms": "Kek tiga lapis keemasan",
    "nar": "كعكة ذهبية من ثلاث طبقات",
    "nhi": "सुनहरा तीन परतों वाला केक",
-   "nne": "सुनौलो तीन तहको केक"
+   "nne": "सुनौलो तीन तहको केक",
+   "ncb": "Bulawang keyk nga tulo ka andana"
   },
   {
    "f": "bg64.jpg",
@@ -2454,7 +2582,8 @@
    "nms": "Kek taman lemon",
    "nar": "كعكة حديقة الليمون",
    "nhi": "नींबू-उद्यान केक",
-   "nne": "कागतीको बगैँचा केक"
+   "nne": "कागतीको बगैँचा केक",
+   "ncb": "Keyk nga lemon sa tanaman"
   },
   {
    "f": "bg65.jpg",
@@ -2473,7 +2602,8 @@
    "nms": "Kek coklat putih salji musim sejuk",
    "nar": "كعكة الشوكولاتة البيضاء وثلوج الشتاء",
    "nhi": "शीतकालीन श्वेत चॉकलेट केक",
-   "nne": "हिउँदे हिमपातको सेतो चकलेट केक"
+   "nne": "हिउँदे हिमपातको सेतो चकलेट केक",
+   "ncb": "Keyk nga puti nga tsokolate sa niyebeng tingtugnaw"
   },
   {
    "f": "bg66.jpg",
@@ -2492,7 +2622,8 @@
    "nms": "Kek karamel walnut",
    "nar": "كعكة الكراميل والجوز",
    "nhi": "कैरामल अखरोट केक",
-   "nne": "क्यारामेल र ओखरको केक"
+   "nne": "क्यारामेल र ओखरको केक",
+   "ncb": "Keyk nga caramel ug walnut"
   },
   {
    "f": "bg67.jpg",
@@ -2511,7 +2642,8 @@
    "nms": "Kek mangga",
    "nar": "كعكة المانجو",
    "nhi": "आम केक",
-   "nne": "आँपको केक"
+   "nne": "आँपको केक",
+   "ncb": "Keyk nga mangga"
   },
   {
    "f": "bg68.jpg",
@@ -2530,7 +2662,8 @@
    "nms": "Kek piano dan not muzik",
    "nar": "كعكة البيانو والنوتات الموسيقية",
    "nhi": "पियानो और सुर-चिह्नों वाला केक",
-   "nne": "पियानोका स्वरलिपि आकारको केक"
+   "nne": "पियानोका स्वरलिपि आकारको केक",
+   "ncb": "Keyk nga adunay nota sa piano"
   },
   {
    "f": "bg69.jpg",
@@ -2549,7 +2682,8 @@
    "nms": "Tiramisu",
    "nar": "تيراميسو",
    "nhi": "तिरामिसू",
-   "nne": "तिरामिसु"
+   "nne": "तिरामिसु",
+   "ncb": "Tiramisu"
   },
   {
    "f": "bg70.jpg",
@@ -2568,7 +2702,8 @@
    "nms": "Kek pic dan cahaya tasik",
    "nar": "كعكة الخوخ وضوء البحيرة",
    "nhi": "आड़ू और झील की आभा वाला केक",
-   "nne": "आरुको स्वाद र तालको झलक भएको केक"
+   "nne": "आरुको स्वाद र तालको झलक भएको केक",
+   "ncb": "Keyk nga milokoton sa kahayag sa lanaw"
   },
   {
    "f": "bg71.jpg",
@@ -2587,7 +2722,8 @@
    "nms": "Kek pic panjang umur",
    "nar": "كعكة خوخ طول العمر",
    "nhi": "दीर्घायु आड़ू केक",
-   "nne": "दीर्घायुको प्रतीक आरु आकारको केक"
+   "nne": "दीर्घायुको प्रतीक आरु आकारको केक",
+   "ncb": "Keyk nga porma sa milagrosong milokoton alang sa taas nga kinabuhi"
   },
   {
    "f": "bg72.jpg",
@@ -2606,7 +2742,8 @@
    "nms": "Kek hati red velvet",
    "nar": "كعكة القلب المخملية الحمراء",
    "nhi": "रेड वेल्वेट दिल केक",
-   "nne": "रातो मखमली मुटु आकारको केक"
+   "nne": "रातो मखमली मुटु आकारको केक",
+   "ncb": "Keyk nga red velvet nga porma sa kasingkasing"
   },
   {
    "f": "bg73.jpg",
@@ -2625,7 +2762,8 @@
    "nms": "Kek bakul bunga",
    "nar": "كعكة سلة الزهور",
    "nhi": "फूलों की टोकरी वाला केक",
-   "nne": "फूलको टोकरी आकारको केक"
+   "nne": "फूलको टोकरी आकारको केक",
+   "ncb": "Keyk nga basket sa bulak"
   },
   {
    "f": "bg74.jpg",
@@ -2644,7 +2782,8 @@
    "nms": "Kek dinosaur",
    "nar": "كعكة الديناصور",
    "nhi": "डायनासोर केक",
-   "nne": "डाइनोसरको केक"
+   "nne": "डाइनोसरको केक",
+   "ncb": "Keyk nga dinosaur"
   },
   {
    "f": "bg75.jpg",
@@ -2663,7 +2802,8 @@
    "nms": "Salib kayu oak dan mawar",
    "nar": "صليب من خشب البلوط وورود",
    "nhi": "बलूत की लकड़ी का क्रूस और गुलाब",
-   "nne": "ओकको काठको क्रुस र गुलाफ"
+   "nne": "ओकको काठको क्रुस र गुलाफ",
+   "ncb": "Krus nga kahoyng oak ug mga rosas"
   },
   {
    "f": "bg76.jpg",
@@ -2682,7 +2822,8 @@
    "nms": "Salib kayu klasik dan lavender",
    "nar": "صليب خشبي عتيق ولافندر",
    "nhi": "सादा पुराना क्रूस और लैवेंडर",
-   "nne": "पुरानो शैलीको क्रुस र ल्याभेन्डर"
+   "nne": "पुरानो शैलीको क्रुस र ल्याभेन्डर",
+   "ncb": "Karaan nga krus ug lavender"
   },
   {
    "f": "bg77.jpg",
@@ -2701,7 +2842,8 @@
    "nms": "Salib kayu merah dan peoni",
    "nar": "صليب من الخشب الأحمر وفاوانيا",
    "nhi": "लाल लकड़ी का क्रूस और पियोनी",
-   "nne": "रातो काठको क्रुस र मोतीफूल"
+   "nne": "रातो काठको क्रुस र मोतीफूल",
+   "ncb": "Krus nga kahoyng pula ug mga peony"
   },
   {
    "f": "bg78.jpg",
@@ -2720,7 +2862,8 @@
    "nms": "Salib emas dan bunga lili",
    "nar": "صليب ذهبي وزنابق",
    "nhi": "सुनहरा क्रूस और सोसन के फूल",
-   "nne": "सुनौलो क्रुस र लिली फूल"
+   "nne": "सुनौलो क्रुस र लिली फूल",
+   "ncb": "Bulawang krus ug mga lirio"
   },
   {
    "f": "bg79.jpg",
@@ -2739,7 +2882,8 @@
    "nms": "Salib putih dan bunga daisi",
    "nar": "صليب أبيض وأقحوان",
    "nhi": "श्वेत क्रूस और डेज़ी",
-   "nne": "सेतो क्रुस र डेजी फूल"
+   "nne": "सेतो क्रुस र डेजी फूल",
+   "ncb": "Puti nga krus ug mga daisy"
   },
   {
    "f": "bg80.jpg",
@@ -2758,7 +2902,8 @@
    "nms": "Salib, mawar merah dan cahaya lilin",
    "nar": "صليب وورود حمراء وضوء الشموع",
    "nhi": "क्रूस, लाल गुलाब और मोमबत्ती का प्रकाश",
-   "nne": "क्रुस र रातो गुलाफ, मैनबत्तीको उज्यालोमा"
+   "nne": "क्रुस र रातो गुलाफ, मैनबत्तीको उज्यालोमा",
+   "ncb": "Krus ug pula nga rosas sa kahayag sa kandila"
   },
   {
    "f": "bg81.jpg",
@@ -2777,7 +2922,8 @@
    "nms": "Salib kayu oak dan tulip putih",
    "nar": "صليب من خشب البلوط وتوليب أبيض",
    "nhi": "बलूत की लकड़ी का क्रूस और श्वेत ट्यूलिप",
-   "nne": "ओकको काठको क्रुस र सेतो ट्युलिप"
+   "nne": "ओकको काठको क्रुस र सेतो ट्युलिप",
+   "ncb": "Krus nga kahoyng oak ug puti nga mga tulip"
   },
   {
    "f": "bg82.jpg",
@@ -2796,7 +2942,8 @@
    "nms": "Salib putih dan bunga hidrangea biru",
    "nar": "صليب أبيض وهيدرانجيا أزرق",
    "nhi": "श्वेत क्रूस और नीला हाइड्रेंजिया",
-   "nne": "सेतो क्रुस र निलो हाइड्रेन्जिया"
+   "nne": "सेतो क्रुस र निलो हाइड्रेन्जिया",
+   "ncb": "Puti nga krus ug asul nga mga hydrangea"
   },
   {
    "f": "bg83.jpg",
@@ -2815,7 +2962,8 @@
    "nms": "Salib emas di bawah langit berbintang",
    "nar": "صليب ذهبي تحت النجوم",
    "nhi": "तारों भरे आकाश तले सुनहरा क्रूस",
-   "nne": "ताराखचित आकाशमा सुनौलो क्रुस"
+   "nne": "ताराखचित आकाशमा सुनौलो क्रुस",
+   "ncb": "Bulawang krus sa langit nga puno sa bituon"
   },
   {
    "f": "bg84.jpg",
@@ -2834,7 +2982,8 @@
    "nms": "Salib batu dan bunga sakura",
    "nar": "صليب حجري وأزهار الكرز",
    "nhi": "पत्थर का क्रूस और चेरी ब्लॉसम",
-   "nne": "ढुङ्गाको क्रुस र चेरी फूल"
+   "nne": "ढुङ्गाको क्रुस र चेरी फूल",
+   "ncb": "Krus nga bato ug mga sakura"
   },
   {
    "f": "bg85.jpg",
@@ -2853,7 +3002,8 @@
    "nms": "Salib dan bunga matahari",
    "nar": "صليب وعبّاد الشمس",
    "nhi": "क्रूस और सूरजमुखी",
-   "nne": "क्रुस र सूर्यमुखी फूल"
+   "nne": "क्रुस र सूर्यमुखी फूल",
+   "ncb": "Krus ug mga sunflower"
   },
   {
    "f": "bg86.jpg",
@@ -2872,7 +3022,8 @@
    "nms": "Salib musim luruh",
    "nar": "صليب في الخريف",
    "nhi": "शरद ऋतु का क्रूस",
-   "nne": "शरद ऋतुको क्रुस"
+   "nne": "शरद ऋतुको क्रुस",
+   "ncb": "Krus sa ting-ilaw"
   },
   {
    "f": "bg87.jpg",
@@ -2891,7 +3042,8 @@
    "nms": "Salib dan mawar merah jambu",
    "nar": "صليب وورود وردية",
    "nhi": "क्रूस और गुलाबी गुलाब",
-   "nne": "क्रुस र गुलाबी गुलाफ"
+   "nne": "क्रुस र गुलाबी गुलाफ",
+   "ncb": "Krus ug rosas nga rosas"
   },
   {
    "f": "bg88.jpg",
@@ -2910,7 +3062,8 @@
    "nms": "Salib putih dan bunga ranunculus",
    "nar": "صليب أبيض وراننكيولس",
    "nhi": "श्वेत क्रूस और रेननकुलस",
-   "nne": "सेतो क्रुस र एनिमोन फूल"
+   "nne": "सेतो क्रुस र एनिमोन फूल",
+   "ncb": "Puti nga krus ug mga anemone"
   },
   {
    "f": "bg89.jpg",
@@ -2929,7 +3082,8 @@
    "nms": "Salib marmar dan bunga gerbera",
    "nar": "صليب رخامي وزهور الجربيرا",
    "nhi": "संगमरमर का क्रूस और जरबेरा",
-   "nne": "संगमरमरको क्रुस र जर्बेरा"
+   "nne": "संगमरमरको क्रुस र जर्बेरा",
+   "ncb": "Krus nga marmol ug mga gerbera"
   },
   {
    "f": "bg90.jpg",
@@ -2948,7 +3102,8 @@
    "nms": "Salib emas dan orkid waktu senja",
    "nar": "صليب ذهبي وأوركيد عند الغروب",
    "nhi": "सूर्यास्त में सुनहरा क्रूस और ऑर्किड",
-   "nne": "सुनौलो क्रुस र ओर्किड, सूर्यास्तमा"
+   "nne": "सुनौलो क्रुस र ओर्किड, सूर्यास्तमा",
+   "ncb": "Bulawang krus ug mga orkid sa pagsalop sa adlaw"
   },
   {
    "f": "bg91.jpg",
@@ -2967,7 +3122,8 @@
    "nms": "Salib putih musim sejuk",
    "nar": "صليب أبيض في الشتاء",
    "nhi": "शीतकाल का श्वेत क्रूस",
-   "nne": "हिउँदको सेतो क्रुस"
+   "nne": "हिउँदको सेतो क्रुस",
+   "ncb": "Puti nga krus sa tingtugnaw"
   },
   {
    "f": "bg92.jpg",
@@ -2986,7 +3142,8 @@
    "nms": "Salib, bunga lili lembah dan kabus pagi",
    "nar": "صليب وزنبق الوادي وضباب الصباح",
    "nhi": "क्रूस और प्रभात की धुंध में घाटी की कुमुदिनी",
-   "nne": "क्रुस र घण्टी-फूल, बिहानको कुहिरोमा"
+   "nne": "क्रुस र घण्टी-फूल, बिहानको कुहिरोमा",
+   "ncb": "Krus ug mga lily of the valley sa mahamog nga buntag"
   },
   {
    "f": "bg93.jpg",
@@ -3005,7 +3162,8 @@
    "nms": "Salib, Alkitab dan bunga kering",
    "nar": "صليب وكتاب مقدس وأزهار مجففة",
    "nhi": "क्रूस, बाइबल और सूखे फूल",
-   "nne": "क्रुस, बाइबल र सुकेका फूल"
+   "nne": "क्रुस, बाइबल र सुकेका फूल",
+   "ncb": "Krus, Bibliya ug mga garing bulak"
   },
   {
    "f": "bg94.jpg",
@@ -3024,7 +3182,8 @@
    "nms": "Salib tembaga dan magnolia",
    "nar": "صليب نحاسي منقوش وماغنوليا",
    "nhi": "पीतल का क्रूस और मैग्नोलिया",
-   "nne": "तामाको कुँदिएको क्रुस र म्याग्नोलिया"
+   "nne": "तामाको कुँदिएको क्रुस र म्याग्नोलिया",
+   "ncb": "Krus nga tumbaga ug mga magnolia"
   },
   {
    "f": "bg345.jpg",
@@ -3043,7 +3202,8 @@
    "nms": "Salib di ngarai batu merah",
    "nar": "صليب في الوادي الصخري الأحمر",
    "nhi": "लाल चट्टानों की घाटी में क्रूस",
-   "nne": "रातो चट्टानी घाँटीमा क्रुस"
+   "nne": "रातो चट्टानी घाँटीमा क्रुस",
+   "ncb": "Krus sa pula nga bato nga canyon"
   },
   {
    "f": "bg346.jpg",
@@ -3062,7 +3222,8 @@
    "nms": "Salib di senja glasier",
    "nar": "صليب في غروب الشمس على النهر الجليدي",
    "nhi": "हिमनद की सूर्यास्त-बेला में क्रूस",
-   "nne": "हिमनदीको सूर्यास्तमा क्रुस"
+   "nne": "हिमनदीको सूर्यास्तमा क्रुस",
+   "ncb": "Krus sa pagsalop sa adlaw sa glasyar"
   },
   {
    "f": "bg347.jpg",
@@ -3081,7 +3242,8 @@
    "nms": "Salib di atas oasis padang pasir",
    "nar": "صليب فوق واحة الصحراء",
    "nhi": "मरुद्यान के ऊपर क्रूस",
-   "nne": "मरुभूमिको हरियो ओयासिसमा क्रुस"
+   "nne": "मरुभूमिको हरियो ओयासिसमा क्रुस",
+   "ncb": "Krus sa oasis sa kamingawan"
   },
   {
    "f": "bg348.jpg",
@@ -3100,7 +3262,8 @@
    "nms": "Salib di atas sawah padi bertingkat yang berkabus",
    "nar": "صليب فوق المدرّجات الضبابية",
    "nhi": "सीढ़ीदार खेतों की प्रभात-धुंध में क्रूस",
-   "nne": "सिँढीखेतमा बिहानको कुहिरो, क्रुससहित"
+   "nne": "सिँढीखेतमा बिहानको कुहिरो, क्रुससहित",
+   "ncb": "Krus sa mahamog nga buntag sa mga hagdan-hagdang uma"
   },
   {
    "f": "bg349.jpg",
@@ -3119,7 +3282,8 @@
    "nms": "Salib di batu karang yang dipukul ombak",
    "nar": "صليب عند الصخور وتلاطم الأمواج",
    "nhi": "लहरों से टकराती चट्टानों के पास क्रूस",
-   "nne": "छालले ठोक्किने चट्टानमाथि क्रुस"
+   "nne": "छालले ठोक्किने चट्टानमाथि क्रुस",
+   "ncb": "Krus sa batong tipik taliwala sa mga balod"
   },
   {
    "f": "bg350.jpg",
@@ -3138,7 +3302,8 @@
    "nms": "Salib di padang bunga pergunungan",
    "nar": "صليب في المرج الجبلي",
    "nhi": "पर्वतीय फूलों के मैदान में क्रूस",
-   "nne": "उच्च हिमाली फूल-घाँस र क्रुस"
+   "nne": "उच्च हिमाली फूल-घाँस र क्रुस",
+   "ncb": "Krus taliwala sa mga bulak sa kabukiran"
   },
   {
    "f": "bg351.jpg",
@@ -3157,7 +3322,8 @@
    "nms": "Salib di antara bunga erika ungu",
    "nar": "صليب بين زهور الخلنج الأرجوانية",
    "nhi": "बैंगनी हीथर के बीच क्रूस",
-   "nne": "बैजनी हिद्र फूल र क्रुस"
+   "nne": "बैजनी हिद्र फूल र क्रुस",
+   "ncb": "Krus ug lilang heather"
   },
   {
    "f": "bg352.jpg",
@@ -3176,7 +3342,8 @@
    "nms": "Salib di tepi sungai berkabus",
    "nar": "صليب عند النهر في ضوء الفجر الضبابي",
    "nhi": "धुंध भरी नदी के किनारे प्रभात में क्रूस",
-   "nne": "पहाड र पानीमा बिहानको किरण, क्रुससहित"
+   "nne": "पहाड र पानीमा बिहानको किरण, क्रुससहित",
+   "ncb": "Krus sa kahayag sa buntag taliwala sa kabukiran ug katubigan"
   },
   {
    "f": "bg353.jpg",
@@ -3195,7 +3362,8 @@
    "nms": "Salib di senja pantai",
    "nar": "صليب عند غروب الشمس على الساحل",
    "nhi": "समुद्र तट पर सूर्यास्त में क्रूस",
-   "nne": "समुद्री किनारमा सूर्यास्त, क्रुससहित"
+   "nne": "समुद्री किनारमा सूर्यास्त, क्रुससहित",
+   "ncb": "Krus sa pagsalop sa adlaw sa baybayon"
   },
   {
    "f": "bg354.jpg",
@@ -3214,7 +3382,8 @@
    "nms": "Salib di anak sungai hutan",
    "nar": "صليب عند جدول الغابة",
    "nhi": "वन की धारा के किनारे क्रूस",
-   "nne": "जङ्गलको खोलाको किनारमा क्रुस"
+   "nne": "जङ्गलको खोलाको किनारमा क्रुस",
+   "ncb": "Krus sa sapa sa lasang"
   },
   {
    "f": "bg355.jpg",
@@ -3233,7 +3402,8 @@
    "nms": "Salib di padang garam waktu senja",
    "nar": "صليب على بحيرة الملح عند وهج الغروب",
    "nhi": "लवण-मैदान पर संध्या की लाली में क्रूस",
-   "nne": "नुनिलो तालमा साँझको रातो उज्यालो, क्रुससहित"
+   "nne": "नुनिलो तालमा साँझको रातो उज्यालो, क्रुससहित",
+   "ncb": "Krus sa pagsubang sa adlaw sa lanaw nga asin"
   },
   {
    "f": "bg356.jpg",
@@ -3252,7 +3422,8 @@
    "nms": "Salib di lembah musim luruh keemasan",
    "nar": "صليب في وادي الخريف الذهبي",
    "nhi": "शरद की सुनहरी घाटी में क्रूस",
-   "nne": "शरद ऋतुको सुनौलो उपत्यकामा क्रुस"
+   "nne": "शरद ऋतुको सुनौलो उपत्यकामा क्रुस",
+   "ncb": "Krus sa walog nga bulawan sa ting-ilaw"
   },
   {
    "f": "bg357.jpg",
@@ -3271,7 +3442,8 @@
    "nms": "Salib di kolam mata air panas bertingkat putih",
    "nar": "صليب عند المدرّجات البيضاء للينابيع الحارة",
    "nhi": "श्वेत ऊष्म-स्रोत की सीढ़ीदार सतहों पर क्रूस",
-   "nne": "तातोपानीको सेतो सिँढीदार पोखरीमा क्रुस"
+   "nne": "तातोपानीको सेतो सिँढीदार पोखरीमा क्रुस",
+   "ncb": "Krus sa puti nga hagdan-hagdang bukal nga init"
   },
   {
    "f": "bg358.jpg",
@@ -3290,7 +3462,8 @@
    "nms": "Salib di atas fiord",
    "nar": "صليب فوق المضيق البحري",
    "nhi": "फ़्योर्ड के ऊपर क्रूस",
-   "nne": "फियोर्डमा क्रुस"
+   "nne": "फियोर्डमा क्रुस",
+   "ncb": "Krus sa fjord"
   },
   {
    "f": "bg359.jpg",
@@ -3309,7 +3482,8 @@
    "nms": "Salib di tengah teratai waktu fajar",
    "nar": "صليب بين أزهار اللوتس عند الفجر",
    "nhi": "भोर में कमल के फूलों के बीच क्रूस",
-   "nne": "कमल फूल र बिहानको उज्यालोमा क्रुस"
+   "nne": "कमल फूल र बिहानको उज्यालोमा क्रुस",
+   "ncb": "Krus ug lotus sa pagbuntag"
   },
   {
    "f": "bg360.jpg",
@@ -3328,7 +3502,8 @@
    "nms": "Salib dan bunga daisi di tebing putih",
    "nar": "صليب وأقحوان على الجرف الأبيض",
    "nhi": "श्वेत चट्टानों पर डेज़ी के बीच क्रूस",
-   "nne": "सेता भीरमा डेजी फूल, क्रुससहित"
+   "nne": "सेता भीरमा डेजी फूल, क्रुससहित",
+   "ncb": "Krus ug mga daisy sa puti nga pangpang"
   },
   {
    "f": "bg361.jpg",
@@ -3347,7 +3522,8 @@
    "nms": "Salib di tasik kawah gunung berapi",
    "nar": "صليب عند بحيرة البركان",
    "nhi": "ज्वालामुखी झील के किनारे क्रूस",
-   "nne": "ज्वालामुखी तालको किनारमा क्रुस"
+   "nne": "ज्वालामुखी तालको किनारमा क्रुस",
+   "ncb": "Krus sa lanaw sa bulkan"
   },
   {
    "f": "bg362.jpg",
@@ -3366,7 +3542,8 @@
    "nms": "Salib di atas awan dan air terjun",
    "nar": "صليب فوق الغيوم والشلالات",
    "nhi": "बादलों के सागर और जलप्रपात के ऊपर क्रूस",
-   "nne": "बादलको सागर र झरनाका बीच क्रुस"
+   "nne": "बादलको सागर र झरनाका बीच क्रुस",
+   "ncb": "Krus sa busay ibabaw sa dagat sa panganod"
   },
   {
    "f": "bg363.jpg",
@@ -3385,7 +3562,8 @@
    "nms": "Salib di kebun zaitun waktu senja",
    "nar": "صليب في بستان الزيتون عند الغروب",
    "nhi": "ज़ैतून के बाग़ में सूर्यास्त के समय क्रूस",
-   "nne": "जैतुनको बगैँचामा सूर्यास्त, क्रुससहित"
+   "nne": "जैतुनको बगैँचामा सूर्यास्त, क्रुससहित",
+   "ncb": "Krus sa pagsalop sa adlaw sa tanaman sa olibo"
   },
   {
    "f": "bg364.jpg",
@@ -3404,7 +3582,8 @@
    "nms": "Salib di hutan birch bersalji",
    "nar": "صليب في غابة البتولا المكسوّة بالثلج",
    "nhi": "बर्फ़ से ढके बर्च वन में क्रूस",
-   "nne": "हिउँले ढाकिएको भोजपत्रको वनमा क्रुस"
+   "nne": "हिउँले ढाकिएको भोजपत्रको वनमा क्रुस",
+   "ncb": "Krus sa lasang sa birch sa niyebe"
   },
   {
    "f": "bg95.jpg",
@@ -3423,7 +3602,8 @@
    "nms": "Hadiah kotak mawar berreben merah jambu di tepi jendela",
    "nar": "علبة هدية بشريط وردي وورود عند النافذة",
    "nhi": "गुलाबी फ़ीते, गुलाब और खिड़की के दृश्य वाला उपहार-डिब्बा",
-   "nne": "गुलाबी रेशमी रिबन, गुलाफ र झ्यालको दृश्यसहितको उपहार-बाकस"
+   "nne": "गुलाबी रेशमी रिबन, गुलाफ र झ्यालको दृश्यसहितको उपहार-बाकस",
+   "ncb": "Kahon sa regalo nga adunay rosas nga satin nga laso ug mga rosas sa tanawon sa bintana"
   },
   {
    "f": "bg96.jpg",
@@ -3442,7 +3622,8 @@
    "nms": "Hadiah kotak bulat bunga lili berreben emas",
    "nar": "علبة هدية مستديرة بشريط ذهبي وزنابق",
    "nhi": "सुनहरे फ़ीते और सोसन वाला गोल उपहार-डिब्बा",
-   "nne": "सुनौलो रेशमी रिबन र लिली फूलसहितको गोलो उपहार-बाकस"
+   "nne": "सुनौलो रेशमी रिबन र लिली फूलसहितको गोलो उपहार-बाकस",
+   "ncb": "Lingin nga kahon sa regalo nga adunay bulawang satin nga laso ug mga lirio"
   },
   {
    "f": "bg97.jpg",
@@ -3461,7 +3642,8 @@
    "nms": "Hadiah kotak bunga daisi dan tali guni",
    "nar": "علبة هدية بحبل الجوت وأقحوان",
    "nhi": "डेज़ी और जूट की रस्सी वाला उपहार-डिब्बा",
-   "nne": "डेजी फूल र सुतलीले बाँधिएको उपहार-बाकस"
+   "nne": "डेजी फूल र सुतलीले बाँधिएको उपहार-बाकस",
+   "ncb": "Kahon sa regalo nga adunay mga daisy ug pisi nga abaka"
   },
   {
    "f": "bg98.jpg",
@@ -3480,7 +3662,8 @@
    "nms": "Hadiah kotak ladang lavender",
    "nar": "علبة هدية من مزرعة اللافندر",
    "nhi": "लैवेंडर-बाग़ान का उपहार-डिब्बा",
-   "nne": "ल्याभेन्डर बगानको उपहार-बाकस"
+   "nne": "ल्याभेन्डर बगानको उपहार-बाकस",
+   "ncb": "Kahon sa regalo nga adunay umahan sa lavender"
   },
   {
    "f": "bg99.jpg",
@@ -3499,7 +3682,8 @@
    "nms": "Hadiah kotak tulip berreben hijau",
    "nar": "علبة هدية بشريط أخضر وتوليب",
    "nhi": "हरे फ़ीते वाला ट्यूलिप का उपहार-डिब्बा",
-   "nne": "ट्युलिप र हरियो रेशमी रिबनको उपहार-बाकस"
+   "nne": "ट्युलिप र हरियो रेशमी रिबनको उपहार-बाकस",
+   "ncb": "Kahon sa regalo nga adunay mga tulip ug lunhaw nga satin nga laso"
   },
   {
    "f": "bg100.jpg",
@@ -3518,7 +3702,8 @@
    "nms": "Hadiah kotak biru bunga hidrangea tepi pantai",
    "nar": "علبة هدية زرقاء بلون هيدرانجيا الساحل",
    "nhi": "हाइड्रेंजिया और सागर-तट के नीले रंग का उपहार-डिब्बा",
-   "nne": "हाइड्रेन्जिया र समुद्री किनारको निलो उपहार-बाकस"
+   "nne": "हाइड्रेन्जिया र समुद्री किनारको निलो उपहार-बाकस",
+   "ncb": "Asul nga kahon sa regalo nga adunay mga hydrangea sa baybayon"
   },
   {
    "f": "bg101.jpg",
@@ -3537,7 +3722,8 @@
    "nms": "Hadiah kotak peoni merah karang",
    "nar": "علبة هدية بلون المرجان وفاوانيا",
    "nhi": "मूँगा-रंगी पियोनी का उपहार-डिब्बा",
-   "nne": "प्रवाल रङका मोतीफूलको उपहार-बाकस"
+   "nne": "प्रवाल रङका मोतीफूलको उपहार-बाकस",
+   "ncb": "Kahon sa regalo nga kolor korales uban ang mga peony"
   },
   {
    "f": "bg102.jpg",
@@ -3556,7 +3742,8 @@
    "nms": "Hadiah kotak bunga sakura gaya Jepun",
    "nar": "علبة هدية يابانية الطراز وأزهار الكرز",
    "nhi": "चेरी ब्लॉसम वाला जापानी शैली का उपहार-डिब्बा",
-   "nne": "चेरी फूल र जापानी शैलीको उपहार-बाकस"
+   "nne": "चेरी फूल र जापानी शैलीको उपहार-बाकस",
+   "ncb": "Kahon sa regalo nga estilo Hapon uban ang mga sakura"
   },
   {
    "f": "bg103.jpg",
@@ -3575,7 +3762,8 @@
    "nms": "Hadiah kotak kuning bunga matahari",
    "nar": "علبة هدية صفراء بلون عبّاد الشمس",
    "nhi": "सूरजमुखी-पीला उपहार-डिब्बा",
-   "nne": "सूर्यमुखी रङको पहेँलो उपहार-बाकस"
+   "nne": "सूर्यमुखी रङको पहेँलो उपहार-बाकस",
+   "ncb": "Dilaw nga kahon sa regalo nga kolor sunflower"
   },
   {
    "f": "bg104.jpg",
@@ -3594,7 +3782,8 @@
    "nms": "Hadiah kotak baldu merah delima",
    "nar": "علبة هدية مخملية بلون الياقوت الأحمر",
    "nhi": "मखमली माणिक-लाल उपहार-डिब्बा",
-   "nne": "मखमली र माणिकको उपहार-बाकस"
+   "nne": "मखमली र माणिकको उपहार-बाकस",
+   "ncb": "Kahon sa regalo nga pula nga ruby velvet"
   },
   {
    "f": "bg105.jpg",
@@ -3613,7 +3802,8 @@
    "nms": "Hadiah kotak hati merah jambu",
    "nar": "علبة هدية وردية على شكل قلب",
    "nhi": "गुलाबी दिल वाला उपहार-डिब्बा",
-   "nne": "मुटु आकारको गुलाबी उपहार-बाकस"
+   "nne": "मुटु आकारको गुलाबी उपहार-बाकस",
+   "ncb": "Rosas nga kahon sa regalo nga porma sa kasingkasing"
   },
   {
    "f": "bg106.jpg",
@@ -3632,7 +3822,8 @@
    "nms": "Hadiah kotak bercorak bunga ranunculus",
    "nar": "علبة هدية بنقوش الراننكيولس",
    "nhi": "रेननकुलस की आकृति वाला उपहार-डिब्बा",
-   "nne": "एनिमोन फूलको बुट्टा भएको उपहार-बाकस"
+   "nne": "एनिमोन फूलको बुट्टा भएको उपहार-बाकस",
+   "ncb": "Kahon sa regalo nga adunay disenyo sa anemone"
   },
   {
    "f": "bg107.jpg",
@@ -3651,7 +3842,8 @@
    "nms": "Hadiah kotak biru tua berbintang emas",
    "nar": "علبة هدية كحلية بنجمة ذهبية",
    "nhi": "गहरे नीले रंग और सुनहरे तारे वाला उपहार-डिब्बा",
-   "nne": "गाढा निलो र सुनौला ताराको उपहार-बाकस"
+   "nne": "गाढा निलो र सुनौला ताराको उपहार-बाकस",
+   "ncb": "Kahon sa regalo nga navy blue nga adunay bulawang mga bituon"
   },
   {
    "f": "bg108.jpg",
@@ -3670,7 +3862,8 @@
    "nms": "Hadiah kotak orkid berorganza ungu",
    "nar": "علبة هدية أرجوانية بالأورغنزا والأوركيد",
    "nhi": "ऑर्किड और बैंगनी जाली वाला उपहार-डिब्बा",
-   "nne": "ओर्किड र बैजनी जालीको उपहार-बाकस"
+   "nne": "ओर्किड र बैजनी जालीको उपहार-बाकस",
+   "ncb": "Kahon sa regalo nga adunay lila nga tul ug mga orkid"
   },
   {
    "f": "bg109.jpg",
@@ -3689,7 +3882,8 @@
    "nms": "Hadiah kotak rajutan musim sejuk",
    "nar": "علبة هدية من الصوف المحبوك في الشتاء",
    "nhi": "सर्दियों का बुना हुआ उपहार-डिब्बा",
-   "nne": "हिउँदको बुनेको उपहार-बाकस"
+   "nne": "हिउँदको बुनेको उपहार-बाकस",
+   "ncb": "Gisulod nga regalo nga hinimo sa lana sa tingtugnaw"
   },
   {
    "f": "bg110.jpg",
@@ -3708,7 +3902,8 @@
    "nms": "Hadiah kotak reben tembaga warna maple luruh",
    "nar": "علبة هدية نحاسية بلون القيقب الخريفي",
    "nhi": "शरद-मेपल के रंग और ताँबे के साटन का उपहार-डिब्बा",
-   "nne": "शरद ऋतुको मेपल र तामा रङको रेशमी उपहार-बाकस"
+   "nne": "शरद ऋतुको मेपल र तामा रङको रेशमी उपहार-बाकस",
+   "ncb": "Kahon sa regalo nga tumbaga ug satin sa kolor sa maple sa ting-ilaw"
   },
   {
    "f": "bg111.jpg",
@@ -3727,7 +3922,8 @@
    "nms": "Hadiah kotak bertompok bunga gerbera",
    "nar": "علبة هدية منقّطة وجربيرا",
    "nhi": "जरबेरा और बूटियों वाला उपहार-डिब्बा",
-   "nne": "जर्बेरा र थोप्ला बुट्टाको उपहार-बाकस"
+   "nne": "जर्बेरा र थोप्ला बुट्टाको उपहार-बाकस",
+   "ncb": "Kahon sa regalo nga adunay tulbok ug mga gerbera"
   },
   {
    "f": "bg112.jpg",
@@ -3746,7 +3942,8 @@
    "nms": "Hadiah kotak lili lembah cahaya pagi",
    "nar": "علبة هدية وزنبق الوادي في ضوء الصباح",
    "nhi": "प्रभात की किरणों में घाटी की कुमुदिनी का उपहार-डिब्बा",
-   "nne": "घण्टी-फूल र बिहानको उज्यालोको उपहार-बाकस"
+   "nne": "घण्टी-फूल र बिहानको उज्यालोको उपहार-बाकस",
+   "ncb": "Kahon sa regalo nga adunay mga lily of the valley sa kahayag sa buntag"
   },
   {
    "f": "bg113.jpg",
@@ -3765,7 +3962,8 @@
    "nms": "Hadiah kotak kertas kraf merah anggur",
    "nar": "علبة هدية من الورق البني وشريط عنّابي",
    "nhi": "गहरे लाल रंग का भूरे कागज़ वाला उपहार-डिब्बा",
-   "nne": "वाइन रङको खैरो कागजमा बेरिएको उपहार-बाकस"
+   "nne": "वाइन रङको खैरो कागजमा बेरिएको उपहार-बाकस",
+   "ncb": "Kahon sa regalo nga kraft paper nga kolor bino"
   },
   {
    "f": "bg114.jpg",
@@ -3784,7 +3982,8 @@
    "nms": "Hadiah kotak magnolia keemasan",
    "nar": "علبة هدية ذهبية وماغنوليا",
    "nhi": "सुनहरे मैग्नोलिया का उपहार-डिब्बा",
-   "nne": "सुनौलो म्याग्नोलियाको उपहार-बाकस"
+   "nne": "सुनौलो म्याग्नोलियाको उपहार-बाकस",
+   "ncb": "Kahon sa regalo nga adunay bulawang mga magnolia"
   },
   {
    "f": "bg138.jpg",
@@ -3803,7 +4002,8 @@
    "nms": "Kucing Parsi putih dan lavender",
    "nar": "قطة فارسية بيضاء ولافندر",
    "nhi": "श्वेत फ़ारसी बिल्ली और लैवेंडर",
-   "nne": "सेतो पर्सियन बिरालो र ल्याभेन्डर"
+   "nne": "सेतो पर्सियन बिरालो र ल्याभेन्डर",
+   "ncb": "Puti nga Persian nga iring ug lavender"
   },
   {
    "f": "bg139.jpg",
@@ -3822,7 +4022,8 @@
    "nms": "Kucing British Shorthair kelabu perak dan bunga hidrangea",
    "nar": "قطة بريطانية قصيرة الشعر وهيدرانجيا",
    "nhi": "ब्रिटिश शॉर्टहेयर और हाइड्रेंजिया",
-   "nne": "खैरो-सिल्भर ब्रिटिस सर्टहेयर बिरालो र हाइड्रेन्जिया"
+   "nne": "खैरो-सिल्भर ब्रिटिस सर्टहेयर बिरालो र हाइड्रेन्जिया",
+   "ncb": "Silver-gray nga British Shorthair ug mga hydrangea"
   },
   {
    "f": "bg140.jpg",
@@ -3841,7 +4042,8 @@
    "nms": "Kucing Ragdoll dan hadiah kotak peoni",
    "nar": "قطة راغدول وعلبة هدية بالفاوانيا",
    "nhi": "रैगडॉल बिल्ली और पियोनी का उपहार-डिब्बा",
-   "nne": "र्‍यागडल बिरालो र मोतीफूलको उपहार-बाकस"
+   "nne": "र्‍यागडल बिरालो र मोतीफूलको उपहार-बाकस",
+   "ncb": "Ragdoll nga iring ug kahon sa regalo nga adunay peony"
   },
   {
    "f": "bg141.jpg",
@@ -3860,7 +4062,8 @@
    "nms": "Kucing belang dan bunga matahari",
    "nar": "قطة مخطّطة وعبّاد الشمس",
    "nhi": "धारीदार बिल्ली और सूरजमुखी",
-   "nne": "धर्के बिरालो र सूर्यमुखी फूल"
+   "nne": "धर्के बिरालो र सूर्यमुखी फूल",
+   "ncb": "Tabby nga iring ug mga sunflower"
   },
   {
    "f": "bg142.jpg",
@@ -3879,7 +4082,8 @@
    "nms": "Anak kucing berpelukan di tepi jendela hujan",
    "nar": "هرّتان صغيرتان متعانقتان عند نافذة المطر",
    "nhi": "वर्षा से भीगी खिड़की पर एक-दूसरे से सटे बिल्ली के बच्चे",
-   "nne": "वर्षाले भिजेको झ्यालमा अँगालो हालेका बिरालाका बच्चा"
+   "nne": "वर्षाले भिजेको झ्यालमा अँगालो हालेका बिरालाका बच्चा",
+   "ncb": "Mga bata nga iring nga nagkugos sa bintana nga giulanan"
   },
   {
    "f": "bg143.jpg",
@@ -3898,7 +4102,8 @@
    "nms": "Anak kucing jingga di bakul musim luruh",
    "nar": "هرّة برتقالية في سلة الخريف",
    "nhi": "शरद की टोकरी में नारंगी बिल्ली का बच्चा",
-   "nne": "शरद ऋतुको टोकरीमा सुन्तला रङको बिरालो"
+   "nne": "शरद ऋतुको टोकरीमा सुन्तला रङको बिरालो",
+   "ncb": "Orange nga iring sa basket sa ting-ilaw"
   },
   {
    "f": "bg144.jpg",
@@ -3917,7 +4122,8 @@
    "nms": "Kucing Siam di tepi tasik",
    "nar": "قطة سيامية عند البحيرة",
    "nhi": "झील किनारे स्यामी बिल्ली",
-   "nne": "तालको किनारमा सियामी बिरालो"
+   "nne": "तालको किनारमा सियामी बिरालो",
+   "ncb": "Siamese nga iring sa daplin sa lanaw"
   },
   {
    "f": "bg145.jpg",
@@ -3936,7 +4142,8 @@
    "nms": "Kucing hitam, mawar putih dan mutiara",
    "nar": "قطة سوداء وورود بيضاء ولؤلؤ",
    "nhi": "काली बिल्ली, श्वेत गुलाब और मोती",
-   "nne": "कालो बिरालो, सेतो गुलाफ र मोती"
+   "nne": "कालो बिरालो, सेतो गुलाफ र मोती",
+   "ncb": "Itom nga iring, puti nga mga rosas ug mga perlas"
   },
   {
    "f": "bg146.jpg",
@@ -3955,7 +4162,8 @@
    "nms": "Kucing berbulu panjang biru putih di tepi laut",
    "nar": "قطة طويلة الوبر زرقاء وبيضاء على الساحل",
    "nhi": "समुद्र तट पर नीली-सफ़ेद रोएँदार बिल्ली",
-   "nne": "समुद्र किनारमा निलो-सेतो लामो रौँको बिरालो"
+   "nne": "समुद्र किनारमा निलो-सेतो लामो रौँको बिरालो",
+   "ncb": "Asul ug puti nga taas ug balhibo nga iring sa baybayon"
   },
   {
    "f": "bg147.jpg",
@@ -3974,7 +4182,8 @@
    "nms": "Anak kucing kembar dan bunga sakura",
    "nar": "هرّتان توأمان وأزهار الكرز",
    "nhi": "जुड़वाँ बिल्ली के बच्चे और चेरी ब्लॉसम",
-   "nne": "जुम्ल्याहा बिरालाका बच्चा र चेरी फूल"
+   "nne": "जुम्ल्याहा बिरालाका बच्चा र चेरी फूल",
+   "ncb": "Kaluha nga bata nga iring ug mga sakura"
   },
   {
    "f": "bg148.jpg",
@@ -3993,7 +4202,8 @@
    "nms": "Anak kucing berselendang merah di tepi jendela bersalji",
    "nar": "هرّة صغيرة بوشاح أحمر عند نافذة الثلج",
    "nhi": "हिमाच्छादित खिड़की पर लाल मफ़लर पहने बिल्ली का बच्चा",
-   "nne": "रातो गलबन्दी लगाएको बिरालोको बच्चा, हिउँ परेको झ्यालमा"
+   "nne": "रातो गलबन्दी लगाएको बिरालोको बच्चा, हिउँ परेको झ्यालमा",
+   "ncb": "Bata nga iring nga adunay pula nga bufanda sa niyebeng bintana"
   },
   {
    "f": "bg149.jpg",
@@ -4012,7 +4222,8 @@
    "nms": "Anak kucing belang dan buku",
    "nar": "هرّة صغيرة مخطّطة وكتاب",
    "nhi": "धारीदार बिल्ली का बच्चा और पुस्तक",
-   "nne": "धर्के बिरालोको बच्चा र किताब"
+   "nne": "धर्के बिरालोको बच्चा र किताब",
+   "ncb": "Bata nga tabby nga iring ug libro"
   },
   {
    "f": "bg150.jpg",
@@ -4031,7 +4242,8 @@
    "nms": "Anak kucing calico di padang daisi",
    "nar": "هرّة صغيرة مبرقشة في حقل الأقحوان",
    "nhi": "डेज़ी के खेत में तिरंगी बिल्ली का बच्चा",
-   "nne": "डेजी फूलको फाँटमा त्रिरङ्गी बिरालोको बच्चा"
+   "nne": "डेजी फूलको फाँटमा त्रिरङ्गी बिरालोको बच्चा",
+   "ncb": "Tricolor nga bata nga iring sa uma sa mga bulak nga daisy"
   },
   {
    "f": "bg151.jpg",
@@ -4050,7 +4262,8 @@
    "nms": "Anak kucing dan hati",
    "nar": "هرّة صغيرة وقلب",
    "nhi": "बिल्ली का बच्चा और दिल",
-   "nne": "सुन्तला-सेतो बिरालोको बच्चा र मुटु"
+   "nne": "सुन्तला-सेतो बिरालोको बच्चा र मुटु",
+   "ncb": "Bata nga iring nga orange ug puti uban ang kasingkasing"
   },
   {
    "f": "bg152.jpg",
@@ -4069,7 +4282,8 @@
    "nms": "Kucing Ragdoll dan bunga hyacinth",
    "nar": "قطة راغدول وهياسنت",
    "nhi": "रैगडॉल बिल्ली और हायसिंथ",
-   "nne": "र्‍यागडल बिरालो र हायसिन्थ"
+   "nne": "र्‍यागडल बिरालो र हायसिन्थ",
+   "ncb": "Ragdoll nga iring ug mga hyacinth"
   },
   {
    "f": "bg153.jpg",
@@ -4088,7 +4302,8 @@
    "nms": "Kucing putih dan anak kucing di taman mawar",
    "nar": "قطة بيضاء وصغيرها في حديقة الورد",
    "nhi": "गुलाब-वाटिका में माँ बिल्ली और उसका बच्चा",
-   "nne": "सेतो आमा बिरालो र बच्चाहरू, गुलाफको बगैँचामा"
+   "nne": "सेतो आमा बिरालो र बच्चाहरू, गुलाफको बगैँचामा",
+   "ncb": "Inahang puti nga iring ug mga bata sa tanaman sa rosas"
   },
   {
    "f": "bg154.jpg",
@@ -4107,7 +4322,8 @@
    "nms": "Kucing Chinchilla emas di tepi tasik waktu matahari terbit",
    "nar": "قطة شنشيلا ذهبية عند البحيرة وقت الشروق",
    "nhi": "झील किनारे सूर्योदय में सुनहरी चिनचिला बिल्ली",
-   "nne": "तालको किनारमा सूर्योदयमा चिन्चिला बिरालो"
+   "nne": "तालको किनारमा सूर्योदयमा चिन्चिला बिरालो",
+   "ncb": "Chinchilla nga iring sa pagsubang sa adlaw sa daplin sa lanaw"
   },
   {
    "f": "bg245.jpg",
@@ -4126,7 +4342,8 @@
    "nms": "Kucing Siberia di rumah hijau orkid",
    "nar": "قطة سيبيرية في بيت الأوركيد الزجاجي",
    "nhi": "ऑर्किड के ग्रीनहाउस में साइबेरियन बिल्ली",
-   "nne": "साइबेरियन बिरालो र ओर्किडको ग्रीनहाउस"
+   "nne": "साइबेरियन बिरालो र ओर्किडको ग्रीनहाउस",
+   "ncb": "Siberian nga iring ug greenhouse sa mga orkid"
   },
   {
    "f": "bg246.jpg",
@@ -4145,7 +4362,8 @@
    "nms": "Kucing Abyssinian dan air pancut waktu senja",
    "nar": "قطة حبشية عند النافورة وقت الغروب",
    "nhi": "सूर्यास्त के समय फ़व्वारे के पास एबिसिनियन बिल्ली",
-   "nne": "अबिसिनियन बिरालो र फोहोरा, साँझको घाममा"
+   "nne": "अबिसिनियन बिरालो र फोहोरा, साँझको घाममा",
+   "ncb": "Abyssinian nga iring ug bukal sa kilumkilom"
   },
   {
    "f": "bg247.jpg",
@@ -4164,7 +4382,8 @@
    "nms": "Kucing Maine Coon di bawah para wisteria",
    "nar": "قطة مين كون تحت عريشة الغليسين",
    "nhi": "विस्टीरिया की बेल के नीचे मेन कून बिल्ली",
-   "nne": "मेन कुन बिरालो र विस्टेरियाको मण्डप"
+   "nne": "मेन कुन बिरालो र विस्टेरियाको मण्डप",
+   "ncb": "Maine Coon nga iring ug ang trellis sa wisteria"
   },
   {
    "f": "bg248.jpg",
@@ -4183,7 +4402,8 @@
    "nms": "Kucing Norwegian Forest dan fajar di tepi tasik",
    "nar": "قط الغابات النرويجي وفجر عند البحيرة",
    "nhi": "झील किनारे भोर में नॉर्वेजियन फ़ॉरेस्ट बिल्ली",
-   "nne": "नर्वेजियन फरेस्ट बिरालो र तालको किनारमा बिहानीको उज्यालो"
+   "nne": "नर्वेजियन फरेस्ट बिरालो र तालको किनारमा बिहानीको उज्यालो",
+   "ncb": "Norwegian Forest nga iring ug pagbuntag sa daplin sa lanaw"
   },
   {
    "f": "bg249.jpg",
@@ -4202,7 +4422,8 @@
    "nms": "Kucing putih dan kelopak tulip",
    "nar": "قطة بيضاء وبتلات التوليب",
    "nhi": "श्वेत बिल्ली और ट्यूलिप की पंखुड़ियाँ",
-   "nne": "सेतो बिरालो र ट्युलिपका पातहरू"
+   "nne": "सेतो बिरालो र ट्युलिपका पातहरू",
+   "ncb": "Puti nga iring ug mga talulot sa tulip"
   },
   {
    "f": "bg250.jpg",
@@ -4221,7 +4442,8 @@
    "nms": "Kucing Russian Blue dan jendela porselin biru putih",
    "nar": "قطة روسية زرقاء ونافذة الخزف الأزرق والأبيض",
    "nhi": "रूसी नीली बिल्ली और नीले-सफ़ेद चीनी मिट्टी की खिड़की",
-   "nne": "रुसी निलो बिरालो र नीलो-सेतो चिनियाँ माटोको झ्यालको दृश्य"
+   "nne": "रुसी निलो बिरालो र नीलो-सेतो चिनियाँ माटोको झ्यालको दृश्य",
+   "ncb": "Russian Blue nga iring ug tanawon sa bintana nga adunay asul ug puti nga porselana"
   },
   {
    "f": "bg251.jpg",
@@ -4240,7 +4462,8 @@
    "nms": "Kucing Bengal di jambatan kecil hutan hujan",
    "nar": "قطة البنغال على جسر في الغابة المطيرة",
    "nhi": "वर्षावन के छोटे पुल पर बंगाल बिल्ली",
-   "nne": "बङ्गाल बिरालो र वर्षावनको सानो पुल"
+   "nne": "बङ्गाल बिरालो र वर्षावनको सानो पुल",
+   "ncb": "Bengal nga iring ug gamayng taytayan sa lasang sa ulan"
   },
   {
    "f": "bg252.jpg",
@@ -4259,7 +4482,8 @@
    "nms": "Kucing Egyptian Mau dan kolam teratai",
    "nar": "قطة ماو المصرية وبركة اللوتس",
    "nhi": "मिस्री माउ बिल्ली और कमल का सरोवर",
-   "nne": "इजिप्सियन माउ बिरालो र कमलको पोखरी"
+   "nne": "इजिप्सियन माउ बिरालो र कमलको पोखरी",
+   "ncb": "Egyptian Mau nga iring ug linaw sa lotus"
   },
   {
    "f": "bg253.jpg",
@@ -4278,7 +4502,8 @@
    "nms": "Kucing Somali di ngarai batu merah",
    "nar": "قطة صومالية عند الوادي الصخري الأحمر",
    "nhi": "लाल चट्टानों की घाटी में सोमाली बिल्ली",
-   "nne": "सोमाली बिरालो र रातो चट्टानी घाँटी"
+   "nne": "सोमाली बिरालो र रातो चट्टानी घाँटी",
+   "ncb": "Somali nga iring ug pula nga bato nga canyon"
   },
   {
    "f": "bg254.jpg",
@@ -4297,7 +4522,8 @@
    "nms": "Kucing Turkish Van dan perahu layar waktu senja",
    "nar": "قطة فان التركية ومركب شراعي عند الغروب",
    "nhi": "नाव पर तुर्की वैन बिल्ली, सूर्यास्त के समय",
-   "nne": "टर्किस भान बिरालो र पाल भएको डुङ्गा, साँझको सूर्यास्तमा"
+   "nne": "टर्किस भान बिरालो र पाल भएको डुङ्गा, साँझको सूर्यास्तमा",
+   "ncb": "Turkish Van nga iring ug layagan sa kilumkilom"
   },
   {
    "f": "bg255.jpg",
@@ -4316,7 +4542,8 @@
    "nms": "Kucing Cornish Rex di jendela pelabuhan",
    "nar": "قطة كورنيش ريكس عند نافذة الميناء",
    "nhi": "बन्दरगाह की खिड़की पर कॉर्निश रेक्स बिल्ली",
-   "nne": "कर्निश रेक्स बिरालो र बन्दरगाहतिरको झ्यालको सिल"
+   "nne": "कर्निश रेक्स बिरालो र बन्दरगाहतिरको झ्यालको सिल",
+   "ncb": "Cornish Rex nga iring sa bintana nga nag-atubang sa pantalan"
   },
   {
    "f": "bg256.jpg",
@@ -4335,7 +4562,8 @@
    "nms": "Kucing Devon Rex dan teleskop di bawah langit berbintang",
    "nar": "قطة ديفون ريكس وتلسكوب تحت السماء المرصّعة بالنجوم",
    "nhi": "डेवन रेक्स बिल्ली और तारों भरे आकाश की दूरबीन",
-   "nne": "डेभन रेक्स बिरालो र ताराखचित आकाशतिर फर्काइएको दूरबिन"
+   "nne": "डेभन रेक्स बिरालो र ताराखचित आकाशतिर फर्काइएको दूरबिन",
+   "ncb": "Devon Rex nga iring ug teleskopyo sa langit nga puno sa bituon"
   },
   {
    "f": "bg257.jpg",
@@ -4354,7 +4582,8 @@
    "nms": "Kucing Ocicat di bengkel tembikar",
    "nar": "قطة أوسيكات في مشغل الفخار",
    "nhi": "मिट्टी के बर्तनों की कार्यशाला में ओसीकैट",
-   "nne": "ओसिकेट बिरालो र माटाका भाँडा बनाउने कार्यशाला"
+   "nne": "ओसिकेट बिरालो र माटाका भाँडा बनाउने कार्यशाला",
+   "ncb": "Ocicat nga iring ug pottery workshop"
   },
   {
    "f": "bg258.jpg",
@@ -4373,7 +4602,8 @@
    "nms": "Kucing Burma, kolam teratai dan tanglung",
    "nar": "قطة بورمية وفوانيس عند بركة اللوتس",
    "nhi": "कमल सरोवर के किनारे लालटेनों के बीच बर्मी बिल्ली",
-   "nne": "बर्मिज बिरालो र कमलको पोखरीमा लालटिन"
+   "nne": "बर्मिज बिरालो र कमलको पोखरीमा लालटिन",
+   "ncb": "Burmese nga iring ug mga parol sa linaw sa lotus"
   },
   {
    "f": "bg259.jpg",
@@ -4392,7 +4622,8 @@
    "nms": "Kucing Singapura dan pondok orkid",
    "nar": "قطة سنغافورا وجناح الأوركيد",
    "nhi": "सिंगापुरा बिल्ली और ऑर्किड मण्डप",
-   "nne": "सिंगापुरा बिरालो र ओर्किडले घेरिएको मण्डप"
+   "nne": "सिंगापुरा बिरालो र ओर्किडले घेरिएको मण्डप",
+   "ncb": "Singapura nga iring ug payag nga adunay mga orkid"
   },
   {
    "f": "bg260.jpg",
@@ -4411,7 +4642,8 @@
    "nms": "Kucing Selkirk Rex di atas lautan awan",
    "nar": "قطة سيلكيرك ريكس فوق بحر الغيوم",
    "nhi": "बादलों के सागर के ऊपर सेल्किर्क रेक्स बिल्ली",
-   "nne": "सेल्किर्क रेक्स बिरालो र बादलको सागर"
+   "nne": "सेल्किर्क रेक्स बिरालो र बादलको सागर",
+   "ncb": "Selkirk Rex nga iring ug dagat sa panganod"
   },
   {
    "f": "bg261.jpg",
@@ -4430,7 +4662,8 @@
    "nms": "Kucing British Blue di taman herba",
    "nar": "قطة بريطانية زرقاء وحديقة الأعشاب العطرية",
    "nhi": "ब्रिटिश ब्लू बिल्ली और जड़ी-बूटियों का उद्यान",
-   "nne": "ब्रिटिस सर्टहेयर निलो बिरालो र जडीबुटीको बगैँचा"
+   "nne": "ब्रिटिस सर्टहेयर निलो बिरालो र जडीबुटीको बगैँचा",
+   "ncb": "British Shorthair nga asul nga iring ug tanaman sa mga yerba"
   },
   {
    "f": "bg262.jpg",
@@ -4449,7 +4682,8 @@
    "nms": "Kucing British Shorthair perang perak dan pemandangan glasier dari jendela",
    "nar": "قطة بريطانية فضية ونافذة تطلّ على النهر الجليدي",
    "nhi": "चाँदी-रंगी ब्रिटिश शॉर्टहेयर और हिमनद का खिड़की से दृश्य",
-   "nne": "ब्रिटिस सर्टहेयर सिल्भर शेडेड बिरालो र हिमनदीतिर खुलेको झ्याल"
+   "nne": "ब्रिटिस सर्टहेयर सिल्भर शेडेड बिरालो र हिमनदीतिर खुलेको झ्याल",
+   "ncb": "British Shorthair nga silver shaded nga iring ug tanawon sa glasyar sa bintana"
   },
   {
    "f": "bg263.jpg",
@@ -4468,7 +4702,8 @@
    "nms": "Kucing Japanese Bobtail di taman maple merah",
    "nar": "قطة البوبتيل اليابانية وحديقة القيقب الحمراء",
    "nhi": "जापानी बॉबटेल बिल्ली और मेपल की लालिमा वाला उद्यान",
-   "nne": "जापानी बबटेल बिरालो र रातो मेपलको बगैँचा"
+   "nne": "जापानी बबटेल बिरालो र रातो मेपलको बगैँचा",
+   "ncb": "Japanese Bobtail nga iring ug tanaman sa pula nga mga dahon sa maple"
   },
   {
    "f": "bg264.jpg",
@@ -4487,7 +4722,8 @@
    "nms": "Kucing American Curl dan belon udara panas",
    "nar": "قطة أمريكان كيرل ومناطيد الهواء الساخن",
    "nhi": "अमेरिकन कर्ल बिल्ली और गर्म हवा के गुब्बारे",
-   "nne": "अमेरिकन कर्ल बिरालो र तातो हावाको बेलुन"
+   "nne": "अमेरिकन कर्ल बिरालो र तातो हावाको बेलुन",
+   "ncb": "American Curl nga iring ug mga lobo nga ibabaw sa hangin"
   },
   {
    "f": "bg51.jpg",
@@ -4506,7 +4742,8 @@
    "nms": "Anak anjing Corgi",
    "nar": "جرو كورغي",
    "nhi": "कॉर्गी पिल्ला",
-   "nne": "कोर्गी कुकुरको छाउरो"
+   "nne": "कोर्गी कुकुरको छाउरो",
+   "ncb": "Bata nga iro nga Corgi"
   },
   {
    "f": "bg52.jpg",
@@ -4525,7 +4762,8 @@
    "nms": "Anak anjing Pomeranian",
    "nar": "جرو بوميراني",
    "nhi": "पोमेरेनियन पिल्ला",
-   "nne": "पमेरेनियन कुकुरको छाउरो"
+   "nne": "पमेरेनियन कुकुरको छाउरो",
+   "ncb": "Bata nga iro nga Pomeranian"
   },
   {
    "f": "bg53.jpg",
@@ -4544,7 +4782,8 @@
    "nms": "Anak anjing Poodle",
    "nar": "جرو بودل",
    "nhi": "पूडल पिल्ला",
-   "nne": "पूडल कुकुरको छाउरो"
+   "nne": "पूडल कुकुरको छाउरो",
+   "ncb": "Bata nga iro nga Poodle"
   },
   {
    "f": "bg115.jpg",
@@ -4563,7 +4802,8 @@
    "nms": "Anak anjing Golden Retriever dan mawar",
    "nar": "جرو غولدن ريتريفر وورود",
    "nhi": "गोल्डन रिट्रीवर पिल्ला और गुलाब",
-   "nne": "गोल्डेन रिट्रिभरको छाउरो र गुलाफ"
+   "nne": "गोल्डेन रिट्रिभरको छाउरो र गुलाफ",
+   "ncb": "Bata nga Golden Retriever ug mga rosas"
   },
   {
    "f": "bg116.jpg",
@@ -4582,7 +4822,8 @@
    "nms": "Anjing Poodle dan lavender",
    "nar": "كلب بودل ولافندر",
    "nhi": "पूडल और लैवेंडर",
-   "nne": "पूडल कुकुर र ल्याभेन्डर"
+   "nne": "पूडल कुकुर र ल्याभेन्डर",
+   "ncb": "Poodle ug lavender"
   },
   {
    "f": "bg117.jpg",
@@ -4601,7 +4842,8 @@
    "nms": "Anjing Pomeranian putih dan bunga hidrangea",
    "nar": "بوميراني أبيض وهيدرانجيا",
    "nhi": "श्वेत पोमेरेनियन और हाइड्रेंजिया",
-   "nne": "सेतो पमेरेनियन र हाइड्रेन्जिया"
+   "nne": "सेतो पमेरेनियन र हाइड्रेन्जिया",
+   "ncb": "Puti nga Pomeranian ug mga hydrangea"
   },
   {
    "f": "bg118.jpg",
@@ -4620,7 +4862,8 @@
    "nms": "Anjing Corgi dan bakul bunga daisi",
    "nar": "كلب كورغي وسلة الأقحوان",
    "nhi": "कॉर्गी और डेज़ी की टोकरी",
-   "nne": "कोर्गी कुकुर र डेजी फूलको टोकरी"
+   "nne": "कोर्गी कुकुर र डेजी फूलको टोकरी",
+   "ncb": "Corgi ug basket sa mga daisy"
   },
   {
    "f": "bg119.jpg",
@@ -4639,7 +4882,8 @@
    "nms": "Anjing Shiba dan bunga matahari",
    "nar": "كلب شيبا وعبّاد الشمس",
    "nhi": "शिबा और सूरजमुखी",
-   "nne": "शिबा इनु कुकुर र सूर्यमुखी फूल"
+   "nne": "शिबा इनु कुकुर र सूर्यमुखी फूल",
+   "ncb": "Shiba Inu ug mga sunflower"
   },
   {
    "f": "bg120.jpg",
@@ -4658,7 +4902,8 @@
    "nms": "Anak anjing Labrador mengantuk di tepi jendela hujan",
    "nar": "جروا لابرادور نائمان عند نافذة المطر",
    "nhi": "वर्षा से भीगी खिड़की पर ऊँघते लैब्राडोर",
-   "nne": "वर्षाले भिजेको झ्यालमा ल्याब्राडोरको छाउरो"
+   "nne": "वर्षाले भिजेको झ्यालमा ल्याब्राडोरको छाउरो",
+   "ncb": "Bata nga Labrador sa bintana nga giulanan"
   },
   {
    "f": "bg121.jpg",
@@ -4677,7 +4922,8 @@
    "nms": "Anjing Beagle dan bunga tulip",
    "nar": "كلب بيغل وأزهار التوليب",
    "nhi": "बीगल और ट्यूलिप",
-   "nne": "बीगल कुकुर र ट्युलिप"
+   "nne": "बीगल कुकुर र ट्युलिप",
+   "ncb": "Beagle ug mga tulip"
   },
   {
    "f": "bg122.jpg",
@@ -4696,7 +4942,8 @@
    "nms": "Anjing Border Collie di tepi tasik",
    "nar": "كلب بوردر كولي عند البحيرة",
    "nhi": "झील किनारे बॉर्डर कॉली",
-   "nne": "तालको किनारमा बोर्डर कोली"
+   "nne": "तालको किनारमा बोर्डर कोली",
+   "ncb": "Border Collie sa daplin sa lanaw"
   },
   {
    "f": "bg123.jpg",
@@ -4715,7 +4962,8 @@
    "nms": "Anjing Labrador hitam dan mawar putih",
    "nar": "كلب لابرادور أسود وورود بيضاء",
    "nhi": "काला लैब्राडोर और श्वेत गुलाब",
-   "nne": "कालो ल्याब्राडोर र सेतो गुलाफ"
+   "nne": "कालो ल्याब्राडोर र सेतो गुलाफ",
+   "ncb": "Itom nga Labrador ug puti nga mga rosas"
   },
   {
    "f": "bg124.jpg",
@@ -4734,7 +4982,8 @@
    "nms": "Anjing Yorkshire Terrier dan peoni",
    "nar": "كلب يوركشاير وفاوانيا",
    "nhi": "यॉर्कशायर टेरियर और पियोनी",
-   "nne": "यर्कशायर टेरियर र मोतीफूल"
+   "nne": "यर्कशायर टेरियर र मोतीफूल",
+   "ncb": "Yorkshire Terrier ug mga peony"
   },
   {
    "f": "bg125.jpg",
@@ -4753,7 +5002,8 @@
    "nms": "Anak anjing Golden Retriever kembar dan bunga sakura",
    "nar": "جروان توأمان من الغولدن ريتريفر وأزهار الكرز",
    "nhi": "जुड़वाँ गोल्डन रिट्रीवर पिल्ले और चेरी ब्लॉसम",
-   "nne": "जुम्ल्याहा गोल्डेन रिट्रिभर र चेरी फूल"
+   "nne": "जुम्ल्याहा गोल्डेन रिट्रिभर र चेरी फूल",
+   "ncb": "Kaluha nga Golden Retriever ug mga sakura"
   },
   {
    "f": "bg126.jpg",
@@ -4772,7 +5022,8 @@
    "nms": "Anjing Samoyed berselendang merah",
    "nar": "كلب سامويد بوشاح أحمر",
    "nhi": "लाल मफ़लर पहने सामोयेड",
-   "nne": "सामोयेड कुकुर र रातो गलबन्दी"
+   "nne": "सामोयेड कुकुर र रातो गलबन्दी",
+   "ncb": "Samoyed nga adunay pula nga bufanda"
   },
   {
    "f": "bg127.jpg",
@@ -4791,7 +5042,8 @@
    "nms": "Anjing Cavalier King Charles Spaniel di musim luruh",
    "nar": "كلب كافالير كينغ تشارلز في الخريف",
    "nhi": "शरद ऋतु में कैवेलियर किंग चार्ल्स स्पैनियल",
-   "nne": "शरद ऋतुमा क्याभेलियर किङ चार्ल्स स्प्यानियल"
+   "nne": "शरद ऋतुमा क्याभेलियर किङ चार्ल्स स्प्यानियल",
+   "ncb": "Cavalier King Charles Spaniel sa ting-ilaw"
   },
   {
    "f": "bg128.jpg",
@@ -4810,7 +5062,8 @@
    "nms": "Anjing Maltese di padang daisi",
    "nar": "كلب مالطي في حقل الأقحوان",
    "nhi": "डेज़ी के खेत में माल्टीज़",
-   "nne": "माल्टिज कुकुर र डेजी फूलको फाँट"
+   "nne": "माल्टिज कुकुर र डेजी फूलको फाँट",
+   "ncb": "Maltese ug uma sa mga daisy"
   },
   {
    "f": "bg129.jpg",
@@ -4829,7 +5082,8 @@
    "nms": "Anjing Dachshund dan hati",
    "nar": "كلب داكسهند وقلب",
    "nhi": "डैशहुंड और दिल",
-   "nne": "डाक्सहन्ड कुकुर र मुटु"
+   "nne": "डाक्सहन्ड कुकुर र मुटु",
+   "ncb": "Dachshund ug kasingkasing"
   },
   {
    "f": "bg130.jpg",
@@ -4848,7 +5102,8 @@
    "nms": "Anjing Husky di tepi laut",
    "nar": "كلب الهاسكي على الساحل",
    "nhi": "समुद्र तट पर हस्की",
-   "nne": "समुद्र किनारमा साइबेरियन हस्की"
+   "nne": "समुद्र किनारमा साइबेरियन हस्की",
+   "ncb": "Siberian Husky sa baybayon"
   },
   {
    "f": "bg131.jpg",
@@ -4867,7 +5122,8 @@
    "nms": "Anjing besar dan anak anjing di taman mawar",
    "nar": "كلب كبير وجرو صغير في حديقة الورد",
    "nhi": "गुलाब-वाटिका में बड़ा और छोटा पिल्ला",
-   "nne": "ठूलो कुकुर र सानो कुकुर, गुलाफको बगैँचामा"
+   "nne": "ठूलो कुकुर र सानो कुकुर, गुलाफको बगैँचामा",
+   "ncb": "Dako nga iro ug bata nga iro sa tanaman sa rosas"
   },
   {
    "f": "bg132.jpg",
@@ -4886,7 +5142,8 @@
    "nms": "Anjing Bichon dan bunga ungu",
    "nar": "كلب بيشون وأزهار بنفسجية",
    "nhi": "बिशों फ़्रीज़ और बैंगनी फूल",
-   "nne": "बिचोन फ्रिज कुकुर र बैजनी फूल"
+   "nne": "बिचोन फ्रिज कुकुर र बैजनी फूल",
+   "ncb": "Bichon Frise ug lilang mga bulak"
   },
   {
    "f": "bg133.jpg",
@@ -4905,7 +5162,8 @@
    "nms": "Anjing Pug dan buku",
    "nar": "كلب باغ وكتاب",
    "nhi": "पग और पुस्तक",
-   "nne": "पग कुकुर र किताब"
+   "nne": "पग कुकुर र किताब",
+   "ncb": "Pug ug libro"
   },
   {
    "f": "bg134.jpg",
@@ -4924,7 +5182,8 @@
    "nms": "Anjing Cocker Spaniel waktu matahari terbenam",
    "nar": "كلب كوكر سبانيل عند الغروب",
    "nhi": "सूर्यास्त में कॉकर स्पैनियल",
-   "nne": "सूर्यास्तमा कक्कर स्प्यानियल"
+   "nne": "सूर्यास्तमा कक्कर स्प्यानियल",
+   "ncb": "Cocker Spaniel sa pagsalop sa adlaw"
   },
   {
    "f": "bg265.jpg",
@@ -4943,7 +5202,8 @@
    "nms": "Anjing Dalmatian dan rumah putih di Santorini",
    "nar": "كلب دالميشن وبيوت سانتوريني البيضاء",
    "nhi": "सैंटोरिनी के श्वेत घरों के बीच डल्मेशियन",
-   "nne": "डल्मेसियन कुकुर र पवित्र टापुका सेता घर"
+   "nne": "डल्मेसियन कुकुर र पवित्र टापुका सेता घर",
+   "ncb": "Dalmatian ug ang puti nga balay sa balaang pulo"
   },
   {
    "f": "bg266.jpg",
@@ -4962,7 +5222,8 @@
    "nms": "Anjing Irish Setter dan jambatan batu di antara daun maple merah",
    "nar": "كلب الإيرلندي سيتر وجسر حجري بين أشجار القيقب الحمراء",
    "nhi": "आयरिश सेटर और मेपल की लालिमा में पत्थर का पुल",
-   "nne": "आयरिश उल्फहाउन्ड र रातो मेपलका पातले सजिएको ढुङ्गाको पुल"
+   "nne": "आयरिश उल्फहाउन्ड र रातो मेपलका पातले सजिएको ढुङ्गाको पुल",
+   "ncb": "Irish Setter ug ang taytayan nga bato sa pula nga mga dahon sa maple"
   },
   {
    "f": "bg267.jpg",
@@ -4981,7 +5242,8 @@
    "nms": "Anjing Italian Greyhound di Tuscany",
    "nar": "كلب الجريهاوند الإيطالي في توسكانا",
    "nhi": "टस्कनी में इटैलियन ग्रेहाउंड",
-   "nne": "इटालियन ग्रेहाउन्ड र टस्कनीको दृश्य"
+   "nne": "इटालियन ग्रेहाउन्ड र टस्कनीको दृश्य",
+   "ncb": "Italian Greyhound ug ang Tuscany"
   },
   {
    "f": "bg268.jpg",
@@ -5000,7 +5262,8 @@
    "nms": "Anjing Papillon dan bunga hidrangea di tepi tasik",
    "nar": "كلب بابيون وهيدرانجيا عند البحيرة",
    "nhi": "झील किनारे हाइड्रेंजिया के बीच पैपिलॉन",
-   "nne": "पापिलन कुकुर र तालको किनारमा हाइड्रेन्जिया"
+   "nne": "पापिलन कुकुर र तालको किनारमा हाइड्रेन्जिया",
+   "ncb": "Papillon ug mga hydrangea sa daplin sa lanaw"
   },
   {
    "f": "bg269.jpg",
@@ -5019,7 +5282,8 @@
    "nms": "Anjing Kerry Blue Terrier di tebing laut berbunga",
    "nar": "كلب كيري بلو تيريير على جرف بحري مزهر",
    "nhi": "समुद्री चट्टानों पर केरी ब्लू टेरियर",
-   "nne": "समुद्री चट्टानका घाँस-फूलमा केरी ब्लु टेरियर"
+   "nne": "समुद्री चट्टानका घाँस-फूलमा केरी ब्लु टेरियर",
+   "ncb": "Kerry Blue Terrier taliwala sa mga balili ug bulak sa pangpang sa dagat"
   },
   {
    "f": "bg270.jpg",
@@ -5038,7 +5302,8 @@
    "nms": "Anjing Finnish Lapphund dan aurora",
    "nar": "كلب لابهوند الفنلندي والشفق القطبي",
    "nhi": "फ़िनिश लैपहुंड और ध्रुवीय ज्योति",
-   "nne": "फिनिश ल्यापहन्ड कुकुर र अरोरा"
+   "nne": "फिनिश ल्यापहन्ड कुकुर र अरोरा",
+   "ncb": "Finnish Lapphund ug ang aurora"
   },
   {
    "f": "bg271.jpg",
@@ -5057,7 +5322,8 @@
    "nms": "Anjing Akita dan jalan lama pokok ginkgo",
    "nar": "كلب أكيتا وشارع قديم بين أشجار الجنكة",
    "nhi": "अकिता और जिंकगो वृक्षों वाली पुरानी गली",
-   "nne": "अकिता कुकुर र जिन्कगोका पातले ढाकिएको पुरानो गल्ली"
+   "nne": "अकिता कुकुर र जिन्कगोका पातले ढाकिएको पुरानो गल्ली",
+   "ncb": "Akita ug karaang dalan nga adunay mga ginkgo"
   },
   {
    "f": "bg272.jpg",
@@ -5076,7 +5342,8 @@
    "nms": "Anjing Great Pyrenees dan perkampungan gunung lavender",
    "nar": "كلب البيرينيه العظيم وبلدة جبلية بين اللافندر",
    "nhi": "ग्रेट पिरेनीज़ और लैवेंडर के पहाड़ी नगर",
-   "nne": "ग्रेट पिरिनीज कुकुर र ल्याभेन्डरले भरिएको पहाडी सहर"
+   "nne": "ग्रेट पिरिनीज कुकुर र ल्याभेन्डरले भरिएको पहाडी सहर",
+   "ncb": "Great Pyrenees ug lungsod sa bukid nga napalibotan sa lavender"
   },
   {
    "f": "bg273.jpg",
@@ -5095,7 +5362,8 @@
    "nms": "Anjing Newfoundland di jeti tepi tasik",
    "nar": "كلب نيوفاوندلاند عند رصيف البحيرة",
    "nhi": "झील किनारे घाट पर न्यूफ़ाउंडलैंड",
-   "nne": "न्युफाउन्डल्यान्ड कुकुर र तालको किनारको घाट"
+   "nne": "न्युफाउन्डल्यान्ड कुकुर र तालको किनारको घाट",
+   "ncb": "Newfoundland ug ang pantalan sa daplin sa lanaw"
   },
   {
    "f": "bg274.jpg",
@@ -5114,7 +5382,8 @@
    "nms": "Anjing Old English Sheepdog, kincir air dan bunga iris",
    "nar": "كلب الراعي الإنجليزي القديم وطاحونة الماء والسوسن",
    "nhi": "ओल्ड इंग्लिश शीपडॉग, पनचक्की और आइरिस",
-   "nne": "ओल्ड इङ्लिस शीपडग र पानीघट्टको छेउमा आइरिस फूल"
+   "nne": "ओल्ड इङ्लिस शीपडग र पानीघट्टको छेउमा आइरिस फूल",
+   "ncb": "Old English Sheepdog ug mga iris tapad sa ligid sa tubig"
   },
   {
    "f": "bg275.jpg",
@@ -5133,7 +5402,8 @@
    "nms": "Anjing Weimaraner di kabus pagi hutan birch",
    "nar": "كلب فايمارانر في ضباب أشجار البتولا",
    "nhi": "भोर की धुंध में बर्च वृक्षों के बीच वाइमरनर",
-   "nne": "वेइमरानर कुकुर र भोजपत्रको वनमा बिहानको कुहिरो"
+   "nne": "वेइमरानर कुकुर र भोजपत्रको वनमा बिहानको कुहिरो",
+   "ncb": "Weimaraner ug mga birch sa mahamog nga buntag"
   },
   {
    "f": "bg276.jpg",
@@ -5152,7 +5422,8 @@
    "nms": "Anjing Vizsla, bunga matahari dan kincir angin",
    "nar": "كلب فيزلا وطاحونة هواء بين عبّاد الشمس",
    "nhi": "विज़्स्ला, सूरजमुखी और पवनचक्की",
-   "nne": "भिज्स्ला कुकुर र सूर्यमुखी फूलले घेरिएको पवनचक्की"
+   "nne": "भिज्स्ला कुकुर र सूर्यमुखी फूलले घेरिएको पवनचक्की",
+   "ncb": "Vizsla ug ang ligid sa hangin taliwala sa mga sunflower"
   },
   {
    "f": "bg277.jpg",
@@ -5171,7 +5442,8 @@
    "nms": "Anjing Rhodesian Ridgeback di ngarai batu merah",
    "nar": "كلب رودسيان ريدج باك عند الوادي الصخري الأحمر",
    "nhi": "लाल चट्टानों की घाटी में रोडेशियन रिजबैक",
-   "nne": "रोडेसियन रिजब्याक कुकुर र रातो चट्टानी घाँटी"
+   "nne": "रोडेसियन रिजब्याक कुकुर र रातो चट्टानी घाँटी",
+   "ncb": "Rhodesian Ridgeback ug pula nga bato nga canyon"
   },
   {
    "f": "bg278.jpg",
@@ -5190,7 +5462,8 @@
    "nms": "Anjing Basenji di padang savana Afrika",
    "nar": "كلب باسنجي في سافانا أفريقيا",
    "nhi": "अफ़्रीकी घास के मैदान में बासेंजी",
-   "nne": "बासेन्जी कुकुर र अफ्रिकाको घाँसे मैदान"
+   "nne": "बासेन्जी कुकुर र अफ्रिकाको घाँसे मैदान",
+   "ncb": "Basenji ug ang kapatagan sa Africa"
   },
   {
    "f": "bg279.jpg",
@@ -5209,7 +5482,8 @@
    "nms": "Anjing Scottish Terrier di perpustakaan kota lama",
    "nar": "كلب سكوتش تيريير في مكتبة القلعة القديمة",
    "nhi": "पुस्तकालय में स्कॉटिश टेरियर और पुराना दुर्ग",
-   "nne": "स्कटिश टेरियर र किताबघर भएको पुरानो किल्ला"
+   "nne": "स्कटिश टेरियर र किताबघर भएको पुरानो किल्ला",
+   "ncb": "Scottish Terrier ug karaang kastilyo nga adunay librarya"
   },
   {
    "f": "bg280.jpg",
@@ -5228,7 +5502,8 @@
    "nms": "Anjing West Highland White Terrier dan pondok pelabuhan",
    "nar": "كلب وستي أبيض وكوخ الميناء",
    "nhi": "बन्दरगाह की कुटिया के पास वेस्टी",
-   "nne": "वेस्ट हाइल्यान्ड वाइट टेरियर र बन्दरगाहको सानो घर"
+   "nne": "वेस्ट हाइल्यान्ड वाइट टेरियर र बन्दरगाहको सानो घर",
+   "ncb": "West Highland White Terrier ug gamay nga balay sa pantalan"
   },
   {
    "f": "bg281.jpg",
@@ -5247,7 +5522,8 @@
    "nms": "Anjing Bernese di padang bunga Alps",
    "nar": "كلب جبال برن في مروج الألب المزهرة",
    "nhi": "बर्नीज़ माउंटेन डॉग और आल्प्स के फूलों के मैदान",
-   "nne": "बर्नीज माउन्टेन कुकुर र आल्प्सका फूलका फाँट"
+   "nne": "बर्नीज माउन्टेन कुकुर र आल्प्सका फूलका फाँट",
+   "ncb": "Bernese Mountain Dog ug ang kabulakan sa Alps"
   },
   {
    "f": "bg282.jpg",
@@ -5266,7 +5542,8 @@
    "nms": "Anjing Sheltie dan istana di tanah berpokok erika",
    "nar": "كلب شيلتي وقلعة وسط أزهار الخلنج",
    "nhi": "शेल्टी, हीथर और दुर्ग",
-   "nne": "शेटल्यान्ड शीपडग र हिद्र फूलका बीचको किल्ला"
+   "nne": "शेटल्यान्ड शीपडग र हिद्र फूलका बीचको किल्ला",
+   "ncb": "Shetland Sheepdog ug ang kastilyo taliwala sa mga heather"
   },
   {
    "f": "bg283.jpg",
@@ -5285,7 +5562,8 @@
    "nms": "Anjing Australian Shepherd di ladang anggur musim luruh",
    "nar": "كلب الراعي الأسترالي في كرم عنب الخريف",
    "nhi": "शरद के अंगूर के बाग़ में ऑस्ट्रेलियन शेपर्ड",
-   "nne": "अस्ट्रेलियन शीपडग र शरद ऋतुको अङ्गुरबारी"
+   "nne": "अस्ट्रेलियन शीपडग र शरद ऋतुको अङ्गुरबारी",
+   "ncb": "Australian Shepherd ug ang ubasan sa ting-ilaw"
   },
   {
    "f": "bg284.jpg",
@@ -5304,7 +5582,8 @@
    "nms": "Anjing Afghan Hound di teres mawar",
    "nar": "كلب أفغاني وشرفة الورود",
    "nhi": "गुलाबों से सजी छत पर अफ़ग़ान हाउंड",
-   "nne": "अफगान हाउन्ड र गुलाफले सजिएको टेरेस"
+   "nne": "अफगान हाउन्ड र गुलाफले सजिएको टेरेस",
+   "ncb": "Afghan Hound ug terasa nga adunay mga rosas"
   },
   {
    "f": "bg155.jpg",
@@ -5323,7 +5602,8 @@
    "nms": "Mawar merah jambu, lilin dan hati kayu",
    "nar": "ورود وردية وشمعة وقلب خشبي",
    "nhi": "गुलाबी गुलाब, मोमबत्ती और लकड़ी का दिल",
-   "nne": "गुलाबी गुलाफ, मैनबत्ती र काठको मुटु"
+   "nne": "गुलाबी गुलाफ, मैनबत्ती र काठको मुटु",
+   "ncb": "Rosas nga mga rosas ug kasingkasing nga kahoy sa kahayag sa kandila"
   },
   {
    "f": "bg156.jpg",
@@ -5342,7 +5622,8 @@
    "nms": "Pasu mawar putih krim",
    "nar": "مزهرية ورود بيضاء كريمية",
    "nhi": "दूधिया गुलाबों का गुलदान",
-   "nne": "दूध-सेतो गुलाफको फूलदानी"
+   "nne": "दूध-सेतो गुलाफको फूलदानी",
+   "ncb": "Plorera nga adunay gatas-puti nga mga rosas"
   },
   {
    "f": "bg157.jpg",
@@ -5361,7 +5642,8 @@
    "nms": "Tulip merah jambu dan kotak hati",
    "nar": "علبة قلب وتوليب وردي",
    "nhi": "गुलाबी ट्यूलिप और दिल वाला डिब्बा",
-   "nne": "गुलाबी ट्युलिपसहितको मुटु आकारको बाकस"
+   "nne": "गुलाबी ट्युलिपसहितको मुटु आकारको बाकस",
+   "ncb": "Kahon nga porma sa kasingkasing uban ang rosas nga mga tulip"
   },
   {
    "f": "bg158.jpg",
@@ -5380,7 +5662,8 @@
    "nms": "Teh chamomile yang hangat",
    "nar": "شاي البابونج الدافئ",
    "nhi": "कैमोमाइल की गरम चाय",
-   "nne": "क्यामोमाइलको तातो चिया"
+   "nne": "क्यामोमाइलको तातो चिया",
+   "ncb": "Init nga tsa nga chamomile"
   },
   {
    "f": "bg159.jpg",
@@ -5399,7 +5682,8 @@
    "nms": "Peoni merah jambu dan dua hati kayu",
    "nar": "فاوانيا وردية وقلبان خشبيان",
    "nhi": "गुलाबी पियोनी और लकड़ी के दो दिल",
-   "nne": "गुलाबी मोतीफूल र जोडी काठको मुटु"
+   "nne": "गुलाबी मोतीफूल र जोडी काठको मुटु",
+   "ncb": "Rosas nga mga peony uban ang duha ka kasingkasing nga kahoy"
   },
   {
    "f": "bg160.jpg",
@@ -5418,7 +5702,8 @@
    "nms": "Jag porselin putih dan lavender",
    "nar": "إبريق خزف أبيض ولافندر",
    "nhi": "लैवेंडर और श्वेत चीनी मिट्टी का जग",
-   "nne": "ल्याभेन्डर र सेतो माटोको जग"
+   "nne": "ल्याभेन्डर र सेतो माटोको जग",
+   "ncb": "Puti nga porselana nga banga uban ang lavender"
   },
   {
    "f": "bg161.jpg",
@@ -5437,7 +5722,8 @@
    "nms": "Bunga hidrangea, hati kaca dan pemandangan laut",
    "nar": "هيدرانجيا وقلب زجاجي أمام البحر",
    "nhi": "हाइड्रेंजिया, काँच का दिल और सागर का दृश्य",
-   "nne": "हाइड्रेन्जिया र सिसाको मुटु, समुद्रको दृश्यसहित"
+   "nne": "हाइड्रेन्जिया र सिसाको मुटु, समुद्रको दृश्यसहित",
+   "ncb": "Kasingkasing nga salamin uban ang mga hydrangea ug tanawon sa dagat"
   },
   {
    "f": "bg162.jpg",
@@ -5456,7 +5742,8 @@
    "nms": "Bunga matahari dan bantal hati",
    "nar": "عبّاد الشمس ووسادة القلب",
    "nhi": "सूरजमुखी और दिल के आकार का तकिया",
-   "nne": "सूर्यमुखी फूलको मुटु आकारको सिरानी"
+   "nne": "सूर्यमुखी फूलको मुटु आकारको सिरानी",
+   "ncb": "Unlan nga porma sa kasingkasing nga adunay sunflower"
   },
   {
    "f": "bg163.jpg",
@@ -5475,7 +5762,8 @@
    "nms": "Bunga carnation dan hati mutiara",
    "nar": "قرنفل وقلب من اللؤلؤ",
    "nhi": "कार्नेशन और मोतियों का दिल",
-   "nne": "कार्नेसन फूल र मोतीको मुटु"
+   "nne": "कार्नेसन फूल र मोतीको मुटु",
+   "ncb": "Kasingkasing nga perlas ug mga carnation"
   },
   {
    "f": "bg164.jpg",
@@ -5494,7 +5782,8 @@
    "nms": "Bunga hyacinth dan sampul surat",
    "nar": "هياسنت ورسائل",
    "nhi": "हायसिंथ और पत्र",
-   "nne": "हायसिन्थ र खाम"
+   "nne": "हायसिन्थ र खाम",
+   "ncb": "Mga hyacinth ug sobre"
   },
   {
    "f": "bg165.jpg",
@@ -5513,7 +5802,8 @@
    "nms": "Gerbera dan jambangan kertas kraf",
    "nar": "باقة جربيرا بورق بني",
    "nhi": "जरबेरा और भूरे कागज़ में फूलों का गुलदस्ता",
-   "nne": "खैरो कागजमा बेरिएको जर्बेराको गुच्छा"
+   "nne": "खैरो कागजमा बेरिएको जर्बेराको गुच्छा",
+   "ncb": "Bouquet nga gerbera sa kraft paper"
   },
   {
    "f": "bg166.jpg",
@@ -5532,7 +5822,8 @@
    "nms": "Bunga lili, salib dan Alkitab",
    "nar": "زنابق وصليب وكتاب مقدس",
    "nhi": "सोसन के फूल, क्रूस और बाइबल",
-   "nne": "लिली फूल, क्रुस र बाइबल"
+   "nne": "लिली फूल, क्रुस र बाइबल",
+   "ncb": "Krus nga lirio ug Bibliya"
   },
   {
    "f": "bg167.jpg",
@@ -5551,7 +5842,8 @@
    "nms": "Bunga sakura dan hati kristal",
    "nar": "أزهار الكرز وقلب من البلّور",
    "nhi": "चेरी ब्लॉसम और स्फटिक का दिल",
-   "nne": "चेरी फूल र स्फटिकको मुटु"
+   "nne": "चेरी फूल र स्फटिकको मुटु",
+   "ncb": "Kasingkasing nga kristal ug mga sakura"
   },
   {
    "f": "bg168.jpg",
@@ -5570,7 +5862,8 @@
    "nms": "Bakul bunga lili lembah",
    "nar": "سلة زنبق الوادي",
    "nhi": "घाटी की कुमुदिनी की टोकरी",
-   "nne": "घण्टी-फूलको टोकरी"
+   "nne": "घण्टी-फूलको टोकरी",
+   "ncb": "Basket sa mga lily of the valley"
   },
   {
    "f": "bg169.jpg",
@@ -5589,7 +5882,8 @@
    "nms": "Mawar merah di teres waktu senja",
    "nar": "ورود حمراء على الشرفة عند الغروب",
    "nhi": "सूर्यास्त के समय छत पर लाल गुलाब",
-   "nne": "सूर्यास्तमा रातो गुलाफ, छतको टेरेसमा"
+   "nne": "सूर्यास्तमा रातो गुलाफ, छतको टेरेसमा",
+   "ncb": "Pula nga mga rosas sa terasa sa pagsalop sa adlaw"
   },
   {
    "f": "bg170.jpg",
@@ -5608,7 +5902,8 @@
    "nms": "Orkid rama-rama putih dan hati",
    "nar": "أوركيد أبيض وقلب",
    "nhi": "श्वेत ऑर्किड और दिल",
-   "nne": "सेतो फ्यालेनोप्सिस ओर्किडको मुटु"
+   "nne": "सेतो फ्यालेनोप्सिस ओर्किडको मुटु",
+   "ncb": "Kasingkasing nga puti nga orkid nga phalaenopsis"
   },
   {
    "f": "bg171.jpg",
@@ -5627,7 +5922,8 @@
    "nms": "Bunga dahlia dan teh hangat musim luruh",
    "nar": "زهور الداليا وشاي الخريف الدافئ",
    "nhi": "डहलिया और शरद की गरम चाय",
-   "nne": "डाहलिया फूल र शरद ऋतुको तातो चिया"
+   "nne": "डाहलिया फूल र शरद ऋतुको तातो चिया",
+   "ncb": "Init nga tsa ug dahlia sa ting-ilaw"
   },
   {
    "f": "bg172.jpg",
@@ -5646,7 +5942,8 @@
    "nms": "Bunga ranunculus dan loket perak",
    "nar": "راننكيولس وقلادة فضية",
    "nhi": "रेननकुलस और चाँदी का लॉकेट",
-   "nne": "एनिमोन फूलसहितको चाँदीको हार राख्ने बाकस"
+   "nne": "एनिमोन फूलसहितको चाँदीको हार राख्ने बाकस",
+   "ncb": "Pilak nga kahon sa kuwintas nga adunay mga anemone"
   },
   {
    "f": "bg173.jpg",
@@ -5665,7 +5962,8 @@
    "nms": "Jambangan bunga waktu matahari terbit dan dua hati",
    "nar": "باقة الشروق وقلبان",
    "nhi": "सूर्योदय, फूलों का गुलदस्ता और दो दिल",
-   "nne": "सूर्योदयमा फूलको गुच्छा र जोडी मुटु"
+   "nne": "सूर्योदयमा फूलको गुच्छा र जोडी मुटु",
+   "ncb": "Pagsubang sa adlaw nga adunay bouquet ug duha ka kasingkasing"
   },
   {
    "f": "bg174.jpg",
@@ -5684,7 +5982,8 @@
    "nms": "Hati kayu berkalungan bunga ungu dan merah jambu",
    "nar": "قلب خشبي بإكليل زهور بنفسجي وردي",
    "nhi": "बैंगनी-गुलाबी फूलों की माला और लकड़ी का दिल",
-   "nne": "बैजनी-गुलाबी फूलको माला र काठको मुटु"
+   "nne": "बैजनी-गुलाबी फूलको माला र काठको मुटु",
+   "ncb": "Kasingkasing nga kahoy uban ang lila ug rosas nga mga bulak"
   }
  ],
  "cats": [
@@ -5703,7 +6002,8 @@
    "nms": "Kisah Alkitab",
    "nar": "قصص الكتاب المقدس",
    "nhi": "बाइबल की कथाएँ",
-   "nne": "बाइबलका कथा"
+   "nne": "बाइबलका कथा",
+   "ncb": "Mga Sugilanon sa Bibliya"
   },
   {
    "id": "scenery",
@@ -5720,7 +6020,8 @@
    "nms": "Pemandangan",
    "nar": "مناظر طبيعية",
    "nhi": "प्राकृतिक दृश्य",
-   "nne": "प्राकृतिक दृश्य"
+   "nne": "प्राकृतिक दृश्य",
+   "ncb": "Mga Tanawon sa Kinaiyahan"
   },
   {
    "id": "cross",
@@ -5737,7 +6038,8 @@
    "nms": "Salib",
    "nar": "الصليب",
    "nhi": "क्रूस",
-   "nne": "क्रुस"
+   "nne": "क्रुस",
+   "ncb": "Mga Krus"
   },
   {
    "id": "cats",
@@ -5754,7 +6056,8 @@
    "nms": "Kucing",
    "nar": "قطط",
    "nhi": "बिल्लियाँ",
-   "nne": "बिरालाहरू"
+   "nne": "बिरालाहरू",
+   "ncb": "Mga Iring"
   },
   {
    "id": "dogs",
@@ -5771,7 +6074,8 @@
    "nms": "Anjing",
    "nar": "كلاب",
    "nhi": "कुत्ते",
-   "nne": "कुकुरहरू"
+   "nne": "कुकुरहरू",
+   "ncb": "Mga Iro"
   },
   {
    "id": "gifts",
@@ -5788,7 +6092,8 @@
    "nms": "Hadiah",
    "nar": "هدايا",
    "nhi": "उपहार",
-   "nne": "उपहार"
+   "nne": "उपहार",
+   "ncb": "Mga Regalo"
   },
   {
    "id": "cakes",
@@ -5805,7 +6110,8 @@
    "nms": "Kek",
    "nar": "كعك",
    "nhi": "केक",
-   "nne": "केक"
+   "nne": "केक",
+   "ncb": "Mga Keyk"
   }
  ]
 }
