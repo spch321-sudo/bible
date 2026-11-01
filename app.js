@@ -37,7 +37,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.46.0';
+const VERSION = 'v2.46.1';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -689,7 +689,7 @@ const SENT_END = /[。！？]/;
 /* 英文靠句點＋空白斷句；縮寫（Mr. St. etc.）與引號結尾都要顧到 */
 function splitSentencesEN(text){
   const out = [];
-  const re = /[^.!?။]*[.!?။]+["'”’\)\]]*(?:\s+|$|(?<=။))/g;
+  const re = /[^.!?။\u05C3]*[.!?။\u05C3]+["'”’\)\]]*(?:\s+|$|(?<=[။\u05C3]))/g;
   let m, last = 0;
   while ((m = re.exec(text)) !== null){
     if (m[0].trim()) out.push(m[0]);
@@ -2026,9 +2026,10 @@ async function checkPlanRemind(){
    是一句話兩行。所以畫線與朗讀標示都要以「完整句」為單位，不是以「行」為單位。 */
 const SENT_TAIL = /[」』）〕”’«»"'\)\]\s]+$/;
 function isSentEnd(el){
+  if (isHE() && el.parentElement && el.parentElement.classList.contains('dline')) return true;   /* 希伯來文詩篇標題自成一句 */
   if (isTH()) return true;   /* 泰文沒有句號：每一節（.sent）自成一句，跟讀才會一句一句亮 */
   const x = (el.textContent || '').replace(SENT_TAIL, '');
-  return isEN() ? /[.!?။؟।]$/.test(x) : /[。！？]$/.test(x);
+  return isEN() ? /[.!?။؟।\u05C3]$/.test(x) : /[。！？]$/.test(x);   /* \u05C3 = 希伯來文句末符號 sof pasuq（׃）：每節一句，跟讀才會逐句亮 */
 }
 const SENT_MAX = 12;                 // 保險：再長也不要無限併下去
 /* 這一句從 el 開始往下要含幾個 .sent 才算完整 */
