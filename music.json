@@ -70,7 +70,10 @@
    "tde": "Hoffnung",
    "nit": "Alba radiosa",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Speranza"
+   "tit": "Speranza",
+   "nameRu": "Сияющий рассвет",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Надежда"
   },
   {
    "f": "m02.mp3",
@@ -130,7 +133,10 @@
    "tde": "Hoffnung",
    "nit": "Speranza – All’alba del giorno",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Speranza"
+   "tit": "Speranza",
+   "nameRu": "Надежда — на заре дня",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Надежда"
   },
   {
    "f": "m03.mp3",
@@ -190,7 +196,10 @@
    "tde": "Hoffnung",
    "nit": "Speranza 2 – Il creato, i monti e i mari",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Speranza"
+   "tit": "Speranza",
+   "nameRu": "Надежда 2 — творение, горы и моря",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Надежда"
   },
   {
    "f": "m04.mp3",
@@ -250,7 +259,10 @@
    "tde": "Hoffnung",
    "nit": "Speranza 3 – Raccoglimento e preghiera nel silenzio",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Speranza"
+   "tit": "Speranza",
+   "nameRu": "Надежда 3 — тишина и молитва",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Надежда"
   },
   {
    "f": "m05.mp3",
@@ -310,7 +322,10 @@
    "tde": "Hoffnung",
    "nit": "Speranza 4 – Adorazione e gloria",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Speranza"
+   "tit": "Speranza",
+   "nameRu": "Надежда 4 — поклонение и слава",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Надежда"
   },
   {
    "f": "m06.mp3",
@@ -370,7 +385,10 @@
    "tde": "Glaube",
    "nit": "Fede 1 – Camminare nella fede",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Fede"
+   "tit": "Fede",
+   "nameRu": "Вера 1 — ходить верой",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Вера"
   },
   {
    "f": "m07.mp3",
@@ -430,7 +448,10 @@
    "tde": "Glaube",
    "nit": "Fede 2 – Una fede come un granello di senape",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Fede"
+   "tit": "Fede",
+   "nameRu": "Вера 2 — вера как зерно горчичное",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Вера"
   },
   {
    "f": "m08.mp3",
@@ -490,7 +511,10 @@
    "tde": "Liebe",
    "nit": "Amore 1 – Dio ha tanto amato il mondo",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Amore"
+   "tit": "Amore",
+   "nameRu": "Любовь 1 — так возлюбил Бог мир",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Любовь"
   },
   {
    "f": "m09.mp3",
@@ -550,7 +574,10 @@
    "tde": "Liebe",
    "nit": "Amore 2 – Il più grande amore: ha dato la vita per me",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Amore"
+   "tit": "Amore",
+   "nameRu": "Любовь 2 — величайшая любовь: Он отдал за меня жизнь",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Любовь"
   },
   {
    "f": "m10.mp3",
@@ -610,7 +637,10 @@
    "tde": "Liebe",
    "nit": "Amore 3 – Il vero senso dell’amore",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Amore"
+   "tit": "Amore",
+   "nameRu": "Любовь 3 — истинный смысл любви",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Любовь"
   },
   {
    "f": "m11.mp3",
@@ -670,7 +700,10 @@
    "tde": "Liebe",
    "nit": "Amore 4 – Amatevi gli uni gli altri",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Amore"
+   "tit": "Amore",
+   "nameRu": "Любовь 4 — любите друг друга",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Любовь"
   },
   {
    "f": "m12.mp3",
@@ -730,7 +763,10 @@
    "tde": "Liebe",
    "nit": "Amore 5 – L’amore copre una moltitudine di peccati",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Amore"
+   "tit": "Amore",
+   "nameRu": "Любовь 5 — любовь покрывает множество грехов",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Любовь"
   },
   {
    "f": "m13.mp3",
@@ -790,7 +826,10 @@
    "tde": "Segen",
    "nit": "Benedizione 1 – La promessa di benedizione di Dio",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Benedizione"
+   "tit": "Benedizione",
+   "nameRu": "Благословение 1 — обетование Божьего благословения",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Благословение"
   },
   {
    "f": "m14.mp3",
@@ -850,7 +889,10 @@
    "tde": "Segen",
    "nit": "Benedizione 2 – La benedizione sacerdotale",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Benedizione"
+   "tit": "Benedizione",
+   "nameRu": "Благословение 2 — священническое благословение",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Благословение"
   },
   {
    "f": "m15.mp3",
@@ -910,7 +952,10 @@
    "tde": "Gnade",
    "nit": "Grazia 1 – Salvati per grazia",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Grazia"
+   "tit": "Grazia",
+   "nameRu": "Благодать 1 — спасены благодатью",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Благодать"
   },
   {
    "f": "m16.mp3",
@@ -970,7 +1015,10 @@
    "tde": "Gnade",
    "nit": "Grazia 2 – La grazia della croce",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Grazia"
+   "tit": "Grazia",
+   "nameRu": "Благодать 2 — благодать креста",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Благодать"
   },
   {
    "f": "m17.mp3",
@@ -1030,7 +1078,10 @@
    "tde": "Frieden",
    "nit": "Pace 1 – La pace che dà Cristo",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Pace"
+   "tit": "Pace",
+   "nameRu": "Мир 1 — мир, который дает Христос",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Мир"
   },
   {
    "f": "m18.mp3",
@@ -1090,7 +1141,10 @@
    "tde": "Frieden",
    "nit": "Pace 2 – Pace in mezzo alla tempesta",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Pace"
+   "tit": "Pace",
+   "nameRu": "Мир 2 — мир посреди бури",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Мир"
   },
   {
    "f": "m19.mp3",
@@ -1150,7 +1204,10 @@
    "tde": "Freude",
    "nit": "Gioia 1 – Rallegratevi sempre nel Signore",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Gioia"
+   "tit": "Gioia",
+   "nameRu": "Радость 1 — всегда радуйтесь в Господе",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Радость"
   },
   {
    "f": "m20.mp3",
@@ -1210,7 +1267,10 @@
    "tde": "Freude",
    "nit": "Gioia 2 – Esultanza al mattino",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Gioia"
+   "tit": "Gioia",
+   "nameRu": "Радость 2 — ликование на рассвете",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Радость"
   },
   {
    "f": "m21.mp3",
@@ -1270,7 +1330,10 @@
    "tde": "Freude",
    "nit": "Gioia 3 – Cantiamo con gioia la lode",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Gioia"
+   "tit": "Gioia",
+   "nameRu": "Радость 3 — радостно поем хвалу",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Радость"
   },
   {
    "f": "m22.mp3",
@@ -1330,7 +1393,10 @@
    "tde": "Freude",
    "nit": "Gioia 4 – Danziamo di gioia",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Gioia"
+   "tit": "Gioia",
+   "nameRu": "Радость 4 — танцуем от радости",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Радость"
   },
   {
    "f": "m23.mp3",
@@ -1390,7 +1456,10 @@
    "tde": "Freude",
    "nit": "Gioia 5 – La gioia del Signore è la mia forza",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Gioia"
+   "tit": "Gioia",
+   "nameRu": "Радость 5 — радость Господня — крепость моя",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Радость"
   },
   {
    "f": "m24.mp3",
@@ -1450,7 +1519,10 @@
    "tde": "Warten",
    "nit": "Attesa 1 – Sperare nel Signore",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Attesa"
+   "tit": "Attesa",
+   "nameRu": "Ожидание 1 — уповать на Господа",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Ожидание"
   },
   {
    "f": "m25.mp3",
@@ -1510,7 +1582,10 @@
    "tde": "Warten",
    "nit": "Attesa 2 – Levarsi in volo con ali d’aquila",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Attesa"
+   "tit": "Attesa",
+   "nameRu": "Ожидание 2 — взлететь на орлиных крыльях",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Ожидание"
   },
   {
    "f": "m26.mp3",
@@ -1570,7 +1645,10 @@
    "tde": "Warten",
    "nit": "Attesa 4 – Confidare in silenzio in lui",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Attesa"
+   "tit": "Attesa",
+   "nameRu": "Ожидание 4 — тихо уповать на Него",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Ожидание"
   },
   {
    "f": "m27.mp3",
@@ -1630,7 +1708,10 @@
    "tde": "Trost in Krankheit",
    "nit": "Conforto nella malattia 2 – Lacrime in mezzo alla sofferenza",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Conforto nella malattia"
+   "tit": "Conforto nella malattia",
+   "nameRu": "Утешение в болезни 2 — слезы среди страданий",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Утешение в болезни"
   },
   {
    "f": "m28.mp3",
@@ -1690,7 +1771,10 @@
    "tde": "Trost in Krankheit",
    "nit": "Conforto nella malattia – In silenzio davanti alla presenza di Dio",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Conforto nella malattia"
+   "tit": "Conforto nella malattia",
+   "nameRu": "Утешение в болезни — в тишине перед присутствием Божиим",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Утешение в болезни"
   },
   {
    "f": "m29.mp3",
@@ -1750,7 +1834,10 @@
    "tde": "Geburtstagsfeier",
    "nit": "Festa di compleanno – Gioia di compleanno, pioggia di benedizioni",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Festa di compleanno"
+   "tit": "Festa di compleanno",
+   "nameRu": "Праздник дня рождения — радость дня рождения, дождь благословений",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Праздник дня рождения"
   },
   {
    "f": "m30.mp3",
@@ -1810,7 +1897,10 @@
    "tde": "Geburtstagsfeier",
    "nit": "Inizio di compleanno – L’inizio della benedizione",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Festa di compleanno"
+   "tit": "Festa di compleanno",
+   "nameRu": "Начало дня рождения — начало благословения",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Праздник дня рождения"
   },
   {
    "f": "m31.mp3",
@@ -1870,7 +1960,10 @@
    "tde": "Geburtstagsfeier",
    "nit": "Canto di compleanno",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Festa di compleanno"
+   "tit": "Festa di compleanno",
+   "nameRu": "Песня ко дню рождения",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Праздник дня рождения"
   },
   {
    "f": "m32.mp3",
@@ -1930,7 +2023,10 @@
    "tde": "Geburtstagsfeier",
    "nit": "Festa",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Festa di compleanno"
+   "tit": "Festa di compleanno",
+   "nameRu": "Праздник",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Праздник дня рождения"
   },
   {
    "f": "m33.mp3",
@@ -1990,7 +2086,10 @@
    "tde": "Trost in Krankheit",
    "nit": "Conforto nella malattia 5",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Conforto nella malattia"
+   "tit": "Conforto nella malattia",
+   "nameRu": "Утешение в болезни 5",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Утешение в болезни"
   },
   {
    "f": "m34.mp3",
@@ -2050,7 +2149,10 @@
    "tde": "Geburtstagsfeier",
    "nit": "Grande gioia",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Festa di compleanno"
+   "tit": "Festa di compleanno",
+   "nameRu": "Великая радость",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Праздник дня рождения"
   },
   {
    "f": "m35.mp3",
@@ -2110,7 +2212,10 @@
    "tde": "Hoffnung",
    "nit": "Speranza",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Speranza"
+   "tit": "Speranza",
+   "nameRu": "Надежда",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Надежда"
   },
   {
    "f": "m36.mp3",
@@ -2170,7 +2275,10 @@
    "tde": "Frieden",
    "nit": "Pace",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Pace"
+   "tit": "Pace",
+   "nameRu": "Мир",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Мир"
   },
   {
    "f": "m37.mp3",
@@ -2230,7 +2338,10 @@
    "tde": "Liebe",
    "nit": "Bontà",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Amore"
+   "tit": "Amore",
+   "nameRu": "Милость",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Любовь"
   },
   {
    "f": "m38.mp3",
@@ -2290,7 +2401,10 @@
    "tde": "Liebe",
    "nit": "Mitezza",
    "bit": "Musica della Bibbia Interattiva 321",
-   "tit": "Amore"
+   "tit": "Amore",
+   "nameRu": "Кротость",
+   "byRu": "Музыка «Интерактивной Библии 321»",
+   "tagRu": "Любовь"
   }
  ]
 }

@@ -27,7 +27,8 @@
    "nes": "El jardín del Edén",
    "nfr": "Le jardin d’Éden",
    "nde": "Der Garten Eden",
-   "nit": "Il giardino dell’Eden"
+   "nit": "Il giardino dell’Eden",
+   "nameRu": "Едемский сад"
   },
   {
    "f": "bg286.jpg",
@@ -51,7 +52,8 @@
    "nes": "Noé sale del arca",
    "nfr": "Noé sort de l’arche",
    "nde": "Noah verlässt die Arche",
-   "nit": "Noè esce dall’arca"
+   "nit": "Noè esce dall’arca",
+   "nameRu": "Ной выходит из ковчега"
   },
   {
    "f": "bg287.jpg",
@@ -75,7 +77,8 @@
    "nes": "José interpreta los sueños",
    "nfr": "Joseph interprète les songes du pharaon",
    "nde": "Joseph deutet Träume",
-   "nit": "Giuseppe interpreta i sogni"
+   "nit": "Giuseppe interpreta i sogni",
+   "nameRu": "Иосиф толкует сны"
   },
   {
    "f": "bg288.jpg",
@@ -99,7 +102,8 @@
    "nes": "La escalera de Jacob",
    "nfr": "L’échelle de Jacob",
    "nde": "Die Jakobsleiter",
-   "nit": "La scala di Giacobbe"
+   "nit": "La scala di Giacobbe",
+   "nameRu": "Лестница Иакова"
   },
   {
    "f": "bg289.jpg",
@@ -123,7 +127,8 @@
    "nes": "Abraham contando las estrellas",
    "nfr": "Abraham compte les étoiles",
    "nde": "Abraham zählt die Sterne",
-   "nit": "Abramo conta le stelle"
+   "nit": "Abramo conta le stelle",
+   "nameRu": "Авраам считает звезды"
   },
   {
    "f": "bg290.jpg",
@@ -147,7 +152,8 @@
    "nes": "Rut recoge espigas",
    "nfr": "Ruth glane dans les champs",
    "nde": "Rut liest Ähren auf",
-   "nit": "Rut spigola"
+   "nit": "Rut spigola",
+   "nameRu": "Руфь подбирает колосья"
   },
   {
    "f": "bg291.jpg",
@@ -171,7 +177,8 @@
    "nes": "Moisés cruza el mar Rojo",
    "nfr": "La traversée de la mer Rouge",
    "nde": "Der Durchzug durch das Rote Meer",
-   "nit": "Il passaggio del Mar Rosso"
+   "nit": "Il passaggio del Mar Rosso",
+   "nameRu": "Переход через Чермное море"
   },
   {
    "f": "bg292.jpg",
@@ -195,7 +202,8 @@
    "nes": "La zarza ardiente",
    "nfr": "Le buisson ardent",
    "nde": "Der brennende Dornbusch",
-   "nit": "Il roveto ardente"
+   "nit": "Il roveto ardente",
+   "nameRu": "Неопалимая купина"
   },
   {
    "f": "bg293.jpg",
@@ -219,7 +227,8 @@
    "nes": "David lucha contra Goliat",
    "nfr": "David affronte Goliath",
    "nde": "David besiegt Goliat",
-   "nit": "Davide sconfigge Golia"
+   "nit": "Davide sconfigge Golia",
+   "nameRu": "Давид побеждает Голиафа"
   },
   {
    "f": "bg294.jpg",
@@ -243,7 +252,8 @@
    "nes": "El niño Samuel es llamado por Dios",
    "nfr": "Le jeune Samuel appelé par Dieu",
    "nde": "Der junge Samuel wird berufen",
-   "nit": "Il giovane Samuele è chiamato"
+   "nit": "Il giovane Samuele è chiamato",
+   "nameRu": "Юный Самуил слышит призвание"
   },
   {
    "f": "bg295.jpg",
@@ -267,7 +277,8 @@
    "nes": "Los cuervos llevan pan a Elías",
    "nfr": "Les corbeaux nourrissent Élie",
    "nde": "Raben bringen Elia Brot",
-   "nit": "I corvi portano il pane a Elia"
+   "nit": "I corvi portano il pane a Elia",
+   "nameRu": "Вороны приносят хлеб Илии"
   },
   {
    "f": "bg296.jpg",
@@ -291,7 +302,8 @@
    "nes": "Daniel en el foso de los leones",
    "nfr": "Daniel dans la fosse aux lions",
    "nde": "Daniel in der Löwengrube",
-   "nit": "Daniele nella fossa dei leoni"
+   "nit": "Daniele nella fossa dei leoni",
+   "nameRu": "Даниил во рву львином"
   },
   {
    "f": "bg297.jpg",
@@ -315,7 +327,8 @@
    "nes": "Jonás llega a la orilla",
    "nfr": "Jonas rejeté sur le rivage",
    "nde": "Jona wird an Land gespien",
-   "nit": "Giona rigettato a riva"
+   "nit": "Giona rigettato a riva",
+   "nameRu": "Иону выбрасывает на берег"
   },
   {
    "f": "bg298.jpg",
@@ -339,7 +352,8 @@
    "nes": "Jesús calma la tempestad",
    "nfr": "Jésus apaise la tempête",
    "nde": "Jesus stillt den Sturm",
-   "nit": "Gesù calma la tempesta"
+   "nit": "Gesù calma la tempesta",
+   "nameRu": "Иисус укрощает бурю"
   },
   {
    "f": "bg299.jpg",
@@ -363,7 +377,8 @@
    "nes": "El bautismo de Jesús",
    "nfr": "Le baptême de Jésus",
    "nde": "Die Taufe Jesu",
-   "nit": "Il battesimo di Gesù"
+   "nit": "Il battesimo di Gesù",
+   "nameRu": "Крещение Иисуса"
   },
   {
    "f": "bg300.jpg",
@@ -387,7 +402,8 @@
    "nes": "El nacimiento de Jesús",
    "nfr": "La Nativité",
    "nde": "Die Geburt Jesu",
-   "nit": "La nascita di Gesù"
+   "nit": "La nascita di Gesù",
+   "nameRu": "Рождество Иисуса"
   },
   {
    "f": "bg301.jpg",
@@ -411,7 +427,8 @@
    "nes": "El regreso del hijo pródigo",
    "nfr": "Le fils prodigue",
    "nde": "Der verlorene Sohn",
-   "nit": "Il figlio prodigo"
+   "nit": "Il figlio prodigo",
+   "nameRu": "Возвращение блудного сына"
   },
   {
    "f": "bg302.jpg",
@@ -435,7 +452,8 @@
    "nes": "El buen samaritano",
    "nfr": "Le bon Samaritain",
    "nde": "Der barmherzige Samariter",
-   "nit": "Il buon samaritano"
+   "nit": "Il buon samaritano",
+   "nameRu": "Милосердный самарянин"
   },
   {
    "f": "bg303.jpg",
@@ -459,7 +477,8 @@
    "nes": "Cinco panes y dos peces",
    "nfr": "Cinq pains et deux poissons",
    "nde": "Fünf Brote und zwei Fische",
-   "nit": "Cinque pani e due pesci"
+   "nit": "Cinque pani e due pesci",
+   "nameRu": "Пять хлебов и две рыбы"
   },
   {
    "f": "bg304.jpg",
@@ -483,7 +502,8 @@
    "nes": "La mañana de la resurrección",
    "nfr": "Le matin de la résurrection",
    "nde": "Der Morgen der Auferstehung",
-   "nit": "Il mattino della risurrezione"
+   "nit": "Il mattino della risurrezione",
+   "nameRu": "Утро воскресения"
   },
   {
    "f": "bg305.jpg",
@@ -507,7 +527,8 @@
    "nes": "Agar e Ismael encuentran agua",
    "nfr": "Agar et Ismaël trouvent de l’eau",
    "nde": "Hagar und Ismael finden Wasser",
-   "nit": "Agar e Ismaele trovano l’acqua"
+   "nit": "Agar e Ismaele trovano l’acqua",
+   "nameRu": "Агарь и Измаил находят воду"
   },
   {
    "f": "bg306.jpg",
@@ -531,7 +552,8 @@
    "nes": "El niño Moisés entre los juncos",
    "nfr": "Le petit Moïse dans les roseaux",
    "nde": "Der kleine Mose im Schilf",
-   "nit": "Il piccolo Mosè tra le canne"
+   "nit": "Il piccolo Mosè tra le canne",
+   "nameRu": "Младенец Моисей в тростнике"
   },
   {
    "f": "bg307.jpg",
@@ -555,7 +577,8 @@
    "nes": "José se da a conocer a sus hermanos",
    "nfr": "Joseph retrouve ses frères",
    "nde": "Joseph gibt sich seinen Brüdern zu erkennen",
-   "nit": "Giuseppe si rivela ai suoi fratelli"
+   "nit": "Giuseppe si rivela ai suoi fratelli",
+   "nameRu": "Иосиф открывается своим братьям"
   },
   {
    "f": "bg308.jpg",
@@ -579,7 +602,8 @@
    "nes": "Rebeca saca agua del pozo",
    "nfr": "Rebecca puise de l’eau au puits",
    "nde": "Rebekka schöpft Wasser am Brunnen",
-   "nit": "Rebecca attinge acqua al pozzo"
+   "nit": "Rebecca attinge acqua al pozzo",
+   "nameRu": "Ревекка черпает воду у колодца"
   },
   {
    "f": "bg309.jpg",
@@ -603,7 +627,8 @@
    "nes": "Aarón y Hur sostienen las manos de Moisés",
    "nfr": "Aaron et Hur soutiennent les mains de Moïse",
    "nde": "Aaron und Hur stützen die Hände des Mose",
-   "nit": "Aronne e Cur sostengono le mani di Mosè"
+   "nit": "Aronne e Cur sostengono le mani di Mosè",
+   "nameRu": "Аарон и Ор поддерживают руки Моисея"
   },
   {
    "f": "bg310.jpg",
@@ -627,7 +652,8 @@
    "nes": "El agua que brota de la roca",
    "nfr": "L’eau jaillit du rocher",
    "nde": "Das Wasser aus dem Felsen",
-   "nit": "L’acqua dalla roccia"
+   "nit": "L’acqua dalla roccia",
+   "nameRu": "Вода из скалы"
   },
   {
    "f": "bg311.jpg",
@@ -651,7 +677,8 @@
    "nes": "Los israelitas recogen el maná",
    "nfr": "Les Israélites ramassent la manne",
    "nde": "Die Israeliten sammeln das Manna",
-   "nit": "Gli israeliti raccolgono la manna"
+   "nit": "Gli israeliti raccolgono la manna",
+   "nameRu": "Израильтяне собирают манну"
   },
   {
    "f": "bg312.jpg",
@@ -675,7 +702,8 @@
    "nes": "Gedeón es llamado por el ángel",
    "nfr": "Gédéon appelé par l’ange",
    "nde": "Gideon wird vom Engel berufen",
-   "nit": "Gedeone chiamato dall’angelo"
+   "nit": "Gedeone chiamato dall’angelo",
+   "nameRu": "Гедеон получает призвание от ангела"
   },
   {
    "f": "bg313.jpg",
@@ -699,7 +727,8 @@
    "nes": "La familia de Rahab es salvada",
    "nfr": "La famille de Rahab est sauvée",
    "nde": "Rahabs Familie wird gerettet",
-   "nit": "La famiglia di Raab viene salvata"
+   "nit": "La famiglia di Raab viene salvata",
+   "nameRu": "Семья Раав спасена"
   },
   {
    "f": "bg314.jpg",
@@ -723,7 +752,8 @@
    "nes": "El arca del pacto cruza el Jordán",
    "nfr": "L’arche de l’alliance traverse le Jourdain",
    "nde": "Die Bundeslade wird durch den Jordan getragen",
-   "nit": "L’arca dell’alleanza portata attraverso il Giordano"
+   "nit": "L’arca dell’alleanza portata attraverso il Giordano",
+   "nameRu": "Ковчег завета переносят через Иордан"
   },
   {
    "f": "bg315.jpg",
@@ -747,7 +777,8 @@
    "nes": "El aceite de la viuda que no se agota",
    "nfr": "L’huile de la veuve qui ne s’épuise pas",
    "nde": "Das Öl der Witwe geht nicht aus",
-   "nit": "L’olio della vedova non finisce"
+   "nit": "L’olio della vedova non finisce",
+   "nameRu": "Масло вдовы не иссякает"
   },
   {
    "f": "bg316.jpg",
@@ -771,7 +802,8 @@
    "nes": "Jonatán da su manto a David",
    "nfr": "Jonathan donne son manteau à David",
    "nde": "Jonatan schenkt David seinen Mantel",
-   "nit": "Gionata dona il mantello a Davide"
+   "nit": "Gionata dona il mantello a Davide",
+   "nameRu": "Ионафан дарит Давиду свою одежду"
   },
   {
    "f": "bg317.jpg",
@@ -795,7 +827,8 @@
    "nes": "Ana ora en el templo",
    "nfr": "Anne prie dans le temple",
    "nde": "Hanna betet im Tempel",
-   "nit": "Anna prega nel tempio"
+   "nit": "Anna prega nel tempio",
+   "nameRu": "Анна молится в храме"
   },
   {
    "f": "bg318.jpg",
@@ -819,7 +852,8 @@
    "nes": "El agua convertida en vino en las bodas de Caná",
    "nfr": "L’eau changée en vin à Cana",
    "nde": "Wasser wird zu Wein bei der Hochzeit zu Kana",
-   "nit": "L’acqua diventa vino alle nozze di Cana"
+   "nit": "L’acqua diventa vino alle nozze di Cana",
+   "nameRu": "Вода становится вином на браке в Кане"
   },
   {
    "f": "bg319.jpg",
@@ -843,7 +877,8 @@
    "nes": "Ester ante el rey",
    "nfr": "Esther devant le roi",
    "nde": "Ester vor dem König",
-   "nit": "Ester davanti al re"
+   "nit": "Ester davanti al re",
+   "nameRu": "Есфирь перед царем"
   },
   {
    "f": "bg320.jpg",
@@ -867,7 +902,8 @@
    "nes": "Naamán es sanado en el río Jordán",
    "nfr": "Naaman purifié dans le Jourdain",
    "nde": "Naaman wird im Jordan rein",
-   "nit": "Naaman viene purificato nel Giordano"
+   "nit": "Naaman viene purificato nel Giordano",
+   "nameRu": "Нееман очищается в Иордане"
   },
   {
    "f": "bg321.jpg",
@@ -891,7 +927,8 @@
    "nes": "La mujer samaritana junto al pozo",
    "nfr": "La Samaritaine au puits",
    "nde": "Die Samariterin am Brunnen",
-   "nit": "La samaritana al pozzo"
+   "nit": "La samaritana al pozzo",
+   "nameRu": "Самарянка у колодца"
   },
   {
    "f": "bg322.jpg",
@@ -915,7 +952,8 @@
    "nes": "La hija de Jairo resucita",
    "nfr": "La fille de Jaïrus ressuscitée",
    "nde": "Die Tochter des Jaïrus wird auferweckt",
-   "nit": "La figlia di Giairo è risuscitata"
+   "nit": "La figlia di Giairo è risuscitata",
+   "nameRu": "Дочь Иаира воскрешена"
   },
   {
    "f": "bg323.jpg",
@@ -939,7 +977,8 @@
    "nes": "Jesús bendice a los niños",
    "nfr": "Jésus bénit les enfants",
    "nde": "Jesus segnet die Kinder",
-   "nit": "Gesù benedice i bambini"
+   "nit": "Gesù benedice i bambini",
+   "nameRu": "Иисус благословляет детей"
   },
   {
    "f": "bg324.jpg",
@@ -963,7 +1002,8 @@
    "nes": "Jesús lava los pies de los discípulos",
    "nfr": "Jésus lave les pieds de ses disciples",
    "nde": "Jesus wäscht seinen Jüngern die Füße",
-   "nit": "Gesù lava i piedi ai discepoli"
+   "nit": "Gesù lava i piedi ai discepoli",
+   "nameRu": "Иисус умывает ноги ученикам"
   },
   {
    "f": "bg325.jpg",
@@ -987,7 +1027,8 @@
    "nes": "Pablo y Silas alaban a Dios en la cárcel",
    "nfr": "Paul et Silas louent Dieu en prison",
    "nde": "Paulus und Silas loben Gott im Gefängnis",
-   "nit": "Paolo e Sila lodano Dio in prigione"
+   "nit": "Paolo e Sila lodano Dio in prigione",
+   "nameRu": "Павел и Сила воспевают Бога в темнице"
   },
   {
    "f": "bg326.jpg",
@@ -1011,7 +1052,8 @@
    "nes": "Pedro sana al hombre cojo de nacimiento",
    "nfr": "Pierre guérit l’infirme de naissance",
    "nde": "Petrus heilt den von Geburt an Gelähmten",
-   "nit": "Pietro guarisce lo storpio dalla nascita"
+   "nit": "Pietro guarisce lo storpio dalla nascita",
+   "nameRu": "Петр исцеляет хромого от рождения"
   },
   {
    "f": "bg327.jpg",
@@ -1035,7 +1077,8 @@
    "nes": "En el camino a Emaús",
    "nfr": "Sur le chemin d’Emmaüs",
    "nde": "Auf dem Weg nach Emmaus",
-   "nit": "Sulla strada di Emmaus"
+   "nit": "Sulla strada di Emmaus",
+   "nameRu": "На дороге в Эммаус"
   },
   {
    "f": "bg328.jpg",
@@ -1059,7 +1102,8 @@
    "nes": "El enfermo junto al estanque de Betesda",
    "nfr": "Le malade au bord de la piscine de Bethesda",
    "nde": "Der Kranke am Teich Betesda",
-   "nit": "Il malato presso la piscina di Betesda"
+   "nit": "Il malato presso la piscina di Betesda",
+   "nameRu": "Больной у купальни Вифезда"
   },
   {
    "f": "bg329.jpg",
@@ -1083,7 +1127,8 @@
    "nes": "Zaqueo sube al sicómoro",
    "nfr": "Zachée dans le sycomore",
    "nde": "Zachäus auf dem Maulbeerbaum",
-   "nit": "Zaccheo sul sicomoro"
+   "nit": "Zaccheo sul sicomoro",
+   "nameRu": "Закхей на смоковнице"
   },
   {
    "f": "bg330.jpg",
@@ -1107,7 +1152,8 @@
    "nes": "Simeón sostiene en brazos al niño Jesús",
    "nfr": "Siméon tient l’enfant Jésus dans ses bras",
    "nde": "Simeon hält das Jesuskind im Arm",
-   "nit": "Simeone tiene in braccio il piccolo Gesù"
+   "nit": "Simeone tiene in braccio il piccolo Gesù",
+   "nameRu": "Симеон держит на руках младенца Иисуса"
   },
   {
    "f": "bg331.jpg",
@@ -1131,7 +1177,8 @@
    "nes": "Los magos siguen la estrella",
    "nfr": "Les mages suivent l’étoile",
    "nde": "Die Weisen aus dem Morgenland folgen dem Stern",
-   "nit": "I magi seguono la stella"
+   "nit": "I magi seguono la stella",
+   "nameRu": "Волхвы идут за звездой"
   },
   {
    "f": "bg332.jpg",
@@ -1155,7 +1202,8 @@
    "nes": "Nehemías reconstruye la muralla de la ciudad",
    "nfr": "Néhémie reconstruit la muraille",
    "nde": "Nehemia baut die Mauer wieder auf",
-   "nit": "Neemia ricostruisce le mura"
+   "nit": "Neemia ricostruisce le mura",
+   "nameRu": "Неемия восстанавливает стены"
   },
   {
    "f": "bg333.jpg",
@@ -1179,7 +1227,8 @@
    "nes": "El hijo de la mujer de Sunem vuelve a la vida",
    "nfr": "Le fils de la Sunamite ramené à la vie",
    "nde": "Der Sohn der Sunamitin wird auferweckt",
-   "nit": "Il figlio della sunamita è risuscitato"
+   "nit": "Il figlio della sunamita è risuscitato",
+   "nameRu": "Сын сонамитянки воскрешен"
   },
   {
    "f": "bg334.jpg",
@@ -1203,7 +1252,8 @@
    "nes": "Elías a la entrada de la cueva en el monte Horeb",
    "nfr": "Élie à l’entrée de la grotte, sur le mont Horeb",
    "nde": "Elia am Eingang der Höhle am Berg Horeb",
-   "nit": "Elia all’ingresso della grotta sul monte Oreb"
+   "nit": "Elia all’ingresso della grotta sul monte Oreb",
+   "nameRu": "Илия у входа в пещеру на горе Хорив"
   },
   {
    "f": "bg335.jpg",
@@ -1227,7 +1277,8 @@
    "nes": "La oración de Salomón en la dedicación del templo",
    "nfr": "La prière de Salomon à la dédicace du temple",
    "nde": "Salomos Gebet bei der Tempelweihe",
-   "nit": "Preghiera di Salomone per la dedicazione del tempio"
+   "nit": "Preghiera di Salomone per la dedicazione del tempio",
+   "nameRu": "Молитва Соломона при освящении храма"
   },
   {
    "f": "bg336.jpg",
@@ -1251,7 +1302,8 @@
    "nes": "David muestra bondad a Mefiboset",
    "nfr": "David témoigne sa bonté à Mephibosheth",
    "nde": "David erweist Mephiboseth Güte",
-   "nit": "Davide mostra bontà a Mefiboset"
+   "nit": "Davide mostra bontà a Mefiboset",
+   "nameRu": "Давид оказывает милость Мемфивосфею"
   },
   {
    "f": "bg337.jpg",
@@ -1275,7 +1327,8 @@
    "nes": "Noemí abraza a su nieto Obed",
    "nfr": "Naomi serre son petit-fils Obed dans ses bras",
    "nde": "Naemi hält ihren Enkel Obed im Arm",
-   "nit": "Naomi tiene in braccio il nipote Obed"
+   "nit": "Naomi tiene in braccio il nipote Obed",
+   "nameRu": "Ноеминь держит на руках внука Овида"
   },
   {
    "f": "bg338.jpg",
@@ -1299,7 +1352,8 @@
    "nes": "Booz y Rut comen juntos",
    "nfr": "Boaz et Ruth partagent un repas",
    "nde": "Boas und Rut teilen eine Mahlzeit",
-   "nit": "Booz e Rut condividono un pasto"
+   "nit": "Booz e Rut condividono un pasto",
+   "nameRu": "Вооз и Руфь разделяют трапезу"
   },
   {
    "f": "bg339.jpg",
@@ -1323,7 +1377,8 @@
    "nes": "Moisés baja del monte Sinaí con los diez mandamientos",
    "nfr": "Moïse descend du Sinaï avec les tables de la loi",
    "nde": "Mose bringt die Zehn Gebote vom Sinai herab",
-   "nit": "Mosè scende dal Sinai con i dieci comandamenti"
+   "nit": "Mosè scende dal Sinai con i dieci comandamenti",
+   "nameRu": "Моисей спускается с Синая с десятью заповедями"
   },
   {
    "f": "bg340.jpg",
@@ -1347,7 +1402,8 @@
    "nes": "La travesía del éxodo",
    "nfr": "La traversée de l’Exode",
    "nde": "Die Reise des Auszugs aus Ägypten",
-   "nit": "Il viaggio dell’Esodo"
+   "nit": "Il viaggio dell’Esodo",
+   "nameRu": "Путь исхода из Египта"
   },
   {
    "f": "bg341.jpg",
@@ -1371,7 +1427,8 @@
    "nes": "José cuida de su padre Jacob",
    "nfr": "Joseph prend soin de son père Jacob",
    "nde": "Joseph versorgt seinen Vater Jakob",
-   "nit": "Giuseppe provvede al padre Giacobbe"
+   "nit": "Giuseppe provvede al padre Giacobbe",
+   "nameRu": "Иосиф заботится об отце Иакове"
   },
   {
    "f": "bg342.jpg",
@@ -1395,7 +1452,8 @@
    "nes": "La reconciliación de Jacob y Esaú",
    "nfr": "Jacob et Ésaü se réconcilient",
    "nde": "Jakob und Esau versöhnen sich",
-   "nit": "Giacobbe ed Esaù si riconciliano"
+   "nit": "Giacobbe ed Esaù si riconciliano",
+   "nameRu": "Иаков и Исав примиряются"
   },
   {
    "f": "bg343.jpg",
@@ -1419,7 +1477,8 @@
    "nes": "Isaac recibe a Rebeca",
    "nfr": "Isaac accueille Rebecca",
    "nde": "Isaak empfängt Rebekka",
-   "nit": "Isacco accoglie Rebecca"
+   "nit": "Isacco accoglie Rebecca",
+   "nameRu": "Исаак встречает Ревекку"
   },
   {
    "f": "bg344.jpg",
@@ -1443,7 +1502,8 @@
    "nes": "Abraham recibe a tres visitantes",
    "nfr": "Abraham accueille trois visiteurs",
    "nde": "Abraham bewirtet drei Gäste",
-   "nit": "Abramo accoglie tre ospiti"
+   "nit": "Abramo accoglie tre ospiti",
+   "nameRu": "Авраам принимает трех гостей"
   },
   {
    "f": "bg195.jpg",
@@ -1467,7 +1527,8 @@
    "nes": "Terrazas de travertino",
    "nfr": "Vasques de travertin en terrasses",
    "nde": "Travertinterrassen",
-   "nit": "Terrazze di travertino"
+   "nit": "Terrazze di travertino",
+   "nameRu": "Травертиновые террасы"
   },
   {
    "f": "bg196.jpg",
@@ -1491,7 +1552,8 @@
    "nes": "Lago salado rosado",
    "nfr": "Lac salé rose",
    "nde": "Rosa Salzsee",
-   "nit": "Lago salato rosa"
+   "nit": "Lago salato rosa",
+   "nameRu": "Розовое соленое озеро"
   },
   {
    "f": "bg197.jpg",
@@ -1515,7 +1577,8 @@
    "nes": "Amanecer en una costa de basalto",
    "nfr": "Lever de soleil sur une côte de basalte",
    "nde": "Sonnenaufgang an einer Basaltküste",
-   "nit": "Alba su una costa di basalto"
+   "nit": "Alba su una costa di basalto",
+   "nameRu": "Рассвет на базальтовом берегу"
   },
   {
    "f": "bg198.jpg",
@@ -1539,7 +1602,8 @@
    "nes": "Torres de roca roja",
    "nfr": "Pitons de roche rouge",
    "nde": "Rote Felstürme",
-   "nit": "Torri di roccia rossa"
+   "nit": "Torri di roccia rossa",
+   "nameRu": "Башни из красных скал"
   },
   {
    "f": "bg199.jpg",
@@ -1563,7 +1627,8 @@
    "nes": "Valle glaciar",
    "nfr": "Vallée glaciaire",
    "nde": "Gletschertal",
-   "nit": "Valle glaciale"
+   "nit": "Valle glaciale",
+   "nameRu": "Ледниковая долина"
   },
   {
    "f": "bg200.jpg",
@@ -1587,7 +1652,8 @@
    "nes": "Abedules y altramuces",
    "nfr": "Bouleaux et lupins",
    "nde": "Birken und Lupinen",
-   "nit": "Betulle e lupini"
+   "nit": "Betulle e lupini",
+   "nameRu": "Березы и люпины"
   },
   {
    "f": "bg201.jpg",
@@ -1611,7 +1677,8 @@
    "nes": "Acantilados de creta junto al mar",
    "nfr": "Falaises de craie",
    "nde": "Kreidefelsen",
-   "nit": "Scogliere di gesso"
+   "nit": "Scogliere di gesso",
+   "nameRu": "Меловые утесы"
   },
   {
    "f": "bg202.jpg",
@@ -1635,7 +1702,8 @@
    "nes": "Sombras azules en una cueva de hielo",
    "nfr": "Ombres bleues dans une grotte de glace",
    "nde": "Blaue Schatten in der Eishöhle",
-   "nit": "Ombre azzurre nella grotta di ghiaccio"
+   "nit": "Ombre azzurre nella grotta di ghiaccio",
+   "nameRu": "Голубые тени в ледяной пещере"
   },
   {
    "f": "bg203.jpg",
@@ -1659,7 +1727,8 @@
    "nes": "Bahía poco profunda con manglares",
    "nfr": "Baie peu profonde bordée de mangroves",
    "nde": "Flaches Mangrovenbecken",
-   "nit": "Bassa baia di mangrovie"
+   "nit": "Bassa baia di mangrovie",
+   "nameRu": "Мелководный залив с мангровыми зарослями"
   },
   {
    "f": "bg204.jpg",
@@ -1683,7 +1752,8 @@
    "nes": "Humedal con algodón de pantano",
    "nfr": "Zone humide aux linaigrettes",
    "nde": "Feuchtgebiet mit Wollgras",
-   "nit": "Zona umida con eriofori"
+   "nit": "Zona umida con eriofori",
+   "nameRu": "Болото с пушицей"
   },
   {
    "f": "bg205.jpg",
@@ -1707,7 +1777,8 @@
    "nes": "Arroyo entre alerces otoñales",
    "nfr": "Ruisseau parmi les mélèzes en automne",
    "nde": "Bach zwischen herbstlichen Lärchen",
-   "nit": "Ruscello tra larici autunnali"
+   "nit": "Ruscello tra larici autunnali",
+   "nameRu": "Ручей среди осенних лиственниц"
   },
   {
    "f": "bg206.jpg",
@@ -1731,7 +1802,8 @@
    "nes": "Glicinias junto al lago",
    "nfr": "Glycines au bord du lac",
    "nde": "Glyzinien am See",
-   "nit": "Glicine sul lago"
+   "nit": "Glicine sul lago",
+   "nameRu": "Глицинии на берегу озера"
   },
   {
    "f": "bg207.jpg",
@@ -1755,7 +1827,8 @@
    "nes": "Paisaje kárstico de montañas y agua",
    "nfr": "Paysage karstique de montagnes et de rivières",
    "nde": "Karstlandschaft mit Bergen und Flüssen",
-   "nit": "Paesaggio carsico di monti e fiumi"
+   "nit": "Paesaggio carsico di monti e fiumi",
+   "nameRu": "Карстовый пейзаж с горами и реками"
   },
   {
    "f": "bg208.jpg",
@@ -1779,7 +1852,8 @@
    "nes": "Atardecer en una poza de marea con corales",
    "nfr": "Coucher de soleil sur une mare de corail",
    "nde": "Sonnenuntergang an einem Korallen-Gezeitentümpel",
-   "nit": "Tramonto su una pozza di marea corallina"
+   "nit": "Tramonto su una pozza di marea corallina",
+   "nameRu": "Закат над коралловой приливной лужей"
   },
   {
    "f": "bg209.jpg",
@@ -1803,7 +1877,8 @@
    "nes": "Mar de nubes y azaleas",
    "nfr": "Mer de nuages et rhododendrons",
    "nde": "Rhododendren über dem Wolkenmeer",
-   "nit": "Rododendri sopra il mare di nuvole"
+   "nit": "Rododendri sopra il mare di nuvole",
+   "nameRu": "Рододендроны над морем облаков"
   },
   {
    "f": "bg210.jpg",
@@ -1827,7 +1902,8 @@
    "nes": "Playa de arena blanca",
    "nfr": "Plage de sable blanc",
    "nde": "Weißer Sandstrand",
-   "nit": "Spiaggia di sabbia bianca"
+   "nit": "Spiaggia di sabbia bianca",
+   "nameRu": "Пляж с белым песком"
   },
   {
    "f": "bg211.jpg",
@@ -1851,7 +1927,8 @@
    "nes": "Pradera junto a la bahía",
    "nfr": "Prairie côtière",
    "nde": "Küstenwiese an der Bucht",
-   "nit": "Prateria costiera sulla baia"
+   "nit": "Prateria costiera sulla baia",
+   "nameRu": "Прибрежный луг у залива"
   },
   {
    "f": "bg212.jpg",
@@ -1875,7 +1952,8 @@
    "nes": "Lago geotérmico de colores",
    "nfr": "Lac géothermique aux mille couleurs",
    "nde": "Farbenfroher Geothermalsee",
-   "nit": "Lago geotermico variopinto"
+   "nit": "Lago geotermico variopinto",
+   "nameRu": "Разноцветное геотермальное озеро"
   },
   {
    "f": "bg213.jpg",
@@ -1899,7 +1977,8 @@
    "nes": "Luz del atardecer sobre un olivo",
    "nfr": "Olivier au soleil couchant",
    "nde": "Olivenbaum im Abendlicht",
-   "nit": "Ulivo alla luce del tramonto"
+   "nit": "Ulivo alla luce del tramonto",
+   "nameRu": "Маслина в лучах заката"
   },
   {
    "f": "bg214.jpg",
@@ -1923,7 +2002,8 @@
    "nes": "Cascada congelada",
    "nfr": "Cascade gelée",
    "nde": "Gefrorener Wasserfall",
-   "nit": "Cascata ghiacciata"
+   "nit": "Cascata ghiacciata",
+   "nameRu": "Замерзший водопад"
   },
   {
    "f": "bg175.jpg",
@@ -1947,7 +2027,8 @@
    "nes": "Cascada de montaña nevada y flores silvestres",
    "nfr": "Cascade alpine et fleurs sauvages",
    "nde": "Alpenwasserfall und Wildblumen",
-   "nit": "Cascata alpina e fiori selvatici"
+   "nit": "Cascata alpina e fiori selvatici",
+   "nameRu": "Горный водопад и полевые цветы"
   },
   {
    "f": "bg176.jpg",
@@ -1971,7 +2052,8 @@
    "nes": "Amanecer en la bahía",
    "nfr": "Lever de soleil sur la baie",
    "nde": "Sonnenaufgang über der Bucht",
-   "nit": "Alba sulla baia"
+   "nit": "Alba sulla baia",
+   "nameRu": "Рассвет над заливом"
   },
   {
    "f": "bg177.jpg",
@@ -1995,7 +2077,8 @@
    "nes": "Arroyo entre arces rojos",
    "nfr": "Ruisseau et érables d’automne",
    "nde": "Bach und Ahornbäume im Herbst",
-   "nit": "Ruscello e aceri in autunno"
+   "nit": "Ruscello e aceri in autunno",
+   "nameRu": "Ручей и клены осенью"
   },
   {
    "f": "bg178.jpg",
@@ -2019,7 +2102,8 @@
    "nes": "Sendero de piedra en la niebla de la mañana",
    "nfr": "Sentier de pierre dans la brume du matin",
    "nde": "Steinpfad im Morgennebel",
-   "nit": "Sentiero di pietra nella nebbia del mattino"
+   "nit": "Sentiero di pietra nella nebbia del mattino",
+   "nameRu": "Каменная тропа в утреннем тумане"
   },
   {
    "f": "bg179.jpg",
@@ -2043,7 +2127,8 @@
    "nes": "Montaña nevada reflejada en el lago",
    "nfr": "Reflets d’un lac de montagne enneigée",
    "nde": "Spiegelung eines verschneiten Bergsees",
-   "nit": "Riflesso di un lago di montagna innevato"
+   "nit": "Riflesso di un lago di montagna innevato",
+   "nameRu": "Отражение заснеженных гор в озере"
   },
   {
    "f": "bg180.jpg",
@@ -2067,7 +2152,8 @@
    "nes": "Mar de nubes sobre terrazas de cultivo",
    "nfr": "Rizières en terrasses dans une mer de nuages",
    "nde": "Reisterrassen im Wolkenmeer",
-   "nit": "Risaie a terrazza nel mare di nuvole"
+   "nit": "Risaie a terrazza nel mare di nuvole",
+   "nameRu": "Террасные поля в море облаков"
   },
   {
    "f": "bg181.jpg",
@@ -2091,7 +2177,8 @@
    "nes": "Amanecer en un campo de lavanda",
    "nfr": "Lever de soleil sur un domaine de lavande",
    "nde": "Sonnenaufgang über einer Lavendelfarm",
-   "nit": "Alba su un campo di lavanda"
+   "nit": "Alba su un campo di lavanda",
+   "nameRu": "Рассвет над лавандовым полем"
   },
   {
    "f": "bg182.jpg",
@@ -2115,7 +2202,8 @@
    "nes": "Arroyo y flores de cerezo",
    "nfr": "Ruisseau bordé de cerisiers en fleurs",
    "nde": "Bach zwischen blühenden Kirschbäumen",
-   "nit": "Ruscello tra ciliegi in fiore"
+   "nit": "Ruscello tra ciliegi in fiore",
+   "nameRu": "Ручей среди цветущей сакуры"
   },
   {
    "f": "bg183.jpg",
@@ -2139,7 +2227,8 @@
    "nes": "Bahía tropical",
    "nfr": "Baie tropicale",
    "nde": "Tropische Bucht",
-   "nit": "Baia tropicale"
+   "nit": "Baia tropicale",
+   "nameRu": "Тропический залив"
   },
   {
    "f": "bg184.jpg",
@@ -2163,7 +2252,8 @@
    "nes": "Mar de flores alpinas y vista del lago",
    "nfr": "Prairie alpine fleurie au bord d’un lac",
    "nde": "Blumenwiese am Bergsee",
-   "nit": "Prato fiorito sul lago di montagna"
+   "nit": "Prato fiorito sul lago di montagna",
+   "nameRu": "Цветущий луг над горным озером"
   },
   {
    "f": "bg185.jpg",
@@ -2187,7 +2277,8 @@
    "nes": "Campo de trigo dorado",
    "nfr": "Champ de blé doré",
    "nde": "Goldenes Weizenfeld",
-   "nit": "Campo di grano dorato"
+   "nit": "Campo di grano dorato",
+   "nameRu": "Золотое пшеничное поле"
   },
   {
    "f": "bg186.jpg",
@@ -2211,7 +2302,8 @@
    "nes": "Amanecer en el desierto",
    "nfr": "Lever de soleil sur le désert",
    "nde": "Sonnenaufgang über der Wüste",
-   "nit": "Alba sul deserto"
+   "nit": "Alba sul deserto",
+   "nameRu": "Рассвет в пустыне"
   },
   {
    "f": "bg187.jpg",
@@ -2235,7 +2327,8 @@
    "nes": "Cascada en un fiordo",
    "nfr": "Cascades d’un fjord",
    "nde": "Wasserfälle am Fjord",
-   "nit": "Cascate sul fiordo"
+   "nit": "Cascate sul fiordo",
+   "nameRu": "Водопады над фьордом"
   },
   {
    "f": "bg188.jpg",
@@ -2259,7 +2352,8 @@
    "nes": "Atardecer en un arco de roca marino",
    "nfr": "Coucher de soleil sur une arche marine",
    "nde": "Abendsonne an einem Felsentor im Meer",
-   "nit": "Arco naturale sul mare al tramonto"
+   "nit": "Arco naturale sul mare al tramonto",
+   "nameRu": "Морская арка на закате"
   },
   {
    "f": "bg189.jpg",
@@ -2283,7 +2377,8 @@
    "nes": "Sendero de piedra en un bosque de bambú",
    "nfr": "Sentier de pierre dans la forêt de bambous",
    "nde": "Steinpfad im Bambuswald",
-   "nit": "Sentiero di pietra nel bosco di bambù"
+   "nit": "Sentiero di pietra nel bosco di bambù",
+   "nameRu": "Каменная тропа в бамбуковой роще"
   },
   {
    "f": "bg190.jpg",
@@ -2307,7 +2402,8 @@
    "nes": "Amanecer en un lago volcánico",
    "nfr": "Lever de soleil sur un lac volcanique",
    "nde": "Sonnenaufgang über einem Vulkansee",
-   "nit": "Alba su un lago vulcanico"
+   "nit": "Alba su un lago vulcanico",
+   "nameRu": "Рассвет над вулканическим озером"
   },
   {
    "f": "bg191.jpg",
@@ -2331,7 +2427,8 @@
    "nes": "Cañón de roca roja",
    "nfr": "Canyon de roches rouges",
    "nde": "Canyon aus rotem Fels",
-   "nit": "Canyon di roccia rossa"
+   "nit": "Canyon di roccia rossa",
+   "nameRu": "Каньон из красных скал"
   },
   {
    "f": "bg192.jpg",
@@ -2355,7 +2452,8 @@
    "nes": "La Vía Láctea sobre un lago de montaña",
    "nfr": "Voie lactée sur un lac de montagne",
    "nde": "Milchstraße über dem Bergsee",
-   "nit": "Via Lattea sul lago di montagna"
+   "nit": "Via Lattea sul lago di montagna",
+   "nameRu": "Млечный Путь над горным озером"
   },
   {
    "f": "bg193.jpg",
@@ -2379,7 +2477,8 @@
    "nes": "Lago helado bajo la aurora boreal",
    "nfr": "Lac gelé sous les aurores boréales",
    "nde": "Zugefrorener See unter Polarlichtern",
-   "nit": "Lago ghiacciato sotto l’aurora boreale"
+   "nit": "Lago ghiacciato sotto l’aurora boreale",
+   "nameRu": "Ледяное озеро под северным сиянием"
   },
   {
    "f": "bg194.jpg",
@@ -2403,7 +2502,8 @@
    "nes": "Arroyo en un bosque nevado",
    "nfr": "Ruisseau en forêt enneigée",
    "nde": "Bach im verschneiten Wald",
-   "nit": "Ruscello nel bosco innevato"
+   "nit": "Ruscello nel bosco innevato",
+   "nameRu": "Ручей в заснеженном лесу"
   },
   {
    "f": "bg215.jpg",
@@ -2427,7 +2527,8 @@
    "nes": "Amanecer sobre colinas de colores",
    "nfr": "Lever de soleil sur des collines colorées",
    "nde": "Sonnenaufgang über bunten Hügeln",
-   "nit": "Alba su colline variopinte"
+   "nit": "Alba su colline variopinte",
+   "nameRu": "Рассвет над разноцветными холмами"
   },
   {
    "f": "bg216.jpg",
@@ -2451,7 +2552,8 @@
    "nes": "Arroyo en un valle semicircular",
    "nfr": "Ruisseau dans une vallée en demi-cercle",
    "nde": "Bach in einem halbrunden Tal",
-   "nit": "Ruscello in una valle a semicerchio"
+   "nit": "Ruscello in una valle a semicerchio",
+   "nameRu": "Ручей в полукруглой долине"
   },
   {
    "f": "bg217.jpg",
@@ -2475,7 +2577,8 @@
    "nes": "Crepúsculo en dunas de arena blanca",
    "nfr": "Dunes de sable blanc au crépuscule",
    "nde": "Weiße Sanddünen in der Dämmerung",
-   "nit": "Dune di sabbia bianca al crepuscolo"
+   "nit": "Dune di sabbia bianca al crepuscolo",
+   "nameRu": "Белые песчаные дюны в сумерках"
   },
   {
    "f": "bg218.jpg",
@@ -2499,7 +2602,8 @@
    "nes": "Dolina en la selva tropical",
    "nfr": "Doline dans la forêt tropicale",
    "nde": "Einsturzdoline im Regenwald",
-   "nit": "Dolina nella foresta pluviale"
+   "nit": "Dolina nella foresta pluviale",
+   "nameRu": "Карстовая воронка в тропическом лесу"
   },
   {
    "f": "bg219.jpg",
@@ -2523,7 +2627,8 @@
    "nes": "Mar de flores en un cañón dorado",
    "nfr": "Canyon doré et mer de fleurs",
    "nde": "Goldener Canyon und Blumenmeer",
-   "nit": "Canyon dorato e mare di fiori"
+   "nit": "Canyon dorato e mare di fiori",
+   "nameRu": "Золотой каньон и море цветов"
   },
   {
    "f": "bg220.jpg",
@@ -2547,7 +2652,8 @@
    "nes": "Atardecer en una playa de cantos rodados",
    "nfr": "Coucher de soleil sur une plage de galets",
    "nde": "Sonnenuntergang an einem Kiesstrand",
-   "nit": "Tramonto su una spiaggia di ciottoli"
+   "nit": "Tramonto su una spiaggia di ciottoli",
+   "nameRu": "Закат на галечном пляже"
   },
   {
    "f": "bg221.jpg",
@@ -2571,7 +2677,8 @@
    "nes": "Amanecer en un estanque de lotos",
    "nfr": "Aube sur l’étang de lotus",
    "nde": "Morgenröte über dem Lotosteich",
-   "nit": "Alba sullo stagno di loti"
+   "nit": "Alba sullo stagno di loti",
+   "nameRu": "Рассвет над прудом с лотосами"
   },
   {
    "f": "bg222.jpg",
@@ -2595,7 +2702,8 @@
    "nes": "Cristales de hielo en una playa de arena negra",
    "nfr": "Cristaux de glace sur une plage de sable noir",
    "nde": "Eiskristalle am schwarzen Sandstrand",
-   "nit": "Cristalli di ghiaccio sulla spiaggia nera"
+   "nit": "Cristalli di ghiaccio sulla spiaggia nera",
+   "nameRu": "Ледяные кристаллы на черном пляже"
   },
   {
    "f": "bg223.jpg",
@@ -2619,7 +2727,8 @@
    "nes": "Humedal con salicornia roja",
    "nfr": "Zone humide aux salicornes rouges",
    "nde": "Feuchtgebiet mit rotem Queller",
-   "nit": "Zona umida con salicornia rossa"
+   "nit": "Zona umida con salicornia rossa",
+   "nameRu": "Болото с красным солеросом"
   },
   {
    "f": "bg224.jpg",
@@ -2643,7 +2752,8 @@
    "nes": "Cascadas escalonadas en la selva tropical",
    "nfr": "Cascades étagées dans la forêt tropicale",
    "nde": "Stufenwasserfälle im Regenwald",
-   "nit": "Cascate a gradini nella foresta pluviale"
+   "nit": "Cascate a gradini nella foresta pluviale",
+   "nameRu": "Ступенчатые водопады в тропическом лесу"
   },
   {
    "f": "bg46.jpg",
@@ -2667,7 +2777,8 @@
    "nes": "Pastel de chocolate",
    "nfr": "Gâteau au chocolat",
    "nde": "Schokoladenkuchen",
-   "nit": "Torta al cioccolato"
+   "nit": "Torta al cioccolato",
+   "nameRu": "Шоколадный торт"
   },
   {
    "f": "bg47.jpg",
@@ -2691,7 +2802,8 @@
    "nes": "Pastel de fresas y crema fresca",
    "nfr": "Gâteau à la crème et aux fraises",
    "nde": "Erdbeer-Sahne-Torte",
-   "nit": "Torta alle fragole e panna"
+   "nit": "Torta alle fragole e panna",
+   "nameRu": "Клубничный торт со сливками"
   },
   {
    "f": "bg48.jpg",
@@ -2715,7 +2827,8 @@
    "nes": "Pastel de rosas",
    "nfr": "Gâteau aux roses",
    "nde": "Rosenkuchen",
-   "nit": "Torta di rose"
+   "nit": "Torta di rose",
+   "nameRu": "Розовый торт с розами"
   },
   {
    "f": "bg49.jpg",
@@ -2739,7 +2852,8 @@
    "nes": "Pastel en forma de concha marina",
    "nfr": "Gâteau coquillages",
    "nde": "Muschelkuchen",
-   "nit": "Torta a forma di conchiglia"
+   "nit": "Torta a forma di conchiglia",
+   "nameRu": "Торт в форме морской раковины"
   },
   {
    "f": "bg50.jpg",
@@ -2763,7 +2877,8 @@
    "nes": "Pastel de crepas de té matcha",
    "nfr": "Gâteau de crêpes au thé matcha",
    "nde": "Matcha-Crêpe-Torte",
-   "nit": "Torta di crêpe al tè matcha"
+   "nit": "Torta di crêpe al tè matcha",
+   "nameRu": "Блинный торт с матча"
   },
   {
    "f": "bg54.jpg",
@@ -2787,7 +2902,8 @@
    "nes": "Gatito color crema",
    "nfr": "Chaton crème",
    "nde": "Cremefarbenes Kätzchen",
-   "nit": "Gattino color crema"
+   "nit": "Gattino color crema",
+   "nameRu": "Кремовый котенок"
   },
   {
    "f": "bg55.jpg",
@@ -2811,7 +2927,8 @@
    "nes": "Gatito naranja y blanco",
    "nfr": "Chaton orange et blanc",
    "nde": "Orange-weißes Kätzchen",
-   "nit": "Gattino bianco e arancione"
+   "nit": "Gattino bianco e arancione",
+   "nameRu": "Рыжо-белый котенок"
   },
   {
    "f": "bg56.jpg",
@@ -2835,7 +2952,8 @@
    "nes": "Gato británico de pelo corto gris plata",
    "nfr": "British shorthair gris argenté",
    "nde": "Britisch Kurzhaar in Silbergrau",
-   "nit": "British Shorthair grigio argento"
+   "nit": "British Shorthair grigio argento",
+   "nameRu": "Серебристо-серая британская короткошерстная кошка"
   },
   {
    "f": "bg135.jpg",
@@ -2859,7 +2977,8 @@
    "nes": "Gato ragdoll color crema y rosas",
    "nfr": "Ragdoll crème et roses",
    "nde": "Cremefarbene Ragdoll und Rosen",
-   "nit": "Ragdoll color crema e rose"
+   "nit": "Ragdoll color crema e rose",
+   "nameRu": "Кремовый рэгдолл и розы"
   },
   {
    "f": "bg136.jpg",
@@ -2883,7 +3002,8 @@
    "nes": "Gatito naranja y blanco en una cesta de margaritas",
    "nfr": "Chaton orange et blanc dans un panier de marguerites",
    "nde": "Orange-weißes Kätzchen im Gänseblümchenkorb",
-   "nit": "Gattino bianco e arancione nel cesto di margherite"
+   "nit": "Gattino bianco e arancione nel cesto di margherite",
+   "nameRu": "Рыжо-белый котенок в корзине с ромашками"
   },
   {
    "f": "bg137.jpg",
@@ -2907,7 +3027,8 @@
    "nes": "Gata tricolor y tulipanes",
    "nfr": "Chatte tricolore et tulipes",
    "nde": "Dreifarbige Katze und Tulpen",
-   "nit": "Gatta tricolore e tulipani"
+   "nit": "Gatta tricolore e tulipani",
+   "nameRu": "Трехцветная кошка и тюльпаны"
   },
   {
    "f": "bg57.jpg",
@@ -2931,7 +3052,8 @@
    "nes": "Caja de regalo con rosas rosadas",
    "nfr": "Coffret cadeau aux roses roses",
    "nde": "Geschenkbox mit rosa Rosen",
-   "nit": "Scatola regalo con rose rosa"
+   "nit": "Scatola regalo con rose rosa",
+   "nameRu": "Подарочная коробка с розовыми розами"
   },
   {
    "f": "bg58.jpg",
@@ -2955,7 +3077,8 @@
    "nes": "Caja de regalo con lavanda",
    "nfr": "Coffret cadeau à la lavande",
    "nde": "Geschenkbox mit Lavendel",
-   "nit": "Scatola regalo con lavanda"
+   "nit": "Scatola regalo con lavanda",
+   "nameRu": "Подарочная коробка с лавандой"
   },
   {
    "f": "bg59.jpg",
@@ -2979,7 +3102,8 @@
    "nes": "Caja de regalo de papel kraft con margaritas",
    "nfr": "Coffret cadeau en papier kraft et marguerites",
    "nde": "Geschenkbox aus Kraftpapier mit Gänseblümchen",
-   "nit": "Scatola regalo di carta kraft con margherite"
+   "nit": "Scatola regalo di carta kraft con margherite",
+   "nameRu": "Подарочная коробка из крафтовой бумаги с ромашками"
   },
   {
    "f": "bg60.jpg",
@@ -3003,7 +3127,8 @@
    "nes": "Pastel de noche estrellada morada",
    "nfr": "Gâteau nuit étoilée violette",
    "nde": "Kuchen „Violette Sternennacht“",
-   "nit": "Torta «Notte stellata viola»"
+   "nit": "Torta «Notte stellata viola»",
+   "nameRu": "Торт «Фиолетовая звездная ночь»"
   },
   {
    "f": "bg61.jpg",
@@ -3027,7 +3152,8 @@
    "nes": "Pastel de osito de miel",
    "nfr": "Gâteau petit ours au miel",
    "nde": "Honigbärchen-Kuchen",
-   "nit": "Torta a forma di orsetto di miele"
+   "nit": "Torta a forma di orsetto di miele",
+   "nameRu": "Торт в форме медвежонка с медом"
   },
   {
    "f": "bg62.jpg",
@@ -3051,7 +3177,8 @@
    "nes": "Pastel de caramelos de arcoíris",
    "nfr": "Gâteau aux bonbons arc-en-ciel",
    "nde": "Regenbogen-Bonbon-Torte",
-   "nit": "Torta arcobaleno di caramelle"
+   "nit": "Torta arcobaleno di caramelle",
+   "nameRu": "Радужный торт с конфетами"
   },
   {
    "f": "bg63.jpg",
@@ -3075,7 +3202,8 @@
    "nes": "Pastel dorado de tres pisos",
    "nfr": "Gâteau doré à trois étages",
    "nde": "Goldene Torte mit drei Etagen",
-   "nit": "Torta dorata a tre piani"
+   "nit": "Torta dorata a tre piani",
+   "nameRu": "Золотой трехъярусный торт"
   },
   {
    "f": "bg64.jpg",
@@ -3099,7 +3227,8 @@
    "nes": "Pastel de limón del jardín",
    "nfr": "Gâteau citron du jardin",
    "nde": "Zitronenkuchen aus dem Garten",
-   "nit": "Torta al limone del giardino"
+   "nit": "Torta al limone del giardino",
+   "nameRu": "Лимонный торт «Сад»"
   },
   {
    "f": "bg65.jpg",
@@ -3123,7 +3252,8 @@
    "nes": "Pastel de chocolate blanco en una nevada de invierno",
    "nfr": "Gâteau au chocolat blanc sous la neige d’hiver",
    "nde": "Weiße Schokoladentorte im Winterschnee",
-   "nit": "Torta al cioccolato bianco sotto la neve invernale"
+   "nit": "Torta al cioccolato bianco sotto la neve invernale",
+   "nameRu": "Торт из белого шоколада в зимнем снегу"
   },
   {
    "f": "bg66.jpg",
@@ -3147,7 +3277,8 @@
    "nes": "Pastel de caramelo y nueces",
    "nfr": "Gâteau au caramel et aux noix",
    "nde": "Karamell-Walnuss-Kuchen",
-   "nit": "Torta al caramello e noci"
+   "nit": "Torta al caramello e noci",
+   "nameRu": "Карамельно-ореховый торт"
   },
   {
    "f": "bg67.jpg",
@@ -3171,7 +3302,8 @@
    "nes": "Pastel de mango",
    "nfr": "Gâteau à la mangue",
    "nde": "Mangokuchen",
-   "nit": "Torta al mango"
+   "nit": "Torta al mango",
+   "nameRu": "Манговый торт"
   },
   {
    "f": "bg68.jpg",
@@ -3195,7 +3327,8 @@
    "nes": "Pastel con notas de piano",
    "nfr": "Gâteau piano et notes de musique",
    "nde": "Klavier-und-Noten-Kuchen",
-   "nit": "Torta con pianoforte e note"
+   "nit": "Torta con pianoforte e note",
+   "nameRu": "Торт с пианино и нотами"
   },
   {
    "f": "bg69.jpg",
@@ -3219,7 +3352,8 @@
    "nes": "Tiramisú",
    "nfr": "Tiramisu",
    "nde": "Tiramisu",
-   "nit": "Tiramisù"
+   "nit": "Tiramisù",
+   "nameRu": "Тирамису"
   },
   {
    "f": "bg70.jpg",
@@ -3243,7 +3377,8 @@
    "nes": "Pastel de durazno con reflejos del lago",
    "nfr": "Gâteau pêche et reflets du lac",
    "nde": "Pfirsichkuchen mit Seespiegelung",
-   "nit": "Torta alla pesca con riflesso sul lago"
+   "nit": "Torta alla pesca con riflesso sul lago",
+   "nameRu": "Персиковый торт с отражением озера"
   },
   {
    "f": "bg71.jpg",
@@ -3267,7 +3402,8 @@
    "nes": "Pastel en forma de durazno de la longevidad",
    "nfr": "Gâteau en forme de pêche de longévité",
    "nde": "Kuchen in Form eines Glückspfirsichs",
-   "nit": "Torta a forma di pesca della longevità"
+   "nit": "Torta a forma di pesca della longevità",
+   "nameRu": "Торт в форме персика долголетия"
   },
   {
    "f": "bg72.jpg",
@@ -3291,7 +3427,8 @@
    "nes": "Pastel red velvet en forma de corazón",
    "nfr": "Gâteau red velvet en forme de cœur",
    "nde": "Red-Velvet-Kuchen in Herzform",
-   "nit": "Torta red velvet a forma di cuore"
+   "nit": "Torta red velvet a forma di cuore",
+   "nameRu": "Торт «Красный бархат» в форме сердца"
   },
   {
    "f": "bg73.jpg",
@@ -3315,7 +3452,8 @@
    "nes": "Pastel en forma de cesta de flores",
    "nfr": "Gâteau corbeille de fleurs",
    "nde": "Blumenkorbkuchen",
-   "nit": "Torta a cesto di fiori"
+   "nit": "Torta a cesto di fiori",
+   "nameRu": "Торт в виде корзины с цветами"
   },
   {
    "f": "bg74.jpg",
@@ -3339,7 +3477,8 @@
    "nes": "Pastel de dinosaurio",
    "nfr": "Gâteau dinosaure",
    "nde": "Dinosaurier-Kuchen",
-   "nit": "Torta a forma di dinosauro"
+   "nit": "Torta a forma di dinosauro",
+   "nameRu": "Торт в форме динозавра"
   },
   {
    "f": "bg75.jpg",
@@ -3363,7 +3502,8 @@
    "nes": "Cruz de roble y rosas",
    "nfr": "Croix en chêne et roses",
    "nde": "Eichenkreuz und Rosen",
-   "nit": "Croce di quercia e rose"
+   "nit": "Croce di quercia e rose",
+   "nameRu": "Дубовый крест и розы"
   },
   {
    "f": "bg76.jpg",
@@ -3387,7 +3527,8 @@
    "nes": "Cruz rústica y lavanda",
    "nfr": "Croix rustique et lavande",
    "nde": "Rustikales Kreuz und Lavendel",
-   "nit": "Croce rustica e lavanda"
+   "nit": "Croce rustica e lavanda",
+   "nameRu": "Простой крест и лаванда"
   },
   {
    "f": "bg77.jpg",
@@ -3411,7 +3552,8 @@
    "nes": "Cruz de madera roja y peonías",
    "nfr": "Croix en bois rouge et pivoines",
    "nde": "Kreuz und Pfingstrosen aus rotem Holz",
-   "nit": "Croce di legno rosso e peonie"
+   "nit": "Croce di legno rosso e peonie",
+   "nameRu": "Крест из красного дерева и пионы"
   },
   {
    "f": "bg78.jpg",
@@ -3435,7 +3577,8 @@
    "nes": "Cruz dorada y lirios",
    "nfr": "Croix dorée et lys",
    "nde": "Goldenes Kreuz und Lilien",
-   "nit": "Croce dorata e gigli"
+   "nit": "Croce dorata e gigli",
+   "nameRu": "Золотой крест и лилии"
   },
   {
    "f": "bg79.jpg",
@@ -3459,7 +3602,8 @@
    "nes": "Cruz blanca y margaritas",
    "nfr": "Croix blanche et marguerites",
    "nde": "Weißes Kreuz und Gänseblümchen",
-   "nit": "Croce bianca e margherite"
+   "nit": "Croce bianca e margherite",
+   "nameRu": "Белый крест и ромашки"
   },
   {
    "f": "bg80.jpg",
@@ -3483,7 +3627,8 @@
    "nes": "Cruz y rosas rojas a la luz de las velas",
    "nfr": "Croix, roses rouges et lueur de bougies",
    "nde": "Kreuz mit roten Rosen im Kerzenschein",
-   "nit": "Croce con rose rosse alla luce delle candele"
+   "nit": "Croce con rose rosse alla luce delle candele",
+   "nameRu": "Крест и красные розы при свечах"
   },
   {
    "f": "bg81.jpg",
@@ -3507,7 +3652,8 @@
    "nes": "Cruz de roble y tulipanes blancos",
    "nfr": "Croix en chêne et tulipes blanches",
    "nde": "Eichenkreuz und weiße Tulpen",
-   "nit": "Croce di quercia e tulipani bianchi"
+   "nit": "Croce di quercia e tulipani bianchi",
+   "nameRu": "Дубовый крест и белые тюльпаны"
   },
   {
    "f": "bg82.jpg",
@@ -3531,7 +3677,8 @@
    "nes": "Cruz blanca e hortensias azules",
    "nfr": "Croix blanche et hortensias bleus",
    "nde": "Weißes Kreuz und blaue Hortensien",
-   "nit": "Croce bianca e ortensie azzurre"
+   "nit": "Croce bianca e ortensie azzurre",
+   "nameRu": "Белый крест и голубые гортензии"
   },
   {
    "f": "bg83.jpg",
@@ -3555,7 +3702,8 @@
    "nes": "Cruz dorada bajo un cielo estrellado",
    "nfr": "Croix dorée sous les étoiles",
    "nde": "Goldenes Kreuz unter den Sternen",
-   "nit": "Croce dorata sotto le stelle"
+   "nit": "Croce dorata sotto le stelle",
+   "nameRu": "Золотой крест под звездным небом"
   },
   {
    "f": "bg84.jpg",
@@ -3579,7 +3727,8 @@
    "nes": "Cruz de piedra y flores de cerezo",
    "nfr": "Croix de pierre et cerisiers en fleurs",
    "nde": "Steinkreuz und Kirschblüten",
-   "nit": "Croce di pietra e fiori di ciliegio"
+   "nit": "Croce di pietra e fiori di ciliegio",
+   "nameRu": "Каменный крест и цветы сакуры"
   },
   {
    "f": "bg85.jpg",
@@ -3603,7 +3752,8 @@
    "nes": "Cruz y girasoles",
    "nfr": "Croix et tournesols",
    "nde": "Kreuz und Sonnenblumen",
-   "nit": "Croce e girasoli"
+   "nit": "Croce e girasoli",
+   "nameRu": "Крест и подсолнухи"
   },
   {
    "f": "bg86.jpg",
@@ -3627,7 +3777,8 @@
    "nes": "Cruz en otoño",
    "nfr": "Croix en automne",
    "nde": "Kreuz im Herbst",
-   "nit": "Croce in autunno"
+   "nit": "Croce in autunno",
+   "nameRu": "Крест осенью"
   },
   {
    "f": "bg87.jpg",
@@ -3651,7 +3802,8 @@
    "nes": "Cruz y rosas rosadas",
    "nfr": "Croix et roses roses",
    "nde": "Kreuz und rosa Rosen",
-   "nit": "Croce e rose rosa"
+   "nit": "Croce e rose rosa",
+   "nameRu": "Крест и розовые розы"
   },
   {
    "f": "bg88.jpg",
@@ -3675,7 +3827,8 @@
    "nes": "Cruz blanca y anémonas",
    "nfr": "Croix blanche et renoncules",
    "nde": "Weißes Kreuz und Ranunkeln",
-   "nit": "Croce bianca e ranuncoli"
+   "nit": "Croce bianca e ranuncoli",
+   "nameRu": "Белый крест и ранункулюсы"
   },
   {
    "f": "bg89.jpg",
@@ -3699,7 +3852,8 @@
    "nes": "Cruz de mármol y gerberas",
    "nfr": "Croix de marbre et gerberas",
    "nde": "Marmorkreuz und Gerbera",
-   "nit": "Croce di marmo e gerbere"
+   "nit": "Croce di marmo e gerbere",
+   "nameRu": "Мраморный крест и герберы"
   },
   {
    "f": "bg90.jpg",
@@ -3723,7 +3877,8 @@
    "nes": "Cruz dorada y orquídeas al atardecer",
    "nfr": "Croix dorée et orchidées au coucher du soleil",
    "nde": "Goldenes Kreuz und Orchideen im Sonnenuntergang",
-   "nit": "Croce dorata e orchidee al tramonto"
+   "nit": "Croce dorata e orchidee al tramonto",
+   "nameRu": "Золотой крест и орхидеи на закате"
   },
   {
    "f": "bg91.jpg",
@@ -3747,7 +3902,8 @@
    "nes": "Cruz blanca en invierno",
    "nfr": "Croix blanche en hiver",
    "nde": "Weißes Kreuz im Winter",
-   "nit": "Croce bianca d’inverno"
+   "nit": "Croce bianca d’inverno",
+   "nameRu": "Белый крест зимой"
   },
   {
    "f": "bg92.jpg",
@@ -3771,7 +3927,8 @@
    "nes": "Cruz y lirios de los valles en la niebla de la mañana",
    "nfr": "Croix et muguet dans la brume du matin",
    "nde": "Kreuz und Maiglöckchen im Morgennebel",
-   "nit": "Croce e mughetti nella nebbia del mattino"
+   "nit": "Croce e mughetti nella nebbia del mattino",
+   "nameRu": "Крест и ландыши в утреннем тумане"
   },
   {
    "f": "bg93.jpg",
@@ -3795,7 +3952,8 @@
    "nes": "Cruz, Biblia y flores secas",
    "nfr": "Croix, Bible et fleurs séchées",
    "nde": "Kreuz, Bibel und Trockenblumen",
-   "nit": "Croce, Bibbia e fiori secchi"
+   "nit": "Croce, Bibbia e fiori secchi",
+   "nameRu": "Крест, Библия и сухоцветы"
   },
   {
    "f": "bg94.jpg",
@@ -3819,7 +3977,8 @@
    "nes": "Cruz de bronce y magnolias",
    "nfr": "Croix de laiton et magnolias",
    "nde": "Messingkreuz und Magnolien",
-   "nit": "Croce di ottone e magnolie"
+   "nit": "Croce di ottone e magnolie",
+   "nameRu": "Медный крест и магнолии"
   },
   {
    "f": "bg345.jpg",
@@ -3843,7 +4002,8 @@
    "nes": "Cruz en un cañón de roca roja",
    "nfr": "Croix dans le canyon de roches rouges",
    "nde": "Kreuz im Canyon aus rotem Fels",
-   "nit": "Croce nel canyon di roccia rossa"
+   "nit": "Croce nel canyon di roccia rossa",
+   "nameRu": "Крест в каньоне из красных скал"
   },
   {
    "f": "bg346.jpg",
@@ -3867,7 +4027,8 @@
    "nes": "Cruz al atardecer sobre el glaciar",
    "nfr": "Croix au coucher du soleil sur le glacier",
    "nde": "Kreuz im Sonnenuntergang am Gletscher",
-   "nit": "Croce al tramonto sul ghiacciaio"
+   "nit": "Croce al tramonto sul ghiacciaio",
+   "nameRu": "Крест на закате у ледника"
   },
   {
    "f": "bg347.jpg",
@@ -3891,7 +4052,8 @@
    "nes": "Cruz en un oasis del desierto",
    "nfr": "Croix au-dessus d’une oasis du désert",
    "nde": "Kreuz über einer Wüstenoase",
-   "nit": "Croce sopra un’oasi nel deserto"
+   "nit": "Croce sopra un’oasi nel deserto",
+   "nameRu": "Крест над оазисом в пустыне"
   },
   {
    "f": "bg348.jpg",
@@ -3915,7 +4077,8 @@
    "nes": "Cruz en la niebla de la mañana sobre terrazas de cultivo",
    "nfr": "Croix au-dessus des rizières en terrasses dans la brume",
    "nde": "Kreuz über den Reisterrassen im Nebel",
-   "nit": "Croce sulle risaie a terrazza nella nebbia"
+   "nit": "Croce sulle risaie a terrazza nella nebbia",
+   "nameRu": "Крест над террасными полями в утреннем тумане"
   },
   {
    "f": "bg349.jpg",
@@ -3939,7 +4102,8 @@
    "nes": "Cruz sobre un arrecife entre las olas",
    "nfr": "Croix près des vagues qui se brisent sur les rochers",
    "nde": "Kreuz an den Wellen und Felsen",
-   "nit": "Croce tra le onde e gli scogli"
+   "nit": "Croce tra le onde e gli scogli",
+   "nameRu": "Крест среди волн и скал"
   },
   {
    "f": "bg350.jpg",
@@ -3963,7 +4127,8 @@
    "nes": "Cruz entre flores de montaña",
    "nfr": "Croix dans la prairie alpine",
    "nde": "Kreuz auf der Alpenwiese",
-   "nit": "Croce sul prato alpino"
+   "nit": "Croce sul prato alpino",
+   "nameRu": "Крест на альпийском лугу"
   },
   {
    "f": "bg351.jpg",
@@ -3987,7 +4152,8 @@
    "nes": "Cruz y brezo morado",
    "nfr": "Croix dans la bruyère violette",
    "nde": "Kreuz im violetten Heidekraut",
-   "nit": "Croce nell’erica viola"
+   "nit": "Croce nell’erica viola",
+   "nameRu": "Крест среди фиолетового вереска"
   },
   {
    "f": "bg352.jpg",
@@ -4011,7 +4177,8 @@
    "nes": "Cruz a la luz de la mañana entre montañas y aguas",
    "nfr": "Croix à la lumière du matin entre monts et eaux",
    "nde": "Kreuz im Morgenlicht zwischen Bergen und Wasser",
-   "nit": "Croce alla luce del mattino tra monti e acque"
+   "nit": "Croce alla luce del mattino tra monti e acque",
+   "nameRu": "Крест в утреннем свете среди гор и вод"
   },
   {
    "f": "bg353.jpg",
@@ -4035,7 +4202,8 @@
    "nes": "Cruz al atardecer en la costa",
    "nfr": "Croix au coucher du soleil sur la côte",
    "nde": "Kreuz im Sonnenuntergang an der Küste",
-   "nit": "Croce al tramonto sulla costa"
+   "nit": "Croce al tramonto sulla costa",
+   "nameRu": "Крест на закате у берега моря"
   },
   {
    "f": "bg354.jpg",
@@ -4059,7 +4227,8 @@
    "nes": "Cruz junto a un arroyo del bosque",
    "nfr": "Croix près d’un ruisseau en forêt",
    "nde": "Kreuz an einem Waldbach",
-   "nit": "Croce presso un ruscello nel bosco"
+   "nit": "Croce presso un ruscello nel bosco",
+   "nameRu": "Крест у лесного ручья"
   },
   {
    "f": "bg355.jpg",
@@ -4083,7 +4252,8 @@
    "nes": "Cruz al amanecer en un lago salado",
    "nfr": "Croix sur un lac salé aux lueurs du couchant",
    "nde": "Kreuz am Salzsee im Abendrot",
-   "nit": "Croce sul lago salato al tramonto"
+   "nit": "Croce sul lago salato al tramonto",
+   "nameRu": "Крест над соленым озером в лучах заката"
   },
   {
    "f": "bg356.jpg",
@@ -4107,7 +4277,8 @@
    "nes": "Cruz en un valle dorado de otoño",
    "nfr": "Croix dans la vallée aux couleurs dorées de l’automne",
    "nde": "Kreuz im Tal in goldenen Herbstfarben",
-   "nit": "Croce nella valle dai colori dorati dell’autunno"
+   "nit": "Croce nella valle dai colori dorati dell’autunno",
+   "nameRu": "Крест в долине золотой осени"
   },
   {
    "f": "bg357.jpg",
@@ -4131,7 +4302,8 @@
    "nes": "Cruz en terrazas blancas de aguas termales",
    "nfr": "Croix devant les terrasses blanches de sources chaudes",
    "nde": "Kreuz vor weißen Sinterterrassen heißer Quellen",
-   "nit": "Croce davanti alle terrazze bianche delle sorgenti calde"
+   "nit": "Croce davanti alle terrazze bianche delle sorgenti calde",
+   "nameRu": "Крест перед белыми террасами горячих источников"
   },
   {
    "f": "bg358.jpg",
@@ -4155,7 +4327,8 @@
    "nes": "Cruz en un fiordo",
    "nfr": "Croix sur un fjord",
    "nde": "Kreuz am Fjord",
-   "nit": "Croce sul fiordo"
+   "nit": "Croce sul fiordo",
+   "nameRu": "Крест над фьордом"
   },
   {
    "f": "bg359.jpg",
@@ -4179,7 +4352,8 @@
    "nes": "Cruz y lotos al amanecer",
    "nfr": "Croix parmi les lotus à l’aube",
    "nde": "Kreuz zwischen Lotosblumen im Morgenlicht",
-   "nit": "Croce tra i fiori di loto alla luce del mattino"
+   "nit": "Croce tra i fiori di loto alla luce del mattino",
+   "nameRu": "Крест среди цветов лотоса в утреннем свете"
   },
   {
    "f": "bg360.jpg",
@@ -4203,7 +4377,8 @@
    "nes": "Cruz y margaritas en un acantilado blanco",
    "nfr": "Croix sur les falaises blanches parmi les marguerites",
    "nde": "Kreuz auf weißen Klippen zwischen Gänseblümchen",
-   "nit": "Croce sulle scogliere bianche tra le margherite"
+   "nit": "Croce sulle scogliere bianche tra le margherite",
+   "nameRu": "Крест на белых утесах среди ромашек"
   },
   {
    "f": "bg361.jpg",
@@ -4227,7 +4402,8 @@
    "nes": "Cruz en un lago volcánico",
    "nfr": "Croix au bord du lac de cratère",
    "nde": "Kreuz am Kratersee",
-   "nit": "Croce sul lago vulcanico"
+   "nit": "Croce sul lago vulcanico",
+   "nameRu": "Крест над вулканическим озером"
   },
   {
    "f": "bg362.jpg",
@@ -4251,7 +4427,8 @@
    "nes": "Cruz junto a una cascada sobre un mar de nubes",
    "nfr": "Croix au-dessus de la mer de nuages et des chutes d’eau",
    "nde": "Kreuz über Wolkenmeer und Wasserfällen",
-   "nit": "Croce sopra il mare di nuvole e le cascate"
+   "nit": "Croce sopra il mare di nuvole e le cascate",
+   "nameRu": "Крест над морем облаков и водопадами"
   },
   {
    "f": "bg363.jpg",
@@ -4275,7 +4452,8 @@
    "nes": "Cruz al atardecer en un olivar",
    "nfr": "Croix dans l’oliveraie au coucher du soleil",
    "nde": "Kreuz im Olivenhain bei Sonnenuntergang",
-   "nit": "Croce nell’oliveto al tramonto"
+   "nit": "Croce nell’oliveto al tramonto",
+   "nameRu": "Крест в масличной роще на закате"
   },
   {
    "f": "bg364.jpg",
@@ -4299,7 +4477,8 @@
    "nes": "Cruz en un abedular nevado",
    "nfr": "Croix dans une forêt de bouleaux enneigée",
    "nde": "Kreuz im verschneiten Birkenwald",
-   "nit": "Croce nel bosco di betulle innevato"
+   "nit": "Croce nel bosco di betulle innevato",
+   "nameRu": "Крест в заснеженной березовой роще"
   },
   {
    "f": "bg95.jpg",
@@ -4323,7 +4502,8 @@
    "nes": "Caja de regalo con lazo de satén rosa y rosas junto a la ventana",
    "nfr": "Coffret cadeau au ruban rose, roses et vue de fenêtre",
    "nde": "Geschenkbox mit rosa Satinband, Rosen und Fensterblick",
-   "nit": "Scatola regalo con nastro di raso rosa, rose e vista dalla finestra"
+   "nit": "Scatola regalo con nastro di raso rosa, rose e vista dalla finestra",
+   "nameRu": "Подарочная коробка с розовой атласной лентой, розами и видом из окна"
   },
   {
    "f": "bg96.jpg",
@@ -4347,7 +4527,8 @@
    "nes": "Caja de regalo redonda con lazo de satén dorado y lirios",
    "nfr": "Coffret cadeau rond au ruban doré et aux lys",
    "nde": "Runde Geschenkbox mit goldenem Band und Lilien",
-   "nit": "Scatola regalo rotonda con nastro dorato e gigli"
+   "nit": "Scatola regalo rotonda con nastro dorato e gigli",
+   "nameRu": "Круглая подарочная коробка с золотой лентой и лилиями"
   },
   {
    "f": "bg97.jpg",
@@ -4371,7 +4552,8 @@
    "nes": "Caja de regalo con margaritas y cordel de yute",
    "nfr": "Coffret cadeau à la ficelle de chanvre et aux marguerites",
    "nde": "Geschenkbox mit Hanfband und Gänseblümchen",
-   "nit": "Scatola regalo con spago e margherite"
+   "nit": "Scatola regalo con spago e margherite",
+   "nameRu": "Подарочная коробка с бечевкой и ромашками"
   },
   {
    "f": "bg98.jpg",
@@ -4395,7 +4577,8 @@
    "nes": "Caja de regalo con campos de lavanda",
    "nfr": "Coffret cadeau du domaine de lavande",
    "nde": "Geschenkbox von der Lavendelfarm",
-   "nit": "Scatola regalo dal campo di lavanda"
+   "nit": "Scatola regalo dal campo di lavanda",
+   "nameRu": "Подарочная коробка из лавандового поместья"
   },
   {
    "f": "bg99.jpg",
@@ -4419,7 +4602,8 @@
    "nes": "Caja de regalo con tulipanes y lazo de satén verde",
    "nfr": "Coffret cadeau au ruban vert et tulipes",
    "nde": "Geschenkbox mit grünem Band und Tulpen",
-   "nit": "Scatola regalo con nastro verde e tulipani"
+   "nit": "Scatola regalo con nastro verde e tulipani",
+   "nameRu": "Подарочная коробка с зеленой лентой и тюльпанами"
   },
   {
    "f": "bg100.jpg",
@@ -4443,7 +4627,8 @@
    "nes": "Caja de regalo azul con hortensias de la costa",
    "nfr": "Coffret cadeau bleu côtier aux hortensias",
    "nde": "Geschenkbox in Küstenblau mit Hortensien",
-   "nit": "Scatola regalo azzurro costiero con ortensie"
+   "nit": "Scatola regalo azzurro costiero con ortensie",
+   "nameRu": "Голубая подарочная коробка цвета морского побережья с гортензиями"
   },
   {
    "f": "bg101.jpg",
@@ -4467,7 +4652,8 @@
    "nes": "Caja de regalo color coral con peonías",
    "nfr": "Coffret cadeau aux pivoines corail",
    "nde": "Geschenkbox mit korallfarbenen Pfingstrosen",
-   "nit": "Scatola regalo con peonie color corallo"
+   "nit": "Scatola regalo con peonie color corallo",
+   "nameRu": "Подарочная коробка с коралловыми пионами"
   },
   {
    "f": "bg102.jpg",
@@ -4491,7 +4677,8 @@
    "nes": "Caja de regalo de estilo japonés con flores de cerezo",
    "nfr": "Coffret cadeau de style japonais aux fleurs de cerisier",
    "nde": "Geschenkbox im japanischen Stil mit Kirschblüten",
-   "nit": "Scatola regalo in stile giapponese con fiori di ciliegio"
+   "nit": "Scatola regalo in stile giapponese con fiori di ciliegio",
+   "nameRu": "Подарочная коробка в японском стиле с цветущей сакурой"
   },
   {
    "f": "bg103.jpg",
@@ -4515,7 +4702,8 @@
    "nes": "Caja de regalo amarillo girasol",
    "nfr": "Coffret cadeau jaune tournesol",
    "nde": "Sonnenblumengelbe Geschenkbox",
-   "nit": "Scatola regalo giallo girasole"
+   "nit": "Scatola regalo giallo girasole",
+   "nameRu": "Подарочная коробка цвета подсолнуха"
   },
   {
    "f": "bg104.jpg",
@@ -4539,7 +4727,8 @@
    "nes": "Caja de regalo de terciopelo rojo rubí",
    "nfr": "Coffret cadeau en velours rouge rubis",
    "nde": "Geschenkbox aus rotem Samt in Rubinfarbe",
-   "nit": "Scatola regalo di velluto rosso color rubino"
+   "nit": "Scatola regalo di velluto rosso color rubino",
+   "nameRu": "Бархатная подарочная коробка цвета рубина"
   },
   {
    "f": "bg105.jpg",
@@ -4563,7 +4752,8 @@
    "nes": "Caja de regalo rosa en forma de corazón",
    "nfr": "Coffret cadeau rose en forme de cœur",
    "nde": "Rosa Geschenkbox in Herzform",
-   "nit": "Scatola regalo rosa a forma di cuore"
+   "nit": "Scatola regalo rosa a forma di cuore",
+   "nameRu": "Розовая подарочная коробка-сердце"
   },
   {
    "f": "bg106.jpg",
@@ -4587,7 +4777,8 @@
    "nes": "Caja de regalo con estampado de anémonas",
    "nfr": "Coffret cadeau aux renoncules",
    "nde": "Geschenkbox mit Ranunkelmuster",
-   "nit": "Scatola regalo con motivo di ranuncoli"
+   "nit": "Scatola regalo con motivo di ranuncoli",
+   "nameRu": "Подарочная коробка с узором из ранункулюсов"
   },
   {
    "f": "bg107.jpg",
@@ -4611,7 +4802,8 @@
    "nes": "Caja de regalo azul marino con estrellas doradas",
    "nfr": "Coffret cadeau bleu marine à l’étoile dorée",
    "nde": "Marineblaue Geschenkbox mit goldenem Stern",
-   "nit": "Scatola regalo blu notte con stella dorata"
+   "nit": "Scatola regalo blu notte con stella dorata",
+   "nameRu": "Темно-синяя подарочная коробка с золотой звездой"
   },
   {
    "f": "bg108.jpg",
@@ -4635,7 +4827,8 @@
    "nes": "Caja de regalo con tul morado y orquídeas",
    "nfr": "Coffret cadeau en organza violet et orchidées",
    "nde": "Geschenkbox mit Orchideen und violettem Organza",
-   "nit": "Scatola regalo con orchidee e organza viola"
+   "nit": "Scatola regalo con orchidee e organza viola",
+   "nameRu": "Подарочная коробка с орхидеями и фиолетовой органзой"
   },
   {
    "f": "bg109.jpg",
@@ -4659,7 +4852,8 @@
    "nes": "Caja de regalo de punto invernal",
    "nfr": "Coffret cadeau en tricot d’hiver",
    "nde": "Winterliche Geschenkbox mit Strickmuster",
-   "nit": "Scatola regalo invernale con motivo a maglia"
+   "nit": "Scatola regalo invernale con motivo a maglia",
+   "nameRu": "Зимняя подарочная коробка с вязаным узором"
   },
   {
    "f": "bg110.jpg",
@@ -4683,7 +4877,8 @@
    "nes": "Caja de regalo de cobre y satén en tonos de arce otoñal",
    "nfr": "Coffret cadeau cuivré aux couleurs des érables d’automne",
    "nde": "Kupferfarbene Geschenkbox in Ahornfarben",
-   "nit": "Scatola regalo color rame e acero"
+   "nit": "Scatola regalo color rame e acero",
+   "nameRu": "Подарочная коробка цвета меди и осеннего клена"
   },
   {
    "f": "bg111.jpg",
@@ -4707,7 +4902,8 @@
    "nes": "Caja de regalo de lunares con gerberas",
    "nfr": "Coffret cadeau à pois et gerberas",
    "nde": "Geschenkbox mit Tupfen und Gerbera",
-   "nit": "Scatola regalo a pois con gerbere"
+   "nit": "Scatola regalo a pois con gerbere",
+   "nameRu": "Подарочная коробка в горошек с герберами"
   },
   {
    "f": "bg112.jpg",
@@ -4731,7 +4927,8 @@
    "nes": "Caja de regalo con muguete a la luz de la mañana",
    "nfr": "Coffret cadeau au muguet dans la lumière du matin",
    "nde": "Geschenkbox mit Maiglöckchen im Morgenlicht",
-   "nit": "Scatola regalo con mughetti alla luce del mattino"
+   "nit": "Scatola regalo con mughetti alla luce del mattino",
+   "nameRu": "Подарочная коробка с ландышами в утреннем свете"
   },
   {
    "f": "bg113.jpg",
@@ -4755,7 +4952,8 @@
    "nes": "Caja de regalo de papel kraft color vino",
    "nfr": "Coffret cadeau en papier kraft bordeaux",
    "nde": "Geschenkbox aus weinrotem Kraftpapier",
-   "nit": "Scatola regalo di carta kraft color vino"
+   "nit": "Scatola regalo di carta kraft color vino",
+   "nameRu": "Подарочная коробка из крафтовой бумаги винного цвета"
   },
   {
    "f": "bg114.jpg",
@@ -4779,7 +4977,8 @@
    "nes": "Caja de regalo con magnolias doradas",
    "nfr": "Coffret cadeau doré aux magnolias",
    "nde": "Geschenkbox mit goldenen Magnolien",
-   "nit": "Scatola regalo con magnolie dorate"
+   "nit": "Scatola regalo con magnolie dorate",
+   "nameRu": "Подарочная коробка с золотыми магнолиями"
   },
   {
    "f": "bg138.jpg",
@@ -4803,7 +5002,8 @@
    "nes": "Gato persa blanco y lavanda",
    "nfr": "Chat persan blanc et lavande",
    "nde": "Weiße Perserkatze und Lavendel",
-   "nit": "Persiano bianco e lavanda"
+   "nit": "Persiano bianco e lavanda",
+   "nameRu": "Белая персидская кошка и лаванда"
   },
   {
    "f": "bg139.jpg",
@@ -4827,7 +5027,8 @@
    "nes": "Gato británico de pelo corto gris plata e hortensias",
    "nfr": "British shorthair gris argenté et hortensias",
    "nde": "Britisch Kurzhaar in Silbergrau und Hortensien",
-   "nit": "British Shorthair grigio argento e ortensie"
+   "nit": "British Shorthair grigio argento e ortensie",
+   "nameRu": "Серебристо-серая британская короткошерстная кошка и гортензии"
   },
   {
    "f": "bg140.jpg",
@@ -4851,7 +5052,8 @@
    "nes": "Gato ragdoll y caja de regalo con peonías",
    "nfr": "Ragdoll et coffret cadeau aux pivoines",
    "nde": "Ragdoll und Geschenkbox mit Pfingstrosen",
-   "nit": "Ragdoll e scatola regalo con peonie"
+   "nit": "Ragdoll e scatola regalo con peonie",
+   "nameRu": "Рэгдолл и подарочная коробка с пионами"
   },
   {
    "f": "bg141.jpg",
@@ -4875,7 +5077,8 @@
    "nes": "Gato atigrado y girasoles",
    "nfr": "Chat tigré et tournesols",
    "nde": "Getigerte Katze und Sonnenblumen",
-   "nit": "Gatto tigrato e girasoli"
+   "nit": "Gatto tigrato e girasoli",
+   "nameRu": "Полосатая кошка и подсолнухи"
   },
   {
    "f": "bg142.jpg",
@@ -4899,7 +5102,8 @@
    "nes": "Gatitos abrazados en una ventana con lluvia",
    "nfr": "Chatons blottis l’un contre l’autre près d’une fenêtre pluvieuse",
    "nde": "Aneinandergekuschelte Kätzchen am Regenfenster",
-   "nit": "Gattini abbracciati alla finestra con la pioggia"
+   "nit": "Gattini abbracciati alla finestra con la pioggia",
+   "nameRu": "Обнявшиеся котята у окна в дождь"
   },
   {
    "f": "bg143.jpg",
@@ -4923,7 +5127,8 @@
    "nes": "Gato naranja en una cesta de otoño",
    "nfr": "Chaton roux dans un panier en automne",
    "nde": "Rotes Kätzchen im Herbstkorb",
-   "nit": "Gattino rosso nel cesto autunnale"
+   "nit": "Gattino rosso nel cesto autunnale",
+   "nameRu": "Рыжий кот в осенней корзине"
   },
   {
    "f": "bg144.jpg",
@@ -4947,7 +5152,8 @@
    "nes": "Gato siamés junto al lago",
    "nfr": "Chat siamois au bord du lac",
    "nde": "Siamkatze am See",
-   "nit": "Siamese sul lago"
+   "nit": "Siamese sul lago",
+   "nameRu": "Сиамская кошка у озера"
   },
   {
    "f": "bg145.jpg",
@@ -4971,7 +5177,8 @@
    "nes": "Gato negro, rosas blancas y perlas",
    "nfr": "Chat noir, roses blanches et perles",
    "nde": "Schwarze Katze, weiße Rosen und Perlen",
-   "nit": "Gatto nero, rose bianche e perle"
+   "nit": "Gatto nero, rose bianche e perle",
+   "nameRu": "Черная кошка, белые розы и жемчуг"
   },
   {
    "f": "bg146.jpg",
@@ -4995,7 +5202,8 @@
    "nes": "Gato de pelo largo azul y blanco en la costa",
    "nfr": "Chat à poil long bleu et blanc au bord de la mer",
    "nde": "Blau-weiße Langhaarkatze an der Küste",
-   "nit": "Gatto bianco e azzurro a pelo lungo sulla costa"
+   "nit": "Gatto bianco e azzurro a pelo lungo sulla costa",
+   "nameRu": "Бело-голубая длинношерстная кошка на берегу моря"
   },
   {
    "f": "bg147.jpg",
@@ -5019,7 +5227,8 @@
    "nes": "Gatitos gemelos y flores de cerezo",
    "nfr": "Chatons jumeaux et cerisiers en fleurs",
    "nde": "Kätzchenzwillinge und Kirschblüten",
-   "nit": "Gattini gemelli e fiori di ciliegio"
+   "nit": "Gattini gemelli e fiori di ciliegio",
+   "nameRu": "Котята-близнецы и цветы сакуры"
   },
   {
    "f": "bg148.jpg",
@@ -5043,7 +5252,8 @@
    "nes": "Gatito con bufanda roja en una ventana nevada",
    "nfr": "Chaton à l’écharpe rouge devant une fenêtre enneigée",
    "nde": "Kätzchen mit rotem Schal vor verschneitem Fenster",
-   "nit": "Gattino con sciarpa rossa davanti alla finestra innevata"
+   "nit": "Gattino con sciarpa rossa davanti alla finestra innevata",
+   "nameRu": "Котенок в красном шарфе у заснеженного окна"
   },
   {
    "f": "bg149.jpg",
@@ -5067,7 +5277,8 @@
    "nes": "Gatito atigrado y libro",
    "nfr": "Chaton tigré et livre",
    "nde": "Getigertes Kätzchen mit Buch",
-   "nit": "Gattino tigrato con un libro"
+   "nit": "Gattino tigrato con un libro",
+   "nameRu": "Полосатый котенок с книгой"
   },
   {
    "f": "bg150.jpg",
@@ -5091,7 +5302,8 @@
    "nes": "Gatito tricolor en un campo de margaritas",
    "nfr": "Chaton tricolore dans un champ de marguerites",
    "nde": "Dreifarbiges Kätzchen im Gänseblümchenfeld",
-   "nit": "Gattino tricolore in un campo di margherite"
+   "nit": "Gattino tricolore in un campo di margherite",
+   "nameRu": "Трехцветный котенок на ромашковом поле"
   },
   {
    "f": "bg151.jpg",
@@ -5115,7 +5327,8 @@
    "nes": "Gatito naranja y blanco con un corazón",
    "nfr": "Chaton orange et blanc avec un cœur",
    "nde": "Orange-weißes Kätzchen mit Herz",
-   "nit": "Gattino bianco e arancione con un cuore"
+   "nit": "Gattino bianco e arancione con un cuore",
+   "nameRu": "Рыжо-белый котенок с сердечком"
   },
   {
    "f": "bg152.jpg",
@@ -5139,7 +5352,8 @@
    "nes": "Gato ragdoll y jacintos",
    "nfr": "Ragdoll et jacinthes",
    "nde": "Ragdoll und Hyazinthen",
-   "nit": "Ragdoll e giacinti"
+   "nit": "Ragdoll e giacinti",
+   "nameRu": "Рэгдолл и гиацинты"
   },
   {
    "f": "bg153.jpg",
@@ -5163,7 +5377,8 @@
    "nes": "Gata blanca con sus gatitos en un jardín de rosas",
    "nfr": "Chatte blanche et son chaton dans une roseraie",
    "nde": "Weiße Katzenmutter und Kätzchen im Rosengarten",
-   "nit": "Gatta bianca con i gattini nel roseto"
+   "nit": "Gatta bianca con i gattini nel roseto",
+   "nameRu": "Белая кошка с котятами в розарии"
   },
   {
    "f": "bg154.jpg",
@@ -5187,7 +5402,8 @@
    "nes": "Gato chinchilla al amanecer junto al lago",
    "nfr": "Chat chinchilla doré au lever du soleil au bord du lac",
    "nde": "Chinchilla-Katze bei Sonnenaufgang am See",
-   "nit": "Chinchillà all’alba sul lago"
+   "nit": "Chinchillà all’alba sul lago",
+   "nameRu": "Шиншилла на рассвете у озера"
   },
   {
    "f": "bg245.jpg",
@@ -5211,7 +5427,8 @@
    "nes": "Gato siberiano e invernadero de orquídeas",
    "nfr": "Chat sibérien dans une serre d’orchidées",
    "nde": "Sibirische Katze im Orchideengewächshaus",
-   "nit": "Siberiano nella serra delle orchidee"
+   "nit": "Siberiano nella serra delle orchidee",
+   "nameRu": "Сибирская кошка в оранжерее с орхидеями"
   },
   {
    "f": "bg246.jpg",
@@ -5235,7 +5452,8 @@
    "nes": "Gato abisinio y fuente al atardecer",
    "nfr": "Chat abyssin et fontaine au soleil couchant",
    "nde": "Abessinier und Brunnen im Sonnenuntergang",
-   "nit": "Abissino e fontana al tramonto"
+   "nit": "Abissino e fontana al tramonto",
+   "nameRu": "Абиссинская кошка и фонтан на закате"
   },
   {
    "f": "bg247.jpg",
@@ -5259,7 +5477,8 @@
    "nes": "Gato Maine Coon y pérgola de glicinias",
    "nfr": "Maine coon sous une pergola de glycines",
    "nde": "Maine Coon unter einer Glyzinienlaube",
-   "nit": "Maine Coon sotto un pergolato di glicine"
+   "nit": "Maine Coon sotto un pergolato di glicine",
+   "nameRu": "Мейн-кун под беседкой с глициниями"
   },
   {
    "f": "bg248.jpg",
@@ -5283,7 +5502,8 @@
    "nes": "Gato del bosque de Noruega y amanecer junto al lago",
    "nfr": "Chat des forêts norvégiennes et aube au bord du lac",
    "nde": "Norwegische Waldkatze und Morgenröte am See",
-   "nit": "Gatto delle foreste norvegesi e alba sul lago"
+   "nit": "Gatto delle foreste norvegesi e alba sul lago",
+   "nameRu": "Норвежская лесная кошка и рассвет на берегу озера"
   },
   {
    "f": "bg249.jpg",
@@ -5307,7 +5527,8 @@
    "nes": "Gato blanco y pétalos de tulipán",
    "nfr": "Chat blanc et pétales de tulipes",
    "nde": "Weiße Katze und Tulpenblätter",
-   "nit": "Gatta bianca e petali di tulipano"
+   "nit": "Gatta bianca e petali di tulipano",
+   "nameRu": "Белая кошка и лепестки тюльпана"
   },
   {
    "f": "bg250.jpg",
@@ -5331,7 +5552,8 @@
    "nes": "Gato azul ruso y vista de una ventana con porcelana azul y blanca",
    "nfr": "Chat bleu russe et fenêtre aux porcelaines bleues et blanches",
    "nde": "Russisch Blau und Fenster mit blau-weißem Porzellan",
-   "nit": "Blu di Russia e finestra con porcellana bianca e blu"
+   "nit": "Blu di Russia e finestra con porcellana bianca e blu",
+   "nameRu": "Русская голубая кошка и окно с бело-синим фарфором"
   },
   {
    "f": "bg251.jpg",
@@ -5355,7 +5577,8 @@
    "nes": "Gato de Bengala y puentecito en la selva tropical",
    "nfr": "Chat du Bengale et petit pont dans la forêt tropicale",
    "nde": "Bengalkatze und Brücke im Regenwald",
-   "nit": "Gatto del Bengala e ponticello nella foresta pluviale"
+   "nit": "Gatto del Bengala e ponticello nella foresta pluviale",
+   "nameRu": "Бенгальская кошка на мостике в тропическом лесу"
   },
   {
    "f": "bg252.jpg",
@@ -5379,7 +5602,8 @@
    "nes": "Gato mau egipcio y estanque de lotos",
    "nfr": "Mau égyptien et bassin de lotus",
    "nde": "Ägyptische Mau und Lotosteich",
-   "nit": "Mau egiziano e stagno di loti"
+   "nit": "Mau egiziano e stagno di loti",
+   "nameRu": "Египетская мау и пруд с лотосами"
   },
   {
    "f": "bg253.jpg",
@@ -5403,7 +5627,8 @@
    "nes": "Gato somalí y cañón de roca roja",
    "nfr": "Chat somali et canyon de roches rouges",
    "nde": "Somali und Canyon aus rotem Fels",
-   "nit": "Somalo e canyon di roccia rossa"
+   "nit": "Somalo e canyon di roccia rossa",
+   "nameRu": "Сомалийская кошка и каньон из красных скал"
   },
   {
    "f": "bg254.jpg",
@@ -5427,7 +5652,8 @@
    "nes": "Gato Van turco y velero al atardecer",
    "nfr": "Chat turc de Van et voilier au soleil couchant",
    "nde": "Türkisch Van und Segelboot im Abendrot",
-   "nit": "Van turco e barca a vela al tramonto"
+   "nit": "Van turco e barca a vela al tramonto",
+   "nameRu": "Турецкая ванская кошка и парусник на закате"
   },
   {
    "f": "bg255.jpg",
@@ -5451,7 +5677,8 @@
    "nes": "Gato Cornish Rex en una ventana frente al puerto",
    "nfr": "Cornish rex à la fenêtre donnant sur le port",
    "nde": "Cornish Rex am Fenster zum Hafen",
-   "nit": "Cornish Rex alla finestra sul porto"
+   "nit": "Cornish Rex alla finestra sul porto",
+   "nameRu": "Корниш-рекс на подоконнике с видом на гавань"
   },
   {
    "f": "bg256.jpg",
@@ -5475,7 +5702,8 @@
    "nes": "Gato Devon Rex y telescopio bajo un cielo estrellado",
    "nfr": "Devon rex et télescope sous un ciel étoilé",
    "nde": "Devon Rex und Teleskop unter dem Sternenhimmel",
-   "nit": "Devon Rex e telescopio sotto il cielo stellato"
+   "nit": "Devon Rex e telescopio sotto il cielo stellato",
+   "nameRu": "Девон-рекс и телескоп под звездным небом"
   },
   {
    "f": "bg257.jpg",
@@ -5499,7 +5727,8 @@
    "nes": "Gato ocicat y taller de cerámica",
    "nfr": "Ocicat et atelier de poterie",
    "nde": "Ocicat in der Töpferwerkstatt",
-   "nit": "Ocicat nel laboratorio di ceramica"
+   "nit": "Ocicat nel laboratorio di ceramica",
+   "nameRu": "Оцикет в гончарной мастерской"
   },
   {
    "f": "bg258.jpg",
@@ -5523,7 +5752,8 @@
    "nes": "Gato birmano y farolillos en un estanque de lotos",
    "nfr": "Chat burmese, étang de lotus et lanternes",
    "nde": "Burmakatze, Lotosteich und Laternen",
-   "nit": "Gatto Burmese, stagno di loti e lanterne"
+   "nit": "Gatto Burmese, stagno di loti e lanterne",
+   "nameRu": "Бурманская кошка, пруд с лотосами и фонарики"
   },
   {
    "f": "bg259.jpg",
@@ -5547,7 +5777,8 @@
    "nes": "Gato singapura y pabellón de orquídeas",
    "nfr": "Singapura et pavillon d’orchidées",
    "nde": "Singapura und Orchideenpavillon",
-   "nit": "Singapura e padiglione delle orchidee"
+   "nit": "Singapura e padiglione delle orchidee",
+   "nameRu": "Сингапурская кошка и беседка с орхидеями"
   },
   {
    "f": "bg260.jpg",
@@ -5571,7 +5802,8 @@
    "nes": "Gato Selkirk Rex y mar de nubes",
    "nfr": "Selkirk rex et mer de nuages",
    "nde": "Selkirk Rex über dem Wolkenmeer",
-   "nit": "Selkirk Rex sopra il mare di nuvole"
+   "nit": "Selkirk Rex sopra il mare di nuvole",
+   "nameRu": "Селкирк-рекс над морем облаков"
   },
   {
    "f": "bg261.jpg",
@@ -5595,7 +5827,8 @@
    "nes": "Gato británico de pelo corto azul y jardín de hierbas aromáticas",
    "nfr": "British shorthair bleu et jardin d’aromatiques",
    "nde": "Britisch Kurzhaar in Blau und Kräutergarten",
-   "nit": "British Shorthair blu e giardino di erbe aromatiche"
+   "nit": "British Shorthair blu e giardino di erbe aromatiche",
+   "nameRu": "Голубая британская короткошерстная кошка и сад с пряными травами"
   },
   {
    "f": "bg262.jpg",
@@ -5619,7 +5852,8 @@
    "nes": "Gato británico de pelo corto plata sombreado y vista de un glaciar desde la ventana",
    "nfr": "British shorthair argenté et vue de fenêtre sur un glacier",
    "nde": "Britisch Kurzhaar in Silber-Schattiert und Fensterblick auf einen Gletscher",
-   "nit": "British Shorthair argento sfumato e vista sul ghiacciaio dalla finestra"
+   "nit": "British Shorthair argento sfumato e vista sul ghiacciaio dalla finestra",
+   "nameRu": "Серебристая шиншилла британской короткошерстной породы и вид на ледник из окна"
   },
   {
    "f": "bg263.jpg",
@@ -5643,7 +5877,8 @@
    "nes": "Gato bobtail japonés y jardín de arces rojos",
    "nfr": "Bobtail japonais et jardin aux érables rouges",
    "nde": "Japanese Bobtail und Garten mit rotem Ahorn",
-   "nit": "Japanese Bobtail e giardino con aceri rossi"
+   "nit": "Japanese Bobtail e giardino con aceri rossi",
+   "nameRu": "Японский бобтейл и сад с красными кленами"
   },
   {
    "f": "bg264.jpg",
@@ -5667,7 +5902,8 @@
    "nes": "Gato American Curl y globos aerostáticos",
    "nfr": "American curl et montgolfières",
    "nde": "American Curl und Heißluftballons",
-   "nit": "American Curl e mongolfiere"
+   "nit": "American Curl e mongolfiere",
+   "nameRu": "Американский керл и воздушные шары"
   },
   {
    "f": "bg51.jpg",
@@ -5691,7 +5927,8 @@
    "nes": "Cachorro corgi",
    "nfr": "Chiot corgi",
    "nde": "Corgi-Welpe",
-   "nit": "Cucciolo di Corgi"
+   "nit": "Cucciolo di Corgi",
+   "nameRu": "Щенок корги"
   },
   {
    "f": "bg52.jpg",
@@ -5715,7 +5952,8 @@
    "nes": "Cachorro pomerania",
    "nfr": "Chiot spitz nain",
    "nde": "Zwergspitz-Welpe",
-   "nit": "Cucciolo di Volpino di Pomerania"
+   "nit": "Cucciolo di Volpino di Pomerania",
+   "nameRu": "Щенок померанского шпица"
   },
   {
    "f": "bg53.jpg",
@@ -5739,7 +5977,8 @@
    "nes": "Cachorro caniche",
    "nfr": "Chiot caniche",
    "nde": "Pudelwelpe",
-   "nit": "Cucciolo di barboncino"
+   "nit": "Cucciolo di barboncino",
+   "nameRu": "Щенок пуделя"
   },
   {
    "f": "bg115.jpg",
@@ -5763,7 +6002,8 @@
    "nes": "Cachorro golden retriever y rosas",
    "nfr": "Chiot golden retriever et roses",
    "nde": "Golden-Retriever-Welpe und Rosen",
-   "nit": "Cucciolo di Golden Retriever e rose"
+   "nit": "Cucciolo di Golden Retriever e rose",
+   "nameRu": "Щенок золотистого ретривера и розы"
   },
   {
    "f": "bg116.jpg",
@@ -5787,7 +6027,8 @@
    "nes": "Caniche y lavanda",
    "nfr": "Caniche et lavande",
    "nde": "Pudel und Lavendel",
-   "nit": "Barboncino e lavanda"
+   "nit": "Barboncino e lavanda",
+   "nameRu": "Пудель и лаванда"
   },
   {
    "f": "bg117.jpg",
@@ -5811,7 +6052,8 @@
    "nes": "Pomerania blanco e hortensias",
    "nfr": "Spitz nain blanc et hortensias",
    "nde": "Weißer Zwergspitz und Hortensien",
-   "nit": "Volpino bianco e ortensie"
+   "nit": "Volpino bianco e ortensie",
+   "nameRu": "Белый померанский шпиц и гортензии"
   },
   {
    "f": "bg118.jpg",
@@ -5835,7 +6077,8 @@
    "nes": "Corgi y cesta de margaritas",
    "nfr": "Corgi et panier de marguerites",
    "nde": "Corgi und Gänseblümchenkorb",
-   "nit": "Corgi e cesto di margherite"
+   "nit": "Corgi e cesto di margherite",
+   "nameRu": "Корги и корзина с ромашками"
   },
   {
    "f": "bg119.jpg",
@@ -5859,7 +6102,8 @@
    "nes": "Shiba inu y girasoles",
    "nfr": "Shiba et tournesols",
    "nde": "Shiba Inu und Sonnenblumen",
-   "nit": "Shiba Inu e girasoli"
+   "nit": "Shiba Inu e girasoli",
+   "nameRu": "Сиба-ину и подсолнухи"
   },
   {
    "f": "bg120.jpg",
@@ -5883,7 +6127,8 @@
    "nes": "Cachorro labrador en una ventana con lluvia",
    "nfr": "Petits labradors endormis près d’une fenêtre pluvieuse",
    "nde": "Kleine Labradorwelpen am Regenfenster",
-   "nit": "Piccoli labrador alla finestra con la pioggia"
+   "nit": "Piccoli labrador alla finestra con la pioggia",
+   "nameRu": "Щенки лабрадора у окна в дождь"
   },
   {
    "f": "bg121.jpg",
@@ -5907,7 +6152,8 @@
    "nes": "Beagle y tulipanes",
    "nfr": "Beagle et tulipes",
    "nde": "Beagle und Tulpen",
-   "nit": "Beagle e tulipani"
+   "nit": "Beagle e tulipani",
+   "nameRu": "Бигль и тюльпаны"
   },
   {
    "f": "bg122.jpg",
@@ -5931,7 +6177,8 @@
    "nes": "Border collie junto al lago",
    "nfr": "Border collie au bord du lac",
    "nde": "Border Collie am See",
-   "nit": "Border Collie sul lago"
+   "nit": "Border Collie sul lago",
+   "nameRu": "Бордер-колли у озера"
   },
   {
    "f": "bg123.jpg",
@@ -5955,7 +6202,8 @@
    "nes": "Labrador negro y rosas blancas",
    "nfr": "Labrador noir et roses blanches",
    "nde": "Schwarzer Labrador und weiße Rosen",
-   "nit": "Labrador nero e rose bianche"
+   "nit": "Labrador nero e rose bianche",
+   "nameRu": "Черный лабрадор и белые розы"
   },
   {
    "f": "bg124.jpg",
@@ -5979,7 +6227,8 @@
    "nes": "Yorkshire terrier y peonías",
    "nfr": "Yorkshire et pivoines",
    "nde": "Yorkshire Terrier und Pfingstrosen",
-   "nit": "Yorkshire Terrier e peonie"
+   "nit": "Yorkshire Terrier e peonie",
+   "nameRu": "Йоркширский терьер и пионы"
   },
   {
    "f": "bg125.jpg",
@@ -6003,7 +6252,8 @@
    "nes": "Golden retrievers gemelos y flores de cerezo",
    "nfr": "Chiots golden retriever jumeaux et cerisiers en fleurs",
    "nde": "Golden-Retriever-Zwillingswelpen und Kirschblüten",
-   "nit": "Cuccioli gemelli di Golden Retriever e fiori di ciliegio"
+   "nit": "Cuccioli gemelli di Golden Retriever e fiori di ciliegio",
+   "nameRu": "Щенки золотистого ретривера, близнецы, и цветы сакуры"
   },
   {
    "f": "bg126.jpg",
@@ -6027,7 +6277,8 @@
    "nes": "Samoyedo con bufanda roja",
    "nfr": "Samoyède à l’écharpe rouge",
    "nde": "Samojede mit rotem Schal",
-   "nit": "Samoiedo con sciarpa rossa"
+   "nit": "Samoiedo con sciarpa rossa",
+   "nameRu": "Самоед в красном шарфе"
   },
   {
    "f": "bg127.jpg",
@@ -6051,7 +6302,8 @@
    "nes": "Cavalier King Charles spaniel en otoño",
    "nfr": "Cavalier King Charles en automne",
    "nde": "Cavalier King Charles Spaniel im Herbst",
-   "nit": "Cavalier King Charles Spaniel in autunno"
+   "nit": "Cavalier King Charles Spaniel in autunno",
+   "nameRu": "Кавалер-кинг-чарльз-спаниель осенью"
   },
   {
    "f": "bg128.jpg",
@@ -6075,7 +6327,8 @@
    "nes": "Maltés y campo de margaritas",
    "nfr": "Bichon maltais dans un champ de marguerites",
    "nde": "Malteser im Gänseblümchenfeld",
-   "nit": "Maltese in un campo di margherite"
+   "nit": "Maltese in un campo di margherite",
+   "nameRu": "Мальтийская болонка на ромашковом поле"
   },
   {
    "f": "bg129.jpg",
@@ -6099,7 +6352,8 @@
    "nes": "Perro salchicha y corazón",
    "nfr": "Teckel et cœur",
    "nde": "Dackel und Herz",
-   "nit": "Bassotto e cuore"
+   "nit": "Bassotto e cuore",
+   "nameRu": "Такса и сердечко"
   },
   {
    "f": "bg130.jpg",
@@ -6123,7 +6377,8 @@
    "nes": "Husky siberiano en la costa",
    "nfr": "Husky sibérien sur la côte",
    "nde": "Sibirischer Husky an der Küste",
-   "nit": "Husky siberiano sulla costa"
+   "nit": "Husky siberiano sulla costa",
+   "nameRu": "Хаски на морском берегу"
   },
   {
    "f": "bg131.jpg",
@@ -6147,7 +6402,8 @@
    "nes": "Perro grande y cachorro en un jardín de rosas",
    "nfr": "Grand chien et chiot dans une roseraie",
    "nde": "Großer Hund und Welpe im Rosengarten",
-   "nit": "Cane grande e cucciolo nel roseto"
+   "nit": "Cane grande e cucciolo nel roseto",
+   "nameRu": "Большая собака и щенок в розарии"
   },
   {
    "f": "bg132.jpg",
@@ -6171,7 +6427,8 @@
    "nes": "Bichón frisé y flores moradas",
    "nfr": "Bichon et fleurs violettes",
    "nde": "Bichon und violette Blumen",
-   "nit": "Bichon e fiori viola"
+   "nit": "Bichon e fiori viola",
+   "nameRu": "Бишон фризе и фиолетовые цветы"
   },
   {
    "f": "bg133.jpg",
@@ -6195,7 +6452,8 @@
    "nes": "Carlino y libro",
    "nfr": "Carlin et livre",
    "nde": "Mops mit Buch",
-   "nit": "Carlino con un libro"
+   "nit": "Carlino con un libro",
+   "nameRu": "Мопс с книгой"
   },
   {
    "f": "bg134.jpg",
@@ -6219,7 +6477,8 @@
    "nes": "Cocker spaniel al atardecer",
    "nfr": "Cocker spaniel au coucher du soleil",
    "nde": "Cocker Spaniel im Sonnenuntergang",
-   "nit": "Cocker Spaniel al tramonto"
+   "nit": "Cocker Spaniel al tramonto",
+   "nameRu": "Кокер-спаниель на закате"
   },
   {
    "f": "bg265.jpg",
@@ -6243,7 +6502,8 @@
    "nes": "Dálmata y las casas blancas de Santorini",
    "nfr": "Dalmatien et maisons blanches de Santorin",
    "nde": "Dalmatiner und weiße Häuser auf Santorin",
-   "nit": "Dalmata e case bianche a Santorini"
+   "nit": "Dalmata e case bianche a Santorini",
+   "nameRu": "Далматин и белые домики Санторини"
   },
   {
    "f": "bg266.jpg",
@@ -6267,7 +6527,8 @@
    "nes": "Setter irlandés y puente de piedra entre arces rojos",
    "nfr": "Setter irlandais et pont de pierre parmi les érables rouges",
    "nde": "Irish Setter und Steinbrücke zwischen rotem Ahorn",
-   "nit": "Setter irlandese e ponte di pietra tra aceri rossi"
+   "nit": "Setter irlandese e ponte di pietra tra aceri rossi",
+   "nameRu": "Ирландский сеттер и каменный мост среди красных кленов"
   },
   {
    "f": "bg267.jpg",
@@ -6291,7 +6552,8 @@
    "nes": "Galgo italiano y la Toscana",
    "nfr": "Petit lévrier italien en Toscane",
    "nde": "Italienisches Windspiel in der Toskana",
-   "nit": "Piccolo levriero italiano in Toscana"
+   "nit": "Piccolo levriero italiano in Toscana",
+   "nameRu": "Левретка в Тоскане"
   },
   {
    "f": "bg268.jpg",
@@ -6315,7 +6577,8 @@
    "nes": "Papillon e hortensias junto al lago",
    "nfr": "Papillon et hortensias au bord du lac",
    "nde": "Papillon und Hortensien am See",
-   "nit": "Papillon e ortensie sul lago"
+   "nit": "Papillon e ortensie sul lago",
+   "nameRu": "Папильон и гортензии на берегу озера"
   },
   {
    "f": "bg269.jpg",
@@ -6339,7 +6602,8 @@
    "nes": "Kerry blue terrier entre hierbas y flores de un acantilado junto al mar",
    "nfr": "Kerry blue-terrier parmi les herbes et les fleurs d’une falaise",
    "nde": "Kerry Blue Terrier zwischen Küstenblumen und Gräsern auf den Klippen",
-   "nit": "Kerry Blue Terrier tra fiori ed erbe sulla scogliera"
+   "nit": "Kerry Blue Terrier tra fiori ed erbe sulla scogliera",
+   "nameRu": "Керри-блю-терьер среди цветов и трав на морском утесе"
   },
   {
    "f": "bg270.jpg",
@@ -6363,7 +6627,8 @@
    "nes": "Lapphund finlandés y aurora boreal",
    "nfr": "Chien finnois de Laponie et aurores boréales",
    "nde": "Finnischer Lapphund und Polarlichter",
-   "nit": "Lapponia finlandese e aurora boreale"
+   "nit": "Lapponia finlandese e aurora boreale",
+   "nameRu": "Финский лаппхунд и северное сияние"
   },
   {
    "f": "bg271.jpg",
@@ -6387,7 +6652,8 @@
    "nes": "Akita y calle antigua con ginkgos",
    "nfr": "Akita et vieille rue bordée de ginkgos",
    "nde": "Akita und alte Gasse mit Ginkgobäumen",
-   "nit": "Akita e vecchio vicolo con ginkgo"
+   "nit": "Akita e vecchio vicolo con ginkgo",
+   "nameRu": "Акита-ину и старая улочка с гинкго"
   },
   {
    "f": "bg272.jpg",
@@ -6411,7 +6677,8 @@
    "nes": "Gran Pirineo y pueblo de montaña rodeado de lavanda",
    "nfr": "Montagne des Pyrénées et village de montagne parmi la lavande",
    "nde": "Pyrenäenberghund und Bergdorf im Lavendel",
-   "nit": "Montagna dei Pirenei e borgo di montagna tra la lavanda"
+   "nit": "Montagna dei Pirenei e borgo di montagna tra la lavanda",
+   "nameRu": "Пиренейская горная собака и горный городок среди лаванды"
   },
   {
    "f": "bg273.jpg",
@@ -6435,7 +6702,8 @@
    "nes": "Terranova y embarcadero junto al lago",
    "nfr": "Terre-neuve sur un ponton au bord du lac",
    "nde": "Neufundländer am Steg am See",
-   "nit": "Terranova sul molo del lago"
+   "nit": "Terranova sul molo del lago",
+   "nameRu": "Ньюфаундленд на озерном причале"
   },
   {
    "f": "bg274.jpg",
@@ -6459,7 +6727,8 @@
    "nes": "Antiguo pastor inglés e iris junto a una noria",
    "nfr": "Bobtail et iris près d’un moulin à eau",
    "nde": "Altenglischer Schäferhund und Schwertlilien an der Wassermühle",
-   "nit": "Bobtail e iris presso il mulino ad acqua"
+   "nit": "Bobtail e iris presso il mulino ad acqua",
+   "nameRu": "Бобтейл и ирисы у водяной мельницы"
   },
   {
    "f": "bg275.jpg",
@@ -6483,7 +6752,8 @@
    "nes": "Weimaraner y abedules en la niebla de la mañana",
    "nfr": "Braque de Weimar et bouleaux dans la brume du matin",
    "nde": "Weimaraner und Birken im Morgennebel",
-   "nit": "Weimaraner e betulle nella nebbia del mattino"
+   "nit": "Weimaraner e betulle nella nebbia del mattino",
+   "nameRu": "Веймаранер и березы в утреннем тумане"
   },
   {
    "f": "bg276.jpg",
@@ -6507,7 +6777,8 @@
    "nes": "Vizsla y molino de viento entre girasoles",
    "nfr": "Braque hongrois, tournesols et moulin à vent",
    "nde": "Ungarischer Vorstehhund, Sonnenblumen und Windmühle",
-   "nit": "Bracco ungherese, girasoli e mulino a vento"
+   "nit": "Bracco ungherese, girasoli e mulino a vento",
+   "nameRu": "Венгерская выжла, подсолнухи и ветряная мельница"
   },
   {
    "f": "bg277.jpg",
@@ -6531,7 +6802,8 @@
    "nes": "Rhodesian ridgeback y cañón de roca roja",
    "nfr": "Rhodesian ridgeback et canyon de roches rouges",
    "nde": "Rhodesian Ridgeback und Canyon aus rotem Fels",
-   "nit": "Rhodesian Ridgeback e canyon di roccia rossa"
+   "nit": "Rhodesian Ridgeback e canyon di roccia rossa",
+   "nameRu": "Родезийский риджбек и каньон из красных скал"
   },
   {
    "f": "bg278.jpg",
@@ -6555,7 +6827,8 @@
    "nes": "Basenji y la sabana africana",
    "nfr": "Basenji et savane africaine",
    "nde": "Basenji und afrikanische Savanne",
-   "nit": "Basenji e savana africana"
+   "nit": "Basenji e savana africana",
+   "nameRu": "Басенджи и африканская саванна"
   },
   {
    "f": "bg279.jpg",
@@ -6579,7 +6852,8 @@
    "nes": "Scottish terrier y castillo antiguo con biblioteca",
    "nfr": "Scottish-terrier dans la bibliothèque d’un vieux château",
    "nde": "Scottish Terrier in der Bibliothek einer alten Burg",
-   "nit": "Scottish Terrier nella biblioteca di un antico castello"
+   "nit": "Scottish Terrier nella biblioteca di un antico castello",
+   "nameRu": "Скотч-терьер в библиотеке старинного замка"
   },
   {
    "f": "bg280.jpg",
@@ -6603,7 +6877,8 @@
    "nes": "West Highland white terrier y casita en el puerto",
    "nfr": "West highland white terrier et cabanes du port",
    "nde": "West Highland White Terrier und Hafenhütten",
-   "nit": "West Highland White Terrier e capanne del porto"
+   "nit": "West Highland White Terrier e capanne del porto",
+   "nameRu": "Вест-хайленд-уайт-терьер и домики в гавани"
   },
   {
    "f": "bg281.jpg",
@@ -6627,7 +6902,8 @@
    "nes": "Boyero de Berna y un mar de flores en los Alpes",
    "nfr": "Bouvier bernois et mer de fleurs alpines",
    "nde": "Berner Sennenhund und Alpenblumenmeer",
-   "nit": "Bovaro del Bernese e un mare di fiori alpini"
+   "nit": "Bovaro del Bernese e un mare di fiori alpini",
+   "nameRu": "Бернский зенненхунд и море альпийских цветов"
   },
   {
    "f": "bg282.jpg",
@@ -6651,7 +6927,8 @@
    "nes": "Pastor de Shetland y castillo entre brezos",
    "nfr": "Berger des Shetland et château dans la bruyère",
    "nde": "Sheltie und Burg im Heidekraut",
-   "nit": "Pastore delle Shetland e castello tra l’erica"
+   "nit": "Pastore delle Shetland e castello tra l’erica",
+   "nameRu": "Шелти и замок среди вереска"
   },
   {
    "f": "bg283.jpg",
@@ -6675,7 +6952,8 @@
    "nes": "Pastor australiano y viñedo en otoño",
    "nfr": "Berger australien dans un vignoble en automne",
    "nde": "Australian Shepherd im herbstlichen Weinberg",
-   "nit": "Pastore australiano nella vigna autunnale"
+   "nit": "Pastore australiano nella vigna autunnale",
+   "nameRu": "Австралийская овчарка в осеннем винограднике"
   },
   {
    "f": "bg284.jpg",
@@ -6699,7 +6977,8 @@
    "nes": "Galgo afgano y terraza con rosas",
    "nfr": "Lévrier afghan et terrasse fleurie de roses",
    "nde": "Afghanischer Windhund und Rosenterrasse",
-   "nit": "Levriero afghano e terrazza di rose"
+   "nit": "Levriero afghano e terrazza di rose",
+   "nameRu": "Афганская борзая и терраса с розами"
   },
   {
    "f": "bg155.jpg",
@@ -6723,7 +7002,8 @@
    "nes": "Rosas rosadas y corazón de madera a la luz de las velas",
    "nfr": "Roses roses, bougie et cœur en bois",
    "nde": "Rosa Rosen, Kerze und Holzherz",
-   "nit": "Rose rosa, candela e cuore di legno"
+   "nit": "Rose rosa, candela e cuore di legno",
+   "nameRu": "Розовые розы, свеча и деревянное сердечко"
   },
   {
    "f": "bg156.jpg",
@@ -6747,7 +7027,8 @@
    "nes": "Jarrón con rosas blanco marfil",
    "nfr": "Vase de roses blanc ivoire",
    "nde": "Vase mit elfenbeinweißen Rosen",
-   "nit": "Vaso di rose bianco avorio"
+   "nit": "Vaso di rose bianco avorio",
+   "nameRu": "Ваза с кремово-белыми розами"
   },
   {
    "f": "bg157.jpg",
@@ -6771,7 +7052,8 @@
    "nes": "Caja en forma de corazón con tulipanes rosados",
    "nfr": "Tulipes roses et boîte en forme de cœur",
    "nde": "Rosa Tulpen und Herzschachtel",
-   "nit": "Tulipani rosa e scatola a forma di cuore"
+   "nit": "Tulipani rosa e scatola a forma di cuore",
+   "nameRu": "Розовые тюльпаны и коробка-сердце"
   },
   {
    "f": "bg158.jpg",
@@ -6795,7 +7077,8 @@
    "nes": "Té caliente de manzanilla",
    "nfr": "Tisane chaude à la camomille",
    "nde": "Warmer Kamillentee",
-   "nit": "Tè caldo alla camomilla"
+   "nit": "Tè caldo alla camomilla",
+   "nameRu": "Горячий ромашковый чай"
   },
   {
    "f": "bg159.jpg",
@@ -6819,7 +7102,8 @@
    "nes": "Peonías rosadas con dos corazones de madera",
    "nfr": "Pivoines roses et deux cœurs en bois",
    "nde": "Rosa Pfingstrosen und zwei Holzherzen",
-   "nit": "Peonie rosa e due cuori di legno"
+   "nit": "Peonie rosa e due cuori di legno",
+   "nameRu": "Розовые пионы и два деревянных сердечка"
   },
   {
    "f": "bg160.jpg",
@@ -6843,7 +7127,8 @@
    "nes": "Jarra de porcelana blanca con lavanda",
    "nfr": "Pichet en porcelaine blanche et lavande",
    "nde": "Weißer Porzellankrug und Lavendel",
-   "nit": "Brocca di porcellana bianca e lavanda"
+   "nit": "Brocca di porcellana bianca e lavanda",
+   "nameRu": "Белый фарфоровый кувшин и лаванда"
   },
   {
    "f": "bg161.jpg",
@@ -6867,7 +7152,8 @@
    "nes": "Corazón de cristal con hortensias y vista al mar",
    "nfr": "Hortensias, cœur de verre et vue sur la mer",
    "nde": "Hortensien, Glasherz und Meerblick",
-   "nit": "Ortensie, cuore di vetro e vista sul mare"
+   "nit": "Ortensie, cuore di vetro e vista sul mare",
+   "nameRu": "Гортензии, стеклянное сердце и вид на море"
   },
   {
    "f": "bg162.jpg",
@@ -6891,7 +7177,8 @@
    "nes": "Cojín en forma de corazón con girasoles",
    "nfr": "Coussin en forme de cœur et tournesols",
    "nde": "Herzkissen mit Sonnenblumen",
-   "nit": "Cuscino a forma di cuore con girasoli"
+   "nit": "Cuscino a forma di cuore con girasoli",
+   "nameRu": "Подушка-сердце с подсолнухами"
   },
   {
    "f": "bg163.jpg",
@@ -6915,7 +7202,8 @@
    "nes": "Corazón de perlas y claveles",
    "nfr": "Cœur de perles et œillets",
    "nde": "Perlenherz und Nelken",
-   "nit": "Cuore di perle e garofani"
+   "nit": "Cuore di perle e garofani",
+   "nameRu": "Сердце из жемчуга и гвоздики"
   },
   {
    "f": "bg164.jpg",
@@ -6939,7 +7227,8 @@
    "nes": "Jacintos y sobre",
    "nfr": "Jacinthe et lettres",
    "nde": "Hyazinthe und Briefe",
-   "nit": "Giacinto e lettere"
+   "nit": "Giacinto e lettere",
+   "nameRu": "Гиацинт и письма"
   },
   {
    "f": "bg165.jpg",
@@ -6963,7 +7252,8 @@
    "nes": "Ramo de gerberas en papel kraft",
    "nfr": "Gerberas et cadeau en papier kraft",
    "nde": "Gerbera-Strauß mit Kraftpapier",
-   "nit": "Mazzo di gerbere con carta kraft"
+   "nit": "Mazzo di gerbere con carta kraft",
+   "nameRu": "Букет гербер в крафтовой бумаге"
   },
   {
    "f": "bg166.jpg",
@@ -6987,7 +7277,8 @@
    "nes": "Cruz de lirios y Biblia",
    "nfr": "Lys, croix et Bible",
    "nde": "Lilien, Kreuz und Bibel",
-   "nit": "Gigli, croce e Bibbia"
+   "nit": "Gigli, croce e Bibbia",
+   "nameRu": "Лилии, крест и Библия"
   },
   {
    "f": "bg167.jpg",
@@ -7011,7 +7302,8 @@
    "nes": "Corazón de cristal y flores de cerezo",
    "nfr": "Fleurs de cerisier et cœur de cristal",
    "nde": "Kirschblüten und Kristallherz",
-   "nit": "Fiori di ciliegio e cuore di cristallo"
+   "nit": "Fiori di ciliegio e cuore di cristallo",
+   "nameRu": "Цветы сакуры и хрустальное сердце"
   },
   {
    "f": "bg168.jpg",
@@ -7035,7 +7327,8 @@
    "nes": "Cesta de muguete",
    "nfr": "Corbeille de muguet",
    "nde": "Maiglöckchenkorb",
-   "nit": "Cestino di mughetti"
+   "nit": "Cestino di mughetti",
+   "nameRu": "Корзинка с ландышами"
   },
   {
    "f": "bg169.jpg",
@@ -7059,7 +7352,8 @@
    "nes": "Rosas rojas en una terraza al atardecer",
    "nfr": "Roses rouges sur une terrasse au coucher du soleil",
    "nde": "Rote Rosen auf der Terrasse im Sonnenuntergang",
-   "nit": "Rose rosse sulla terrazza al tramonto"
+   "nit": "Rose rosse sulla terrazza al tramonto",
+   "nameRu": "Красные розы на террасе на закате"
   },
   {
    "f": "bg170.jpg",
@@ -7083,7 +7377,8 @@
    "nes": "Corazón de orquídeas phalaenopsis blancas",
    "nfr": "Orchidées phalaenopsis blanches et cœur",
    "nde": "Weiße Phalaenopsis-Orchideen und Herz",
-   "nit": "Orchidee Phalaenopsis bianche e cuore"
+   "nit": "Orchidee Phalaenopsis bianche e cuore",
+   "nameRu": "Белые орхидеи фаленопсис и сердце"
   },
   {
    "f": "bg171.jpg",
@@ -7107,7 +7402,8 @@
    "nes": "Té caliente y dalias en otoño",
    "nfr": "Thé chaud et dahlias en automne",
    "nde": "Dahlien und heißer Tee im Herbst",
-   "nit": "Dalie e tè caldo in autunno"
+   "nit": "Dalie e tè caldo in autunno",
+   "nameRu": "Георгины и горячий чай осенью"
   },
   {
    "f": "bg172.jpg",
@@ -7131,7 +7427,8 @@
    "nes": "Cajita plateada para collar con anémonas",
    "nfr": "Renoncules et médaillon argenté",
    "nde": "Ranunkeln und silbernes Medaillon",
-   "nit": "Ranuncoli e medaglione d’argento"
+   "nit": "Ranuncoli e medaglione d’argento",
+   "nameRu": "Ранункулюсы и серебряный медальон"
   },
   {
    "f": "bg173.jpg",
@@ -7155,7 +7452,8 @@
    "nes": "Amanecer con un ramo y dos corazones",
    "nfr": "Bouquet au lever du soleil et deux cœurs",
    "nde": "Sonnenaufgangsstrauß mit zwei Herzen",
-   "nit": "Mazzo dell’alba con due cuori"
+   "nit": "Mazzo dell’alba con due cuori",
+   "nameRu": "Букет цветов на рассвете и два сердца"
   },
   {
    "f": "bg174.jpg",
@@ -7179,7 +7477,8 @@
    "nes": "Corazón de madera con flores moradas y rosadas",
    "nfr": "Cœur en bois et couronne de fleurs violettes et roses",
    "nde": "Holzherz mit Kranz aus violetten und rosa Blumen",
-   "nit": "Cuore di legno con ghirlanda di fiori viola e rosa"
+   "nit": "Cuore di legno con ghirlanda di fiori viola e rosa",
+   "nameRu": "Деревянное сердечко с венком из фиолетовых и розовых цветов"
   }
  ],
  "cats": [
@@ -7203,7 +7502,8 @@
    "nes": "Historias bíblicas",
    "nfr": "Récits bibliques",
    "nde": "Biblische Szenen",
-   "nit": "Scene bibliche"
+   "nit": "Scene bibliche",
+   "nameRu": "Библейские сцены"
   },
   {
    "id": "scenery",
@@ -7225,7 +7525,8 @@
    "nes": "Paisajes naturales",
    "nfr": "Paysages naturels",
    "nde": "Naturlandschaften",
-   "nit": "Paesaggi naturali"
+   "nit": "Paesaggi naturali",
+   "nameRu": "Природные пейзажи"
   },
   {
    "id": "cross",
@@ -7247,7 +7548,8 @@
    "nes": "Cruces",
    "nfr": "Croix",
    "nde": "Kreuze",
-   "nit": "Croci"
+   "nit": "Croci",
+   "nameRu": "Кресты"
   },
   {
    "id": "cats",
@@ -7269,7 +7571,8 @@
    "nes": "Gatos",
    "nfr": "Chats",
    "nde": "Katzen",
-   "nit": "Gatti"
+   "nit": "Gatti",
+   "nameRu": "Кошки"
   },
   {
    "id": "dogs",
@@ -7291,7 +7594,8 @@
    "nes": "Perros",
    "nfr": "Chiens",
    "nde": "Hunde",
-   "nit": "Cani"
+   "nit": "Cani",
+   "nameRu": "Собаки"
   },
   {
    "id": "gifts",
@@ -7313,7 +7617,8 @@
    "nes": "Regalos",
    "nfr": "Cadeaux",
    "nde": "Geschenke",
-   "nit": "Regali"
+   "nit": "Regali",
+   "nameRu": "Подарки"
   },
   {
    "id": "cakes",
@@ -7335,7 +7640,8 @@
    "nes": "Pasteles",
    "nfr": "Gâteaux",
    "nde": "Kuchen und Torten",
-   "nit": "Torte e dolci"
+   "nit": "Torte e dolci",
+   "nameRu": "Торты и десерты"
   }
  ]
 }
