@@ -61,7 +61,10 @@
    "tcb": "Paglaum",
    "nes": "Amanecer radiante",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Esperanza"
+   "tes": "Esperanza",
+   "nfr": "Lever de soleil radieux",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Espérance"
   },
   {
    "f": "m02.mp3",
@@ -112,7 +115,10 @@
    "tcb": "Paglaum",
    "nes": "Esperanza – Amanecer",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Esperanza"
+   "tes": "Esperanza",
+   "nfr": "Espérance – Au lever du jour",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Espérance"
   },
   {
    "f": "m03.mp3",
@@ -163,7 +169,10 @@
    "tcb": "Paglaum",
    "nes": "Esperanza 2 – La creación, montañas y mares",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Esperanza"
+   "tes": "Esperanza",
+   "nfr": "Espérance 2 – La création, montagnes et mers",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Espérance"
   },
   {
    "f": "m04.mp3",
@@ -214,7 +223,10 @@
    "tcb": "Paglaum",
    "nes": "Esperanza 3 – Meditación y oración en silencio",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Esperanza"
+   "tes": "Esperanza",
+   "nfr": "Espérance 3 – Méditation et prière dans le silence",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Espérance"
   },
   {
    "f": "m05.mp3",
@@ -265,7 +277,10 @@
    "tcb": "Paglaum",
    "nes": "Esperanza 4 – Adoración y gloria",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Esperanza"
+   "tes": "Esperanza",
+   "nfr": "Espérance 4 – Adoration et gloire",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Espérance"
   },
   {
    "f": "m06.mp3",
@@ -316,7 +331,10 @@
    "tcb": "Pagtuo",
    "nes": "Fe 1 – Caminar por fe",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Fe"
+   "tes": "Fe",
+   "nfr": "Foi 1 – Marcher par la foi",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Foi"
   },
   {
    "f": "m07.mp3",
@@ -367,7 +385,10 @@
    "tcb": "Pagtuo",
    "nes": "Fe 2 – Una fe como el grano de mostaza",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Fe"
+   "tes": "Fe",
+   "nfr": "Foi 2 – Une foi comme un grain de moutarde",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Foi"
   },
   {
    "f": "m08.mp3",
@@ -418,7 +439,10 @@
    "tcb": "Gugma",
    "nes": "Amor 1 – De tal manera amó Dios al mundo",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Amor"
+   "tes": "Amor",
+   "nfr": "Amour 1 – Dieu a tant aimé le monde",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Amour"
   },
   {
    "f": "m09.mp3",
@@ -469,7 +493,10 @@
    "tcb": "Gugma",
    "nes": "Amor 2 – El amor supremo: dio su vida por mí",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Amor"
+   "tes": "Amor",
+   "nfr": "Amour 2 – Le plus grand amour : il a donné sa vie pour moi",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Amour"
   },
   {
    "f": "m10.mp3",
@@ -520,7 +547,10 @@
    "tcb": "Gugma",
    "nes": "Amor 3 – El verdadero significado del amor",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Amor"
+   "tes": "Amor",
+   "nfr": "Amour 3 – Le vrai sens de l’amour",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Amour"
   },
   {
    "f": "m11.mp3",
@@ -571,7 +601,10 @@
    "tcb": "Gugma",
    "nes": "Amor 4 – Ámense unos a otros",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Amor"
+   "tes": "Amor",
+   "nfr": "Amour 4 – Aimez-vous les uns les autres",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Amour"
   },
   {
    "f": "m12.mp3",
@@ -622,7 +655,10 @@
    "tcb": "Gugma",
    "nes": "Amor 5 – El amor cubre multitud de pecados",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Amor"
+   "tes": "Amor",
+   "nfr": "Amour 5 – L’amour couvre une multitude de péchés",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Amour"
   },
   {
    "f": "m13.mp3",
@@ -673,7 +709,10 @@
    "tcb": "Panalangin",
    "nes": "Bendición 1 – La promesa de bendición de Dios",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Bendición"
+   "tes": "Bendición",
+   "nfr": "Bénédiction 1 – La promesse de bénédiction de Dieu",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Bénédiction"
   },
   {
    "f": "m14.mp3",
@@ -724,7 +763,10 @@
    "tcb": "Panalangin",
    "nes": "Bendición 2 – La bendición sacerdotal",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Bendición"
+   "tes": "Bendición",
+   "nfr": "Bénédiction 2 – La bénédiction sacerdotale",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Bénédiction"
   },
   {
    "f": "m15.mp3",
@@ -775,7 +817,10 @@
    "tcb": "Grasya",
    "nes": "Gracia 1 – Salvos por gracia",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Gracia"
+   "tes": "Gracia",
+   "nfr": "Grâce 1 – Sauvés par grâce",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Grâce"
   },
   {
    "f": "m16.mp3",
@@ -826,7 +871,10 @@
    "tcb": "Grasya",
    "nes": "Gracia 2 – La gracia en la cruz",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Gracia"
+   "tes": "Gracia",
+   "nfr": "Grâce 2 – La grâce à la croix",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Grâce"
   },
   {
    "f": "m17.mp3",
@@ -877,7 +925,10 @@
    "tcb": "Kalinaw",
    "nes": "Paz 1 – La paz que da Cristo",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Paz"
+   "tes": "Paz",
+   "nfr": "Paix 1 – La paix que donne le Christ",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Paix"
   },
   {
    "f": "m18.mp3",
@@ -928,7 +979,10 @@
    "tcb": "Kalinaw",
    "nes": "Paz 2 – Paz en medio de la tormenta",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Paz"
+   "tes": "Paz",
+   "nfr": "Paix 2 – La paix au cœur de la tempête",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Paix"
   },
   {
    "f": "m19.mp3",
@@ -979,7 +1033,10 @@
    "tcb": "Kalipay",
    "nes": "Gozo 1 – Alégrense siempre en el Señor",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Gozo"
+   "tes": "Gozo",
+   "nfr": "Joie 1 – Réjouissez-vous toujours dans le Seigneur",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Joie"
   },
   {
    "f": "m20.mp3",
@@ -1030,7 +1087,10 @@
    "tcb": "Kalipay",
    "nes": "Gozo 2 – Gritos de alegría por la mañana",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Gozo"
+   "tes": "Gozo",
+   "nfr": "Joie 2 – Cris de joie au matin",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Joie"
   },
   {
    "f": "m21.mp3",
@@ -1081,7 +1141,10 @@
    "tcb": "Kalipay",
    "nes": "Gozo 3 – Cantemos alabanzas con alegría",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Gozo"
+   "tes": "Gozo",
+   "nfr": "Joie 3 – Chantons la louange avec joie",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Joie"
   },
   {
    "f": "m22.mp3",
@@ -1132,7 +1195,10 @@
    "tcb": "Kalipay",
    "nes": "Gozo 4 – Dancemos de alegría",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Gozo"
+   "tes": "Gozo",
+   "nfr": "Joie 4 – Dansons de joie",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Joie"
   },
   {
    "f": "m23.mp3",
@@ -1183,7 +1249,10 @@
    "tcb": "Kalipay",
    "nes": "Gozo 5 – El gozo del Señor es mi fortaleza",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Gozo"
+   "tes": "Gozo",
+   "nfr": "Joie 5 – La joie du Seigneur est ma force",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Joie"
   },
   {
    "f": "m24.mp3",
@@ -1234,7 +1303,10 @@
    "tcb": "Paghulat",
    "nes": "Espera 1 – Esperar en el camino del Señor",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Espera"
+   "tes": "Espera",
+   "nfr": "Attente 1 – Attendre l’Éternel",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Attente"
   },
   {
    "f": "m25.mp3",
@@ -1285,7 +1357,10 @@
    "tcb": "Paghulat",
    "nes": "Espera 2 – Alzar el vuelo como las águilas",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Espera"
+   "tes": "Espera",
+   "nfr": "Attente 2 – S’élever comme sur des ailes d’aigle",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Attente"
   },
   {
    "f": "m26.mp3",
@@ -1336,7 +1411,10 @@
    "tcb": "Paghulat",
    "nes": "Espera 4 – Confiar en Él en silencio",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Espera"
+   "tes": "Espera",
+   "nfr": "Attente 4 – Se confier en lui dans le silence",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Attente"
   },
   {
    "f": "m27.mp3",
@@ -1387,7 +1465,10 @@
    "tcb": "Paghupay sa Sakit",
    "nes": "Consuelo en el dolor 2 – Lágrimas en medio del sufrimiento",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Consuelo en el dolor"
+   "tes": "Consuelo en el dolor",
+   "nfr": "Réconfort dans la maladie 2 – Des larmes au cœur de la souffrance",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Réconfort dans la maladie"
   },
   {
    "f": "m28.mp3",
@@ -1438,7 +1519,10 @@
    "tcb": "Paghupay sa Sakit",
    "nes": "Consuelo en el dolor – En silencio ante la presencia de Dios",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Consuelo en el dolor"
+   "tes": "Consuelo en el dolor",
+   "nfr": "Réconfort dans la maladie – En silence devant la présence de Dieu",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Réconfort dans la maladie"
   },
   {
    "f": "m29.mp3",
@@ -1489,7 +1573,10 @@
    "tcb": "Kasaulogan sa Natawhan",
    "nes": "Celebración de cumpleaños – Alegría de cumpleaños, lluvia de bendiciones",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Celebración de cumpleaños"
+   "tes": "Celebración de cumpleaños",
+   "nfr": "Fête d’anniversaire – Joie d’anniversaire, pluie de bénédictions",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Fête d’anniversaire"
   },
   {
    "f": "m30.mp3",
@@ -1540,7 +1627,10 @@
    "tcb": "Kasaulogan sa Natawhan",
    "nes": "Inicio de cumpleaños – El comienzo de la bendición",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Celebración de cumpleaños"
+   "tes": "Celebración de cumpleaños",
+   "nfr": "Ouverture d’anniversaire – Le début de la bénédiction",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Fête d’anniversaire"
   },
   {
    "f": "m31.mp3",
@@ -1591,7 +1681,10 @@
    "tcb": "Kasaulogan sa Natawhan",
    "nes": "Canción de cumpleaños",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Celebración de cumpleaños"
+   "tes": "Celebración de cumpleaños",
+   "nfr": "Chant d’anniversaire",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Fête d’anniversaire"
   },
   {
    "f": "m32.mp3",
@@ -1642,7 +1735,10 @@
    "tcb": "Kasaulogan sa Natawhan",
    "nes": "Celebración",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Celebración de cumpleaños"
+   "tes": "Celebración de cumpleaños",
+   "nfr": "Fête",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Fête d’anniversaire"
   },
   {
    "f": "m33.mp3",
@@ -1693,7 +1789,10 @@
    "tcb": "Paghupay sa Sakit",
    "nes": "Consuelo en el dolor 5",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Consuelo en el dolor"
+   "tes": "Consuelo en el dolor",
+   "nfr": "Réconfort dans la maladie 5",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Réconfort dans la maladie"
   },
   {
    "f": "m34.mp3",
@@ -1744,7 +1843,10 @@
    "tcb": "Kasaulogan sa Natawhan",
    "nes": "Gran alegría",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Celebración de cumpleaños"
+   "tes": "Celebración de cumpleaños",
+   "nfr": "Grande joie",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Fête d’anniversaire"
   },
   {
    "f": "m35.mp3",
@@ -1795,7 +1897,10 @@
    "tcb": "Paglaum",
    "nes": "Esperanza",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Esperanza"
+   "tes": "Esperanza",
+   "nfr": "Espérance",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Espérance"
   },
   {
    "f": "m36.mp3",
@@ -1846,7 +1951,10 @@
    "tcb": "Kalinaw",
    "nes": "Paz",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Paz"
+   "tes": "Paz",
+   "nfr": "Paix",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Paix"
   },
   {
    "f": "m37.mp3",
@@ -1897,7 +2005,10 @@
    "tcb": "Gugma",
    "nes": "Amor tierno",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Amor"
+   "tes": "Amor",
+   "nfr": "Tendre bonté",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Amour"
   },
   {
    "f": "m38.mp3",
@@ -1948,7 +2059,10 @@
    "tcb": "Gugma",
    "nes": "Humildad",
    "bes": "321 Música de la Biblia Interactiva",
-   "tes": "Amor"
+   "tes": "Amor",
+   "nfr": "Douceur",
+   "bfr": "321 Musique de la Bible interactive",
+   "tfr": "Amour"
   }
  ]
 }
