@@ -2032,6 +2032,10 @@ async function checkPlanRemind(){
 const SENT_TAIL = /[」』）〕”’«»"'\)\]\s]+$/;
 function isSentEnd(el){
   if (isHE() && el.parentElement && el.parentElement.classList.contains('dline')) return true;   /* 希伯來文詩篇標題自成一句 */
+  if (isEL()){   /* 希臘文長句（如太 1 的家譜）可橫跨多節：每節結尾也算一句的終點，跟讀才會逐句亮 */
+    let nx = el.nextElementSibling; while (nx && !nx.classList.contains('sent')) nx = nx.nextElementSibling;
+    if (nx && nx.dataset.v && el.dataset.v && nx.dataset.v !== el.dataset.v) return true;
+  }
   if (isTH()) return true;   /* 泰文沒有句號：每一節（.sent）自成一句，跟讀才會一句一句亮 */
   const x = (el.textContent || '').replace(SENT_TAIL, '');
   return isEN() ? (/[.!?။؟।\u05C3]$/.test(x) || (isEL() && /[;\u037E]$/.test(x))) : /[。！？]$/.test(x);   /* \u05C3 = 希伯來文句末符號 sof pasuq（׃）：每節一句，跟讀才會逐句亮 */
