@@ -222,6 +222,12 @@ P.dict["Very short"] = "बहुत छोटा";
 P.dict["Short"] = "छोटा";
 P.dict["Long"] = "लंबा";
 P.dict["Very long"] = "बहुत लंबा";
+if (P.dict["Invite a friend"] === undefined) P.dict["Invite a friend"] = "मित्र को आमंत्रित करें";
+if (P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] === undefined) P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] = "यह बाइबल ऐप किसी अपने के साथ साझा करें — वे लिंक से तुरंत इसे खोल सकते हैं, डाउनलोड की आवश्यकता नहीं।";
+if (P.dict["Share invitation"] === undefined) P.dict["Share invitation"] = "आमंत्रण साझा करें";
+if (P.dict["Copy link"] === undefined) P.dict["Copy link"] = "लिंक कॉपी करें";
+if (P.dict["Link copied — paste it anywhere"] === undefined) P.dict["Link copied — paste it anywhere"] = "लिंक कॉपी हो गया — इसे कहीं भी पेस्ट करें";
+if (P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] === undefined) P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] = "321 Interactive Bible ऐप के साथ बाइबल पढ़ना मेरे लिए बहुत अच्छा रहा है — पढ़ें, ज़ोर से सुनें और पढ़ते-पढ़ते Xiaozhi से पूछें। आइए, मेरे साथ पढ़ें:";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

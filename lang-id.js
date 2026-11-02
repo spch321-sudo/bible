@@ -223,6 +223,12 @@ P.dict["Very short"] = "Sangat singkat";
 P.dict["Short"] = "Singkat";
 P.dict["Long"] = "Panjang";
 P.dict["Very long"] = "Sangat panjang";
+if (P.dict["Invite a friend"] === undefined) P.dict["Invite a friend"] = "Undang teman";
+if (P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] === undefined) P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] = "Bagikan aplikasi Alkitab ini kepada orang yang Anda kasihi — mereka bisa langsung membukanya lewat tautan, tanpa perlu mengunduh.";
+if (P.dict["Share invitation"] === undefined) P.dict["Share invitation"] = "Bagikan undangan";
+if (P.dict["Copy link"] === undefined) P.dict["Copy link"] = "Salin tautan";
+if (P.dict["Link copied — paste it anywhere"] === undefined) P.dict["Link copied — paste it anywhere"] = "Tautan disalin — tempel di mana saja";
+if (P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] === undefined) P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] = "Saya sedang membaca Alkitab dengan aplikasi 321 Interactive Bible — membaca, mendengarkan, dan bertanya kepada Xiaozhi sepanjang jalan. Mari membaca bersama saya:";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

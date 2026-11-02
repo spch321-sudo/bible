@@ -223,6 +223,12 @@ P.dict["Very short"] = "極短";
 P.dict["Short"] = "短め";
 P.dict["Long"] = "長め";
 P.dict["Very long"] = "極長";
+if (P.dict["Invite a friend"] === undefined) P.dict["Invite a friend"] = "友だちを招待";
+if (P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] === undefined) P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] = "大切な人にこの聖書アプリを紹介しましょう。リンクからすぐに開けるので、ダウンロードは不要です。";
+if (P.dict["Share invitation"] === undefined) P.dict["Share invitation"] = "招待を送る";
+if (P.dict["Copy link"] === undefined) P.dict["Copy link"] = "リンクをコピー";
+if (P.dict["Link copied — paste it anywhere"] === undefined) P.dict["Link copied — paste it anywhere"] = "リンクをコピーしました — どこにでも貼り付けられます";
+if (P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] === undefined) P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] = "321 インタラクティブ聖書アプリで聖書を読んでいます。読んで、音声で聴いて、読みながら Xiaozhi に質問もできます。ぜひ一緒に読みましょう:";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

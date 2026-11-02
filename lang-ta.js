@@ -1219,6 +1219,12 @@ P.rules = [
  [/^(\d+) multiple-choice questions with instant explanations; misses go to your notebook$/, function(m){ return m[1] + ' பலவுள் தெரிவு கேள்விகள், உடனடி விளக்கத்துடன்; தவறியவை உங்கள் குறிப்பேட்டில் சேரும்'; }],
  [/^(\d+) missed questions to review$/, function(m){ return 'மீள்பார்வைக்கு ' + m[1] + ' தவறிய கேள்விகள்'; }]
 ];
+if (P.dict["Invite a friend"] === undefined) P.dict["Invite a friend"] = "நண்பரை அழைக்கவும்";
+if (P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] === undefined) P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] = "நீங்கள் அன்பு கூறும் ஒருவருடன் இந்த வேதாகம செயலியைப் பகிருங்கள் — இணைப்பிலிருந்தே உடனே திறக்கலாம், பதிவிறக்கம் தேவையில்லை.";
+if (P.dict["Share invitation"] === undefined) P.dict["Share invitation"] = "அழைப்பைப் பகிரவும்";
+if (P.dict["Copy link"] === undefined) P.dict["Copy link"] = "இணைப்பை நகலெடு";
+if (P.dict["Link copied — paste it anywhere"] === undefined) P.dict["Link copied — paste it anywhere"] = "இணைப்பு நகலெடுக்கப்பட்டது — எங்கு வேண்டுமானாலும் ஒட்டுங்கள்";
+if (P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] === undefined) P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] = "நான் 321 Interactive Bible செயலியில் வேதாகமம் வாசித்து வருகிறேன் — வாசிக்கவும், சத்தமாகக் கேட்கவும், வாசிக்கும்போதே Xiaozhi-யிடம் கேட்கவும் முடியும். வாருங்கள், என்னுடன் சேர்ந்து வாசிப்போம்:";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

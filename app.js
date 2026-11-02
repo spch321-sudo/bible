@@ -45,7 +45,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.55.2';
+const VERSION = 'v2.56.0';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -562,7 +562,7 @@ function loadState(){
   try{
     const s = JSON.parse(localStorage.getItem('ib_state') || '{}');
     state = Object.assign({}, DEFAULTS, s);
-    if (!localStorage.getItem('ib_state') && window.__IB_LANG0 && I18N[window.__IB_LANG0]) state.lang = window.__IB_LANG0;   // 第一次開啟：沿用載入器依手機語言挑的語言
+    if (!localStorage.getItem('ib_state') && window.__IB_LANG0 && I18N[window.__IB_LANG0]){ state.lang = window.__IB_LANG0; if (window.__IB_LANG_URL) setTimeout(saveState, 0); }   // 第一次開啟：沿用載入器依手機語言挑的語言
     state.voice = Object.assign({}, DEFAULTS.voice, s.voice || {});
     if (!I18N[state.lang]) state.lang = 'zh';
     // 舊設定轉換：v1.0.4 的 mode(0分章/1純淨/2整卷)、更早的 pure 開關
@@ -1122,6 +1122,35 @@ async function viewMeet(v){
   }, 30000);
 }
 /* 團契簡介（今日頁） */
+/* v2.56.0 邀請朋友：分享 App 連結（帶上目前語言，朋友第一次開啟就是這個語言） */
+function inviteLink(){ return location.origin + location.pathname.replace(/index\.html$/, '') + '?lang=' + state.lang; }
+function inviteText(){
+  return L3('我正在用「321互動聖經」讀聖經——可以聽朗讀、畫線默想、隨時問小智。一起來讀吧：', '我正在用“321互动圣经”读圣经——可以听朗读、画线默想、随时问小智。一起来读吧：', "I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:");
+}
+function inviteCard(){
+  const T = (zh, zs, en) => esc(L3(zh, zs, en));
+  return `<div class="card" id="inviteCard">
+    <h3 style="margin:0 0 6px">💌 ${T('邀請朋友一起讀', '邀请朋友一起读', 'Invite a friend')}</h3>
+    <div class="muted" style="font-size:13px;margin-bottom:10px;line-height:1.7">${T('把這個聖經 App 分享給你關心的人——點連結就能直接開啟，不用下載。', '把这个圣经 App 分享给你关心的人——点链接就能直接打开，不用下载。', 'Share this Bible app with someone you care about — they can open it right away from a link, no download needed.')}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn primary" id="invShare" style="flex:1 1 150px">${T('分享邀請', '分享邀请', 'Share invitation')}</button>
+      <button class="btn" id="invCopy" style="flex:1 1 110px">${T('複製連結', '复制链接', 'Copy link')}</button>
+    </div>
+  </div>`;
+}
+async function inviteShare(){
+  const url = inviteLink(), text = inviteText() + '\n' + url;
+  if (navigator.share){ try{ await navigator.share({ title: t().app, text: inviteText(), url }); return; }catch(e){ if (e && e.name === 'AbortError') return; } }
+  inviteCopy(text);
+}
+async function inviteCopy(text){
+  text = text || inviteText() + '\n' + inviteLink();
+  let ok = false;
+  try{ await navigator.clipboard.writeText(text); ok = true; }catch(e){
+    try{ const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); ok = document.execCommand('copy'); ta.remove(); }catch(e2){}
+  }
+  toast(ok ? L3('已複製連結，可以貼到任何地方', '已复制链接，可以贴到任何地方', 'Link copied — paste it anywhere') : inviteLink(), ok ? 2600 : 6000);
+}
 function introAir(){
   const T = (zh, zs, en) => esc(L3(zh, zs, en));
   return `<div class="card">
@@ -1155,6 +1184,8 @@ async function viewToday(v){
 
   v.innerHTML = `
     <div class="hero-cover"><img src="${HERO_IMG}" alt="" loading="eager"></div>
+
+    ${inviteCard()}
 
     ${intro321()}
 
@@ -1203,6 +1234,7 @@ async function viewToday(v){
       <a class="rowlink" href="#/books"><div class="meta"><div class="t">${esc(L.books)}</div><div class="s">66 ${esc(L.bookUnit)}</div></div><div class="chev">›</div></a>
     </div>`;
 
+  { const a = $('#invShare', v), b = $('#invCopy', v); if (a) a.onclick = () => inviteShare(); if (b) b.onclick = () => inviteCopy(); }
   meetCss(); { const tn = $('#todayNext', v); if (tn) tn.innerHTML = nextMeetCard(); }
   const rb = $('#resumeBtn', v);
   if (rb) rb.onclick = () => {

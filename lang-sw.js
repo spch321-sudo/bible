@@ -1231,6 +1231,12 @@ P.rules = [
  [/^(\d+) multiple-choice questions with instant explanations; misses go to your notebook$/, function(m){ return 'Maswali ' + m[1] + ' ya kuchagua jibu yenye maelezo ya papo hapo; ulizokosea huenda kwenye daftari lako'; }],
  [/^(\d+) missed questions to review$/, function(m){ return 'Maswali ' + m[1] + ' ya kupitia upya'; }]
 ];
+if (P.dict["Invite a friend"] === undefined) P.dict["Invite a friend"] = "Mkaribishe rafiki";
+if (P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] === undefined) P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] = "Shiriki programu hii ya Biblia na mtu unayemjali — anaweza kuifungua mara moja kupitia kiungo, bila kupakua.";
+if (P.dict["Share invitation"] === undefined) P.dict["Share invitation"] = "Shiriki mwaliko";
+if (P.dict["Copy link"] === undefined) P.dict["Copy link"] = "Nakili kiungo";
+if (P.dict["Link copied — paste it anywhere"] === undefined) P.dict["Link copied — paste it anywhere"] = "Kiungo kimenakiliwa — kibandike popote";
+if (P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] === undefined) P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] = "Nimekuwa nikisoma Biblia kwa programu ya 321 Interactive Bible — kusoma, kusikiliza kwa sauti, na kumuuliza Xiaozhi njiani. Njoo tusome pamoja:";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

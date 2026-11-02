@@ -1247,6 +1247,12 @@ P.rules = [
  [/^(\d+) multiple-choice questions with instant explanations; misses go to your notebook$/, function(m){ return n1(m[1],'ερώτηση πολλαπλής επιλογής','ερωτήσεις πολλαπλής επιλογής') + ' με άμεση εξήγηση· τα λάθη καταχωρούνται στο τετράδιό σου'; }],
  [/^(\d+) missed questions to review$/, function(m){ return n1(m[1],'ερώτηση','ερωτήσεις') + ' για επανάληψη'; }]
 ];
+if (P.dict["Invite a friend"] === undefined) P.dict["Invite a friend"] = "Προσκαλέστε έναν φίλο";
+if (P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] === undefined) P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] = "Μοιραστείτε αυτή την εφαρμογή της Αγίας Γραφής με κάποιον που αγαπάτε — μπορεί να την ανοίξει αμέσως από έναν σύνδεσμο, χωρίς λήψη.";
+if (P.dict["Share invitation"] === undefined) P.dict["Share invitation"] = "Κοινοποίηση πρόσκλησης";
+if (P.dict["Copy link"] === undefined) P.dict["Copy link"] = "Αντιγραφή συνδέσμου";
+if (P.dict["Link copied — paste it anywhere"] === undefined) P.dict["Link copied — paste it anywhere"] = "Ο σύνδεσμος αντιγράφηκε — επικολλήστε τον οπουδήποτε";
+if (P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] === undefined) P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] = "Διαβάζω την Αγία Γραφή με την εφαρμογή 321 Interactive Bible — διαβάζω, ακούω φωναχτά και ρωτώ τον Xiaozhi στην πορεία. Ελάτε να διαβάσουμε μαζί:";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

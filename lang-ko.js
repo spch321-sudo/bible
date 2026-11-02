@@ -225,6 +225,12 @@ P.dict["Very short"] = "매우 짧게";
 P.dict["Short"] = "짧게";
 P.dict["Long"] = "길게";
 P.dict["Very long"] = "매우 길게";
+if (P.dict["Invite a friend"] === undefined) P.dict["Invite a friend"] = "친구 초대하기";
+if (P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] === undefined) P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] = "소중한 사람에게 이 성경 앱을 나눠 보세요. 링크만 누르면 바로 열 수 있어서 따로 설치할 필요가 없습니다.";
+if (P.dict["Share invitation"] === undefined) P.dict["Share invitation"] = "초대장 공유";
+if (P.dict["Copy link"] === undefined) P.dict["Copy link"] = "링크 복사";
+if (P.dict["Link copied — paste it anywhere"] === undefined) P.dict["Link copied — paste it anywhere"] = "링크가 복사되었습니다 — 어디에든 붙여넣으세요";
+if (P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] === undefined) P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] = "저는 321 인터랙티브 성경 앱으로 성경을 읽고 있어요. 읽고, 소리 내어 듣고, 읽는 중에 Xiaozhi에게 물어볼 수도 있습니다. 함께 읽어요:";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

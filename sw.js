@@ -1,10 +1,10 @@
 /* 321互動聖經 — Service Worker
    每次改動內容或程式，務必把 VERSION 往上加（也要同步 app.js 的 VERSION 與 version.json），
    否則已安裝的使用者不會看到更新。 */
-const VERSION = 'ib-v2.55.2';
-const VER = 'v2.55.2';
+const VERSION = 'ib-v2.56.0';
+const VER = 'v2.56.0';
 
-/* v2.55.2：語言包不再全部預先快取，改為用到才下載並快取（見下方 fetch 處理） */
+/* v2.56.0：語言包不再全部預先快取，改為用到才下載並快取（見下方 fetch 處理） */
 const SHELL = [
   './', './index.html', './app.js', './peerjs.min.js', './qrcode.js', './manifest.json', './toc.json', './plans.json', './cover.jpg', './hero.jpg', './wxpay.jpg',
   './icon-72.png', './icon-96.png', './icon-128.png', './icon-144.png',

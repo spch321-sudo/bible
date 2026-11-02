@@ -222,6 +222,12 @@ P.dict["Very short"] = "สั้นมาก";
 P.dict["Short"] = "สั้น";
 P.dict["Long"] = "ยาว";
 P.dict["Very long"] = "ยาวมาก";
+if (P.dict["Invite a friend"] === undefined) P.dict["Invite a friend"] = "ชวนเพื่อน";
+if (P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] === undefined) P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] = "แบ่งปันแอปพระคัมภีร์นี้ให้คนที่คุณห่วงใย — เปิดได้ทันทีจากลิงก์ ไม่ต้องดาวน์โหลด";
+if (P.dict["Share invitation"] === undefined) P.dict["Share invitation"] = "แบ่งปันคำเชิญ";
+if (P.dict["Copy link"] === undefined) P.dict["Copy link"] = "คัดลอกลิงก์";
+if (P.dict["Link copied — paste it anywhere"] === undefined) P.dict["Link copied — paste it anywhere"] = "คัดลอกลิงก์แล้ว — วางที่ไหนก็ได้";
+if (P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] === undefined) P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] = "ฉันกำลังอ่านพระคัมภีร์ด้วยแอป 321 Interactive Bible — อ่าน ฟังเสียงอ่าน และถาม Xiaozhi ไปพร้อมกัน มาอ่านด้วยกันเถอะ:";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;
