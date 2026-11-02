@@ -1032,6 +1032,12 @@ P.rules = [
  [/^(\d+) multiple-choice questions with instant explanations; misses go to your notebook$/, function(m){ return n1(m[1],'שאלה אמריקאית אחת','שתי שאלות אמריקאיות','שאלות אמריקאיות') + ' עם הסבר מיידי; שאלות שנפספו נשמרות במחברת שלך'; }],
  [/^(\d+) missed questions to review$/, function(m){ return n1(m[1],'שאלה אחת שנפספה','שתי שאלות שנפספו','שאלות שנפספו') + ' לחזרה'; }]
 ];
+if (P.dict["Invite a friend"] === undefined) P.dict["Invite a friend"] = "הזמנת חבר";
+if (P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] === undefined) P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] = "שתפו את אפליקציית המקרא הזו עם אדם יקר לכם — אפשר לפתוח אותה מיד מקישור, בלי להוריד.";
+if (P.dict["Share invitation"] === undefined) P.dict["Share invitation"] = "שליחת הזמנה";
+if (P.dict["Copy link"] === undefined) P.dict["Copy link"] = "העתקת קישור";
+if (P.dict["Link copied — paste it anywhere"] === undefined) P.dict["Link copied — paste it anywhere"] = "הקישור הועתק — הדביקו אותו בכל מקום";
+if (P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] === undefined) P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] = "אני קורא/ת את המקרא באפליקציית 321 Interactive Bible — לקרוא, להאזין בקול ולשאול את Xiaozhi תוך כדי. בואו לקרוא איתי:";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

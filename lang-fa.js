@@ -1216,6 +1216,12 @@ P.rules = [
  [/^(\d+) multiple-choice questions with instant explanations; misses go to your notebook$/, function(m){ return m[1] + ' پرسش چندگزینه‌ای با توضیح فوری؛ پاسخ‌های نادرست در دفترچهٔ شما ذخیره می‌شود'; }],
  [/^(\d+) missed questions to review$/, function(m){ return m[1] + ' پرسش برای مرور'; }]
 ];
+if (P.dict["Invite a friend"] === undefined) P.dict["Invite a friend"] = "دعوت از یک دوست";
+if (P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] === undefined) P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] = "این برنامهٔ کتاب مقدس را با کسی که دوستش دارید به اشتراک بگذارید — او می‌تواند بی‌درنگ از طریق پیوند آن را باز کند، بدون نیاز به دانلود.";
+if (P.dict["Share invitation"] === undefined) P.dict["Share invitation"] = "اشتراک‌گذاری دعوت";
+if (P.dict["Copy link"] === undefined) P.dict["Copy link"] = "کپی پیوند";
+if (P.dict["Link copied — paste it anywhere"] === undefined) P.dict["Link copied — paste it anywhere"] = "پیوند کپی شد — هر جا می‌خواهید جای‌گذاری کنید";
+if (P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] === undefined) P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] = "من با برنامهٔ 321 Interactive Bible کتاب مقدس می‌خوانم — می‌خوانم، با صدای بلند گوش می‌دهم و در میانهٔ راه از Xiaozhi می‌پرسم. بیایید با هم بخوانیم:";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

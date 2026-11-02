@@ -222,6 +222,12 @@ P.dict["Very short"] = "အလွန်တို";
 P.dict["Short"] = "တို";
 P.dict["Long"] = "ရှည်";
 P.dict["Very long"] = "အလွန်ရှည်";
+if (P.dict["Invite a friend"] === undefined) P.dict["Invite a friend"] = "သူငယ်ချင်းကို ဖိတ်ခေါ်ပါ";
+if (P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] === undefined) P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] = "သင်ချစ်ခင်သူတစ်ဦးထံ ဤကျမ်းစာအက်ပ်ကို မျှဝေပါ — လင့်ခ်မှ ချက်ချင်းဖွင့်နိုင်ပြီး ဒေါင်းလုဒ်လုပ်ရန် မလိုပါ။";
+if (P.dict["Share invitation"] === undefined) P.dict["Share invitation"] = "ဖိတ်ကြားချက် မျှဝေရန်";
+if (P.dict["Copy link"] === undefined) P.dict["Copy link"] = "လင့်ခ်ကူးယူရန်";
+if (P.dict["Link copied — paste it anywhere"] === undefined) P.dict["Link copied — paste it anywhere"] = "လင့်ခ်ကူးယူပြီးပါပြီ — မည်သည့်နေရာတွင်မဆို ကူးထည့်ပါ";
+if (P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] === undefined) P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] = "ကျွန်ုပ်သည် 321 Interactive Bible အက်ပ်ဖြင့် ကျမ်းစာဖတ်နေပါသည် — ဖတ်ရှုခြင်း၊ အသံထွက်နားထောင်ခြင်း၊ ဖတ်ရင်း Xiaozhi ကို မေးမြန်းခြင်းများ လုပ်နိုင်ပါသည်။ ကျွန်ုပ်နှင့်အတူ လာဖတ်ကြပါစို့:";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

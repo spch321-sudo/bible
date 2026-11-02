@@ -222,6 +222,12 @@ P.dict["Very short"] = "Rất ngắn";
 P.dict["Short"] = "Ngắn";
 P.dict["Long"] = "Dài";
 P.dict["Very long"] = "Rất dài";
+if (P.dict["Invite a friend"] === undefined) P.dict["Invite a friend"] = "Mời bạn bè";
+if (P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] === undefined) P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] = "Hãy chia sẻ ứng dụng Kinh Thánh này với người bạn yêu quý — họ có thể mở ngay từ đường dẫn, không cần tải về.";
+if (P.dict["Share invitation"] === undefined) P.dict["Share invitation"] = "Chia sẻ lời mời";
+if (P.dict["Copy link"] === undefined) P.dict["Copy link"] = "Sao chép liên kết";
+if (P.dict["Link copied — paste it anywhere"] === undefined) P.dict["Link copied — paste it anywhere"] = "Đã sao chép liên kết — hãy dán vào bất cứ đâu";
+if (P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] === undefined) P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] = "Mình đang đọc Kinh Thánh với ứng dụng 321 Interactive Bible — đọc, nghe đọc thành tiếng và hỏi Xiaozhi ngay trong lúc đọc. Mời bạn cùng đọc với mình:";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

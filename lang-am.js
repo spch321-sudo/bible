@@ -1158,6 +1158,12 @@ P.rules = [
  [/^(\d+) multiple-choice questions with instant explanations; misses go to your notebook$/, function(m){ return m[1] + ' ብዙ ምርጫ ጥያቄዎች ከፈጣን ማብራሪያ ጋር፤ የተሳሳቱት ወደ ማስታወሻ ደብተርዎ ይገባሉ'; }],
  [/^(\d+) missed questions to review$/, function(m){ return 'ለመከለስ ' + m[1] + ' የተሳሳቱ ጥያቄዎች'; }]
 ];
+if (P.dict["Invite a friend"] === undefined) P.dict["Invite a friend"] = "ጓደኛ ይጋብዙ";
+if (P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] === undefined) P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] = "ይህን የመጽሐፍ ቅዱስ መተግበሪያ ለሚወዱት ሰው ያጋሩ — ከሊንኩ ወዲያውኑ መክፈት ይችላል፤ ማውረድ አያስፈልግም።";
+if (P.dict["Share invitation"] === undefined) P.dict["Share invitation"] = "ግብዣውን አጋራ";
+if (P.dict["Copy link"] === undefined) P.dict["Copy link"] = "ሊንኩን ቅዳ";
+if (P.dict["Link copied — paste it anywhere"] === undefined) P.dict["Link copied — paste it anywhere"] = "ሊንኩ ተቀድቷል — በየትኛውም ቦታ ይለጥፉት";
+if (P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] === undefined) P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] = "በ321 Interactive Bible መተግበሪያ መጽሐፍ ቅዱስን እያነበብኩ ነው — ማንበብ፣ ጮክ ብሎ ማዳመጥ እና በመንገዱ ላይ Xiaozhiን መጠየቅ ይቻላል። ኑ አብረን እናንብብ፦";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

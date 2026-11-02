@@ -1231,6 +1231,12 @@ P.rules = [
  [/^(\d+) multiple-choice questions with instant explanations; misses go to your notebook$/, function(m){ return cnt(m[1],'запитання','запитання','запитань') + ' з вибором відповіді й миттєвими поясненнями; помилки потрапляють у ваш записник'; }],
  [/^(\d+) missed questions to review$/, function(m){ return cnt(m[1],'запитання','запитання','запитань') + ' з помилками для повторення'; }]
 ];
+if (P.dict["Invite a friend"] === undefined) P.dict["Invite a friend"] = "Запросіть друга";
+if (P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] === undefined) P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] = "Поділіться цим біблійним застосунком із людиною, яка вам дорога — вона зможе відкрити його одразу за посиланням, без завантаження.";
+if (P.dict["Share invitation"] === undefined) P.dict["Share invitation"] = "Поділитися запрошенням";
+if (P.dict["Copy link"] === undefined) P.dict["Copy link"] = "Скопіювати посилання";
+if (P.dict["Link copied — paste it anywhere"] === undefined) P.dict["Link copied — paste it anywhere"] = "Посилання скопійовано — вставте його куди завгодно";
+if (P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] === undefined) P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] = "Я читаю Біблію із застосунком 321 Interactive Bible — читаю, слухаю вголос і запитую Xiaozhi по дорозі. Приєднуйтеся до мене:";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;

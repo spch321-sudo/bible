@@ -1231,6 +1231,12 @@ P.rules = [
  [/^(\d+) multiple-choice questions with instant explanations; misses go to your notebook$/, function(m){ return cnt(m[1],'বহুনির্বাচনী প্রশ্ন') + ' ও তাৎক্ষণিক ব্যাখ্যা; ভুলগুলি আপনার খাতায় যায়'; }],
  [/^(\d+) missed questions to review$/, function(m){ return cnt(m[1],'ভুল প্রশ্ন') + ' পুনরায় দেখার জন্য'; }]
 ];
+if (P.dict["Invite a friend"] === undefined) P.dict["Invite a friend"] = "বন্ধুকে আমন্ত্রণ জানান";
+if (P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] === undefined) P.dict["Share this Bible app with someone you care about — they can open it right away from a link, no download needed."] = "আপনার প্রিয় কারও সঙ্গে এই বাইবেল অ্যাপটি শেয়ার করুন — লিংক থেকেই সঙ্গে সঙ্গে খুলতে পারবেন, ডাউনলোডের প্রয়োজন নেই।";
+if (P.dict["Share invitation"] === undefined) P.dict["Share invitation"] = "আমন্ত্রণ শেয়ার করুন";
+if (P.dict["Copy link"] === undefined) P.dict["Copy link"] = "লিংক কপি করুন";
+if (P.dict["Link copied — paste it anywhere"] === undefined) P.dict["Link copied — paste it anywhere"] = "লিংক কপি হয়েছে — যেকোনো জায়গায় পেস্ট করুন";
+if (P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] === undefined) P.dict["I've been reading the Bible with the 321 Interactive Bible app — read, listen aloud, and ask Xiaozhi along the way. Come and read with me:"] = "আমি 321 Interactive Bible অ্যাপে বাইবেল পড়ছি — পড়া, জোরে শোনা এবং পড়তে পড়তে Xiaozhi-কে প্রশ্ন করা যায়। আসুন, আমার সঙ্গে পড়ি:";
 P.t = function(zh, en){
   var k = P.pair[zh + '\u0001' + en]; if (k !== undefined) return k;
   var d = P.dict[en]; if (d !== undefined) return d;
