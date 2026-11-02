@@ -45,7 +45,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.54.1';
+const VERSION = 'v2.54.2';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -9499,10 +9499,18 @@ async function boot(){
   if (/[?&]u=\d+/.test(location.search)) try{ history.replaceState(null, '', location.pathname + location.hash); }catch(e){}
   loadState(); loadUser(); applyChrome();
   $$('#langswitch button[data-lang], #langPanel button[data-lang]').forEach(b => b.onclick = () => { const pn = $('#langPanel'); if (pn) pn.hidden = true; const mb = $('#langMore'); if (mb) mb.setAttribute('aria-expanded', 'false'); switchLang(b.dataset.lang); });
-  { const mb = $('#langMore'), pn = $('#langPanel');
+  { const mb = $('#langMore'), pn = $('#langPanel'), bd = $('#langBackdrop');
     if (mb && pn){
-      mb.onclick = e => { e.stopPropagation(); pn.hidden = !pn.hidden; mb.setAttribute('aria-expanded', pn.hidden ? 'false' : 'true'); };
-      document.addEventListener('click', e => { if (!pn.hidden && !pn.contains(e.target) && e.target !== mb){ pn.hidden = true; mb.setAttribute('aria-expanded', 'false'); } });
+      if (bd) document.body.appendChild(bd); document.body.appendChild(pn);
+      const setOpen = o => { pn.hidden = !o; if (bd) bd.hidden = !o; mb.setAttribute('aria-expanded', o ? 'true' : 'false'); if (o) pn.scrollTop = 0; pn.style.transform = ''; };
+      mb.onclick = e => { e.stopPropagation(); setOpen(pn.hidden); };
+      if (bd) bd.onclick = () => setOpen(false);
+      document.addEventListener('click', e => { if (!pn.hidden && !pn.contains(e.target) && e.target !== mb) setOpen(false); });
+      pn.querySelectorAll('button[data-lang]').forEach(b => b.addEventListener('click', () => setOpen(false)));
+      let y0 = null, dy = 0;
+      pn.addEventListener('touchstart', e => { y0 = pn.scrollTop <= 0 ? e.touches[0].clientY : null; dy = 0; pn.style.transition = 'none'; }, {passive:true});
+      pn.addEventListener('touchmove', e => { if (y0 == null) return; dy = e.touches[0].clientY - y0; if (dy > 0 && pn.scrollTop <= 0) pn.style.transform = 'translateY(' + dy + 'px)'; }, {passive:true});
+      pn.addEventListener('touchend', () => { pn.style.transition = ''; if (y0 != null && dy > 90) setOpen(false); else pn.style.transform = ''; y0 = null; });
     } }
   const diagTimer = setTimeout(() => { const d = $('#boot-diag'); if (d) d.style.display = 'flex'; }, 8000);
   $('#boot-reload').onclick = () => location.reload();
