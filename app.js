@@ -45,7 +45,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.57.0';
+const VERSION = 'v2.57.1';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -9199,6 +9199,21 @@ async function checkForUpdate(manual){
 const EMBED = (() => { try{ return new URLSearchParams(location.search).get('embed') === 'studio' || window.name === 'k321studio'; }catch(e){ return false; } })();
 const EMB_T = () => L3('經文／金句', '经文／金句', 'Verse / quote');
 function embedClose(){ try{ parent.postMessage({ k321:'studioClose' }, '*'); }catch(e){} }
+/* 往下讀時，頂欄與工具列跟著上移讓出閱讀空間；往上捲一下（或回到頂端）就再出現 */
+(function(){
+  let lastY = 0, hid = false;
+  const root = document.documentElement;
+  const set = on => { if (on !== hid){ hid = on; root.classList.toggle('hbar-hide', on); } };
+  document.addEventListener('scroll', e => {
+    const t = e.target;
+    if (t !== document && t !== document.body && t !== document.documentElement) return;
+    const y = Math.max(0, window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0), dy = y - lastY;
+    if (y < 80) set(false);
+    else if (dy > 8) set(true);
+    else if (dy < -8) set(false);
+    if (Math.abs(dy) > 8 || y < 80) lastY = y;
+  }, { passive:true, capture:true });
+})();
 function embedBoot(){
   if (!EMBED) return false;
   try{ window.name = 'k321studio'; }catch(e){}

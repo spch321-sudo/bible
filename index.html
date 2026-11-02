@@ -314,6 +314,8 @@ nav.tabbar a svg{width:20px;height:20px;}
 
 /* ---------- 閱讀器 ---------- */
 /* 貼在頂欄下面、跟著捲動黏住——長章節往下讀也能隨時按到朗讀鍵，不必捲回最上面 */
+html.hbar-hide header.topbar,html.hbar-hide .chtoolbar{transform:translateY(calc(-100% - 70px));box-shadow:none}
+header.topbar,.chtoolbar{transition:transform .22s ease}
 .chtoolbar{display:flex; align-items:center; gap:7px; margin-bottom:12px; flex-wrap:wrap;
   position:sticky; top:var(--header-h, 56px); z-index:15; background:var(--bg); padding:8px 0;}
 .chtb-btn{display:inline-flex; align-items:center; justify-content:center; min-width:36px; height:36px; padding:0 10px; border:1px solid var(--border-strong); background:var(--surface); color:var(--ink); border-radius:9px; font-size:15px; text-decoration:none; cursor:pointer;}
@@ -699,7 +701,7 @@ select.cardinput{appearance:none; -webkit-appearance:none;
 
 <script>
 /* 程式檔帶上更新時間戳（?u=…）載入：更新後重整的那一次一定抓到最新的 app.js，不會被瀏覽器或 CDN 的舊快取擋住 */
-(function(){var m=location.search.match(/[?&]u=(\d+)/);var V='2.57.0',U=(m?'&u='+m[1]:'');
+(function(){var m=location.search.match(/[?&]u=(\d+)/);var V='2.57.1',U=(m?'&u='+m[1]:'');
 /* v2.56.0：只載入「當前語言」的語言包（其餘在切換語言時才下載），首次載入少約 1MB */
 var P='ko ja id tl my vi th ms ar he el pt fa sw ta am uk bn hi ne ceb es fr de it ru'.split(' '),PF='ko ja id tl my vi th ms ar hi ne ceb es fr de it ru'.split(' '),l='zh';
 try{var raw=localStorage.getItem('ib_state');
