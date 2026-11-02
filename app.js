@@ -45,7 +45,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.55.0';
+const VERSION = 'v2.55.1';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -85,7 +85,6 @@ function toast(msg, ms){
 
 /* ---------------------------------------------------------------- 語言字串 */
 /* v2.55.0：語言包改成「只載入當前語言」，切換時才下載。ATTACH 是各語言包掛進 App 的函式，載入後才執行 */
-const ATTACH = {};
 const PACK_LANGS = new Set(['am', 'ar', 'bn', 'ceb', 'de', 'el', 'es', 'fa', 'fr', 'he', 'hi', 'id', 'it', 'ja', 'ko', 'ms', 'my', 'ne', 'pt', 'ru', 'sw', 'ta', 'th', 'tl', 'uk', 'vi']);
 const PF_LANGS = new Set(['ko','ja','id','tl','my','vi','th','ms','ar','hi','ne','ceb','es','fr','de','it','ru']);
 function loadScriptOnce(src){ return new Promise((ok, bad) => { const el = document.createElement('script'); el.src = src; el.onload = () => ok(); el.onerror = () => bad(new Error('load ' + src)); document.head.appendChild(el); }); }
@@ -97,7 +96,7 @@ async function ensurePack(l){
     await loadScriptOnce('lang-' + l + '.js' + q);
     if (PF_LANGS.has(l)) await loadScriptOnce('lang-pf.js' + q + '&r=' + Date.now());
   }catch(e){ return false; }
-  if (ATTACH[l]) ATTACH[l]();
+  attachPack(l);
   if (typeof mergePackBooks === 'function' && TOC.length) mergePackBooks();
   return !!I18N[l];
 }
@@ -661,34 +660,8 @@ async function fetchJSON(file){
   }
 }
 function mergePackBooks(){
-  TOC.forEach(b => {
-    const kb = window.KO_PACK && KO_PACK.books[b.id]; if (kb){ b.ko = kb.ko; b.ako = kb.ako; }
-    const jb = window.JA_PACK && JA_PACK.books[b.id]; if (jb){ b.ja = jb.ja; b.aja = jb.aja; }
-    const ib = window.ID_PACK && ID_PACK.books[b.id]; if (ib){ b.idn = ib.idn; b.aid = ib.aid; }
-    const tb = window.TL_PACK && TL_PACK.books[b.id]; if (tb){ b.tln = tb.tln; b.atl = tb.atl; }
-    const mb = window.MY_PACK && MY_PACK.books[b.id]; if (mb){ b.mmn = mb.mmn; b.amm = mb.amm; }
-    const vb = window.VI_PACK && VI_PACK.books[b.id]; if (vb){ b.vin = vb.vin; b.avi = vb.avi; }
-    const hb = window.TH_PACK && TH_PACK.books[b.id]; if (hb){ b.thn = hb.thn; b.ath = hb.ath; }
-    const sb = window.MS_PACK && MS_PACK.books[b.id]; if (sb){ b.msn = sb.msn; b.ams = sb.ams; }
-    const ab = window.AR_PACK && AR_PACK.books[b.id]; if (ab){ b.arn = ab.arn; b.aar = ab.aar; }
-    const heb = window.HE_PACK && HE_PACK.books[b.id]; if (heb){ b.hen = heb.hen; b.ahe = heb.ahe; }
-    const elb = window.EL_PACK && EL_PACK.books[b.id]; if (elb){ b.eln = elb.eln; b.ael = elb.ael; }
-    const ptb = window.PT_PACK && PT_PACK.books[b.id]; if (ptb){ b.ptn = ptb.ptn; b.apt = ptb.apt; }
-    const fab = window.FA_PACK && FA_PACK.books[b.id]; if (fab){ b.fan = fab.fan; b.afa = fab.afa; }
-    const swb = window.SW_PACK && SW_PACK.books[b.id]; if (swb){ b.swn = swb.swn; b.asw = swb.asw; }
-    const tab = window.TA_PACK && TA_PACK.books[b.id]; if (tab){ b.tan = tab.tan; b.ata = tab.ata; }
-    const amb = window.AM_PACK && AM_PACK.books[b.id]; if (amb){ b.amn = amb.amn; b.aam = amb.aam; }
-    const ukb = window.UK_PACK && UK_PACK.books[b.id]; if (ukb){ b.ukn = ukb.ukn; b.auk = ukb.auk; }
-    const bnb = window.BN_PACK && BN_PACK.books[b.id]; if (bnb){ b.bnn = bnb.bnn; b.abn = bnb.abn; }
-    const hb2 = window.HI_PACK && HI_PACK.books[b.id]; if (hb2){ b.hin = hb2.hin; b.ahi = hb2.ahi; }
-    const nb2 = window.NE_PACK && NE_PACK.books[b.id]; if (nb2){ b.nen = nb2.nen; b.ane = nb2.ane; }
-    const lb2 = window.LO_PACK && LO_PACK.books[b.id]; if (lb2){ b.lon = lb2.lon; b.alo = lb2.alo; }
-    const cb2 = window.CEB_PACK && CEB_PACK.books[b.id]; if (cb2){ b.cbn = cb2.cbn; b.acb = cb2.acb; }
-    const es2 = window.ES_PACK && ES_PACK.books[b.id]; if (es2){ b.esn = es2.esn; b.aes = es2.aes; }
-    const fr2 = window.FR_PACK && FR_PACK.books[b.id]; if (fr2){ b.frn = fr2.frn; b.afr = fr2.afr; }
-    const de2 = window.DE_PACK && DE_PACK.books[b.id]; if (de2){ b.den = de2.den; b.ade = de2.ade; }
-    const it2 = window.IT_PACK && IT_PACK.books[b.id]; if (it2){ b.itn = it2.itn; b.ait = it2.ait; }
-    const ru2 = window.RU_PACK && RU_PACK.books[b.id]; if (ru2){ b.rusN = ru2.rusN; b.rusA = ru2.rusA; } });
+  /* 每個語言包的 books 項目就是要掛到書卷上的欄位（如 {bnn, abn}），直接合併 */
+  LOADED_PACKS.forEach(l => { const P = window[l.toUpperCase() + '_PACK']; if (!P || !P.books) return; TOC.forEach(b => { const e = P.books[b.id]; if (e) Object.assign(b, e); }); });
 }
 async function loadTOC(){
   if (TOC.length) return;
@@ -9582,438 +9555,28 @@ async function boot(){
   setTimeout(checkPlanRemind, 3000);              // 開 App 當下也順便檢查一次
 }
 /* ---- 한국어 팩: lang-ko.js 의 내용을 각 언어 표에 연결 (파일이 없으면 통째로 건너뜀) ---- */
-ATTACH.ru = function attachRU(){
-  const P = window.RU_PACK; if (!P) return;
-  I18N.ru = P.I18N.ru;
-  PIC_L.ru = P.PIC; HYM_L.ru = P.HYM; TWEAK_L.ru = P.TWEAK; TEAM_L.ru = P.TEAM; CR_TX.ru = P.CR;
-  QBANK.ru = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].ru = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].ru = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].ru = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
+/* v2.55.1：27 個幾乎相同的 attachXX 區塊合併成一個通用函式。新增語言只要放一個 lang-xx.js（window.XX_PACK），不必再改這裡。 */
+const GROUP_FIELD = { ru:'rusN', ceb:'cbn', my:'mmn', ja:'ja', ko:'ko' };   // 其餘語言為 代碼+'n'（如 bnn、ukn）
+const LOADED_PACKS = new Set();
+function attachPack(l){
+  const P = window[l.toUpperCase() + '_PACK']; if (!P || !P.I18N || !P.I18N[l]) return false;
+  I18N[l] = P.I18N[l];
+  PIC_L[l] = P.PIC; HYM_L[l] = P.HYM; TWEAK_L[l] = P.TWEAK; TEAM_L[l] = P.TEAM; CR_TX[l] = P.CR;
+  QBANK[l] = P.QBANK;
+  Object.keys(P.Q20 || {}).forEach(k => { if (QBANK20[k]) QBANK20[k][l] = P.Q20[k]; });
+  Object.keys(P.Q20SK || {}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k][l] = P.Q20SK[k]; });
+  Object.keys(P.QAUD || {}).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k][l] = P.QAUD[k]; });
+  Object.keys(P.AUD2 || {}).forEach(k => {
     const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.ru = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
+    o[l] = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
   });
-  FU_BANK.ru = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.ru[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.rusN = P.groups[i]; });
-};
-ATTACH.it = function attachIT(){
-  const P = window.IT_PACK; if (!P) return;
-  I18N.it = P.I18N.it;
-  PIC_L.it = P.PIC; HYM_L.it = P.HYM; TWEAK_L.it = P.TWEAK; TEAM_L.it = P.TEAM; CR_TX.it = P.CR;
-  QBANK.it = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].it = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].it = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].it = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.it = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.it = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.it[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.itn = P.groups[i]; });
-};
-ATTACH.de = function attachDE(){
-  const P = window.DE_PACK; if (!P) return;
-  I18N.de = P.I18N.de;
-  PIC_L.de = P.PIC; HYM_L.de = P.HYM; TWEAK_L.de = P.TWEAK; TEAM_L.de = P.TEAM; CR_TX.de = P.CR;
-  QBANK.de = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].de = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].de = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].de = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.de = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.de = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.de[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.den = P.groups[i]; });
-};
-ATTACH.fr = function attachFR(){
-  const P = window.FR_PACK; if (!P) return;
-  I18N.fr = P.I18N.fr;
-  PIC_L.fr = P.PIC; HYM_L.fr = P.HYM; TWEAK_L.fr = P.TWEAK; TEAM_L.fr = P.TEAM; CR_TX.fr = P.CR;
-  QBANK.fr = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].fr = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].fr = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].fr = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.fr = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.fr = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.fr[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.frn = P.groups[i]; });
-};
-ATTACH.es = function attachES(){
-  const P = window.ES_PACK; if (!P) return;
-  I18N.es = P.I18N.es;
-  PIC_L.es = P.PIC; HYM_L.es = P.HYM; TWEAK_L.es = P.TWEAK; TEAM_L.es = P.TEAM; CR_TX.es = P.CR;
-  QBANK.es = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].es = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].es = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].es = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.es = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.es = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.es[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.esn = P.groups[i]; });
-};
-ATTACH.ceb = function attachCEB(){
-  const P = window.CEB_PACK; if (!P) return;
-  I18N.ceb = P.I18N.ceb;
-  PIC_L.ceb = P.PIC; HYM_L.ceb = P.HYM; TWEAK_L.ceb = P.TWEAK; TEAM_L.ceb = P.TEAM; CR_TX.ceb = P.CR;
-  QBANK.ceb = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].ceb = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].ceb = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].ceb = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.ceb = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.ceb = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.ceb[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.cbn = P.groups[i]; });
-};
-ATTACH.lo = function attachLO(){
-  const P = window.LO_PACK; if (!P) return;
-  I18N.lo = P.I18N.lo;
-  PIC_L.lo = P.PIC; HYM_L.lo = P.HYM; TWEAK_L.lo = P.TWEAK; TEAM_L.lo = P.TEAM; CR_TX.lo = P.CR;
-  QBANK.lo = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].lo = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].lo = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].lo = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.lo = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.lo = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.lo[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.lon = P.groups[i]; });
-};
-ATTACH.ne = function attachNE(){
-  const P = window.NE_PACK; if (!P) return;
-  I18N.ne = P.I18N.ne;
-  PIC_L.ne = P.PIC; HYM_L.ne = P.HYM; TWEAK_L.ne = P.TWEAK; TEAM_L.ne = P.TEAM; CR_TX.ne = P.CR;
-  QBANK.ne = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].ne = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].ne = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].ne = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.ne = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.ne = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.ne[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.nen = P.groups[i]; });
-};
-ATTACH.hi = function attachHI(){
-  const P = window.HI_PACK; if (!P) return;
-  I18N.hi = P.I18N.hi;
-  PIC_L.hi = P.PIC; HYM_L.hi = P.HYM; TWEAK_L.hi = P.TWEAK; TEAM_L.hi = P.TEAM; CR_TX.hi = P.CR;
-  QBANK.hi = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].hi = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].hi = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].hi = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.hi = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.hi = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.hi[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.hin = P.groups[i]; });
-};
-ATTACH.ar = function attachAR(){
-  const P = window.AR_PACK; if (!P) return;
-  I18N.ar = P.I18N.ar;
-  PIC_L.ar = P.PIC; HYM_L.ar = P.HYM; TWEAK_L.ar = P.TWEAK; TEAM_L.ar = P.TEAM; CR_TX.ar = P.CR;
-  QBANK.ar = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].ar = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].ar = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].ar = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.ar = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.ar = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.ar[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.arn = P.groups[i]; });
-};
-ATTACH.he = function attachHE(){
-  const P = window.HE_PACK; if (!P) return;
-  I18N.he = P.I18N.he;
-  PIC_L.he = P.PIC; HYM_L.he = P.HYM; TWEAK_L.he = P.TWEAK; TEAM_L.he = P.TEAM; CR_TX.he = P.CR;
-  QBANK.he = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].he = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].he = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].he = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.he = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.he = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.he[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.hen = P.groups[i]; });
-};
-ATTACH.el = function attachEL(){
-  const P = window.EL_PACK; if (!P) return;
-  I18N.el = P.I18N.el;
-  PIC_L.el = P.PIC; HYM_L.el = P.HYM; TWEAK_L.el = P.TWEAK; TEAM_L.el = P.TEAM; CR_TX.el = P.CR;
-  QBANK.el = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].el = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].el = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].el = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.el = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.el = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.el[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.eln = P.groups[i]; });
-};
-ATTACH.pt = function attachPT(){
-  const P = window.PT_PACK; if (!P) return;
-  I18N.pt = P.I18N.pt;
-  PIC_L.pt = P.PIC; HYM_L.pt = P.HYM; TWEAK_L.pt = P.TWEAK; TEAM_L.pt = P.TEAM; CR_TX.pt = P.CR;
-  QBANK.pt = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].pt = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].pt = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].pt = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.pt = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.pt = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.pt[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.ptn = P.groups[i]; });
-};
-ATTACH.fa = function attachFA(){
-  const P = window.FA_PACK; if (!P) return;
-  I18N.fa = P.I18N.fa;
-  PIC_L.fa = P.PIC; HYM_L.fa = P.HYM; TWEAK_L.fa = P.TWEAK; TEAM_L.fa = P.TEAM; CR_TX.fa = P.CR;
-  QBANK.fa = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].fa = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].fa = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].fa = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.fa = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.fa = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.fa[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.fan = P.groups[i]; });
-};
-ATTACH.sw = function attachSW(){
-  const P = window.SW_PACK; if (!P) return;
-  I18N.sw = P.I18N.sw;
-  PIC_L.sw = P.PIC; HYM_L.sw = P.HYM; TWEAK_L.sw = P.TWEAK; TEAM_L.sw = P.TEAM; CR_TX.sw = P.CR;
-  QBANK.sw = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].sw = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].sw = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].sw = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.sw = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.sw = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.sw[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.swn = P.groups[i]; });
-};
-ATTACH.ta = function attachTA(){
-  const P = window.TA_PACK; if (!P) return;
-  I18N.ta = P.I18N.ta;
-  PIC_L.ta = P.PIC; HYM_L.ta = P.HYM; TWEAK_L.ta = P.TWEAK; TEAM_L.ta = P.TEAM; CR_TX.ta = P.CR;
-  QBANK.ta = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].ta = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].ta = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].ta = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.ta = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.ta = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.ta[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.tan = P.groups[i]; });
-};
-ATTACH.am = function attachAM(){
-  const P = window.AM_PACK; if (!P) return;
-  I18N.am = P.I18N.am;
-  PIC_L.am = P.PIC; HYM_L.am = P.HYM; TWEAK_L.am = P.TWEAK; TEAM_L.am = P.TEAM; CR_TX.am = P.CR;
-  QBANK.am = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].am = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].am = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].am = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.am = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.am = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.am[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.amn = P.groups[i]; });
-};
-ATTACH.uk = function attachUK(){
-  const P = window.UK_PACK; if (!P) return;
-  I18N.uk = P.I18N.uk;
-  PIC_L.uk = P.PIC; HYM_L.uk = P.HYM; TWEAK_L.uk = P.TWEAK; TEAM_L.uk = P.TEAM; CR_TX.uk = P.CR;
-  QBANK.uk = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].uk = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].uk = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].uk = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.uk = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.uk = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.uk[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.ukn = P.groups[i]; });
-};
-ATTACH.bn = function attachBN(){
-  const P = window.BN_PACK; if (!P) return;
-  I18N.bn = P.I18N.bn;
-  PIC_L.bn = P.PIC; HYM_L.bn = P.HYM; TWEAK_L.bn = P.TWEAK; TEAM_L.bn = P.TEAM; CR_TX.bn = P.CR;
-  QBANK.bn = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].bn = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].bn = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].bn = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.bn = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.bn = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.bn[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.bnn = P.groups[i]; });
-};
-ATTACH.ms = function attachMS(){
-  const P = window.MS_PACK; if (!P) return;
-  I18N.ms = P.I18N.ms;
-  PIC_L.ms = P.PIC; HYM_L.ms = P.HYM; TWEAK_L.ms = P.TWEAK; TEAM_L.ms = P.TEAM; CR_TX.ms = P.CR;
-  QBANK.ms = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].ms = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].ms = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].ms = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.ms = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.ms = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.ms[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.msn = P.groups[i]; });
-};
-ATTACH.th = function attachTH(){
-  const P = window.TH_PACK; if (!P) return;
-  I18N.th = P.I18N.th;
-  PIC_L.th = P.PIC; HYM_L.th = P.HYM; TWEAK_L.th = P.TWEAK; TEAM_L.th = P.TEAM; CR_TX.th = P.CR;
-  QBANK.th = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].th = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].th = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].th = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.th = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.th = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.th[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.thn = P.groups[i]; });
-};
-ATTACH.vi = function attachVI(){
-  const P = window.VI_PACK; if (!P) return;
-  I18N.vi = P.I18N.vi;
-  PIC_L.vi = P.PIC; HYM_L.vi = P.HYM; TWEAK_L.vi = P.TWEAK; TEAM_L.vi = P.TEAM; CR_TX.vi = P.CR;
-  QBANK.vi = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].vi = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].vi = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].vi = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.vi = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.vi = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.vi[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.vin = P.groups[i]; });
-};
-ATTACH.my = function attachMY(){
-  const P = window.MY_PACK; if (!P) return;
-  I18N.my = P.I18N.my;
-  PIC_L.my = P.PIC; HYM_L.my = P.HYM; TWEAK_L.my = P.TWEAK; TEAM_L.my = P.TEAM; CR_TX.my = P.CR;
-  QBANK.my = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].my = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].my = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].my = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.my = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.my = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.my[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.mmn = P.groups[i]; });
-};
-ATTACH.tl = function attachTL(){
-  const P = window.TL_PACK; if (!P) return;
-  I18N.tl = P.I18N.tl;
-  PIC_L.tl = P.PIC; HYM_L.tl = P.HYM; TWEAK_L.tl = P.TWEAK; TEAM_L.tl = P.TEAM; CR_TX.tl = P.CR;
-  QBANK.tl = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].tl = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].tl = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].tl = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.tl = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.tl = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.tl[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.tln = P.groups[i]; });
-};
-ATTACH.id = function attachID(){
-  const P = window.ID_PACK; if (!P) return;
-  I18N.id = P.I18N.id;
-  PIC_L.id = P.PIC; HYM_L.id = P.HYM; TWEAK_L.id = P.TWEAK; TEAM_L.id = P.TEAM; CR_TX.id = P.CR;
-  QBANK.id = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].id = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].id = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].id = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.id = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.id = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.id[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.idn = P.groups[i]; });
-};
-ATTACH.ja = function attachJA(){
-  const P = window.JA_PACK; if (!P) return;
-  I18N.ja = P.I18N.ja;
-  PIC_L.ja = P.PIC; HYM_L.ja = P.HYM; TWEAK_L.ja = P.TWEAK; TEAM_L.ja = P.TEAM; CR_TX.ja = P.CR;
-  QBANK.ja = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].ja = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].ja = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].ja = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.ja = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.ja = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.ja[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.ja = P.groups[i]; });
-};
-ATTACH.ko = function attachKO(){
-  const P = window.KO_PACK; if (!P) return;
-  I18N.ko = P.I18N.ko;
-  PIC_L.ko = P.PIC; HYM_L.ko = P.HYM; TWEAK_L.ko = P.TWEAK; TEAM_L.ko = P.TEAM; CR_TX.ko = P.CR;
-  QBANK.ko = P.QBANK;
-  Object.keys(P.Q20||{}).forEach(k => { if (QBANK20[k]) QBANK20[k].ko = P.Q20[k]; });
-  Object.keys(P.Q20SK||{}).forEach(k => { if (QBANK20SK[k]) QBANK20SK[k].ko = P.Q20SK[k]; });
-  Object.keys(P.QAUD).forEach(k => { if (QBANK_AUD[k]) QBANK_AUD[k].ko = P.QAUD[k]; });
-  Object.keys(P.AUD2).forEach(k => {
-    const o = AUD2[k], kp = P.AUD2[k]; if (!o || !o.en) return;
-    o.ko = Object.assign({}, o.en, { q:kp.q, rw:kp.rw, res:kp.res, fu:o.en.fu.map((f, i) => [f[0], kp.fu[i] || f[1], f[2]]) });
-  });
-  FU_BANK.ko = {};
-  Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.ko[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
-  GROUPS.forEach((g, i) => { g.ko = P.groups[i]; });
-};
-Object.keys(ATTACH).forEach(k => { if (window[k.toUpperCase() + '_PACK']) ATTACH[k](); });
+  FU_BANK[l] = {};
+  Object.keys(FU_BANK.en).forEach(a => { const lab = (P.FU || {})[a]; FU_BANK[l][a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
+  const gf = GROUP_FIELD[l] || (l + 'n');
+  GROUPS.forEach((g, i) => { g[gf] = P.groups[i]; });
+  LOADED_PACKS.add(l);
+  return true;
+}
+PACK_LANGS.forEach(l => { if (window[l.toUpperCase() + '_PACK']) attachPack(l); });
 
 boot();

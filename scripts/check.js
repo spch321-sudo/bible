@@ -50,9 +50,6 @@ const idxSet = ((R('index.html').match(/var P='([a-z ]+)'\.split/) || [])[1] || 
 const same = (a, b) => a.length === b.length && a.every((x, i) => x === b[i]);
 same(packFiles, appSet) ? ok('app.js PACK_LANGS 與 lang-*.js 檔案一致（' + packFiles.length + ' 種）') : fail('app.js PACK_LANGS 與檔案不一致：' + JSON.stringify({ files: packFiles, app: appSet }));
 same(packFiles, idxSet) ? ok('index.html 載入器清單一致') : fail('index.html 載入器清單不一致：' + JSON.stringify({ files: packFiles, idx: idxSet }));
-const attach = new Set([...R('app.js').matchAll(/ATTACH\.([a-z]+) = function/g)].map(m => m[1]));
-const noAttach = packFiles.filter(l => !attach.has(l));
-noAttach.length ? fail('缺少 ATTACH 區塊：' + noAttach.join(', ')) : ok('每個語言包都有對應的 ATTACH');
 const btn = R('index.html');
 const noBtn = packFiles.filter(l => !new RegExp('data-lang="' + l + '"').test(btn));
 noBtn.length ? fail('index.html 沒有語言按鈕：' + noBtn.join(', ')) : ok('每個語言都有選單按鈕');
@@ -73,6 +70,7 @@ for (const l of packFiles){
   if (!I){ fail(l + '：缺少 I18N.' + l); continue; }
   const miss = refTop.filter(k => !(k in I)); if (miss.length) errs.push('I18N 缺 ' + miss.length + ' 個鍵（如 ' + miss.slice(0, 3) + '）');
   if (!P.books || Object.keys(P.books).length !== 66) errs.push('books 不是 66 卷');
+  else if (!Object.values(P.books).every(b => Object.keys(b).length === 2)) errs.push('books 每卷必須剛好 2 個欄位（全名、縮寫）');
   if (!P.groups || P.groups.length !== 9) errs.push('groups 不是 9 組');
   if (typeof P.t !== 'function') errs.push('缺 P.t');
   else { try{ if (typeof P.t('x', 'Home') !== 'string') errs.push('P.t 回傳非字串'); }catch(e){ errs.push('P.t 出錯：' + e.message); } }
