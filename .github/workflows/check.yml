@@ -1,0 +1,24 @@
+name: check
+on:
+  push:
+    branches: ['**']
+  pull_request:
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: 靜態檢查（語法、版本號、語言包、經文節數）
+        run: node scripts/check.js
+  smoke:
+    runs-on: ubuntu-latest
+    needs: static
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm i --no-save playwright && npx playwright install --with-deps chromium
+      - name: 冒煙測試（每種語言冷啟動與切換）
+        run: node scripts/smoke.js

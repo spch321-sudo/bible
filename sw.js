@@ -1,11 +1,12 @@
 /* 321互動聖經 — Service Worker
    每次改動內容或程式，務必把 VERSION 往上加（也要同步 app.js 的 VERSION 與 version.json），
    否則已安裝的使用者不會看到更新。 */
-const VERSION = 'ib-v2.54.2';
-const VER = 'v2.54.2';
+const VERSION = 'ib-v2.55.2';
+const VER = 'v2.55.2';
 
+/* v2.55.2：語言包不再全部預先快取，改為用到才下載並快取（見下方 fetch 處理） */
 const SHELL = [
-  './', './index.html', './app.js', './lang-ko.js', './lang-ja.js', './lang-id.js', './lang-tl.js', './lang-my.js', './lang-vi.js', './lang-th.js', './lang-ms.js', './lang-ar.js', './lang-he.js', './lang-el.js', './lang-pt.js', './lang-fa.js', './lang-sw.js', './lang-ta.js', './lang-am.js', './lang-uk.js', './lang-bn.js', './lang-hi.js', './lang-ne.js', './lang-ceb.js', './lang-es.js', './lang-fr.js', './lang-de.js', './lang-it.js', './lang-ru.js', './lang-pf.js', './peerjs.min.js', './qrcode.js', './manifest.json', './toc.json', './plans.json', './cover.jpg', './wxpay.jpg',
+  './', './index.html', './app.js', './peerjs.min.js', './qrcode.js', './manifest.json', './toc.json', './plans.json', './cover.jpg', './hero.jpg', './wxpay.jpg',
   './icon-72.png', './icon-96.png', './icon-128.png', './icon-144.png',
   './icon-152.png', './icon-180.png', './icon-192.png', './icon-384.png', './icon-512.png', './icon-maskable-192.png', './icon-maskable-512.png'
 ];
