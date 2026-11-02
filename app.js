@@ -45,7 +45,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.57.1';
+const VERSION = 'v2.57.2';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -1883,7 +1883,6 @@ async function viewReader(v, bookId, ch){
       <button class="chtb-btn ${bmMode ? 'on' : ''}" id="rdBm" title="${esc(L.bm)}">🔖</button>
       <button class="chtb-btn ${(state.flow || !state.shCh || !state.shV) ? 'on' : ''}" id="rdMode" title="${esc(L.pure)}">${esc(L3('淨', '净', '¶'))}</button>
       <button class="chtb-btn" id="rdFont">A⁺</button>
-      ${crBtn()}
       <span class="tts-group">
         <button class="chtb-btn" id="rdPlay" title="${esc(L.ttsPlay)}">▶</button>
         <button class="chtb-btn" id="rdPause" title="${esc(L.ttsPause)}">⏸</button>
@@ -9398,7 +9397,12 @@ function crRoster(){
   clearTimeout(CR.rosT); CR.rosT = setTimeout(() => crCast(crState()), 400);   // 讓大家的人數一起更新
 }
 function crCast(m){ if (CR.role !== 'host' || !CR.ready) return; crWsSend(m); }
-function crPage(){ return crTab() === 'read' && typeof RD !== 'undefined' && RD && RD.book ? { b:RD.book, c:RD.ch } : null; }
+function crPage(){
+  if (crTab() === 'read' && typeof RD !== 'undefined' && RD && RD.book) return { b:RD.book, c:RD.ch };
+  const h = location.hash || '#/today';
+  return /^#\/studio/.test(h) ? null : { h };   /* 其他頁面（今日、經卷、搜尋、小智、團隊、我的…）也一起共讀：用頁面網址對齊 */
+}
+function crScr(){ const b = document.body; return b && b.scrollHeight > b.clientHeight + 2 ? b : (document.scrollingElement || document.documentElement); }
 function crState(){ return { t:'st', page:crPage(), name:crMe(), n:CR.conns.length + 1, pos:CR.last.pos || null, mk:CR.last.mk || null }; }
 function crJoin(code, scr){
   code = String(code || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
@@ -9424,6 +9428,7 @@ function crGuestData(d){
   }
   if (d.t === 'pos'){
     CR.last.pos = d; if (!CR.follow) return;
+    if (d.h){ if (crNeedNav({ h:d.h })){ CR.hostPage = { h:d.h }; crGo(CR.hostPage, true); } else crScroll(d); return; }
     if (d.b && d.c && crNeedNav({ b:d.b, c:d.c })){ CR.hostPage = { b:d.b, c:d.c }; crGo(CR.hostPage, true); } else crScroll(d);
     return;
   }
@@ -9434,6 +9439,7 @@ function crGuestData(d){
 }
 /* 我這邊要不要換頁才看得到帶領者所在的章：整卷連讀模式整卷都在畫面上，同一卷就不必換 */
 function crNeedNav(pg){
+  if (pg && pg.h) return (location.hash || '#/today') !== pg.h;
   if (!pg || crTab() !== 'read' || typeof RD === 'undefined' || !RD) return true;
   if (RD.book !== pg.b) return true;
   return !state.flow && RD.ch !== pg.c;
@@ -9441,7 +9447,7 @@ function crNeedNav(pg){
 function crGo(pg, keep){
   if (!crNeedNav(pg)){ crApply(); return; }
   if (!keep){ CR.last.pos = null; CR.last.mk = null; }
-  ttsStop(); go(`#/read/${pg.b}/${pg.c}`);
+  ttsStop(); go(pg.h ? pg.h : `#/read/${pg.b}/${pg.c}`);
 }
 /* ---- 定位：章＋節＋該節第幾句（同語系用原本的段落／句序，不同語系靠節號對齊） ---- */
 const crGrp = lg => lg === 'en' ? 'en' : (lg === 'ko' ? 'ko' : (lg === 'ja' ? 'ja' : (lg === 'id' ? 'id' : (lg === 'tl' ? 'tl' : (lg === 'my' ? 'my' : (lg === 'vi' ? 'vi' : (lg === 'th' ? 'th' : (lg === 'ms' ? 'ms' : (lg === 'ar' ? 'ar' : (lg === 'he' ? 'he' : (lg === 'bn' ? 'bn' : (lg === 'uk' ? 'uk' : (lg === 'am' ? 'am' : (lg === 'ta' ? 'ta' : (lg === 'sw' ? 'sw' : (lg === 'fa' ? 'fa' : (lg === 'pt' ? 'pt' : (lg === 'el' ? 'el' : (lg === 'hi' ? 'hi' : (lg === 'ne' ? 'ne' : (lg === 'lo' ? 'lo' : (lg === 'ceb' ? 'ceb' : (lg === 'es' ? 'es' : (lg === 'fr' ? 'fr' : (lg === 'de' ? 'de' : (lg === 'it' ? 'it' : (lg === 'ru' ? 'ru' : 'zh')))))))))))))))))))))))))));
@@ -9465,6 +9471,7 @@ function crFindSent(d){
 }
 function crScroll(d){
   if (!CR.screen && Date.now() - raManualAt < 5000) return;
+  if (d.h){ const s = crScr(), mx = Math.max(0, s.scrollHeight - s.clientHeight); try{ s.scrollTo({ top:Math.round(mx * (+d.f || 0)), behavior:'smooth' }); }catch(e){ s.scrollTop = Math.round(mx * (+d.f || 0)); } return; }
   if (d.top0){ scrollToTop(); return; }
   const el = crFindSent(d); if (!el) return;
   el.style.scrollMarginTop = CR.screen ? '28px' : '150px';
@@ -9480,7 +9487,7 @@ function crMark(d, move){
 }
 function crApply(){
   if (CR.role !== 'guest' || !CR.follow) return;
-  setTimeout(() => { if (crTab() !== 'read') return; if (CR.last.pos) crScroll(CR.last.pos); if (CR.last.mk) crMark(CR.last.mk, 0); }, 150);
+  setTimeout(() => { if (crTab() !== 'read'){ if (CR.last.pos && CR.last.pos.h && CR.last.pos.h === (location.hash || '#/today')) crScroll(CR.last.pos); return; } if (CR.last.pos) crScroll(CR.last.pos); if (CR.last.mk) crMark(CR.last.mk, 0); }, 150);
 }
 /* render() 每次畫完都會呼叫：帶領者把新頁面廣播出去，跟隨者把位置與標記套回來 */
 function crAfter(){
@@ -9494,7 +9501,12 @@ function crTopSent(){
   return $$('#reader .sent').find(e => e.getBoundingClientRect().bottom > th) || null;
 }
 function crSendPos(){
-  if (CR.role !== 'host' || !CR.ready || crTab() !== 'read' || !$('#reader')) return;
+  if (CR.role !== 'host' || !CR.ready) return;
+  if (crTab() !== 'read' || !$('#reader')){
+    const pg = crPage(); if (!pg || !pg.h) return;
+    const s = crScr(), mx = Math.max(1, s.scrollHeight - s.clientHeight);
+    CR.last.pos = { t:'pos', h:pg.h, f:Math.min(1, Math.max(0, s.scrollTop / mx)) }; crCast(CR.last.pos); return;
+  }
   const y = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
   if (y < 12){ CR.last.pos = { t:'pos', top0:1, b:RD.book, c:state.flow ? 1 : RD.ch }; crCast(CR.last.pos); return; }
   const e = crTopSent(); if (!e) return;
@@ -9527,12 +9539,14 @@ function crLeave(){
   CR.role = ''; CR.code = ''; CR.screen = false; crClearMk(); crBar(); crSheetClose();
   try{ document.body.style.removeProperty('--crsz'); }catch(e){}
   const b = $('#rdCr'); if (b) b.classList.remove('crlive');
+  const tb = $('#crTop'); if (tb) tb.classList.remove('crlive');
 }
 function crEndAsk(){ if (confirm(CRT('crEnd') + '？')) crLeave(); }
 function crBar(){
   let el = $('#crbar'); document.body.className = document.body.className.replace(/\s*cr(On|Screen)/g, '') + (CR.role ? ' crOn' : '') + (CR.role && CR.screen ? ' crScreen' : '');
   crScrBadge();
   const b = $('#rdCr'); if (b) b.classList.toggle('crlive', !!CR.role);
+  const tb = $('#crTop'); if (tb){ tb.classList.toggle('crlive', !!CR.role); tb.title = tb.ariaLabel = CRT('crTitle'); }
   if (!CR.role || CR.screen){ if (el) el.remove(); return; }
   if (!el){ el = document.createElement('div'); el.id = 'crbar'; el.className = 'crbar'; document.body.appendChild(el); }
   if (CR.role === 'host'){
