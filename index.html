@@ -116,7 +116,7 @@ header.topbar .spacer{flex:1;}
 #langPanel{position:absolute; right:10px; top:calc(100% + 4px); z-index:80; background:var(--surface); border:1px solid var(--border-strong); border-radius:14px; box-shadow:0 8px 28px rgba(0,0,0,.22); padding:6px; display:grid; grid-template-columns:1fr 1fr; gap:4px; min-width:250px; max-width:calc(100vw - 20px); max-height:calc(100vh - 150px); max-height:calc(100dvh - 150px); overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; align-content:start;}
 #langPanel[hidden]{display:none}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
-/* v2.55.2：語言選單改成底部彈出面板（可上下滑動，下拉可關閉） */
+/* v2.56.0：語言選單改成底部彈出面板（可上下滑動，下拉可關閉） */
 #langPanel{position:fixed !important; left:0 !important; right:0 !important; top:auto !important; bottom:0 !important; width:auto; min-width:0; max-width:none; max-height:72vh; max-height:72dvh; border-radius:20px 20px 0 0; padding:0 12px calc(14px + env(safe-area-inset-bottom)); z-index:400; box-shadow:0 -10px 40px rgba(0,0,0,.3); gap:8px; grid-template-columns:1fr 1fr; transform:translateY(0); transition:transform .22s ease;}
 #langPanel::before{content:""; grid-column:1/-1; position:sticky; top:0; z-index:1; height:26px; background:var(--surface) linear-gradient(var(--ink),var(--ink)) center 11px/44px 4px no-repeat; background-blend-mode:normal; opacity:1; margin:0 -12px; border-radius:20px 20px 0 0;}
 #langPanel button{padding:13px 8px; font-size:15px;}
@@ -699,14 +699,15 @@ select.cardinput{appearance:none; -webkit-appearance:none;
 
 <script>
 /* 程式檔帶上更新時間戳（?u=…）載入：更新後重整的那一次一定抓到最新的 app.js，不會被瀏覽器或 CDN 的舊快取擋住 */
-(function(){var m=location.search.match(/[?&]u=(\d+)/);var V='2.55.2',U=(m?'&u='+m[1]:'');
-/* v2.55.2：只載入「當前語言」的語言包（其餘在切換語言時才下載），首次載入少約 1MB */
+(function(){var m=location.search.match(/[?&]u=(\d+)/);var V='2.56.0',U=(m?'&u='+m[1]:'');
+/* v2.56.0：只載入「當前語言」的語言包（其餘在切換語言時才下載），首次載入少約 1MB */
 var P='ko ja id tl my vi th ms ar he el pt fa sw ta am uk bn hi ne ceb es fr de it ru'.split(' '),PF='ko ja id tl my vi th ms ar hi ne ceb es fr de it ru'.split(' '),l='zh';
 try{var raw=localStorage.getItem('ib_state');
 if(raw){var s=JSON.parse(raw||'{}');if(s&&typeof s.lang==='string')l=s.lang;}
-else{/* 第一次開啟：依手機語言挑介面語言（之後以使用者自己的選擇為準） */
+else{/* 第一次開啟：先看邀請連結帶的 ?lang=，否則依手機語言挑介面語言（之後以使用者自己的選擇為準） */
+var ql=(location.search.match(/[?&]lang=([a-z]+)/)||[])[1];
 var n=(navigator.language||'').toLowerCase(),b=n.split('-')[0],all='zh zs en '+P.join(' ');
-if(b==='zh')l=/hans|cn|sg|my/.test(n)?'zs':'zh';else if(b==='fil')l='tl';else if(b==='nb'||b==='nn')l='en';else if(all.split(' ').indexOf(b)>-1)l=b;
+if(ql&&all.split(' ').indexOf(ql)>-1){l=ql;window.__IB_LANG_URL=1;}else if(b==='zh')l=/hans|cn|sg|my/.test(n)?'zs':'zh';else if(b==='fil')l='tl';else if(b==='nb'||b==='nn')l='en';else if(all.split(' ').indexOf(b)>-1)l=b;
 window.__IB_LANG0=l;}}catch(e){}
 function w(f){document.write('<script src="'+f+'?v='+V+U+'"><\/script>');}
 if(P.indexOf(l)>-1){w('lang-'+l+'.js');if(PF.indexOf(l)>-1)w('lang-pf.js');}
