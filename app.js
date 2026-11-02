@@ -45,7 +45,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.54.2';
+const VERSION = 'v2.55.0';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -84,6 +84,23 @@ function toast(msg, ms){
 }
 
 /* ---------------------------------------------------------------- 語言字串 */
+/* v2.55.0：語言包改成「只載入當前語言」，切換時才下載。ATTACH 是各語言包掛進 App 的函式，載入後才執行 */
+const ATTACH = {};
+const PACK_LANGS = new Set(['am', 'ar', 'bn', 'ceb', 'de', 'el', 'es', 'fa', 'fr', 'he', 'hi', 'id', 'it', 'ja', 'ko', 'ms', 'my', 'ne', 'pt', 'ru', 'sw', 'ta', 'th', 'tl', 'uk', 'vi']);
+const PF_LANGS = new Set(['ko','ja','id','tl','my','vi','th','ms','ar','hi','ne','ceb','es','fr','de','it','ru']);
+function loadScriptOnce(src){ return new Promise((ok, bad) => { const el = document.createElement('script'); el.src = src; el.onload = () => ok(); el.onerror = () => bad(new Error('load ' + src)); document.head.appendChild(el); }); }
+async function ensurePack(l){
+  if (I18N[l]) return true;
+  if (!PACK_LANGS.has(l)) return false;
+  const q = '?v=' + VERSION.slice(1);
+  try{
+    await loadScriptOnce('lang-' + l + '.js' + q);
+    if (PF_LANGS.has(l)) await loadScriptOnce('lang-pf.js' + q + '&r=' + Date.now());
+  }catch(e){ return false; }
+  if (ATTACH[l]) ATTACH[l]();
+  if (typeof mergePackBooks === 'function' && TOC.length) mergePackBooks();
+  return !!I18N[l];
+}
 const I18N = {
   zh: { app:'321互動聖經', today:'今日', books:'經卷', search:'搜尋', companion:'小智', companionFull:'小智AI屬靈同伴', me:'我的',
         ot:'舊約', nt:'新約', ch:'章', chapter:n=>`第 ${n} 章`, verses:'節', bookUnit:'卷',
@@ -643,10 +660,8 @@ async function fetchJSON(file){
     throw new Error(`${file} 的內容不是有效的 JSON，請重新整理頁面再試一次`);
   }
 }
-async function loadTOC(){
-  if (TOC.length) return;
-  TOC = await fetchJSON('toc.json');
-  TOC.forEach((b, i) => { b.i = i; BOOK[b.id] = b;
+function mergePackBooks(){
+  TOC.forEach(b => {
     const kb = window.KO_PACK && KO_PACK.books[b.id]; if (kb){ b.ko = kb.ko; b.ako = kb.ako; }
     const jb = window.JA_PACK && JA_PACK.books[b.id]; if (jb){ b.ja = jb.ja; b.aja = jb.aja; }
     const ib = window.ID_PACK && ID_PACK.books[b.id]; if (ib){ b.idn = ib.idn; b.aid = ib.aid; }
@@ -674,6 +689,12 @@ async function loadTOC(){
     const de2 = window.DE_PACK && DE_PACK.books[b.id]; if (de2){ b.den = de2.den; b.ade = de2.ade; }
     const it2 = window.IT_PACK && IT_PACK.books[b.id]; if (it2){ b.itn = it2.itn; b.ait = it2.ait; }
     const ru2 = window.RU_PACK && RU_PACK.books[b.id]; if (ru2){ b.rusN = ru2.rusN; b.rusA = ru2.rusA; } });
+}
+async function loadTOC(){
+  if (TOC.length) return;
+  TOC = await fetchJSON('toc.json');
+  TOC.forEach((b, i) => { b.i = i; BOOK[b.id] = b; });
+  mergePackBooks();
 }
 async function loadShard(lang, shard){
   if (lang === 'lo') lang = 'en';   /* 寮語經文待授權：暫用英文 WEB */
@@ -9170,7 +9191,7 @@ function embedBoot(){
     const it = o.item;
     studioItem = { b:'', ch:0, v:0, t:String(it.t || ''), ref:String(it.ref || ''), n:String(it.n || ''), x:1 };
     studioNote = studioItem.n; fullBless = ''; blessOwn = '';
-    if (['zh', 'zs', 'en', 'ko', 'ja', 'id', 'tl', 'my', 'vi', 'th', 'ms', 'ar', 'he', 'el', 'pt', 'fa', 'sw', 'ta', 'am', 'uk', 'bn', 'hi', 'ne', 'lo', 'ceb', 'es', 'fr', 'de', 'it', 'ru'].includes(o.lang) && state.lang !== o.lang){ state.lang = o.lang; saveState(); applyChrome(); }
+    if (['zh', 'zs', 'en', 'ko', 'ja', 'id', 'tl', 'my', 'vi', 'th', 'ms', 'ar', 'he', 'el', 'pt', 'fa', 'sw', 'ta', 'am', 'uk', 'bn', 'hi', 'ne', 'lo', 'ceb', 'es', 'fr', 'de', 'it', 'ru'].includes(o.lang) && state.lang !== o.lang){ ensurePack(o.lang).then(ok => { if (!ok) return; state.lang = o.lang; saveState(); applyChrome(); if (curTab() === 'studio') studioRefresh(); }); }
   }
   /* 外層換了文字來源（經文／亮光／宣告…）就直接換，不重新載入 */
   window.addEventListener('message', e => {
@@ -9488,7 +9509,8 @@ document.addEventListener('visibilitychange', () => {
 function crBoot(){ if (CR_JOIN) setTimeout(() => crJoin(CR_JOIN), 400); }
 
 async function switchLang(l){
-  if (!l || !I18N[l] || l === state.lang) return;
+  if (!l || l === state.lang) return;
+  if (!I18N[l]){ toast(t().loading || '…', 1200); if (!(await ensurePack(l))) { toast('語言包載入失敗，請檢查網路後再試 / Could not load the language pack', 3200); return; } }
   ttsStop();
   state.lang = l; saveState(); applyChrome();
   if (l === 'ms') toast('Buat sementara waktu, teks Alkitab menggunakan Bahasa Indonesia.', 3600);
@@ -9560,7 +9582,7 @@ async function boot(){
   setTimeout(checkPlanRemind, 3000);              // 開 App 當下也順便檢查一次
 }
 /* ---- 한국어 팩: lang-ko.js 의 내용을 각 언어 표에 연결 (파일이 없으면 통째로 건너뜀) ---- */
-(function attachRU(){
+ATTACH.ru = function attachRU(){
   const P = window.RU_PACK; if (!P) return;
   I18N.ru = P.I18N.ru;
   PIC_L.ru = P.PIC; HYM_L.ru = P.HYM; TWEAK_L.ru = P.TWEAK; TEAM_L.ru = P.TEAM; CR_TX.ru = P.CR;
@@ -9575,8 +9597,8 @@ async function boot(){
   FU_BANK.ru = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.ru[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.rusN = P.groups[i]; });
-})();
-(function attachIT(){
+};
+ATTACH.it = function attachIT(){
   const P = window.IT_PACK; if (!P) return;
   I18N.it = P.I18N.it;
   PIC_L.it = P.PIC; HYM_L.it = P.HYM; TWEAK_L.it = P.TWEAK; TEAM_L.it = P.TEAM; CR_TX.it = P.CR;
@@ -9591,8 +9613,8 @@ async function boot(){
   FU_BANK.it = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.it[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.itn = P.groups[i]; });
-})();
-(function attachDE(){
+};
+ATTACH.de = function attachDE(){
   const P = window.DE_PACK; if (!P) return;
   I18N.de = P.I18N.de;
   PIC_L.de = P.PIC; HYM_L.de = P.HYM; TWEAK_L.de = P.TWEAK; TEAM_L.de = P.TEAM; CR_TX.de = P.CR;
@@ -9607,8 +9629,8 @@ async function boot(){
   FU_BANK.de = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.de[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.den = P.groups[i]; });
-})();
-(function attachFR(){
+};
+ATTACH.fr = function attachFR(){
   const P = window.FR_PACK; if (!P) return;
   I18N.fr = P.I18N.fr;
   PIC_L.fr = P.PIC; HYM_L.fr = P.HYM; TWEAK_L.fr = P.TWEAK; TEAM_L.fr = P.TEAM; CR_TX.fr = P.CR;
@@ -9623,8 +9645,8 @@ async function boot(){
   FU_BANK.fr = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.fr[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.frn = P.groups[i]; });
-})();
-(function attachES(){
+};
+ATTACH.es = function attachES(){
   const P = window.ES_PACK; if (!P) return;
   I18N.es = P.I18N.es;
   PIC_L.es = P.PIC; HYM_L.es = P.HYM; TWEAK_L.es = P.TWEAK; TEAM_L.es = P.TEAM; CR_TX.es = P.CR;
@@ -9639,8 +9661,8 @@ async function boot(){
   FU_BANK.es = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.es[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.esn = P.groups[i]; });
-})();
-(function attachCEB(){
+};
+ATTACH.ceb = function attachCEB(){
   const P = window.CEB_PACK; if (!P) return;
   I18N.ceb = P.I18N.ceb;
   PIC_L.ceb = P.PIC; HYM_L.ceb = P.HYM; TWEAK_L.ceb = P.TWEAK; TEAM_L.ceb = P.TEAM; CR_TX.ceb = P.CR;
@@ -9655,8 +9677,8 @@ async function boot(){
   FU_BANK.ceb = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.ceb[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.cbn = P.groups[i]; });
-})();
-(function attachLO(){
+};
+ATTACH.lo = function attachLO(){
   const P = window.LO_PACK; if (!P) return;
   I18N.lo = P.I18N.lo;
   PIC_L.lo = P.PIC; HYM_L.lo = P.HYM; TWEAK_L.lo = P.TWEAK; TEAM_L.lo = P.TEAM; CR_TX.lo = P.CR;
@@ -9671,8 +9693,8 @@ async function boot(){
   FU_BANK.lo = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.lo[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.lon = P.groups[i]; });
-})();
-(function attachNE(){
+};
+ATTACH.ne = function attachNE(){
   const P = window.NE_PACK; if (!P) return;
   I18N.ne = P.I18N.ne;
   PIC_L.ne = P.PIC; HYM_L.ne = P.HYM; TWEAK_L.ne = P.TWEAK; TEAM_L.ne = P.TEAM; CR_TX.ne = P.CR;
@@ -9687,8 +9709,8 @@ async function boot(){
   FU_BANK.ne = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.ne[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.nen = P.groups[i]; });
-})();
-(function attachHI(){
+};
+ATTACH.hi = function attachHI(){
   const P = window.HI_PACK; if (!P) return;
   I18N.hi = P.I18N.hi;
   PIC_L.hi = P.PIC; HYM_L.hi = P.HYM; TWEAK_L.hi = P.TWEAK; TEAM_L.hi = P.TEAM; CR_TX.hi = P.CR;
@@ -9703,8 +9725,8 @@ async function boot(){
   FU_BANK.hi = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.hi[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.hin = P.groups[i]; });
-})();
-(function attachAR(){
+};
+ATTACH.ar = function attachAR(){
   const P = window.AR_PACK; if (!P) return;
   I18N.ar = P.I18N.ar;
   PIC_L.ar = P.PIC; HYM_L.ar = P.HYM; TWEAK_L.ar = P.TWEAK; TEAM_L.ar = P.TEAM; CR_TX.ar = P.CR;
@@ -9719,8 +9741,8 @@ async function boot(){
   FU_BANK.ar = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.ar[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.arn = P.groups[i]; });
-})();
-(function attachHE(){
+};
+ATTACH.he = function attachHE(){
   const P = window.HE_PACK; if (!P) return;
   I18N.he = P.I18N.he;
   PIC_L.he = P.PIC; HYM_L.he = P.HYM; TWEAK_L.he = P.TWEAK; TEAM_L.he = P.TEAM; CR_TX.he = P.CR;
@@ -9735,8 +9757,8 @@ async function boot(){
   FU_BANK.he = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.he[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.hen = P.groups[i]; });
-})();
-(function attachEL(){
+};
+ATTACH.el = function attachEL(){
   const P = window.EL_PACK; if (!P) return;
   I18N.el = P.I18N.el;
   PIC_L.el = P.PIC; HYM_L.el = P.HYM; TWEAK_L.el = P.TWEAK; TEAM_L.el = P.TEAM; CR_TX.el = P.CR;
@@ -9751,8 +9773,8 @@ async function boot(){
   FU_BANK.el = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.el[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.eln = P.groups[i]; });
-})();
-(function attachPT(){
+};
+ATTACH.pt = function attachPT(){
   const P = window.PT_PACK; if (!P) return;
   I18N.pt = P.I18N.pt;
   PIC_L.pt = P.PIC; HYM_L.pt = P.HYM; TWEAK_L.pt = P.TWEAK; TEAM_L.pt = P.TEAM; CR_TX.pt = P.CR;
@@ -9767,8 +9789,8 @@ async function boot(){
   FU_BANK.pt = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.pt[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.ptn = P.groups[i]; });
-})();
-(function attachFA(){
+};
+ATTACH.fa = function attachFA(){
   const P = window.FA_PACK; if (!P) return;
   I18N.fa = P.I18N.fa;
   PIC_L.fa = P.PIC; HYM_L.fa = P.HYM; TWEAK_L.fa = P.TWEAK; TEAM_L.fa = P.TEAM; CR_TX.fa = P.CR;
@@ -9783,8 +9805,8 @@ async function boot(){
   FU_BANK.fa = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.fa[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.fan = P.groups[i]; });
-})();
-(function attachSW(){
+};
+ATTACH.sw = function attachSW(){
   const P = window.SW_PACK; if (!P) return;
   I18N.sw = P.I18N.sw;
   PIC_L.sw = P.PIC; HYM_L.sw = P.HYM; TWEAK_L.sw = P.TWEAK; TEAM_L.sw = P.TEAM; CR_TX.sw = P.CR;
@@ -9799,8 +9821,8 @@ async function boot(){
   FU_BANK.sw = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.sw[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.swn = P.groups[i]; });
-})();
-(function attachTA(){
+};
+ATTACH.ta = function attachTA(){
   const P = window.TA_PACK; if (!P) return;
   I18N.ta = P.I18N.ta;
   PIC_L.ta = P.PIC; HYM_L.ta = P.HYM; TWEAK_L.ta = P.TWEAK; TEAM_L.ta = P.TEAM; CR_TX.ta = P.CR;
@@ -9815,8 +9837,8 @@ async function boot(){
   FU_BANK.ta = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.ta[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.tan = P.groups[i]; });
-})();
-(function attachAM(){
+};
+ATTACH.am = function attachAM(){
   const P = window.AM_PACK; if (!P) return;
   I18N.am = P.I18N.am;
   PIC_L.am = P.PIC; HYM_L.am = P.HYM; TWEAK_L.am = P.TWEAK; TEAM_L.am = P.TEAM; CR_TX.am = P.CR;
@@ -9831,8 +9853,8 @@ async function boot(){
   FU_BANK.am = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.am[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.amn = P.groups[i]; });
-})();
-(function attachUK(){
+};
+ATTACH.uk = function attachUK(){
   const P = window.UK_PACK; if (!P) return;
   I18N.uk = P.I18N.uk;
   PIC_L.uk = P.PIC; HYM_L.uk = P.HYM; TWEAK_L.uk = P.TWEAK; TEAM_L.uk = P.TEAM; CR_TX.uk = P.CR;
@@ -9847,8 +9869,8 @@ async function boot(){
   FU_BANK.uk = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.uk[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.ukn = P.groups[i]; });
-})();
-(function attachBN(){
+};
+ATTACH.bn = function attachBN(){
   const P = window.BN_PACK; if (!P) return;
   I18N.bn = P.I18N.bn;
   PIC_L.bn = P.PIC; HYM_L.bn = P.HYM; TWEAK_L.bn = P.TWEAK; TEAM_L.bn = P.TEAM; CR_TX.bn = P.CR;
@@ -9863,8 +9885,8 @@ async function boot(){
   FU_BANK.bn = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.bn[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.bnn = P.groups[i]; });
-})();
-(function attachMS(){
+};
+ATTACH.ms = function attachMS(){
   const P = window.MS_PACK; if (!P) return;
   I18N.ms = P.I18N.ms;
   PIC_L.ms = P.PIC; HYM_L.ms = P.HYM; TWEAK_L.ms = P.TWEAK; TEAM_L.ms = P.TEAM; CR_TX.ms = P.CR;
@@ -9879,8 +9901,8 @@ async function boot(){
   FU_BANK.ms = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.ms[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.msn = P.groups[i]; });
-})();
-(function attachTH(){
+};
+ATTACH.th = function attachTH(){
   const P = window.TH_PACK; if (!P) return;
   I18N.th = P.I18N.th;
   PIC_L.th = P.PIC; HYM_L.th = P.HYM; TWEAK_L.th = P.TWEAK; TEAM_L.th = P.TEAM; CR_TX.th = P.CR;
@@ -9895,8 +9917,8 @@ async function boot(){
   FU_BANK.th = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.th[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.thn = P.groups[i]; });
-})();
-(function attachVI(){
+};
+ATTACH.vi = function attachVI(){
   const P = window.VI_PACK; if (!P) return;
   I18N.vi = P.I18N.vi;
   PIC_L.vi = P.PIC; HYM_L.vi = P.HYM; TWEAK_L.vi = P.TWEAK; TEAM_L.vi = P.TEAM; CR_TX.vi = P.CR;
@@ -9911,8 +9933,8 @@ async function boot(){
   FU_BANK.vi = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.vi[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.vin = P.groups[i]; });
-})();
-(function attachMY(){
+};
+ATTACH.my = function attachMY(){
   const P = window.MY_PACK; if (!P) return;
   I18N.my = P.I18N.my;
   PIC_L.my = P.PIC; HYM_L.my = P.HYM; TWEAK_L.my = P.TWEAK; TEAM_L.my = P.TEAM; CR_TX.my = P.CR;
@@ -9927,8 +9949,8 @@ async function boot(){
   FU_BANK.my = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.my[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.mmn = P.groups[i]; });
-})();
-(function attachTL(){
+};
+ATTACH.tl = function attachTL(){
   const P = window.TL_PACK; if (!P) return;
   I18N.tl = P.I18N.tl;
   PIC_L.tl = P.PIC; HYM_L.tl = P.HYM; TWEAK_L.tl = P.TWEAK; TEAM_L.tl = P.TEAM; CR_TX.tl = P.CR;
@@ -9943,8 +9965,8 @@ async function boot(){
   FU_BANK.tl = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.tl[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.tln = P.groups[i]; });
-})();
-(function attachID(){
+};
+ATTACH.id = function attachID(){
   const P = window.ID_PACK; if (!P) return;
   I18N.id = P.I18N.id;
   PIC_L.id = P.PIC; HYM_L.id = P.HYM; TWEAK_L.id = P.TWEAK; TEAM_L.id = P.TEAM; CR_TX.id = P.CR;
@@ -9959,8 +9981,8 @@ async function boot(){
   FU_BANK.id = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.id[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.idn = P.groups[i]; });
-})();
-(function attachJA(){
+};
+ATTACH.ja = function attachJA(){
   const P = window.JA_PACK; if (!P) return;
   I18N.ja = P.I18N.ja;
   PIC_L.ja = P.PIC; HYM_L.ja = P.HYM; TWEAK_L.ja = P.TWEAK; TEAM_L.ja = P.TEAM; CR_TX.ja = P.CR;
@@ -9975,8 +9997,8 @@ async function boot(){
   FU_BANK.ja = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.ja[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.ja = P.groups[i]; });
-})();
-(function attachKO(){
+};
+ATTACH.ko = function attachKO(){
   const P = window.KO_PACK; if (!P) return;
   I18N.ko = P.I18N.ko;
   PIC_L.ko = P.PIC; HYM_L.ko = P.HYM; TWEAK_L.ko = P.TWEAK; TEAM_L.ko = P.TEAM; CR_TX.ko = P.CR;
@@ -9991,5 +10013,7 @@ async function boot(){
   FU_BANK.ko = {};
   Object.keys(FU_BANK.en).forEach(a => { const lab = P.FU[a]; FU_BANK.ko[a] = FU_BANK.en[a].map((f, i) => [f[0], (lab && lab[i]) || f[1], f[2]]); });
   GROUPS.forEach((g, i) => { g.ko = P.groups[i]; });
-})();
+};
+Object.keys(ATTACH).forEach(k => { if (window[k.toUpperCase() + '_PACK']) ATTACH[k](); });
+
 boot();
