@@ -45,8 +45,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.58.0';
-/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
+const VERSION = 'v2.58.1';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
    flex-basis:0），按鈕不准被擠扁（flex:0 0 auto）；長字串（網址、英文長字）也允許換行。 */
@@ -641,7 +640,7 @@ function syncHeaderH(){
 async function purgeCached(file){
   if (typeof caches === 'undefined') return;
   try{
-    const names = await caches.keys();
+    const names = (await caches.keys()).filter(k => k.indexOf('ib-') === 0);   // 只動自己的快取
     await Promise.all(names.map(async name => {
       const c = await caches.open(name);
       const reqs = await c.keys();
@@ -9196,6 +9195,8 @@ function updBusy(){
   if (mr && mr.state === 'recording') return true;
   if (chatBusy || blessBusy) return true;
   if (PL) return true;
+  try{ if (typeof CR !== 'undefined' && CR && (CR.role || CR.screen)) return true; }catch(e){}   // 共讀中（帶領／加入／投影）
+  try{ if (curTab() === 'studio') return true; }catch(e){}                                         // 美圖工作室開著
   const ae = document.activeElement;
   if (ae && /^(TEXTAREA|INPUT)$/.test(ae.tagName) && ae.value) return true;
   if (document.querySelector('.hlsheet-mask, .rw-mask')) return true;
@@ -9219,14 +9220,16 @@ function reloadFresh(){
 }
 function applyUpdate(hard){
   hard = (hard === true);
+  if (UPD.applying) return;                       // 同一次更新只做一次（輪詢＋SW 安裝完成會同時偵測到）
+  UPD.applying = true; setTimeout(() => { UPD.applying = false; }, 8000);
   UPD.pending = false; updBar(false); toast(t().updApplying);
   (async () => {
     /* 先要求瀏覽器重新下載主要檔案、換掉 HTTP 快取裡的舊檔，免得重整後又讀到舊的 app.js */
     try{ await Promise.all(['app.js', 'index.html', 'sw.js'].map(f => fetch(f, { cache:'reload' }).catch(() => {}))); }catch(e){}
     try{
       if (hard){
-        if ('caches' in window){ const ks = await caches.keys(); await Promise.all(ks.map(k => caches.delete(k))); }
-        if (navigator.serviceWorker){ const rs = await navigator.serviceWorker.getRegistrations(); await Promise.all(rs.map(r => r.unregister())); }
+        if ('caches' in window){ const ks = await caches.keys(); await Promise.all(ks.filter(k => k.indexOf('ib-') === 0).map(k => caches.delete(k))); }   // 同網域各 App 共用 Cache Storage：只清自己（ib-）的
+        if (navigator.serviceWorker){ const r1 = await navigator.serviceWorker.getRegistration(); if (r1) await r1.unregister(); }   // getRegistrations() 會拿到同網域所有 App 的 SW，只登出自己的
       } else if (swReg){
         try{ if (swReg.waiting) swReg.waiting.postMessage('skip'); }catch(e){}
         try{ await swReg.update(); }catch(e){}
@@ -9738,8 +9741,8 @@ async function boot(){
   $('#boot-reload').onclick = () => location.reload();
   $('#boot-clear').onclick = async () => {
     try{
-      if ('caches' in window){ const ks = await caches.keys(); await Promise.all(ks.map(k => caches.delete(k))); }
-      if (navigator.serviceWorker){ const rs = await navigator.serviceWorker.getRegistrations(); await Promise.all(rs.map(r => r.unregister())); }
+      if ('caches' in window){ const ks = await caches.keys(); await Promise.all(ks.filter(k => k.indexOf('ib-') === 0).map(k => caches.delete(k))); }   // 同網域各 App 共用 Cache Storage：只清自己（ib-）的
+      if (navigator.serviceWorker){ const r1 = await navigator.serviceWorker.getRegistration(); if (r1) await r1.unregister(); }   // getRegistrations() 會拿到同網域所有 App 的 SW，只登出自己的
     }catch(e){}
     location.reload();
   };

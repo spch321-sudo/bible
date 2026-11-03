@@ -1,9 +1,8 @@
 /* 321互動聖經 — Service Worker
    每次改動內容或程式，務必把 VERSION 往上加（也要同步 app.js 的 VERSION 與 version.json），
    否則已安裝的使用者不會看到更新。 */
-const VERSION = 'ib-v2.58.0';
-const VER = 'v2.58.0';
-
+const VERSION = 'ib-v2.58.1';
+const VER = 'v2.58.1';
 /* v2.56.0：語言包不再全部預先快取，改為用到才下載並快取（見下方 fetch 處理） */
 const SHELL = [
   './', './index.html', './app.js', './qrcode.js', './manifest.json', './toc.json', './plans.json', './cover.jpg', './hero.jpg', './wxpay.jpg',
@@ -21,13 +20,13 @@ self.addEventListener('install', e => {
 
 self.addEventListener('activate', e => {
   e.waitUntil(
-    caches.keys().then(ks => Promise.all(ks.filter(k => k !== VERSION).map(k => caches.delete(k))))
+    caches.keys().then(ks => Promise.all(ks.filter(k => k.indexOf('ib-') === 0 && k !== VERSION).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
       .then(() => self.clients.matchAll({ type:'window', includeUncontrolled:true }))
       .then(cs => cs.forEach(c => {
-        try{ c.postMessage({ t:'sw-updated', v:VER }); }catch(_){}
+        try{ if (c.url.indexOf(self.registration.scope) === 0) c.postMessage({ t:'sw-updated', v:VER }); }catch(_){}
         /* 背景中的頁面直接帶到新版——連沒有自動更新程式碼的舊頁面也一樣；前景頁面交給頁面自己處理 */
-        if (c.visibilityState === 'hidden'){ try{ c.navigate(c.url); }catch(_){} }
+        if (c.visibilityState === 'hidden' && c.url.indexOf(self.registration.scope) === 0){ try{ c.navigate(c.url); }catch(_){} }
       }))
   );
 });
