@@ -45,7 +45,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.57.2';
+const VERSION = 'v2.58.0';
 /* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
@@ -842,6 +842,7 @@ function navTrack(){
 function navParent(){
   const r = currentRoute(), tab = r[0] || 'today';
   if (tab === 'read') return r[1] ? '#/books/' + r[1] : '#/books';
+  if (tab === 'books' && r[2]) return '#/books/' + r[1];
   if (tab === 'books' && r[1]) return '#/books';
   if (tab === 'team' && r[1]) return '#/team';
   if (tab === 'studio' && RD && RD.book) return `#/read/${RD.book}/${RD.ch}`;
@@ -1398,6 +1399,8 @@ async function rwBackfill(){
 /* ================================================================ 經卷 / 章 */
 async function viewBooks(v, bookId){
   const L = t();
+  const r2 = currentRoute();
+  if (bookId && BOOK[bookId] && r2[2] && +r2[2] >= 1 && +r2[2] <= BOOK[bookId].ch) return viewVerses(v, bookId, +r2[2]);
   if (bookId && BOOK[bookId]) return viewChapters(v, bookId);
   const tabOT = !(location.hash.indexOf('nt') > -1);
   rwCss(); await rwBackfill();
@@ -1412,10 +1415,11 @@ async function viewBooks(v, bookId){
           <span class="bs">${done ? done + '/' : ''}${b.ch} ${esc(L.ch)}</span></button>`;
       }).join('')}</div></details>`;
   }).join('');
-  v.innerHTML = `<div class="section-title">${esc(L.ot)} · ${esc(L.nt)}</div>
+  v.innerHTML = `${pickTabs('b')}<div class="section-title">${esc(L.ot)} · ${esc(L.nt)}</div>
     <div class="rw-line"><span>🏅 ${esc(L3('讀經計畫獎章', '读经计划奖章', 'Reading-plan medals'))}　${rwCount()} / ${TOC.length}</span>
       <span class="muted" style="font-weight:400;font-size:11.5px">${esc(L3('讀完計畫中的整卷書就會得到', '读完计划中的整卷书就会得到', 'Finish a whole book in your plan to earn one'))}</span></div>${html}`;
-  $$('.bkbtn', v).forEach(b => b.onclick = () => go('#/books/' + b.dataset.b));
+  $$('.bkbtn', v).forEach(b => b.onclick = () => { pickSet({ b: b.dataset.b, c: 0 }); go('#/books/' + b.dataset.b); });
+  pickTabsBind(v);
 }
 function readOfBook(id){
   let n = 0; const b = BOOK[id];
@@ -1430,13 +1434,97 @@ async function viewChapters(v, bookId){
       <div style="flex:1"><div style="font-family:var(--f-serif);font-weight:900;font-size:19px">${esc(bname(b))}</div>
       <div class="muted">${b.ch} ${esc(L.ch)} · ${b.v} ${esc(L.verses)}</div></div>
       ${user.rewards[bookId] ? `<button class="chtb-btn on" id="rwAgain" title="${esc(L3('重看獎章', '重看奖章', 'Replay medal'))}">🏅</button>` : ''}</div>
+    ${pickTabs('c', bookId)}
+    <div class="pk-hint">${esc(L3('點章數，再選要從第幾節開始讀', '点章数，再选要从第几节开始读', 'Tap a chapter, then pick the verse to start from'))}</div>
     <div class="chgrid">${Array.from({length: b.ch}, (_, i) => {
       const n = i + 1, read = user.progress[bookId + '-' + n];
       return `<button class="chbtn ${n === cur ? 'now' : (read ? 'read' : '')}" data-c="${n}">${n}</button>`;
     }).join('')}</div>`;
   $('#backBooks', v).onclick = () => appBack('#/books');
   const ra = $('#rwAgain', v); if (ra) ra.onclick = () => rwShow(bookId, true);
-  $$('.chbtn', v).forEach(x => x.onclick = () => go(`#/read/${bookId}/${x.dataset.c}`));
+  pickSet({ b: bookId });
+  $$('.chbtn', v).forEach(x => x.onclick = () => { pickSet({ b: bookId, c: +x.dataset.c }); go(`#/books/${bookId}/${x.dataset.c}`); });
+  pickTabsBind(v);
+}
+
+/* ================================================================ v2.58.0 聖經目錄：卷 → 章 → 節 → 經文
+   經卷頁點卷進入「章」，點章進入「節」，點節直接打開那一章並捲到那一節（暫時亮一下）。
+   上方「卷｜章｜節」三個分頁隨時可以切回去重選；選過的卷／章記在 sessionStorage。 */
+function pickGet(){ try{ return JSON.parse(sessionStorage.getItem('ib_pick') || '{}') || {}; }catch(e){ return {}; } }
+function pickSet(o){ const p = Object.assign(pickGet(), o); if (o.b && o.c === undefined && p.b !== o.b) p.c = 0; try{ sessionStorage.setItem('ib_pick', JSON.stringify(p)); }catch(e){} }
+function pickCss(){
+  if (document.getElementById('pickCss')) return;
+  const st = document.createElement('style'); st.id = 'pickCss';
+  st.textContent = '.pk-tabs{display:flex;border-bottom:1px solid var(--border);margin:2px 0 12px}'
+    + '.pk-tabs button{flex:1;border:none;background:none;padding:10px 0 9px;font:inherit;font-size:15.5px;font-weight:700;color:var(--ink-soft);border-bottom:3px solid transparent;margin-bottom:-1px;cursor:pointer}'
+    + '.pk-tabs button.on{color:var(--accent);border-bottom-color:var(--accent)}'
+    + '.pk-tabs button:disabled{opacity:.35;cursor:default}'
+    + '.pk-tabs .pk-sub{display:block;font-size:11.5px;font-weight:600;color:var(--ink-faint);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 4px}'
+    + '.pk-tabs button.on .pk-sub{color:var(--accent)}'
+    + '.pk-hint{font-size:12.5px;color:var(--ink-faint);margin:-4px 0 10px}'
+    + '.vsbtn{border:1px solid var(--border);background:var(--surface);color:var(--ink);border-radius:8px;padding:10px 0;font-size:13.5px;font-weight:600;cursor:pointer}'
+    + '.vsbtn:active{background:var(--accent);color:#fff}'
+    + '.sent.vflash{background:rgba(201,162,39,.32);border-radius:4px;transition:background 1.2s}';
+  document.head.appendChild(st);
+}
+function pickTabs(cur, bookId, ch){
+  pickCss();
+  const p = pickGet(); const b = bookId || p.b; const c = ch || (bookId && p.b === bookId ? p.c : (bookId ? 0 : p.c));
+  const B = b && BOOK[b];
+  const tab = (k, label, sub, dis) => `<button data-pk="${k}" class="${cur === k ? 'on' : ''}" ${dis ? 'disabled' : ''}>${esc(label)}<span class="pk-sub">${sub ? esc(sub) : '&nbsp;'}</span></button>`;
+  return `<div class="pk-tabs" data-b="${B ? b : ''}" data-c="${B && c ? c : ''}">`
+    + tab('b', L3('卷', '卷', 'Book'), B ? bname(B) : '', false)
+    + tab('c', L3('章', '章', 'Chapter'), B && c ? String(c) : '', !B)
+    + tab('v', L3('節', '节', 'Verse'), '', !(B && c))
+    + '</div>';
+}
+function pickTabsBind(v){
+  const bar = $('.pk-tabs', v); if (!bar) return;
+  const b = bar.dataset.b, c = bar.dataset.c;
+  $$('button', bar).forEach(x => x.onclick = () => {
+    if (x.classList.contains('on') || x.disabled) return;
+    const k = x.dataset.pk;
+    if (k === 'b') go('#/books');
+    else if (k === 'c' && b) go('#/books/' + b);
+    else if (k === 'v' && b && c) go(`#/books/${b}/${c}`);
+  });
+}
+function verseCountOf(arr){
+  let n = 0;
+  (arr || []).forEach(par => { if (Array.isArray(par)) for (let i = 1; i < par.length; i += 2){ const x = par[i]; if (typeof x === 'number' && x > n) n = x; } });
+  return n;
+}
+let jumpVerse = null;
+async function viewVerses(v, bookId, ch){
+  const L = t(), b = BOOK[bookId];
+  pickSet({ b: bookId, c: ch });
+  const arr = await getChapter(bookId, ch);
+  const n = verseCountOf(arr);
+  v.innerHTML = `
+    <div class="chtoolbar"><button class="chtb-btn navlbl" id="backCh" title="${esc(L3('上一頁', '上一页', 'Back'))}">‹ ${esc(L3('上一頁', '上一页', 'Back'))}</button>
+      <div style="flex:1"><div style="font-family:var(--f-serif);font-weight:900;font-size:19px">${esc(bname(b))} ${ch}</div>
+      <div class="muted">${n ? n + ' ' + esc(L.verses) : ''}</div></div></div>
+    ${pickTabs('v', bookId, ch)}
+    <div class="pk-hint">${esc(L3('點節數，直接打開經文並跳到那一節', '点节数，直接打开经文并跳到那一节', 'Tap a verse to open the passage right there'))}</div>
+    ${n ? `<div class="chgrid">${Array.from({length: n}, (_, i) => `<button class="vsbtn" data-v="${i + 1}">${i + 1}</button>`).join('')}</div>`
+        : `<div class="empty"><button class="btn" id="vsOpen">${esc(L3('打開這一章', '打开这一章', 'Open this chapter'))}</button></div>`}`;
+  $('#backCh', v).onclick = () => appBack('#/books/' + bookId);
+  const op = $('#vsOpen', v); if (op) op.onclick = () => go(`#/read/${bookId}/${ch}`);
+  $$('.vsbtn', v).forEach(x => x.onclick = () => { jumpVerse = { b: bookId, c: ch, v: +x.dataset.v }; go(`#/read/${bookId}/${ch}`); });
+  pickTabsBind(v);
+}
+/* 閱讀頁渲染完之後：捲到指定的那一節，並暫時亮一下 */
+function applyJumpVerse(bookId){
+  if (!jumpVerse || jumpVerse.b !== bookId) return false;
+  const jv = jumpVerse; jumpVerse = null;
+  const els = $$(`#reader .sent[data-c="${jv.c}"][data-v="${jv.v}"]`);
+  if (!els.length) return false;
+  requestAnimationFrame(() => {
+    els[0].scrollIntoView({ block: jv.v <= 1 ? 'center' : 'center', behavior: 'auto' });
+    els.forEach(e => e.classList.add('vflash'));
+    setTimeout(() => els.forEach(e => e.classList.remove('vflash')), 2600);
+  });
+  return true;
 }
 
 /* ================================================================ 讀經計畫
@@ -1953,7 +2041,8 @@ async function viewReader(v, bookId, ch){
 
   if (!(spk.on && spk.items.length)) scrollToTop();
   const want = jumpTo; jumpTo = null;
-  if (!(want && scrollToAnchor(want)) && flow && ch > 1){
+  if (applyJumpVerse(bookId)){ /* 從目錄選了某一節進來 */ }
+  else if (!(want && scrollToAnchor(want)) && flow && ch > 1){
     const target = $(`#reader p[data-c="${ch}"]`);
     if (target) requestAnimationFrame(() => target.scrollIntoView({ block:'start' }));
   }
