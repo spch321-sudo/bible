@@ -45,7 +45,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.58.3';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
+const VERSION = 'v2.58.4';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
    flex-basis:0），按鈕不准被擠扁（flex:0 0 auto）；長字串（網址、英文長字）也允許換行。 */
@@ -555,7 +555,7 @@ let state = Object.assign({}, DEFAULTS);
 let user  = { progress:{}, hl:{}, fav:[], marks:[], last:null,
                uid:'', nick:'', teams:[], pts:0, badges:[], acts:{},
                plan:{ active:null, starts:{}, done:{} }, play:{ right:0, total:0, best:{} }, quizWrong:[], rewards:{} };
-let TOC = [], BOOK = {}, SHARD = {};   // SHARD['zh|law'] = {BookId:[chapters]}
+let TOC = [], BOOK = {}, SHARD = {}, SHARD_P = {};   // SHARD['zh|law'] = {BookId:[chapters]}
 
 function loadState(){
   try{
@@ -681,8 +681,10 @@ async function loadShard(lang, shard){
   if (lang === 'ms') lang = 'id';   /* 馬來語經文檔還沒有：暫時沿用印尼語經文 */
   const key = lang + '|' + shard;
   if (SHARD[key]) return SHARD[key];
-  SHARD[key] = await fetchJSON(`bible.${lang}.${shard}.json`);
-  return SHARD[key];
+  /* v2.58.4：同一個經文檔同時有兩處要用時，共用同一次下載（首頁不再等經文檔後，常有兩處同時要） */
+  if (SHARD_P[key]) return SHARD_P[key];
+  SHARD_P[key] = fetchJSON(`bible.${lang}.${shard}.json`).then(d => { SHARD[key] = d; delete SHARD_P[key]; return d; }, e => { delete SHARD_P[key]; throw e; });
+  return SHARD_P[key];
 }
 async function getBook(bookId){
   const b = BOOK[bookId]; if (!b) return null;
@@ -1169,15 +1171,8 @@ async function viewToday(v){
   const readCount = Object.keys(user.progress).length;
   const pct = Math.round(readCount / 1189 * 100);
   const [db, dc] = dailyPick();
-  const chap = await getChapter(db, dc);
-  let excerpt = '';
-  if (chap){
-    const first = chap.find(bl => bl.length > 1 && bl[0] !== 'd') || chap.find(bl => bl.length > 1);
-    const src = first ? first[2] : '';
-    const ss = splitSentences(src);
-    excerpt = ss.slice(0, 2).join('');
-    if (excerpt.length > 110) excerpt = ss[0] || '';
-  }
+  /* v2.58.4：先把首頁畫出來（封面圖、各張卡片），「今日經文」的內容等經文檔下載好再補上；
+     原本要等整個經文檔（數百 KB）下載完才開始畫，封面圖也跟著晚出現 */
   const last = user.last;
   const lastBook = last && BOOK[last.book];
   const C = 2 * Math.PI * 25;
@@ -1215,7 +1210,7 @@ async function viewToday(v){
 
     <div class="section-title">${esc(L.daily)}</div>
     <div class="card">
-      <div class="daily">${markNotes(esc(excerpt))}</div>
+      <div class="daily" id="dailyTxt" style="min-height:4.2em"></div>
       <div class="dailyref">${esc(bname(BOOK[db]))} ${esc(chapLabel(db, dc))}</div>
       <div style="margin-top:12px"><a class="btn gold block" href="#/read/${db}/${dc}">${esc(L.read)}</a></div>
     </div>
@@ -1236,6 +1231,18 @@ async function viewToday(v){
 
   { const a = $('#invShare', v), b = $('#invCopy', v); if (a) a.onclick = () => inviteShare(); if (b) b.onclick = () => inviteCopy(); }
   meetCss(); { const tn = $('#todayNext', v); if (tn) tn.innerHTML = nextMeetCard(); }
+  getChapter(db, dc).then(chap => {
+    let excerpt = '';
+    if (chap){
+      const first = chap.find(bl => bl.length > 1 && bl[0] !== 'd') || chap.find(bl => bl.length > 1);
+      const src = first ? first[2] : '';
+      const ss = splitSentences(src);
+      excerpt = ss.slice(0, 2).join('');
+      if (excerpt.length > 110) excerpt = ss[0] || '';
+    }
+    const el = $('#dailyTxt', v);                 // 使用者已經切到別頁就不用補了
+    if (el && v.contains(el)) el.innerHTML = markNotes(esc(excerpt));
+  }).catch(() => {});
   const rb = $('#resumeBtn', v);
   if (rb) rb.onclick = () => {
     if (last.a) jumpTo = last.a;
