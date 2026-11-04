@@ -45,7 +45,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.58.4';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
+const VERSION = 'v2.59.0';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
    flex-basis:0），按鈕不准被擠扁（flex:0 0 auto）；長字串（網址、英文長字）也允許換行。 */
@@ -6644,7 +6644,7 @@ function paintChat(){
   const log = $('#chatlog'); if (!log) return;
   log.innerHTML = chatLog.map((m, i) => m.role === 'user'
     ? `<div class="msg user">${esc(m.text)}</div>`
-    : `<div class="msg ai${msgFoldCls(m)}" id="msg${i}"><div class="msg-body">${mdToHtml(m.text)}</div>${m.cont
+    : `<div class="msg ai${msgFoldCls(m)}" id="msg${i}"><div class="msg-body">${mdToHtml(m.text)}</div><div class="xz-ver-slot">${m.ver || ''}</div>${m.cont
           ? `<div class="msg-cont">${esc(L3('小智還在接著寫…', '小智还在接着写…', 'Xiaozhi is still writing…'))}</div>` : msgMoreHtml(m, i)}
         <div class="msg-actions"${m.cont ? ' hidden' : ''}>
           <button class="msg-act ${isFav(m.text) ? 'on' : ''}" data-a="fav" data-i="${i}">★ ${esc(L3('收藏', '收藏', 'Save'))}</button>
@@ -6669,6 +6669,7 @@ function paintChat(){
     else if (b.dataset.a === 'share'){ chatShare(m); }
     else if (b.dataset.a === 'card'){ chatCard(m); }
   });
+  chatVerify();
   /* 整頁一起捲：新的回答從開頭給你看；自己的問題、「思想中」就捲到最下面 */
   const last = log.lastElementChild;
   if (last) setTimeout(() => { try{ last.scrollIntoView({ block: last.classList.contains('ai') && last.querySelector('.msg-actions:not([hidden])') ? 'start' : 'end' }); }catch(e){} }, 30);
@@ -6921,7 +6922,7 @@ const LEN_SYS = () => {
       s:' Length: SHORT. About 120–180 words: answer directly, add one key verse or one picture, and end with one small step. No tables or long lists.',
       mid:' Length: MEDIUM. About 300–350 words: the passage context, the main points, a clear 3-2-1 application, one practical step for this week, and a closing prayer.',
       long:' Length: LONG. About 600–750 words. Short headings are welcome. Cover the passage context, the meaning of key words, cross-references, a clear 3-2-1 application, a practical step for this week, and a closing prayer.',
-      xl:' Length: VERY LONG. At least 1,200 words and no more than about 2,000 words. Use short headings and organise it as: background, passage analysis, key words, cross-references, theological points, 3-2-1 application, discussion questions, and a closing prayer.'
+      xl:' Length: VERY LONG. About 1,200–1,800 words, never more than 2,000. Use short headings and organise it as: background, passage analysis, key words, cross-references, theological points, 3-2-1 application, discussion questions, and a closing prayer.'
     };
     return T[k] + (easy ? ' Use plain words and short paragraphs so it is easy to read.' : '');
   }
@@ -6931,16 +6932,84 @@ const LEN_SYS = () => {
     s:' 回答长度：短。约 200～300 字：直接回答，加一节关键经文或一个比喻，最后给一个小步骤；不用表格、不列长清单。',
     mid:' 回答长度：中。约 500～600 字：依序说明经文脉络、重点、清楚的321应用、这星期一个具体步骤，最后以祷告结束。',
     long:' 回答长度：长。约 1000～1200 字：可用简短小标题，包含经文脉络、关键字词的意思、相关经文对照、清楚的321应用、这星期的具体步骤，最后以祷告结束。',
-    xl:' 回答长度：极长。2000 字以上，不超过 3000 字。分段并用小标题，依序为：背景、段落分析、关键字词、经文对照、神学重点、321应用、讨论题、祷告。'
+    xl:' 回答长度：极长。约 1500～2200 字，最多不超过 2500 字。分段并用小标题，依序为：背景、段落分析、关键字词、经文对照、神学重点、321应用、讨论题、祷告。'
   } : {
     xs:' 回答長度：極短。整段回答控制在 100 字內：只給核心答案、一節關鍵經文、一句禱告；不用標題、表格與清單。',
     s:' 回答長度：短。約 200～300 字：直接回答，加一節關鍵經文或一個比喻，最後給一個小步驟；不用表格、不列長清單。',
     mid:' 回答長度：中。約 500～600 字：依序說明經文脈絡、重點、清楚的321應用、這星期一個具體步驟，最後以禱告結束。',
     long:' 回答長度：長。約 1000～1200 字：可用簡短小標題，包含經文脈絡、關鍵字詞的意思、相關經文對照、清楚的321應用、這星期的具體步驟，最後以禱告結束。',
-    xl:' 回答長度：極長。2000 字以上，不超過 3000 字。分段並用小標題，依序為：背景、段落分析、關鍵字詞、經文對照、神學重點、321應用、討論題、禱告。'
+    xl:' 回答長度：極長。約 1500～2200 字，最多不超過 2500 字。分段並用小標題，依序為：背景、段落分析、關鍵字詞、經文對照、神學重點、321應用、討論題、禱告。'
   };
   return T[k] + (easy ? (zs ? ' 用浅白的话和短段落，让人容易读。' : ' 用淺白的話和短段落，讓人容易讀。') : '');
 };
+/* ===== v2.59.0：小智的誠實、危機與經文核對 ===== */
+const HONEST_SYS = () => isEP()
+  ? ' PRINCIPLES: (1) Be honest. Never invent a verse, a quotation, a Hebrew/Greek meaning or a historical fact; if unsure, say "I am not sure" and point the reader to the text. Quote Scripture only from the passage supplied below or verses you are certain of, and always give the reference (book chapter:verse). (2) Where Christians differ, say so briefly and fairly instead of presenting one view as the only one. (3) You are an AI companion, not a pastor, doctor or lawyer: for medical, legal, abuse or serious emotional matters, encourage the reader to talk to a trusted pastor, a professional or local emergency services. (4) If the reader mentions suicide, self-harm, abuse or immediate danger: respond first with calm care, do not lecture or quote verses at length, encourage them to contact local emergency services or a crisis line and a trusted person right now, and gently stay with them.'
+  : isZS()
+  ? ' 原则：（1）诚实：绝不编造经文、引言、原文字义或历史；不确定就直说「我不确定」，并请读者回到经文。引用经文只用下方提供的这一章或你确定的经文，并一定写出出处（书名 章:节）。（2）遇到基督徒之间有不同看法的议题，简短公平地说明，不把单一立场说成唯一答案。（3）你是 AI 陪读，不是牧者、医生或律师；涉及医疗、法律、受虐或严重情绪的事，鼓励读者找信任的牧者、专业人员或当地紧急服务。（4）若读者提到自杀、自伤、受虐或立即的危险：先用平静关怀的语气回应，不说教、不长篇引经，鼓励他现在就联系当地紧急服务或求助热线，以及身边可信任的人，并温柔地陪着他。'
+  : ' 原則：（1）誠實：絕不編造經文、引言、原文字義或歷史；不確定就直說「我不確定」，並請讀者回到經文。引用經文只用下方提供的這一章或你確定的經文，並一定寫出出處（書名 章:節）。（2）遇到基督徒之間有不同看法的議題，簡短公平地說明，不把單一立場說成唯一答案。（3）你是 AI 陪讀，不是牧者、醫生或律師；涉及醫療、法律、受虐或嚴重情緒的事，鼓勵讀者找信任的牧者、專業人員或當地緊急服務。（4）若讀者提到自殺、自傷、受虐或立即的危險：先用平靜關懷的語氣回應，不說教、不長篇引經，鼓勵他現在就聯絡當地緊急服務或求助專線，以及身邊可信任的人，並溫柔地陪著他。';
+/* 目前這章的經文原文（上限 3000 字），讓小智解經時照著原文，不憑記憶 */
+function chapterSys(){
+  try{
+    if (!RD.book || !Array.isArray(RD.data)) return '';
+    const parts = [];
+    RD.data.forEach(seg => { if (!Array.isArray(seg)) return;
+      for (let i = 1; i + 1 < seg.length; i += 2) if (seg[i + 1]) parts.push((+seg[i] > 0 ? seg[i] + ' ' : '') + String(seg[i + 1]).replace(/〔[^〕]*〕/g, '')); });
+    let t = parts.join(isEN() ? ' ' : '\n'); if (!t) return '';
+    if (t.length > 3000) t = t.slice(0, 3000) + '…';
+    const h = isEP() ? ' THE PASSAGE THE READER IS ON (' + bname(BOOK[RD.book]) + ' ' + RD.ch + '; use this text, do not quote from memory):\n'
+            : isZS() ? '\n读者目前在读的经文（' + bname(BOOK[RD.book]) + ' 第 ' + RD.ch + ' 章；解经请以此为准，不凭记忆补字）：\n'
+            : '\n讀者目前在讀的經文（' + bname(BOOK[RD.book]) + ' 第 ' + RD.ch + ' 章；解經請以此為準，不憑記憶補字）：\n';
+    return h + t;
+  }catch(_){ return ''; }
+}
+/* 危機字詞：命中時先顯示固定的求助卡（不靠 AI），再照常回答 */
+const CRISIS_RE = /自殺|自杀|輕生|轻生|不想活|想死|結束生命|结束生命|了結自己|了结自己|活不下去|傷害自己|伤害自己|割腕|跳樓|跳楼|suicid|kill myself|end my life|want to die|self[- ]?harm|hurt myself/i;
+const crisisHit = x => CRISIS_RE.test(String(x || ''));
+const crisisCard = () => state.lang === 'zh'
+  ? '💛 **你現在不是一個人。** 我聽見你了，謝謝你願意說出來。\n\n如果你有傷害自己的念頭，或覺得撐不下去，請現在就找一個人陪你：\n\n- 緊急危險：**119**（救護）／**110**（警察）\n- 24 小時安心專線：**1925**（依舊愛我）\n- 生命線：**1995**\n- 張老師：**1980**\n- 身邊信任的牧者、家人或朋友，請現在就打給他\n\n神與你同在，祂看顧你。我也會在這裡陪你，你想說什麼都可以。'
+  : isZS()
+  ? '💛 **你现在不是一个人。** 我听见你了，谢谢你愿意说出来。\n\n如果你有伤害自己的念头，或觉得撑不下去，请现在就找一个人陪你：联系你所在地的紧急服务或心理援助热线，并打给身边信任的牧者、家人或朋友。\n\n神与你同在，祂看顾你。我也会在这里陪你，你想说什么都可以。'
+  : '💛 **You are not alone.** I hear you, and I am glad you said it.\n\nIf you are thinking about hurting yourself or feel you cannot go on, please reach out to someone right now: your local emergency number or crisis line, and a pastor, family member or friend you trust.\n\nGod is with you and cares for you. I am here too — say whatever you need.';
+/* 讀者資料備註：去掉電子郵件、網址與長串數字，避免把個資送出去 */
+const pfClean = x => String(x || '').replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g, '').replace(/https?:\/\/\S+/gi, '').replace(/\d[\d\s-]{6,}\d/g, '').trim();
+/* 經文核對：找出回答裡的「書名 章:節」，從本機和合本取出原文放在回答下面，讓讀者自己對照 */
+let _xzRefRe = null;
+function xzRefRe(){
+  if (_xzRefRe) return _xzRefRe;
+  const names = []; TOC.forEach(b => { [b.zh, b.zs, b.en].forEach(n => { if (n) names.push(n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')); }); });
+  names.sort((a, b) => b.length - a.length);
+  _xzRefRe = new RegExp('(' + names.join('|') + ')\\s*(\\d{1,3})\\s*(?:[:：]|章|篇)\\s*(\\d{1,3})\\s*(?:節|节)?(?:\\s*[-–—~～]\\s*(\\d{1,3}))?', 'g');
+  return _xzRefRe;
+}
+function xzParseRefs(text){
+  const out = [], seen = {}; const re = xzRefRe(); re.lastIndex = 0; let m;
+  while ((m = re.exec(String(text || ''))) && out.length < 6){
+    const b = TOC.find(x => x.zh === m[1] || x.zs === m[1] || x.en === m[1]); if (!b) continue;
+    const ch = +m[2], v = +m[3]; let v2 = m[4] ? +m[4] : 0; if (v2 && (v2 <= v || v2 - v > 12)) v2 = 0;
+    const k = b.id + ch + ':' + v + '-' + v2; if (seen[k]) continue; seen[k] = 1;
+    out.push({ id: b.id, ch, v, v2, label: m[0].trim() });
+  }
+  return out;
+}
+async function verifyHtml(text){
+  const refs = xzParseRefs(text); if (!refs.length) return '';
+  const rows = [];
+  for (const r of refs){
+    let t = '';
+    try{ t = BOOK[r.id] && r.ch >= 1 && r.ch <= BOOK[r.id].ch ? await verseTextOf(r.id, r.ch, r.v, r.v2) : ''; }catch(_){}
+    rows.push(t ? `<div style="margin:6px 0"><b>${esc(r.label)}</b>　${esc(t)}</div>`
+      : `<div style="margin:6px 0">⚠ <b>${esc(r.label)}</b>　${esc(L3('找不到這處經文，請以聖經為準', '找不到这处经文，请以圣经为准', 'This passage was not found — please check your Bible'))}</div>`);
+  }
+  return `<details class="xz-ver" style="margin:8px 0 2px;font-size:13px;line-height:1.7;color:var(--ink-faint)"><summary style="cursor:pointer">📖 ${esc(L3('核對經文原文', '核对经文原文', 'Check the verses'))}（${refs.length}）</summary>${rows.join('')}<div style="font-size:12px;margin-top:4px">${esc(L3('小智是 AI，引用可能有誤，請以這裡的經文原文為準。', '小智是 AI，引用可能有误，请以这里的经文原文为准。', 'Xiaozhi is an AI and may misquote; trust the text shown here.'))}</div></details>`;
+}
+function chatVerify(){
+  chatLog.forEach((m, i) => {
+    if (m.role !== 'ai' || m.ok === false || m.cont || m.crisis || m.ver !== undefined || m.text === t().thinking || (chatBusy && i === chatLog.length - 1)) return;
+    m.ver = '';
+    verifyHtml(m.text).then(h => { m.ver = h; const el = document.querySelector('#msg' + i + ' .xz-ver-slot'); if (el) el.innerHTML = h; }).catch(() => {});
+  });
+}
 /* ===== v2.29.0：讀者資料——小智依暱稱、性別、年齡、身分、就職、在學、信仰與目前處境量身回答 ===== */
 const PF_FIELDS = [
   { k:'gender', t:['性別','性别','Gender'], o:[['m','男','男','Male'],['f','女','女','Female']] },
@@ -7076,7 +7145,7 @@ const PROFILE_SYS = () => {
   if (+p.age) L.push((en ? 'Age: ' : '年齡：') + (+p.age));
   ['marital', 'work', 'study', 'faith'].forEach(k => { if (p[k] && G[k] && G[k][p[k]]) L.push((en ? PF_FIELDS.find(f => f.k === k).t[2] : PF_FIELDS.find(f => f.k === k).t[0]) + ' → ' + G[k][p[k]]); });
   if (pfSeeking(p) && p.religion) L.push((en ? 'Religious background: ' : '宗教背景：') + pfOpt(PF_REL, p.religion) + (en ? ' → respect it; find common ground and honest questions first, never attack or mock their tradition, and explain Christian terms simply' : ' → 尊重其背景；先找共同點與他真實的疑問，絕不攻擊或嘲笑他的傳統，基督教用語要簡單解釋'));
-  if (p.note) L.push((en ? 'What they most want help with right now: ' : '目前最想得到幫助的事：') + String(p.note).slice(0, 160));
+  if (p.note) L.push((en ? 'What they most want help with right now: ' : '目前最想得到幫助的事：') + pfClean(p.note).slice(0, 160));
   const tone = PF_TONE[p.tone] ? (en ? PF_TONE[p.tone].en : PF_TONE[p.tone].zh) : '';
   const ctx = (p.ctx !== false) ? pfContext() : '';
   if (!L.length && !tone && !ctx) return '';
@@ -7112,6 +7181,7 @@ function openProfile(after){
       : `${sg(PF_FIELDS[0])}${PF_FIELDS.slice(1).map(sg).join('')}${pfSeeking(p) ? sg(pfRelField()) : ''}
       <div style="margin:12px 0 4px;font-weight:700;font-size:13px">${esc(L3('目前最想得到幫助的事（選填）', '目前最想得到帮助的事（选填）', 'What I most want help with now (optional)'))}</div>
       <textarea id="pfNote" rows="2" maxlength="160" placeholder="${esc(L3('例：工作壓力大、和孩子溝通、想建立靈修習慣…', '例：工作压力大、和孩子沟通、想建立灵修习惯…', 'e.g. work stress, talking with my kids, building a devotional habit…'))}" style="width:100%;box-sizing:border-box;${inp}">${esc(p.note || '')}</textarea>
+      <div class="muted" style="font-size:11.5px;line-height:1.6;margin-top:4px">${esc(L3('請勿填寫電話、住址、身分證或密碼；電子郵件、網址與長串數字會自動移除。', '请勿填写电话、住址、身份证或密码；电子邮件、网址与长串数字会自动移除。', 'Please do not enter phone numbers, addresses, ID or passwords; emails, links and long digit strings are removed automatically.'))}</div>
       <div style="margin:12px 0 4px;font-weight:700;font-size:13px">${esc(L3('語氣偏好', '语气偏好', 'Tone'))}</div>
       <div class="segbtns" id="pfTone" style="justify-content:flex-start">${tone}</div>
       <label style="display:flex;gap:8px;align-items:flex-start;margin-top:14px;font-size:13px;line-height:1.5"><input type="checkbox" id="pfCtx" ${p.ctx !== false ? 'checked' : ''} style="margin-top:3px"><span>${esc(L3('讓小智參考我最近的讀經進度與畫線，接得上我讀的內容', '让小智参考我最近的读经进度与画线，接得上我读的内容', 'Let Xiaozhi see my recent reading and highlights so it can connect to what I read'))}</span></label>`}
@@ -7120,7 +7190,7 @@ function openProfile(after){
     const grab = () => {
       p.nick = $('#pfNick', m).value.trim();
       const a = parseInt($('#pfAge', m).value, 10); p.age = (a >= 3 && a <= 110) ? a : '';
-      const n = $('#pfNote', m); if (n) p.note = n.value.trim();
+      const n = $('#pfNote', m); if (n) p.note = pfClean(n.value);
       const c = $('#pfCtx', m); if (c) p.ctx = c.checked;
     };
     $$('.segbtns[data-f] button', m).forEach(b => b.onclick = () => { grab(); const f = b.parentNode.dataset.f; p[f] = (p[f] === b.dataset.k) ? '' : b.dataset.k; draw(); });
@@ -7275,7 +7345,9 @@ async function sendChat(text){
   text = (text || '').trim(); if (!text || chatBusy) return;
   const inp = $('#chatIn'); if (inp) inp.value = '';
   const srcNow = chatSrc;                     // 這一輪的來源經文
-  chatLog.push({ role:'user', text, src:srcNow }); paintChat();
+  chatLog.push({ role:'user', text, src:srcNow });
+  if (crisisHit(text)) chatLog.push({ role:'ai', text:crisisCard(), ok:true, crisis:true, src:srcNow });
+  paintChat();
   chatBusy = true;
   chatLog.push({ role:'ai', text: t().thinking, src:srcNow }); paintChat();
   const b = RD.book ? BOOK[RD.book] : null;
@@ -7288,10 +7360,11 @@ async function sendChat(text){
        表格在畫面上畫成真的表格、朗讀時會說成人話、分享時換成清單，
        所以放心用表格；重點用 > 標一句，那一句會被抓去做成美圖。 */
     + SYS_FMT()
-    + AUD_SYS() + SKBG_SYS() + PROFILE_SYS() + LEN_SYS()
+    + AUD_SYS() + SKBG_SYS() + PROFILE_SYS() + LEN_SYS() + HONEST_SYS()
     + (b ? (isEP() ? ` (The reader is currently in ${bname(b)} ${RD.ch}.)`
           : isZS() ? `（读者目前在读：${bname(b)} 第 ${RD.ch} 章）`
-                   : `（讀者目前在讀：${bname(b)} 第 ${RD.ch} 章）`) : '');
+                   : `（讀者目前在讀：${bname(b)} 第 ${RD.ch} 章）`) : '')
+    + chapterSys();
   const msgs = chatLog.filter(m => m.text !== t().thinking).slice(-12)
     .map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.text }));
   while (msgs.length && msgs[0].role !== 'user') msgs.shift();    // 第一則一定要是使用者
@@ -8772,10 +8845,15 @@ async function chatCall(sys, msgs){
   let out = '', why = '', stop = '';
   for (let a = 0; a <= CHAT_RETRY.length; a++){
     try{
-      const r = await fetch(API.chat, { method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ system: koSys(sys), messages: msgs }) });
-      if (!r.ok) throw new Error('http ' + r.status);
-      const d = await r.json().catch(() => null);
+      const ac = new AbortController(), tm = setTimeout(() => ac.abort(), 75000);
+      let r, d;
+      try{
+        r = await fetch(API.chat, { method:'POST', headers:{'Content-Type':'application/json'}, signal: ac.signal,
+          body: JSON.stringify({ system: koSys(sys), messages: msgs }) });
+        if (!r.ok) throw new Error('http ' + r.status);
+        d = await r.json().catch(() => null);
+      }catch(e){ throw (e && e.name === 'AbortError') ? new Error(L3('等太久了（逾時）', '等太久了（逾时）', 'timed out')) : e; }
+      finally{ clearTimeout(tm); }
       out = extractReply(d);
       stop = (d && (d.stop_reason || d.finish_reason ||
              (d.choices && d.choices[0] && d.choices[0].finish_reason))) || '';
