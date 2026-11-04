@@ -36,6 +36,7 @@ let fail = 0; const ok = (c, m) => { console.log((c ? '✓ ' : '✗ ') + m); if 
   ok(c.word === true && c.wd === false, '標記為字義提問、字義模式已關閉');
   await pg.waitForTimeout(800);
   ok(sentSys.includes('原文字義') && sentSys.includes('Strong'), '送出的系統提示含字義回答結構與誠實提醒');
+  ok(sentSys.includes('引導禱告') && sentSys.includes('不要替讀者禱告'), '送出的系統提示要求「引導禱告」而不是替讀者禱告');
   /* 從畫線面板進入 */
   await pg.evaluate(() => { location.hash = '#/read/John/3'; }); await pg.waitForSelector('#reader .sent');
   await pg.click('#reader .sent[data-v="16"]'); await pg.waitForTimeout(300); await pg.click('#reader .sent[data-v="16"]'); await pg.waitForSelector('.hlsheet-card [data-a=card]');

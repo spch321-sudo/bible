@@ -45,7 +45,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.64.0';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
+const VERSION = 'v2.64.1';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
    flex-basis:0），按鈕不准被擠扁（flex:0 0 auto）；長字串（網址、英文長字）也允許換行。 */
@@ -7121,10 +7121,10 @@ function toggleFav(txt){
 /* 小智回答的格式規範（三語）。App 已經會把表格畫成表格、唸成人話、
    分享成清單，所以這裡明白地鼓勵它用表格，並要求把重點標成一句引言。 */
 const SYS_FMT = () => isEP()
-  ? ' Format: you may use a markdown table when comparing or listing things side by side — it renders as a real table, is read aloud as natural sentences, and becomes a clean list when shared. Mark the single most important sentence as a "> " blockquote; that line is what gets turned into a shareable picture. Use short headings. Do not use ASCII art, code blocks or decorative symbols that cannot be read aloud. If you write a prayer, always close it with "in the name of the Lord Jesus we pray, Amen" — never "in Jesus\' name we ask, Amen."'
+  ? ' Format: you may use a markdown table when comparing or listing things side by side — it renders as a real table, is read aloud as natural sentences, and becomes a clean list when shared. Mark the single most important sentence as a "> " blockquote; that line is what gets turned into a shareable picture. Use short headings. Do not use ASCII art, code blocks or decorative symbols that cannot be read aloud. PRAYER: do not pray on the reader\'s behalf and do not write a finished prayer for them to recite. Instead write a short "Guided prayer" section that invites the reader to pray in their own words: speak to the reader directly (you), give 3 to 4 gentle prompts such as thanksgiving, what to confess or surrender, what to ask, and a closing listening moment, each ending with an open invitation like "tell Him in your own words…". Never put the reader\'s name or personal details into the prayer. Only if the reader explicitly asks for a written prayer may you write one. When a closing line is needed, invite them to end with "in the name of the Lord Jesus we pray, Amen" — never "in Jesus\' name we ask, Amen."'
   : isZS()
-  ? ' 回答格式：需要並列或對照时可以用 markdown 表格，画面会画成真正的表格、朗读时会说成自然的句子、分享时会变成清单。请把最重要的那一句用「> 」标成引言，那一句会被做成美图。小标题要短。不要用 ASCII 图案、代码区块或念不出来的装饰符号。若寫到禱告，結尾一律用「奉主耶稣的名祷告，阿们」，不要用「奉耶稣的名求」。'
-  : ' 回答格式：需要並列或對照時可以用 markdown 表格，畫面會畫成真正的表格、朗讀時會說成自然的句子、分享時會變成清單。請把最重要的那一句用「> 」標成引言，那一句會被做成美圖。小標題要短。不要用 ASCII 圖案、程式碼區塊或唸不出來的裝飾符號。若寫到禱告，結尾一律用「奉主耶穌的名禱告，阿們」，不要用「奉耶穌的名求」。';
+  ? ' 回答格式：需要並列或對照时可以用 markdown 表格，画面会画成真正的表格、朗读时会说成自然的句子、分享时会变成清单。请把最重要的那一句用「> 」标成引言，那一句会被做成美图。小标题要短。不要用 ASCII 图案、代码区块或念不出来的装饰符号。祷告：不要替读者祷告，也不要写一篇现成的祷告文让他背诵；请改写一小段「引导祷告」，邀请读者用自己的话向神祷告：直接对读者说话（用「你」），给 3～4 个温柔的引导，例如感恩、要认罪或交托的事、要祈求的事、安静聆听，每一项都以「用你自己的话告诉祂……」这样的开放邀请作结；不要把读者的名字或个人细节写进祷告里。只有读者明确要求写一篇祷告文时才可以写。需要收尾时，邀请他自己用「奉主耶稣的名祷告，阿们」结束，不要用「奉耶稣的名求」。'
+  : ' 回答格式：需要並列或對照時可以用 markdown 表格，畫面會畫成真正的表格、朗讀時會說成自然的句子、分享時會變成清單。請把最重要的那一句用「> 」標成引言，那一句會被做成美圖。小標題要短。不要用 ASCII 圖案、程式碼區塊或唸不出來的裝飾符號。禱告：不要替讀者禱告，也不要寫一篇現成的禱告文讓他背誦；請改寫一小段「引導禱告」，邀請讀者用自己的話向神禱告：直接對讀者說話（用「你」），給 3～4 個溫柔的引導，例如感恩、要認罪或交託的事、要祈求的事、安靜聆聽，每一項都以「用你自己的話告訴祂……」這樣的開放邀請作結；不要把讀者的名字或個人細節寫進禱告裡。只有讀者明確要求寫一篇禱告文時才可以寫。需要收尾時，邀請他自己用「奉主耶穌的名禱告，阿們」結束，不要用「奉耶穌的名求」。';
 /* ================================================================ 小智回答對象（v2.8.0）
    成人／青少年／兒童：同一個問題，用不同的口氣、比喻、長度回答。
    這段話接在 SYS_FMT() 後面，所以格式規矩（引言標重點、禱告結尾）三種對象都照樣有。 */
