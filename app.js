@@ -45,7 +45,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.63.0';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
+const VERSION = 'v2.64.0';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
    flex-basis:0），按鈕不准被擠扁（flex:0 0 auto）；長字串（網址、英文長字）也允許換行。 */
@@ -789,6 +789,7 @@ function goSearchHit(r){
   jumpHl = { b:r.b, c:r.c, v:r.v, x:r.x };
   go(`#/read/${r.b}/${r.c}`);
 }
+let wdMode = false;                 // v2.64.0 字義模式：點一句就開「原文字義」面板，不畫線
 let bmMode = false;                 // 書籤模式（只存在當下，不寫進設定）
 function anchorEl(a){
   return a ? $(`#reader .sent[data-c="${a.c}"][data-p="${a.p}"][data-s="${a.s}"]`) : null;
@@ -941,7 +942,7 @@ async function render0(){
     ttsAutoNextPending = false;
     ttsStart();   // 接著唸下一章；ttsUnlock() 裡已經解鎖過，這裡不在點擊手勢裡也還是播得出來
   }
-  if (tab !== 'read'){ bmMode = false; document.documentElement.classList.remove('bmmode'); }
+  if (tab !== 'read'){ wdMode = false; bmMode = false; document.documentElement.classList.remove('bmmode'); }
   if (tab !== 'studio'){ stopSelfie(); if (recMode === 's') recMode = 'c'; }
   addNavButtons(v, tab);
   if (tab !== 'read' && tab !== 'studio') scrollToTop();
@@ -2102,6 +2103,7 @@ async function viewReader(v, bookId, ch){
       <button class="chtb-btn" id="rdPrev" title="${esc(L3('上一章', '上一章', 'Previous chapter'))}" aria-label="${esc(L3('上一章', '上一章', 'Previous chapter'))}">‹</button>
       <button class="chtb-btn" id="rdNext" title="${esc(L3('下一章', '下一章', 'Next chapter'))}" aria-label="${esc(L3('下一章', '下一章', 'Next chapter'))}">›</button>
       <div class="chtb-spacer"></div>
+      <button class="chtb-btn ${wdMode ? 'on' : ''}" id="rdWd" title="${esc(L3('原文字義：點經文的字、詞、句問小智', '原文字义：点经文的字、词、句问小智', 'Original-language meaning: tap a word or sentence and ask Xiaozhi'))}">🔍</button>
       <button class="chtb-btn ${bmMode ? 'on' : ''}" id="rdBm" title="${esc(L.bm)}">🔖</button>
       <button class="chtb-btn ${(state.flow || !state.shCh || !state.shV) ? 'on' : ''}" id="rdMode" title="${esc(L.pure)}">${esc(L3('淨', '净', '¶'))}</button>
       <button class="chtb-btn ${state.par ? 'on' : ''}" id="rdPar" title="${esc(L3('並讀譯本', '并读译本', 'Parallel version'))}">🌐</button>
@@ -2114,6 +2116,7 @@ async function viewReader(v, bookId, ch){
       </span>
     </div>
     ${bmMode ? `<div class="bm-hint">${esc(L.bmHint)}</div>` : ''}
+    ${wdMode ? `<div class="bm-hint">${esc(L3('字義模式：點任何一句，選要查的字、詞或整句，問小智原文字義與應用。', '字义模式：点任何一句，选要查的字、词或整句，问小智原文字义与应用。', 'Word-study mode: tap any sentence, choose a word or the whole sentence, and ask Xiaozhi.'))}</div>` : ''}
     <div class="chhead">${head}<div class="rule"></div></div>
     ${parAll ? `<div class="par-hd">🌐 ${esc(L3('並讀', '并读', 'Parallel'))}：${esc(langName(state.par))} <button id="parChange">${esc(L3('更換', '更换', 'Change'))}</button></div>` : ''}
     <div class="reader" id="reader">${body}</div>
@@ -2126,8 +2129,15 @@ async function viewReader(v, bookId, ch){
   { const fp = $('#fPlay'); if (fp) fp.onclick = () => { plSrc = 'cur'; PL = null; go('#/play'); }; }
 
   $('#rdToc').onclick  = () => go('#/books/' + bookId);
+  $('#rdWd').onclick   = () => {
+    wdMode = !wdMode; if (wdMode) bmMode = false;
+    applyChrome();
+    toast(wdMode ? L3('字義模式開啟：點一句開始查', '字义模式开启：点一句开始查', 'Word-study mode on: tap a sentence') : L3('字義模式結束', '字义模式结束', 'Word-study mode off'));
+    const y = window.scrollY;
+    render().then(() => window.scrollTo(0, y));
+  };
   $('#rdBm').onclick   = () => {
-    bmMode = !bmMode;
+    bmMode = !bmMode; if (bmMode) wdMode = false;
     applyChrome();
     toast(bmMode ? t().bmModeOn : t().bmModeOff);
     const y = window.scrollY;
@@ -2361,10 +2371,85 @@ function sentGroups(els){
   if (cur.length) gs.push(cur);
   return gs;
 }
+/* ================================================================ v2.64.0 原文字義
+   點經文的字、詞、句問小智：小智解釋原文（希伯來文／希臘文）字義，再帶到 321 的應用。
+   面板上把這一節拆成一個個字（中文）或單字（外文）：點一下選一個、再點另一個就選到那裡為止。
+   App 本身沒有原文辭典資料，內容是小智依 AI 的知識回答，所以請小智不確定就直說，面板也提醒讀者對照原文工具書。 */
+const wdIsCJK = x => /[\u3400-\u9fff]/.test(x);
+function wdTokens(x){
+  if (wdIsCJK(x)) return Array.from(x).map(c => ({ t:c, w:/[\s，。、；：！？「」『』（）〔〕《》,.;:!?"“”‘’()\[\]]/.test(c) }));   /* 標點不能點 */
+  return x.split(/(\s+)/).filter(z => z !== '').map(z => ({ t:z, w:/^\s+$/.test(z) }));
+}
+function openWordSheet(el, cno){
+  const L = t();
+  const vno = +el.dataset.v || 0;
+  const sent = (el.textContent || '').trim();
+  let verse = sent;
+  if (vno){
+    const parts = $$(`#reader .sent[data-c="${cno}"][data-v="${vno}"]`).map(e => (e.textContent || '').trim()).filter(Boolean);
+    if (parts.length) verse = parts.join(isEN() ? ' ' : '');
+  }
+  const bk = RD.book ? BOOK[RD.book] : null;
+  const ref = (bk ? bname(bk) + ' ' : '') + cno + (vno ? ':' + vno : '');
+  const toks = wdTokens(verse);
+  let a = -1, b = -1;
+  const mask = document.createElement('div'); mask.className = 'hlsheet-mask';
+  mask.innerHTML = `<div class="hlsheet-card">
+    <div class="hlsheet-title">🔍 ${esc(L3('原文字義', '原文字义', 'Original-language meaning'))}　<span class="muted" style="font-size:13px;font-weight:400">${esc(ref)}</span></div>
+    <div class="hl-hint" style="margin:0 0 8px">${esc(L3('點一個字開始，再點另一個字就選到那裡；也可以直接查整句、整節。', '点一个字开始，再点另一个字就选到那里；也可以直接查整句、整节。', 'Tap a word to start, tap another to extend the selection — or look up the whole sentence or verse.'))}</div>
+    <div class="wd-verse" id="wdV">${toks.map((k, i) => k.w ? esc(k.t) : `<span class="wdc" data-i="${i}">${esc(k.t)}</span>`).join('')}</div>
+    <div class="wd-sel" id="wdSel">${esc(L3('尚未選取', '尚未选取', 'Nothing selected'))}</div>
+    <div class="hlsheet-acts">
+      <button class="btn primary" data-a="sel" disabled>${esc(L3('查選取的字詞', '查选取的字词', 'Look up selection'))}</button>
+      <button class="btn" data-a="sent">${esc(L3('查這一句', '查这一句', 'This sentence'))}</button>
+      <button class="btn" data-a="verse">${esc(L3('查整節', '查整节', 'Whole verse'))}</button>
+    </div>
+    <div class="hlsheet-acts2"><button class="btn" data-a="close">${esc(L.close)}</button></div>
+    <div class="hl-hint" style="margin-top:10px">${esc(L3('小智會說明原文字義並帶到應用；原文字義請再對照可靠的原文工具書。', '小智会说明原文字义并带到应用；原文字义请再对照可靠的原文工具书。', 'Xiaozhi explains the original wording and applies it; please verify against a reliable lexicon.'))}</div>
+  </div>`;
+  document.body.appendChild(mask);
+  mask.onclick = e => { if (e.target === mask) mask.remove(); };
+  const selText = () => {
+    if (a < 0) return '';
+    const lo = Math.min(a, b), hi = Math.max(a, b);
+    return toks.slice(lo, hi + 1).map(k => k.t).join('').replace(/^[\s，。、；：！？「」『』（）〔〕《》,.;:!?"“”‘’()\[\]]+|[\s，。、；：！？「」『』（）〔〕《》,.;:!?"“”‘’()\[\]]+$/g, '');
+  };
+  const paint = () => {
+    const lo = a < 0 ? 1e9 : Math.min(a, b), hi = a < 0 ? -1 : Math.max(a, b);
+    $$('.wdc', mask).forEach(c => c.classList.toggle('on', +c.dataset.i >= lo && +c.dataset.i <= hi));
+    const txt = selText();
+    $('#wdSel', mask).textContent = txt ? '「' + txt + '」' : L3('尚未選取', '尚未选取', 'Nothing selected');
+    $('[data-a=sel]', mask).disabled = !txt;
+  };
+  $$('.wdc', mask).forEach(c => c.onclick = () => {
+    const i = +c.dataset.i;
+    if (a < 0 || a !== b){ a = b = i; } else { b = i; }
+    paint();
+  });
+  const ask = (kind, target) => {
+    mask.remove();
+    wdMode = false; applyChrome();
+    chatSrc = { t:verse, b:RD.book, ch:cno, v:vno, v2:0, word:true };
+    const kn = { sel:L3('字詞', '字词', 'word/phrase'), sent:L3('整句', '整句', 'sentence'), verse:L3('整節', '整节', 'verse') }[kind];
+    chatPending = L3(
+      `請查考原文字義並帶我應用。經文：${ref}「${verse}」。我要查的是（${kn}）：「${target}」。`,
+      `请查考原文字义并带我应用。经文：${ref}「${verse}」。我要查的是（${kn}）：「${target}」。`,
+      `Please explain the original-language meaning and help me apply it. Passage: ${ref} "${verse}". I want to study (${kn}): "${target}".`);
+    go('#/companion');
+  };
+  $$('[data-a]', mask).forEach(btn => btn.onclick = () => {
+    const x = btn.dataset.a;
+    if (x === 'close') mask.remove();
+    else if (x === 'sel'){ const tx = selText(); if (tx) ask('sel', tx); }
+    else if (x === 'sent') ask('sent', sent);
+    else if (x === 'verse') ask('verse', verse);
+  });
+}
 function onSentTap(el){
   const cno = +el.dataset.c || RD.ch;
   crPoint(el);
   if (bmMode){ toggleBm(el, cno); return; }
+  if (wdMode){ openWordSheet(el, cno); return; }
   const k = hlKey(RD.book, cno, el.dataset.p, el.dataset.s);
   if (!user.hl[k] && el.dataset.op == null){
     createHl(el, cno);
@@ -2529,6 +2614,7 @@ function openHlSheet(el){
     </div>
     <div class="hlsheet-acts2">
       <button class="btn gold" data-a="card">🖼 ${esc(L.card)}</button>
+      <button class="btn" data-a="word">🔍 ${esc(L3('原文字義', '原文字义', 'Word study'))}</button>
       <button class="btn danger" data-a="del">${esc(L.del)}</button>
       <button class="btn" data-a="close">${esc(L.close)}</button>
     </div></div>`;
@@ -2586,6 +2672,10 @@ function openHlSheet(el){
       chatPending = isRU() ? `Помоги мне поразмышлять над этим стихом: «${h.t}»` : isIT() ? `Aiutami a meditare su questo versetto: «${h.t}»` : isDE() ? `Hilf mir, über diesen Vers nachzudenken: „${h.t}“` : isFR() ? `Aide-moi à méditer ce verset : « ${h.t} »` : isES() ? `Ayúdame a meditar este versículo: “${h.t}”` : isCB() ? `Tabangi ko sa pagpamalandong niini nga bersikulo: “${h.t}”` : isLO() ? `ກະລຸນາຊ່ວຍຂ້ອຍໄຕ່ຕອງຂໍ້ພຣະຄຳພີນີ້: “${h.t}”` : isNE() ? `यो पदमा मनन गर्न मलाई सहायता गर्नुहोस्: “${h.t}”` : isHI() ? `इस पद पर मनन करने में मेरी सहायता कीजिए: “${h.t}”` : isAR() ? `ساعدني في التأمل في هذه الآية: «${h.t}»` : isHE() ? `עזור לי להתבונן בפסוק הזה: «${h.t}»` : isBN() ? `এই পদটি নিয়ে ধ্যান করতে আমাকে সাহায্য করুন: “${h.t}”` : isUK() ? `Допоможи мені поміркувати над цим віршем: «${h.t}»` : isAM() ? `ይህን ቁጥር እንዳሰላስል እርዳኝ፦ “${h.t}”` : isTA() ? `இந்த வசனத்தைத் தியானிக்க எனக்கு உதவுங்கள்: “${h.t}”` : isSW() ? `Nisaidie kutafakari mstari huu: “${h.t}”` : isFA() ? `به من کمک کنید در این آیه تأمل کنم: «${h.t}»` : isPT() ? `Ajude-me a meditar neste versículo: “${h.t}”` : isEL() ? `Βοήθησέ με να στοχαστώ αυτόν τον στίχο: «${h.t}»` : isMS() ? `Tolong bantu saya merenungkan ayat ini: “${h.t}”` : isTH() ? `ช่วยฉันใคร่ครวญข้อพระคัมภีร์นี้หน่อย: “${h.t}”` : isVI() ? `Hãy giúp tôi suy ngẫm câu Kinh Thánh này: “${h.t}”` : isMY() ? `ဤကျမ်းချက်ကို ဆင်ခြင်သုံးသပ်နိုင်ရန် ကူညီပါ — “${h.t}”` : isTL() ? `Tulungan mo akong magnilay sa talatang ito: “${h.t}”` : isID() ? `Tolong bantu saya merenungkan bagian ini: “${h.t}”` : isJA() ? `この箇所を黙想できるよう助けてください：「${h.t}」` : isKO() ? `이 말씀으로 묵상하도록 도와주세요: “${h.t}”` : isEN() ? `Help me meditate on this verse: “${h.t}”`
                 : `${isZS() ? '请就这句经文帮助我默想：' : '請就這句經文幫助我默想：'}「${h.t}」`;
       go('#/companion');
+    }
+    else if (a === 'word'){
+      h.c = color; h.n = ta.value.trim(); saveUser(); mask.remove();
+      openWordSheet(el, cno);
     }
     else if (a === 'ttsFrom'){
       h.c = color; h.n = ta.value.trim(); saveUser(); mask.remove();
@@ -7157,6 +7247,12 @@ const HONEST_SYS = () => isEP()
   : isZS()
   ? ' 原则：（1）诚实：绝不编造经文、引言、原文字义或历史；不确定就直说「我不确定」，并请读者回到经文。引用经文只用下方提供的这一章或你确定的经文，并一定写出出处（书名 章:节）。（2）遇到基督徒之间有不同看法的议题，简短公平地说明，不把单一立场说成唯一答案。（3）你是 AI 陪读，不是牧者、医生或律师；涉及医疗、法律、受虐或严重情绪的事，鼓励读者找信任的牧者、专业人员或当地紧急服务。（4）若读者提到自杀、自伤、受虐或立即的危险：先用平静关怀的语气回应，不说教、不长篇引经，鼓励他现在就联系当地紧急服务或求助热线，以及身边可信任的人，并温柔地陪着他。'
   : ' 原則：（1）誠實：絕不編造經文、引言、原文字義或歷史；不確定就直說「我不確定」，並請讀者回到經文。引用經文只用下方提供的這一章或你確定的經文，並一定寫出出處（書名 章:節）。（2）遇到基督徒之間有不同看法的議題，簡短公平地說明，不把單一立場說成唯一答案。（3）你是 AI 陪讀，不是牧者、醫生或律師；涉及醫療、法律、受虐或嚴重情緒的事，鼓勵讀者找信任的牧者、專業人員或當地緊急服務。（4）若讀者提到自殺、自傷、受虐或立即的危險：先用平靜關懷的語氣回應，不說教、不長篇引經，鼓勵他現在就聯絡當地緊急服務或求助專線，以及身邊可信任的人，並溫柔地陪著他。';
+/* v2.64.0 原文字義：從「原文字義」面板問的題目，要求固定的回答結構，並要小智誠實標明把握程度 */
+const WORD_SYS = () => isEP()
+  ? ' WORD STUDY: when the reader asks about the original-language meaning of a word, phrase or sentence, answer in this order with short headings: (1) Original — the Hebrew/Greek word(s) behind it, transliteration and basic meaning; if the Chinese union-version wording covers several original words, say so and explain each; (2) Usage here — part of speech or root idea and how it works in this verse and context; (3) Elsewhere — one or two other Bible uses ONLY if you are certain, with references; (4) Application — through the 3-2-1 lens (self-emptying, letting Jesus be King, led by the Spirit) with one small step for today. Be honest: label anything you are not sure of as uncertain, never invent Strong numbers or meanings, and close with one line reminding the reader to verify with a reliable lexicon (Strong\'s, BDAG, HALOT). Keep it clear and not too long.'
+  : isZS()
+  ? ' 原文字义：当读者问某个字、词或句的原文字义时，用简短小标题依序回答：①原文——背后的希伯来文／希腊文、拼音与基本字义；若和合本这个词对应不只一个原文字，请分别说明；②在这节的用法——词性或字根意思，以及放在这节上下文怎么理解；③圣经其他用法——只写你确定的一两处，附出处；④应用——从321角度（无己、让耶稣作王、被圣灵引导）带出，并给一个今天可以操练的小步骤。务必诚实：不确定的就标明不确定，绝不编造 Strong 编号或字义；最后用一行提醒读者对照可靠的原文工具书（如 Strong\'s、BDAG、HALOT）。篇幅精练。'
+  : ' 原文字義：當讀者問某個字、詞或句的原文字義時，用簡短小標題依序回答：①原文——背後的希伯來文／希臘文、拼音與基本字義；若和合本這個詞對應不只一個原文字，請分別說明；②在這節的用法——詞性或字根意思，以及放在這節上下文怎麼理解；③聖經其他用法——只寫你確定的一兩處，附出處；④應用——從321角度（無己、讓耶穌作王、被聖靈引導）帶出，並給一個今天可以操練的小步驟。務必誠實：不確定的就標明不確定，絕不編造 Strong 編號或字義；最後用一行提醒讀者對照可靠的原文工具書（如 Strong\'s、BDAG、HALOT）。篇幅精練。';
 /* 目前這章的經文原文（上限 3000 字），讓小智解經時照著原文，不憑記憶 */
 function chapterSys(){
   try{
@@ -7570,6 +7666,7 @@ async function sendChat(text){
        所以放心用表格；重點用 > 標一句，那一句會被抓去做成美圖。 */
     + SYS_FMT()
     + AUD_SYS() + SKBG_SYS() + PROFILE_SYS() + LEN_SYS() + HONEST_SYS()
+    + (srcNow && srcNow.word ? WORD_SYS() : '')
     + (b ? (isEP() ? ` (The reader is currently in ${bname(b)} ${RD.ch}.)`
           : isZS() ? `（读者目前在读：${bname(b)} 第 ${RD.ch} 章）`
                    : `（讀者目前在讀：${bname(b)} 第 ${RD.ch} 章）`) : '')

@@ -325,6 +325,10 @@ header.topbar,.chtoolbar{transition:transform .22s ease}
   position:sticky; top:var(--header-h, 56px); z-index:15; background:var(--bg); padding:8px 0;}
 .chtb-btn{display:inline-flex; align-items:center; justify-content:center; min-width:36px; height:36px; padding:0 10px; border:1px solid var(--border-strong); background:var(--surface); color:var(--ink); border-radius:9px; font-size:15px; text-decoration:none; cursor:pointer;}
 .chtb-btn:active{opacity:.75;}
+.wd-verse{font-family:var(--f-serif); font-size:21px; line-height:2.1; padding:10px 12px; background:var(--surface-alt); border-radius:12px; margin-bottom:8px; word-break:break-word}
+.wd-verse .wdc{cursor:pointer; border-radius:5px; padding:2px 0; margin:0 .5px}
+.wd-verse .wdc.on{background:var(--gold-soft,#f4e6b8); box-shadow:0 0 0 1.5px var(--gold,#c9a227)}
+.wd-sel{min-height:22px; font-weight:700; margin:2px 0 10px; color:var(--accent)}
 .chtb-btn[data-state="loading"]{opacity:.6;}
 .chtb-btn[data-state="playing"]{background:var(--accent); border-color:var(--accent); color:#fff;}
 .chtb-btn[data-state="paused"]{background:var(--gold); border-color:var(--gold); color:#fff;}
@@ -707,7 +711,7 @@ select.cardinput{appearance:none; -webkit-appearance:none;
 
 <script>
 /* 程式檔帶上更新時間戳（?u=…）載入：更新後重整的那一次一定抓到最新的 app.js，不會被瀏覽器或 CDN 的舊快取擋住 */
-(function(){var m=location.search.match(/[?&]u=(\d+)/);var V='2.63.0',U=(m?'&u='+m[1]:'');
+(function(){var m=location.search.match(/[?&]u=(\d+)/);var V='2.64.0',U=(m?'&u='+m[1]:'');
 /* v2.56.0：只載入「當前語言」的語言包（其餘在切換語言時才下載），首次載入少約 1MB */
 var P='ko ja id tl my vi th ms ar he el pt fa sw ta am uk bn hi ne ceb es fr de it ru'.split(' '),PF='ko ja id tl my vi th ms ar hi ne ceb es fr de it ru'.split(' '),l='zh';
 try{var raw=localStorage.getItem('ib_state');

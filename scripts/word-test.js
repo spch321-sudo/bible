@@ -1,0 +1,47 @@
+/* 原文字義測試（v2.64.0）：字義模式、選字面板、帶進小智的提問與提示詞、從畫線面板進入。 */
+const { chromium } = require('playwright'); const http = require('http'), fs = require('fs'), path = require('path');
+const root = path.join(__dirname, '..');
+const types = { '.html':'text/html', '.js':'text/javascript', '.json':'application/json', '.png':'image/png' };
+const srv = http.createServer((q, r) => { const p = path.join(root, decodeURIComponent(q.url.split('?')[0]).replace(/\/$/, '/index.html')); if (!fs.existsSync(p) || fs.statSync(p).isDirectory()){ r.writeHead(404); return r.end(); } r.writeHead(200, { 'content-type':types[path.extname(p)] || 'application/octet-stream' }); fs.createReadStream(p).pipe(r); });
+let fail = 0; const ok = (c, m) => { console.log((c ? '✓ ' : '✗ ') + m); if (!c) fail++; };
+(async () => {
+  await new Promise(o => srv.listen(0, o));
+  const b = await chromium.launch({ executablePath: process.env.CHROME || undefined, args:['--no-sandbox'] });
+  const ctx = await b.newContext({ viewport:{ width:390, height:800 }, serviceWorkers:'block' });
+  const pg = await ctx.newPage(); const errs = []; pg.on('pageerror', e => errs.push(e.message));
+  let sentSys = '', sentMsg = '';
+  await pg.addInitScript("localStorage.setItem('ib_state',JSON.stringify({lang:'zh'}))");
+  const base = 'http://localhost:' + srv.address().port + '/index.html';
+  await pg.goto(base); await pg.waitForSelector('nav.tabbar');
+  const apiUrl = await pg.evaluate(() => API.chat);
+  await pg.route(apiUrl, async r => { try{ const j = JSON.parse(r.request().postData() || '{}'); if (!sentSys) sentSys = String(j.system || ''); }catch(e){} r.abort(); });
+  await pg.evaluate(() => { location.hash = '#/read/John/3'; }); await pg.waitForSelector('#reader .sent');
+  ok(await pg.$('#rdWd') != null, '工具列有字義按鈕');
+  await pg.click('#rdWd'); await pg.waitForSelector('.bm-hint');
+  ok(true, '字義模式開啟並出現提示');
+  const nHl0 = await pg.evaluate(() => Object.keys(user.hl).length);
+  await pg.click('#reader .sent[data-v="16"]'); await pg.waitForSelector('.wd-verse');
+  ok(await pg.evaluate(() => Object.keys(user.hl).length) === nHl0, '字義模式點句不會畫線');
+  const n = await pg.evaluate(() => document.querySelectorAll('.wdc').length); ok(n > 20, '第 16 節拆成可點的字（' + n + '）');
+  ok(await pg.evaluate(() => document.querySelector('[data-a=sel]').disabled), '未選取時「查選取」不能按');
+  const txt = await pg.evaluate(() => { const c = [...document.querySelectorAll('.wdc')]; return c.slice(0, 3).map(x => x.textContent).join(''); });
+  await pg.evaluate(() => { const c = document.querySelectorAll('.wdc'); c[0].click(); c[2].click(); });
+  ok(await pg.evaluate(() => document.querySelectorAll('.wdc.on').length) === 3, '點兩個字選到中間全部');
+  ok((await pg.textContent('#wdSel')).includes(txt), '顯示選取內容 ' + txt);
+  await pg.evaluate(() => document.querySelector('[data-a=sel]').click());
+  await pg.waitForFunction(() => location.hash.startsWith('#/companion'));
+  await pg.waitForFunction(() => chatLog.length >= 1);
+  const c = await pg.evaluate(() => ({ q:chatLog[0].text, word:chatSrc && chatSrc.word, wd:wdMode }));
+  ok(c.q.includes('原文字義') && c.q.includes(txt) && c.q.includes('約翰福音'), '帶進小智的提問含出處與選取字詞');
+  ok(c.word === true && c.wd === false, '標記為字義提問、字義模式已關閉');
+  await pg.waitForTimeout(800);
+  ok(sentSys.includes('原文字義') && sentSys.includes('Strong'), '送出的系統提示含字義回答結構與誠實提醒');
+  /* 從畫線面板進入 */
+  await pg.evaluate(() => { location.hash = '#/read/John/3'; }); await pg.waitForSelector('#reader .sent');
+  await pg.click('#reader .sent[data-v="16"]'); await pg.waitForTimeout(300); await pg.click('#reader .sent[data-v="16"]'); await pg.waitForSelector('.hlsheet-card [data-a=card]');
+  ok(await pg.$('.hlsheet-card [data-a=word]') != null, '畫線面板有「原文字義」');
+  await pg.click('.hlsheet-card [data-a=word]'); await pg.waitForSelector('.wd-verse');
+  ok(true, '從畫線面板可進入字義面板');
+  ok(errs.length === 0, '沒有頁面錯誤 ' + errs.join('|'));
+  await b.close(); srv.close(); if (fail) process.exit(1); console.log('word-test OK');
+})();
