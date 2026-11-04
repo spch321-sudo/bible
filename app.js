@@ -45,7 +45,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.58.2';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
+const VERSION = 'v2.58.3';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
    flex-basis:0），按鈕不准被擠扁（flex:0 0 auto）；長字串（網址、英文長字）也允許換行。 */
@@ -9769,6 +9769,16 @@ async function boot(){
       swReg = await navigator.serviceWorker.register('sw.js', { updateViaCache:'none' });
       watchForUpdate(swReg);
       navigator.serviceWorker.addEventListener('message', e => { if (e.data && e.data.t === 'sw-updated') checkVersion(); });
+      /* v2.58.3：閒置時把當前語言的整本經文先存進快取，之後完全離線也能讀（省流量模式、2G 不做；lo/ms 沿用 en/id 的經文檔） */
+      navigator.serviceWorker.ready.then(reg => {
+        const go = () => { try{
+          const c = navigator.connection || {};
+          if (c.saveData || /2g/.test(c.effectiveType || '')) return;
+          const L = state.lang === 'lo' ? 'en' : (state.lang === 'ms' ? 'id' : state.lang);
+          if (reg.active) reg.active.postMessage({ t:'prefetch', lang:L });
+        }catch(_){} };
+        if (window.requestIdleCallback) requestIdleCallback(go, { timeout:20000 }); else setTimeout(go, 8000);
+      }).catch(() => {});
       navigator.serviceWorker.addEventListener('controllerchange', () => { if (UPD.target && !updBusy()) reloadFresh(); });
     }catch(e){}
   }

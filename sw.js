@@ -1,8 +1,8 @@
 /* 321互動聖經 — Service Worker
    每次改動內容或程式，務必把 VERSION 往上加（也要同步 app.js 的 VERSION 與 version.json），
    否則已安裝的使用者不會看到更新。 */
-const VERSION = 'ib-v2.58.2';
-const VER = 'v2.58.2';
+const VERSION = 'ib-v2.58.3';
+const VER = 'v2.58.3';
 /* v2.56.0：語言包不再全部預先快取，改為用到才下載並快取（見下方 fetch 處理） */
 const SHELL = [
   './', './index.html', './app.js', './xzm.js', './qrcode.js', './manifest.json', './toc.json', './plans.json', './cover.jpg', './hero.jpg', './wxpay.jpg',
@@ -31,7 +31,10 @@ self.addEventListener('activate', e => {
   );
 });
 
-self.addEventListener('message', e => { if (e.data === 'skip' || e.data === 'skipWaiting') self.skipWaiting(); });
+self.addEventListener('message', e => {
+  if (e.data === 'skip' || e.data === 'skipWaiting') self.skipWaiting();
+  else if (e.data && e.data.t === 'prefetch' && /^[a-z]{2,3}$/.test(e.data.lang || '')) e.waitUntil(prefetchLang(e.data.lang));
+});
 
 self.addEventListener('fetch', e => {
   const req = e.request;
@@ -65,19 +68,58 @@ self.addEventListener('fetch', e => {
   }
 
   /* 其餘（網頁、程式、設定）：network-first 並用 cache:'no-cache' 重新驗證，離線才回落到快取；
-     導覽請求的快取鍵固定為 ./index.html，帶 ?u= 的更新網址也不會塞滿快取 */
+     導覽請求的快取鍵固定為 ./index.html，帶 ?u= 的更新網址也不會塞滿快取。
+     v2.58.3：網路太慢（超過 SHELL_WAIT（1 秒）還沒回應）時，若快取裡有「完全相同」的那一份，就先用快取開起來，
+     網路那一份照樣繼續下載並更新快取；弱網路也不必乾等。只有導覽請求才可以退回 index.html，
+     程式檔絕不拿 index.html 頂替（否則會把網頁當成 JS 執行而整個壞掉）。 */
   const nav = req.mode === 'navigate';
   const key = nav ? './index.html' : req;
-  e.respondWith(
-    fetch(req, { cache:'no-cache' }).then(res => {
-      if (res.ok){
-        const copy = res.clone();
-        caches.open(VERSION).then(c => c.put(key, copy)).catch(() => {});
-      }
-      return res;
-    }).catch(() => caches.match(key).then(hit => hit || caches.match('./index.html')))
-  );
+  e.respondWith(shellFetch(req, key, nav));
 });
+
+const SHELL_WAIT = 1000;
+async function shellFetch(req, key, nav){
+  const net = fetch(req, { cache:'no-cache' }).then(res => {
+    if (res.ok){
+      const copy = res.clone();
+      caches.open(VERSION).then(c => c.put(key, copy)).catch(() => {});
+    }
+    return res;
+  });
+  /* 預先快取的程式檔存的是不帶 ?v= 的網址，所以程式檔比對時忽略查詢字串（快取本身以版本命名，不會拿到舊版） */
+  const exact = () => caches.match(key, nav ? undefined : { ignoreSearch:true });
+  const anyHit = () => exact().then(hit => hit || (nav ? caches.match('./index.html') : undefined));
+  try{
+    const first = await Promise.race([net, new Promise(ok => setTimeout(() => ok(null), SHELL_WAIT))]);
+    if (first) return first;
+    const hit = await exact();
+    if (hit){ net.catch(() => {}); return hit; }   // 慢：先用快取，網路那份繼續下載更新
+    return await net;                                // 快取沒有：只能等網路
+  }catch(err){
+    const hit = await anyHit();                      // 離線／網路錯誤：照舊退回快取
+    if (hit) return hit;
+    throw err;
+  }
+}
+
+/* v2.58.3：把「當前語言」的整本經文在閒置時先存進快取，之後完全離線也能讀。
+   由頁面在空閒時送來 {t:'prefetch', lang}；已快取的跳過，單次下載量設上限，失敗就算了（讀到時仍會即時下載）。 */
+const PREFETCH_BUDGET = 4 * 1024 * 1024;
+async function prefetchLang(lang){
+  try{
+    const c = await caches.open(VERSION);
+    let used = 0;
+    for (const s of ['nt', 'law', 'hist', 'poet', 'proph']){
+      const u = './bible.' + lang + '.' + s + '.json';
+      if (await c.match(u)) continue;
+      if (used > PREFETCH_BUDGET) break;
+      const r = await fetch(u);
+      if (!r.ok) continue;
+      used += Number(r.headers.get('content-length')) || 600 * 1024;
+      await c.put(u, r);
+    }
+  }catch(err){ /* 沒存成就算了，讀到的時候照常下載 */ }
+}
 
 /* 音樂卡片做好的通知：點一下回到 App */
 self.addEventListener('notificationclick', e => {
