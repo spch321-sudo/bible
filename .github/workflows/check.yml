@@ -26,3 +26,5 @@ jobs:
         run: node scripts/tts-test.js
       - name: 並讀與離線下載測試
         run: node scripts/par-test.js
+      - name: 美圖版面與對比測試
+        run: node scripts/card-test.js

@@ -45,7 +45,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.61.0';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
+const VERSION = 'v2.62.0';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
    flex-basis:0），按鈕不准被擠扁（flex:0 0 auto）；長字串（網址、英文長字）也允許換行。 */
@@ -3251,19 +3251,19 @@ function openHymns(){
    不支援就退回下載，讓使用者自己從相簿分享。 */
 const CARD_TPL = {
   navy:  { n:['深藍聖夜','深蓝圣夜','Midnight Navy'], bg:['#123F92','#0D3988','#071A42'], glow:'rgba(212,166,91,.30)',
-           ink:'#F2ECDD', accent:'#F7EFDC', gold:'#D4A65B', sub:'#BBA98A', frame:'rgba(212,166,91,.42)' },
+           ink:'#F2ECDD', accent:'#F7EFDC', gold:'#D4A65B', sub:'#BFAE91', frame:'rgba(212,166,91,.42)' },
   paper: { n:['素樸信箋','素朴信笺','Plain Letter'], bg:['#FBF8F1','#F4EFE3','#EDE6D6'], glow:'rgba(212,166,91,.45)',
-           ink:'#3A3122', accent:'#23211C', gold:'#A9762F', sub:'#8A7C63', frame:'rgba(169,118,47,.34)' },
+           ink:'#3A3122', accent:'#23211C', gold:'#A9762F', sub:'#6C614D', frame:'rgba(169,118,47,.34)' },
   dawn:  { n:['晨曦盼望','晨曦盼望','Dawn of Hope'], bg:['#FFF6EC','#FBE9D2','#F6D9B8'], glow:'rgba(255,214,150,.6)',
-           ink:'#3A2A1A', accent:'#8A4B16', gold:'#C97A22', sub:'#8A6A4A', frame:'rgba(181,101,29,.30)' },
+           ink:'#3A2A1A', accent:'#8A4B16', gold:'#C97A22', sub:'#71563C', frame:'rgba(181,101,29,.30)' },
   grace: { n:['青草安歇','青草安歇','Green Pastures'], bg:['#F2F7F1','#E4EFE6','#D6E7DA'], glow:'rgba(160,200,170,.5)',
-           ink:'#1C2E26', accent:'#255943', gold:'#3C8A64', sub:'#5C7A6A', frame:'rgba(46,106,80,.28)' },
+           ink:'#1C2E26', accent:'#255943', gold:'#3C8A64', sub:'#4B6356', frame:'rgba(46,106,80,.28)' },
   rose:  { n:['溫柔玫瑰','温柔玫瑰','Gentle Rose'], bg:['#FCF5F3','#F6E7E3','#EFD8D2'], glow:'rgba(220,160,150,.45)',
-           ink:'#33221E', accent:'#8A3D2E', gold:'#B36A54', sub:'#8A6A62', frame:'rgba(154,74,58,.28)' },
+           ink:'#33221E', accent:'#8A3D2E', gold:'#B36A54', sub:'#715650', frame:'rgba(154,74,58,.28)' },
   sky:   { n:['平安晴空','平安晴空','Peaceful Sky'], bg:['#F1F7FB','#DFEEF6','#CFE4F0'], glow:'rgba(150,200,230,.5)',
-           ink:'#1B2A33', accent:'#1E5270', gold:'#2E7DA0', sub:'#5A7684', frame:'rgba(37,96,128,.28)' },
+           ink:'#1B2A33', accent:'#1E5270', gold:'#2E7DA0', sub:'#49606C', frame:'rgba(37,96,128,.28)' },
   linen: { n:['素雅棉麻','素雅棉麻','Soft Linen'], bg:['#F7F4EE','#EFEAE0','#E6DFD2'], glow:'rgba(200,190,170,.4)',
-           ink:'#2A2620', accent:'#4A4234', gold:'#8A7A5A', sub:'#7A7263', frame:'rgba(90,80,64,.26)' },
+           ink:'#2A2620', accent:'#4A4234', gold:'#8A7A5A', sub:'#635D51', frame:'rgba(90,80,64,.26)' },
   night: { n:['深夜星光','深夜星光','Starry Night'], bg:['#101E1B','#16302A','#0E2420'], glow:'rgba(232,201,122,.26)',
            ink:'#EDEAE0', accent:'#E8C97A', gold:'#E8C97A', sub:'#9FB0AA', frame:'rgba(232,201,122,.34)' },
   plain: { n:['純白簡潔','纯白简洁','Pure White'], bg:['#FFFFFF','#FFFFFF','#FFFFFF'], glow:'rgba(0,0,0,0)',
@@ -3281,7 +3281,7 @@ const CARD_BORDERS = [ ['classic',['古典雙框','古典双框','Classic Double
 const CARD_FONT_TITLE = () => L3('字體與文字顏色','字体与文字颜色','Font and text colour');
 const CARD_FS = [[0.9,['小一點','小一点','Smaller']], [1,['標準','标准','Standard']], [1.2,['大','大','Large']],
                  [1.45,['特大','特大','Extra Large']], [1.7,['超大','超大','Huge']]];
-let cardImg = null;
+let cardImg = null, cardOverflow = '';   /* v2.62.0：''／'note'（領受放不下已省略）／'verse'（經文太長已縮到最小） */
 const cardTpl = () => CARD_TPL[state.cardTpl] ? state.cardTpl : 'navy';
 const cardSize = () => CARD_SIZES[state.cardSize] ? state.cardSize : 't';
 const cardBorder = () => CARD_BORDERS.some(b => b[0] === state.cardBorder) ? state.cardBorder : 'classic';
@@ -3917,10 +3917,40 @@ function drawFullCard(cv, h, W, H){
   ctx.fillStyle = sub; y += ss * 1.1; ctx.fillText(sign, cx, y);
   ctx.restore();
 }
+/* v2.62.0：相片當背景時，依相片各區最「不利」的亮度算遮罩強度，讓文字對比至少約 5:1。
+   把相片縮成 8×12 小格取樣，上／中／下三段各取最壞的一格（深字配最暗格、淺字配最亮格）。 */
+const relLum = (r, g, b) => { const f = v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); }; return .2126 * f(r) + .7152 * f(g) + .0722 * f(b); };
+const hexRGB = h => { h = String(h).replace('#', ''); return [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16) || 0); };
+function scrimAlphas(img, T, bg){
+  const base = [.46, .66, .56], out = base.slice();
+  try{
+    const c = document.createElement('canvas'); c.width = 8; c.height = 12;
+    const x = c.getContext('2d'); coverDraw(x, img, 0, 0, 8, 12);
+    const d = x.getImageData(0, 0, 8, 12).data;
+    const inkL = relLum(...hexRGB(T.ink));
+    for (let b = 0; b < 3; b++){
+      const cells = [];
+      for (let row = b * 4; row < b * 4 + 4; row++) for (let col = 0; col < 8; col++){ const i = (row * 8 + col) * 4; cells.push([d[i], d[i + 1], d[i + 2]]); }
+      let a = base[b];
+      for (; a < .9; a += .03){
+        let worst = 99;
+        for (const p of cells){
+          const L = relLum(p[0] * (1 - a) + bg[0] * a, p[1] * (1 - a) + bg[1] * a, p[2] * (1 - a) + bg[2] * a);
+          worst = Math.min(worst, (Math.max(L, inkL) + .05) / (Math.min(L, inkL) + .05));
+        }
+        if (worst >= 5) break;
+      }
+      out[b] = +Math.min(.9, a).toFixed(2);
+    }
+  }catch(e){}
+  return out;
+}
 function drawVerseCard(cv, h, W, H){
   if (photoImg && photoMode === 'full') return drawFullCard(cv, h, W, H);
   const ctx = cv.getContext('2d'); cv.width = W; cv.height = H;
-  const T = cardInkT(CARD_TPL[cardTpl()]);
+  let T = cardInkT(CARD_TPL[cardTpl()]);
+  if (photoImg && photoMode !== 'orig') T = Object.assign({}, T, { sub:T.ink });   /* 相片上團契名與落款用內文色，確保看得清楚 */
+  cardOverflow = '';
   const S = Math.min(W, H), F = S / 1080, pad = Math.round(S * .085), iw = W - pad * 2;   /* 比例用短邊算，橫式字才不會被放大 */
   const wide = W > H * 1.2;
   let colW = wide ? Math.min(iw, Math.round(H * 1.5)) : iw;   /* 橫式文字欄不拉滿全寬 */
@@ -3967,15 +3997,16 @@ function drawVerseCard(cv, h, W, H){
   const g = ctx.createLinearGradient(0, 0, W * .3, H);
   g.addColorStop(0, T.bg[0]); g.addColorStop(.55, T.bg[1]); g.addColorStop(1, T.bg[2]);
   ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-  /* 相片當背景時鋪上半透明遮罩，字才看得清楚 */
+  /* 相片當背景時鋪上半透明遮罩，字才看得清楚；遮罩強度依相片各區的亮度決定（v2.62.0） */
   if (photoImg && !orig){
     coverDraw(ctx, photoImg, 0, 0, W, H);
     const hx = T.bg[1].replace('#', '');
     const R0 = parseInt(hx.slice(0, 2), 16), G0 = parseInt(hx.slice(2, 4), 16), B0 = parseInt(hx.slice(4, 6), 16);
+    const al = scrimAlphas(photoImg, T, [R0, G0, B0]);
     const sc = ctx.createLinearGradient(0, 0, 0, H);
-    sc.addColorStop(0,  `rgba(${R0},${G0},${B0},0.46)`);
-    sc.addColorStop(.5, `rgba(${R0},${G0},${B0},0.66)`);
-    sc.addColorStop(1,  `rgba(${R0},${G0},${B0},0.56)`);
+    sc.addColorStop(0,  `rgba(${R0},${G0},${B0},${al[0]})`);
+    sc.addColorStop(.5, `rgba(${R0},${G0},${B0},${al[1]})`);
+    sc.addColorStop(1,  `rgba(${R0},${G0},${B0},${al[2]})`);
     ctx.fillStyle = sc; ctx.fillRect(0, 0, W, H);
   }
   const rg = ctx.createRadialGradient(W * .84, H * .10, 10, W * .84, H * .10, W * .75);
@@ -4041,10 +4072,10 @@ function drawVerseCard(cv, h, W, H){
   const verse = isEN()
     ? ((/^[“"']/.test(raw) ? '' : '\u201c') + raw + (/[”"']$/.test(raw) ? '' : '\u201d'))
     : ((/^[「『]/.test(raw) ? '' : '「') + raw + (/[」』]$/.test(raw) ? '' : '」'));
-  const note = (studioNote != null ? studioNote : (h.n || '')).trim();
+  let note = (studioNote != null ? studioNote : (h.n || '')).trim();
 
   let vs = Math.round(58 * FT * FB), vl, fixed, ns, nl, total;   /* 經文也跟著字級放大 */
-  const vsMin = Math.round((orig ? 20 : 28) * FT);
+  const vsMin = Math.round((orig ? 20 : 24) * FT);
   while (true){
     while (true){
       ctx.font = `600 ${vs}px ${serif}`;
@@ -4053,30 +4084,33 @@ function drawVerseCard(cv, h, W, H){
       vs -= Math.round(3 * FT);
     }
     fixed = vs * .9 + vl.length * vs * 1.52 + Math.round(64 * FT) + (note ? Math.round(86 * FT) : 0);
-    ns = Math.min(Math.round(38 * FT * FB), Math.round(vs * .82)); nl = [];   /* 領受字一定比經文小一點 */
+    ns = Math.min(Math.round(44 * FT * FB), Math.round(vs * .82)); nl = [];   /* 領受字一定比經文小一點 */
     if (note){
       while (true){
         ctx.font = `${ns}px ${sans}`;
         nl = wrapText(ctx, note, tiw);
-        if (fixed + nl.length * ns * 1.76 <= room || ns <= Math.round(21 * FT)) break;
+        if (fixed + nl.length * ns * 1.76 <= room || ns <= Math.round(26 * FT)) break;
         ns -= Math.round(2 * FT);
       }
     }
     total = fixed + (note ? nl.length * ns * 1.76 : 0);
     /* 原圖模式的文字區比較小：整塊放不下就把經文再縮一點，直到放得下 */
-    if (!orig || total <= room || vs <= vsMin) break;
+    if (total <= room || vs <= vsMin) break;
     vs -= Math.round(3 * FT);
   }
-  /* 縮到最小還放不下：只留放得下的行，最後一行加「…」，絕不壓到署名 */
+  /* 縮到最小還放不下：先留放得下的行（最後一行加「…」）；連一行都放不下就整段領受省略，絕不壓到署名 */
   if (note && total > room + 1){
-    const fit = Math.max(1, Math.floor((room - fixed) / (ns * 1.76)));
-    if (nl.length > fit){
+    const fit = Math.floor((room - fixed) / (ns * 1.76));
+    if (fit < 1){
+      note = ''; nl = []; total = fixed - Math.round(86 * FT); cardOverflow = 'note';
+    } else if (nl.length > fit){
       nl = nl.slice(0, fit); let last = nl[fit - 1]; ctx.font = `${ns}px ${sans}`;
       while (last.length > 1 && ctx.measureText(last + '…').width > tiw) last = last.slice(0, -1);
       nl[fit - 1] = last.replace(/[，。、；：,.;:\s]+$/, '') + '…';
-      total = fixed + nl.length * ns * 1.76;
+      total = fixed + nl.length * ns * 1.76; cardOverflow = 'note';
     }
   }
+  if (total > room + 1) cardOverflow = 'verse';
   let y = topRoom + Math.max(0, (room - total) / 2);
 
   /* 原圖模式：經文＋出處（vh）與領受（nh）可整塊一起拖，或分開拖；位置限制在整張卡片之內 */
@@ -4119,8 +4153,9 @@ function drawVerseCard(cv, h, W, H){
     ctx.beginPath(); ctx.moveTo(TW / 2 - 52 * FT, y); ctx.lineTo(TW / 2 - 16 * FT, y); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(TW / 2 + 16 * FT, y); ctx.lineTo(TW / 2 + 52 * FT, y); ctx.stroke();
     y += Math.round(86 * FT);
-    ctx.textAlign = 'left'; ctx.fillStyle = T.ink; ctx.font = `${ns}px ${sans}`;
-    nl.forEach(l => { ctx.fillText(l, TP, y); y += ns * 1.76; });
+    const nc = nl.length <= 3;   /* 領受三行以內置中，更多行靠左好讀 */
+    ctx.textAlign = nc ? 'center' : 'left'; ctx.fillStyle = T.ink; ctx.font = `${ns}px ${sans}`;
+    nl.forEach(l => { ctx.fillText(l, nc ? TW / 2 : TP, y); y += ns * 1.76; });
     ctx.textAlign = 'center';
     ctx.restore();
   }
@@ -4177,6 +4212,15 @@ function renderCard(h){
   cardImg = cv.toDataURL('image/png');
   const box = $('#cardPv');
   if (box) box.innerHTML = `<img src="${cardImg}" alt="">`;
+  cardWarnPaint();
+}
+/* v2.62.0：放不下時，在預覽下方提醒，並建議換較高的尺寸 */
+function cardWarnPaint(){
+  const el = $('#cardWarn'); if (!el) return;
+  el.style.display = cardOverflow ? '' : 'none';
+  if (cardOverflow) el.textContent = cardOverflow === 'note'
+    ? L3('⚠️ 這張卡片放不下全部的領受文字，已先縮短；想完整呈現，可改選較高的尺寸（直式 9:16）或把領受寫短一點。', '⚠️ 这张卡片放不下全部的领受文字，已先缩短；想完整呈现，可改选较高的尺寸（竖式 9:16）或把领受写短一点。', '⚠️ The note does not fit and was shortened. Choose a taller size (Portrait 9:16) or write a shorter note.')
+    : L3('⚠️ 經文比較長，字已縮到最小；建議改選直式 9:16，或只選一兩節。', '⚠️ 经文比较长，字已缩到最小；建议改选竖式 9:16，或只选一两节。', '⚠️ The verse is long and already at the smallest size. Try Portrait 9:16 or pick fewer verses.');
 }
 const o3 = (zh, zs, en) => { const x = L3(zh, zs, en); return [x, x]; };
 /* 拖動文字時用半尺寸、JPEG 快速重畫預覽；放開手指再畫一張完整的 */
@@ -5313,6 +5357,7 @@ async function viewStudio(v){
       <div class="muted" style="font-size:12.5px">${esc(cardRef(studioItem))}</div>
     </div>
     <div class="cardpv" id="cardPv"></div>
+    <div class="hl-hint" id="cardWarn" style="display:none;margin:-6px 0 8px;color:#B35A00"></div>
     <div class="hlsheet-acts" style="margin:0 0 6px">
       <button class="btn primary" id="btShare">${esc(L.cardShare)}</button>
       <button class="btn" id="btSave">${esc(L.cardSave)}</button>
