@@ -1,8 +1,12 @@
 /* 321互動聖經 — Service Worker
    每次改動內容或程式，務必把 VERSION 往上加（也要同步 app.js 的 VERSION 與 version.json），
    否則已安裝的使用者不會看到更新。 */
-const VERSION = 'ib-v2.60.0';
-const VER = 'v2.60.0';
+const VERSION = 'ib-v2.61.0';
+const VER = 'v2.61.0';
+/* v2.61.0：整本經文檔（bible.<語言>.<分卷>.json）改存在獨立的快取 DATA_CACHE，不跟著程式版本一起清掉——
+   以前每次更新版本，已經下載、預先存好的經文都被清空，離線閱讀等於重來。
+   名稱不能以 ib- 開頭（更新時會清掉 ib- 開頭的快取）。經文檔內容若有改動，要把這個名稱的數字加 1，舊的會在 activate 時自動刪除。 */
+const DATA_CACHE = 'bible-data-v1';
 /* v2.56.0：語言包不再全部預先快取，改為用到才下載並快取（見下方 fetch 處理） */
 const SHELL = [
   './', './index.html', './app.js', './xzm.js', './qrcode.js', './manifest.json', './toc.json', './plans.json', './cover.jpg', './hero.jpg', './wxpay.jpg',
@@ -20,7 +24,7 @@ self.addEventListener('install', e => {
 
 self.addEventListener('activate', e => {
   e.waitUntil(
-    caches.keys().then(ks => Promise.all(ks.filter(k => k.indexOf('ib-') === 0 && k !== VERSION).map(k => caches.delete(k))))
+    caches.keys().then(ks => Promise.all(ks.filter(k => (k.indexOf('ib-') === 0 && k !== VERSION) || (k.indexOf('bible-data-') === 0 && k !== DATA_CACHE)).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
       .then(() => self.clients.matchAll({ type:'window', includeUncontrolled:true }))
       .then(cs => cs.forEach(c => {
@@ -53,17 +57,9 @@ self.addEventListener('fetch', e => {
   // 經文資料：cache-first（讀過一次即可離線）
   // 注意：只有 res.ok（HTTP 200系列）才寫進快取——網路不穩、GitHub Pages
   // 剛部署完那幾秒偶爾會回傳 404／5xx 或不完整的內容，若不判斷就整包存進去，
-  // 那個壞掉的版本會被「快取命中」永遠鎖住，使用者之後每次都讀到同一份壞檔，
-  // 得等到下次 VERSION 再往上加才會被清掉。
+  // 那個壞掉的版本會被「快取命中」永遠鎖住。
   if (/bible\.[a-z]+\.[a-z0-9]+\.json$/.test(url.pathname) || url.pathname.endsWith('toc.json') || url.pathname.endsWith('plans.json')){
-    e.respondWith(
-      caches.open(VERSION).then(c =>
-        c.match(req).then(hit => hit || fetch(req).then(res => {
-          if (res.ok) c.put(req, res.clone());
-          return res;
-        }))
-      )
-    );
+    e.respondWith(dataFetch(req, /bible\.[a-z]+\.[a-z0-9]+\.json$/.test(url.pathname)));
     return;
   }
 
@@ -76,6 +72,19 @@ self.addEventListener('fetch', e => {
   const key = nav ? './index.html' : req;
   e.respondWith(shellFetch(req, key, nav));
 });
+
+/* 經文檔：先查獨立的 DATA_CACHE，再查舊版本的快取（搬過去），都沒有才連網並存進 DATA_CACHE；toc／plans 仍跟程式版本走 */
+async function dataFetch(req, isShard){
+  const dc = await caches.open(DATA_CACHE);
+  let hit = await dc.match(req, { ignoreSearch:true });
+  if (hit) return hit;
+  const vc = await caches.open(VERSION);
+  hit = await vc.match(req);
+  if (hit){ if (isShard) dc.put(req, hit.clone()).catch(() => {}); return hit; }
+  const res = await fetch(req);
+  if (res.ok) (isShard ? dc : vc).put(req, res.clone()).catch(() => {});
+  return res;
+}
 
 const SHELL_WAIT = 1000;
 async function shellFetch(req, key, nav){
@@ -107,7 +116,7 @@ async function shellFetch(req, key, nav){
 const PREFETCH_BUDGET = 4 * 1024 * 1024;
 async function prefetchLang(lang){
   try{
-    const c = await caches.open(VERSION);
+    const c = await caches.open(DATA_CACHE);
     let used = 0;
     for (const s of ['nt', 'law', 'hist', 'poet', 'proph']){
       const u = './bible.' + lang + '.' + s + '.json';

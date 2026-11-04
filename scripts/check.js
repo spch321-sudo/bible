@@ -43,6 +43,10 @@ const missing = files.filter(f => !fs.existsSync(path.join(root, f)));
 missing.length ? fail('SHELL 內的檔案不存在：' + missing.join(', ')) : ok(files.length + ' 個預先快取檔案都存在');
 
 /* 4. 語言包清單一致（app.js PACK_LANGS／index.html 載入器／實際檔案） */
+{ const sw = (R('sw.js').match(/const DATA_CACHE = '([^']+)'/) || [])[1], ap = (R('app.js').match(/const DATA_CACHE_NAME = '([^']+)'/) || [])[1];
+  sw && sw === ap ? ok('經文快取名稱 sw.js 與 app.js 一致（' + sw + '）') : fail('經文快取名稱不一致：sw.js=' + sw + ' app.js=' + ap);
+  /^ib-/.test(sw || '') && fail('經文快取名稱不能以 ib- 開頭（更新時會被清掉）'); }
+
 section('4. 語言包清單一致');
 const packFiles = fs.readdirSync(root).map(f => (f.match(/^lang-([a-z]+)\.js$/) || [])[1]).filter(l => l && l !== 'pf').sort();
 const appSet = [...((R('app.js').match(/const PACK_LANGS = new Set\(\[([^\]]*)\]\)/) || [])[1] || '').matchAll(/'([a-z]+)'/g)].map(m => m[1]).sort();

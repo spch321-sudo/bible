@@ -24,3 +24,5 @@ jobs:
         run: node scripts/smoke.js
       - name: 朗讀測試（發音回歸、快取、失敗回復、語速、定時）
         run: node scripts/tts-test.js
+      - name: 並讀與離線下載測試
+        run: node scripts/par-test.js

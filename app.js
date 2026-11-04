@@ -45,7 +45,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.60.0';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
+const VERSION = 'v2.61.0';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
    flex-basis:0），按鈕不准被擠扁（flex:0 0 auto）；長字串（網址、英文長字）也允許換行。 */
@@ -543,7 +543,9 @@ const VOICES = {
        {n:'晓辰', v:'zh-CN-Xiaochen:DragonHDLatestNeural'}]
 };
 
-const DEFAULTS = { lang:'zh', font:0, theme:0, flow:false, shCh:true, shV:true, hidenote:false,
+/* v2.61.0：語言（＝譯本）清單；並讀與離線下載共用。每個語言一個譯本，經文檔 bible.<語言代碼>.<分卷>.json */
+const LANG_OPTS = [['zh','繁體中文'],['zs','简体中文'],['en','English'],['ko','한국어'],['ja','日本語'],['id','Bahasa Indonesia'],['tl','Filipino'],['my','မြန်မာ'],['vi','Tiếng Việt'],['th','ภาษาไทย'],['ms','Bahasa Malaysia'],['ar','العربية'],['he','עברית'],['el','Ελληνικά'],['pt','Português'],['fa','فارسی'],['sw','Kiswahili'],['ta','தமிழ்'],['am','አማርኛ'],['uk','Українська'],['bn','বাংলা'],['hi','हिन्दी'],['ne','नेपाली'],['ceb','Cebuano'],['es','Español'],['fr','Français'],['de','Deutsch'],['it','Italiano'],['ru','Русский']];
+const DEFAULTS = { lang:'zh', par:'', font:0, theme:0, flow:false, shCh:true, shV:true, hidenote:false,
                    cardTpl:'plain', cardSize:'p', cardBorder:'none', cardFs:1.45, cardFont:'auto', cardInk:'',
                    cardTop:'', cardSign:'', cardTo:'親愛的家人：平安！', cardGreet:'', photoLast:'', photoMode:'full',
                    voice:{zh:0, zs:0, en:0, ko:0, ja:0, id:0, tl:0, my:0, vi:0, th:0, ms:0, ar:0, he:0, el:0, pt:0, fa:0, sw:0, ta:0, am:0, uk:0, bn:0, hi:0, ne:0, lo:0, ceb:0, es:0, fr:0, de:0, it:0, ru:0}, ttsAutoNext:false, ttsRate:1, beauty:true, planRemindOn:false,
@@ -575,6 +577,7 @@ function loadState(){
     delete state.chnum;
     state.flow = !!state.flow; state.shCh = !!state.shCh; state.shV = !!state.shV;
     if (!['adult','teen','kid','seeker','elder','single_parent','single','parent','couple','pastor'].includes(state.audience)) state.audience = 'adult';
+    if (!LANG_OPTS.some(o => o[0] === state.par) || state.par === state.lang) state.par = '';   // 並讀譯本：必須是有效語言、且不同於主要語言
     if (state.alen === 'brief') state.alen = 's'; else if (state.alen === 'full') state.alen = 'long';   // v2.45：三段改五段，舊設定對應過去
     if (!['xs','s','mid','long','xl'].includes(state.alen)) state.alen = 'mid';
     if (!['none','buddhism','folk','yiguandao','muslim','atheist'].includes(state.skbg)) state.skbg = 'none';
@@ -640,7 +643,7 @@ function syncHeaderH(){
 async function purgeCached(file){
   if (typeof caches === 'undefined') return;
   try{
-    const names = (await caches.keys()).filter(k => k.indexOf('ib-') === 0);   // 只動自己的快取
+    const names = (await caches.keys()).filter(k => k.indexOf('ib-') === 0 || k.indexOf('bible-data-') === 0);   // 只動自己的快取
     await Promise.all(names.map(async name => {
       const c = await caches.open(name);
       const reqs = await c.keys();
@@ -1892,8 +1895,128 @@ let RD = { book:null, ch:0, data:null, flow:false };
 /* 一章 = 若干區塊：['p'|'q1'|'q2'|'d'|'b', 節號, 經文, 節號, 經文…]，
    節號 0 代表這一段是上一節的接續（不另外標號）。
    畫線識別碼用「區塊序號＋句序號」，分章與整卷連讀兩種模式共用同一把 key。 */
+/* ===== v2.61.0：並讀譯本（在每一節下面顯示另一個語言的譯本，節號對齊） =====
+   並讀的文字不是 .sent，所以朗讀、畫線、書籤都只作用在主要語言，不會被影響。 */
+const RTL_LANGS = ['ar', 'he', 'fa'];
+const langName = c => (LANG_OPTS.find(o => o[0] === c) || [c, c])[1];
+async function parBookData(bookId){
+  const p = state.par, b = BOOK[bookId];
+  if (!p || p === state.lang || !b) return null;
+  try{ const d = await loadShard(p, b.shard); return d[bookId] || null; }
+  catch(e){ toast(L3('並讀譯本讀不到（可能沒有網路），先只顯示主要語言', '并读译本读不到（可能没有网络），先只显示主要语言', 'Parallel version unavailable (offline?) — showing the main version only'), 3200); return null; }
+}
+/* 每一節的最後一個區塊（詩歌每行一個區塊，並讀譯文放在這一節全部唸完之後） */
+function parLastBlocks(chap){
+  const last = {}; let cur = 0;
+  chap.forEach((bl, bi) => { if (bl[0] === 'b') return; for (let j = 1; j < bl.length; j += 2){ if (bl[j] > 0) cur = bl[j]; if (cur > 0) last[cur] = bi; } });
+  return last;
+}
+function parTextMap(pc){
+  const m = {}; let cur = 0; const join = /^(zh|zs|ja|th|my)$/.test(state.par) ? '' : ' ';
+  (pc || []).forEach(bl => { if (bl[0] === 'b') return;
+    for (let j = 1; j < bl.length; j += 2){
+      if (bl[j] > 0) cur = bl[j];
+      if (cur > 0 && bl[j + 1]){ const x = String(bl[j + 1]).replace(/〔[^〕]*〕/g, ''); m[cur] = m[cur] ? m[cur] + join + x : x; }
+    } });
+  return m;
+}
+/* 並讀譯文緊接在「這一節最後一句」之後（同一個 <p> 裡、獨立成行），所以是逐節對照 */
+function parVerseHtml(v, map){
+  return `<span class="par-tx" lang="${state.par}"${RTL_LANGS.includes(state.par) ? ' dir="rtl"' : ''}><span class="pvn">${v}</span>${esc(map[v])}</span>`;
+}
+function parCss(){
+  if (document.getElementById('parcss')) return;
+  const st = document.createElement('style'); st.id = 'parcss';
+  st.textContent = '.par-tx{display:block;text-indent:0;font-size:.88em;line-height:1.75;color:var(--ink-faint);color:color-mix(in srgb,var(--ink) 74%,transparent);margin:.1em 0 .75em;padding-left:.8em;border-left:2px solid var(--border)}'
+    + '.par-tx[dir=rtl]{padding-left:0;padding-right:.8em;border-left:0;border-right:2px solid var(--border)}'
+    + '.par-tx .pvn{font-size:.72em;vertical-align:super;margin-right:.25em;opacity:.8}'
+    + '.par-hd{font-size:12.5px;color:var(--ink-faint);margin:2px 0 10px}.par-hd button{background:none;border:0;color:var(--accent);font:inherit;text-decoration:underline;padding:0 2px;cursor:pointer}';
+  document.head.appendChild(st);
+}
+async function openParSheet(){
+  const old = document.getElementById('parMask'); if (old) old.remove();
+  const st = await dlStatus();
+  const m = document.createElement('div'); m.id = 'parMask';
+  m.style.cssText = 'position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center';
+  const row = (c, name, sub) => `<button class="btn block${state.par === c ? ' primary' : ''}" data-l="${c}" style="text-align:left;margin:4px 0">${esc(name)}${sub ? ` <span class="muted" style="font-size:12px">${esc(sub)}</span>` : ''}</button>`;
+  m.innerHTML = `<div style="background:var(--surface,#fff);color:var(--ink);width:100%;max-width:640px;max-height:86vh;overflow:auto;border-radius:18px 18px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom))">
+    <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:16px">🌐 ${esc(L3('並讀譯本', '并读译本', 'Parallel version'))}</b><button class="btn" id="parX">✕</button></div>
+    <div class="muted" style="font-size:12.5px;line-height:1.7;margin:8px 0">${esc(L3('在每一節下面，多顯示另一個語言的譯本（節號對齊）。朗讀與畫線只作用在主要語言。沒下載過的語言要連網才讀得到，可到「我的」→「離線閱讀」先下載。', '在每一节下面，多显示另一个语言的译本（节号对齐）。朗读与画线只作用在主要语言。没下载过的语言要联网才读得到，可到“我的”→“离线阅读”先下载。', 'Shows a second language under each verse (verse-aligned). Reading aloud and highlights only apply to the main language. Languages you have not downloaded need a connection — see Me → Offline reading.'))}</div>
+    ${row('', L3('不並讀', '不并读', 'Off'))}
+    ${LANG_OPTS.filter(o => o[0] !== state.lang).map(o => row(o[0], o[1], st[o[0]] >= 5 ? '✓ ' + L3('已下載', '已下载', 'downloaded') : '')).join('')}</div>`;
+  document.body.appendChild(m);
+  const close = () => m.remove();
+  m.onclick = e => { if (e.target === m) close(); };
+  $('#parX', m).onclick = close;
+  $$('button[data-l]', m).forEach(b => b.onclick = () => { state.par = b.dataset.l; saveState(); close(); render(); });
+}
+
+/* ===== v2.61.0：離線下載管理（我的 → 離線閱讀） =====
+   下載的經文存在獨立的快取 DATA_CACHE_NAME（與 sw.js 的 DATA_CACHE 同名，scripts/check.js 會核對），
+   更新 App 版本不會清掉。 */
+const DATA_CACHE_NAME = 'bible-data-v1';
+const DL_SHARDS = ['nt', 'law', 'hist', 'poet', 'proph'];
+const dlFile = (lang, s) => `bible.${lang === 'lo' ? 'en' : lang === 'ms' ? 'id' : lang}.${s}.json`;
+async function dlStatus(){
+  const out = {}; LANG_OPTS.forEach(o => out[o[0]] = 0);
+  try{
+    const c = await caches.open(DATA_CACHE_NAME), have = new Set((await c.keys()).map(r => r.url.split('/').pop()));
+    LANG_OPTS.forEach(o => { out[o[0]] = DL_SHARDS.filter(s => have.has(dlFile(o[0], s))).length; });
+  }catch(e){}
+  return out;
+}
+async function dlLang(lang, onProg){
+  const c = await caches.open(DATA_CACHE_NAME); let n = 0;
+  for (const s of DL_SHARDS){
+    const f = dlFile(lang, s), r = await fetch(f, { cache:'no-cache' });
+    if (!r.ok) throw new Error('http ' + r.status);
+    const copy = r.clone(); await r.arrayBuffer();           // 讀完整份才算下載好
+    await c.put(f, copy);                                    // 不靠 Service Worker：第一次開 App 時它可能還沒接手
+    onProg && onProg(++n, DL_SHARDS.length);
+  }
+  try{ if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); }catch(e){}   // 請瀏覽器盡量保留
+}
+async function dlRemove(lang){
+  const c = await caches.open(DATA_CACHE_NAME), names = new Set(DL_SHARDS.map(s => dlFile(lang, s)));
+  for (const r of await c.keys()) if (names.has(r.url.split('/').pop())) await c.delete(r);
+}
+let dlBusy = false;
+async function dlPaint(box){
+  if (!box || !box.isConnected) return;
+  const st = await dlStatus();
+  let usage = '', persisted = false;
+  try{
+    const e = await navigator.storage.estimate();
+    usage = L3('本 App 已用 ', '本 App 已用 ', 'Used by this app: ') + (e.usage / 1048576).toFixed(0) + ' MB' + (e.quota ? ' / ' + (e.quota / 1073741824).toFixed(1) + ' GB' : '');
+    persisted = !!(navigator.storage.persisted && await navigator.storage.persisted());
+  }catch(e){}
+  const stat = c => st[c] >= 5 ? '✓ ' + L3('已下載', '已下载', 'Downloaded') : (st[c] > 0 ? st[c] + '/5 ' + L3('部分', '部分', 'partial') : L3('未下載', '未下载', 'Not downloaded'));
+  const btn = c => st[c] >= 5
+    ? `<button class="btn" data-a="rm" data-l="${c}">${esc(L3('刪除', '删除', 'Remove'))}</button>`
+    : `<button class="btn primary" data-a="dl" data-l="${c}">${esc(st[c] > 0 ? L3('繼續下載', '继续下载', 'Resume') : L3('下載', '下载', 'Download'))}</button>`;
+  const line = c => `<div class="setrow" data-row="${c}"><div class="sl">${esc(langName(c))}<div class="muted" style="font-size:11.5px" data-st="${c}">${esc(stat(c))}</div></div>${btn(c)}</div>`;
+  const main = [state.lang].concat(state.par && state.par !== state.lang ? [state.par] : []);
+  const rest = LANG_OPTS.map(o => o[0]).filter(c => !main.includes(c));
+  box.innerHTML = `<div class="muted" style="font-size:12.5px;line-height:1.7;margin-bottom:6px">${esc(L3('下載後沒有網路也能讀整本聖經。每個語言約 4～7 MB，建議在 Wi‑Fi 下載；更新 App 不會把已下載的經文清掉。', '下载后没有网络也能读整本圣经。每个语言约 4～7 MB，建议在 Wi‑Fi 下载；更新 App 不会把已下载的经文清掉。', 'Download a version to read the whole Bible with no connection. About 4–7 MB per language; use Wi‑Fi. App updates keep your downloads.'))}</div>
+    ${main.map(line).join('')}
+    <details style="margin-top:6px"><summary style="cursor:pointer;font-size:13px">${esc(L3('其他語言', '其他语言', 'Other languages'))}</summary>${rest.map(line).join('')}</details>
+    <div class="muted" style="font-size:11.5px;margin-top:8px;line-height:1.6">${esc(usage)}${persisted ? ' · ✓ ' + esc(L3('已請瀏覽器保留這些資料', '已请浏览器保留这些资料', 'Storage marked persistent')) : ''}</div>`;
+  box.onclick = async e => {
+    const b = e.target.closest('button[data-a]'); if (!b || dlBusy) return;
+    const lang = b.dataset.l;
+    if (b.dataset.a === 'rm'){ await dlRemove(lang); return dlPaint(box); }
+    dlBusy = true; b.disabled = true;
+    const lab = box.querySelector(`[data-st="${lang}"]`);
+    try{
+      await dlLang(lang, (n, tot) => { if (lab) lab.textContent = L3('下載中 ', '下载中 ', 'Downloading ') + n + '/' + tot; });
+      toast(L3('下載完成：' + langName(lang), '下载完成：' + langName(lang), 'Downloaded: ' + langName(lang)), 2200);
+    }catch(err){ toast(L3('下載中斷，連上網路後可按「繼續下載」', '下载中断，联上网络后可按“继续下载”', 'Download interrupted — press Resume when online'), 3600); }
+    dlBusy = false; dlPaint(box);
+  };
+}
+
 const BLOCK_CLASS = { p:'prose', q1:'q1', q2:'q2', d:'dline' };
-function chapterHTML(bookId, cno, chap, withHead){
+function chapterHTML(bookId, cno, chap, withHead, parChap){
   const bm = new Set(user.marks.filter(m => m.b === bookId && m.c === cno)
                                .map(m => hlKey(m.b, m.c, m.p, m.s)));
   /* 先把整章的句子攤成一列，畫線才能跨句、跨段落連成一整段 */
@@ -1930,10 +2053,12 @@ function chapterHTML(bookId, cno, chap, withHead){
   const byBlock = {};
   flat.forEach(f => { (byBlock[f.bi] = byBlock[f.bi] || []).push(f); });
 
+  const parMap = parChap ? parTextMap(parChap) : null, parLast = parChap ? parLastBlocks(chap) : null;
   const body = chap.map((bl, bi) => {
     if (bl[0] === 'b') return '<div class="stanza"></div>';
     let inner = '', notes = '';
-    (byBlock[bi] || []).forEach(f => {
+    const bl2 = byBlock[bi] || [];
+    bl2.forEach((f, ix) => {
       if (f.vn) inner += `<span class="vn">${f.vn}</span>`;
       const k = hlKey(bookId, cno, bi, f.si);
       const o = own[bi + '|' + f.si];
@@ -1941,6 +2066,7 @@ function chapterHTML(bookId, cno, chap, withHead){
              + (o ? ` data-hl="1" data-color="${o.h.c}"${o.head ? '' : ` data-op="${o.p0}" data-os="${o.s0}"`}` : '')
              + (bm.has(k) ? ' data-bm="1"' : '')
              + `>${markNotes(esc(f.tx))}</span>`;
+      if (parMap && f.v && (!bl2[ix + 1] || bl2[ix + 1].v !== f.v) && parLast[f.v] === bi && parMap[f.v]) inner += parVerseHtml(f.v, parMap);
       if (o && o.head && o.h.n)
         notes += `<div class="hl-note" data-c="${cno}" data-p="${bi}" data-s="${f.si}" data-color="${o.h.c}">${esc(o.h.n)}</div>`;
     });
@@ -1957,12 +2083,14 @@ async function viewReader(v, bookId, ch){
   const flow = state.flow;
   const all = await getBook(bookId);
   if (!all) { v.innerHTML = `<div class="empty">讀不到 ${esc(bname(b))}</div>`; return; }
+  const parAll = state.par ? await parBookData(bookId) : null;
+  if (parAll) parCss();
   RD = { book:bookId, ch:ch, data:all[ch - 1], flow:flow };
   user.last = { book:bookId, ch:ch }; saveUser();
 
   const body = flow
-    ? all.map((c, i) => chapterHTML(bookId, i + 1, c, true)).join('')
-    : chapterHTML(bookId, ch, all[ch - 1], false);
+    ? all.map((c, i) => chapterHTML(bookId, i + 1, c, true, parAll && parAll[i])).join('')
+    : chapterHTML(bookId, ch, all[ch - 1], false, parAll && parAll[ch - 1]);
 
   const head = flow
     ? `<div class="bk">${esc(L.app)}</div><h1 class="bktitle">${esc(bname(b))}</h1>`
@@ -1976,6 +2104,7 @@ async function viewReader(v, bookId, ch){
       <div class="chtb-spacer"></div>
       <button class="chtb-btn ${bmMode ? 'on' : ''}" id="rdBm" title="${esc(L.bm)}">🔖</button>
       <button class="chtb-btn ${(state.flow || !state.shCh || !state.shV) ? 'on' : ''}" id="rdMode" title="${esc(L.pure)}">${esc(L3('淨', '净', '¶'))}</button>
+      <button class="chtb-btn ${state.par ? 'on' : ''}" id="rdPar" title="${esc(L3('並讀譯本', '并读译本', 'Parallel version'))}">🌐</button>
       <button class="chtb-btn" id="rdFont">A⁺</button>
       <span class="tts-group">
         <button class="chtb-btn" id="rdPlay" title="${esc(L.ttsPlay)}">▶</button>
@@ -1986,6 +2115,7 @@ async function viewReader(v, bookId, ch){
     </div>
     ${bmMode ? `<div class="bm-hint">${esc(L.bmHint)}</div>` : ''}
     <div class="chhead">${head}<div class="rule"></div></div>
+    ${parAll ? `<div class="par-hd">🌐 ${esc(L3('並讀', '并读', 'Parallel'))}：${esc(langName(state.par))} <button id="parChange">${esc(L3('更換', '更换', 'Change'))}</button></div>` : ''}
     <div class="reader" id="reader">${body}</div>
     <div class="chfoot">
       <button class="btn" id="fPrev">${esc(flow ? L.prevBk : L.prev)}</button>
@@ -2017,6 +2147,8 @@ async function viewReader(v, bookId, ch){
   $('#rdPause').onclick = () => ttsPauseNow();
   $('#rdStop').onclick  = () => ttsStop();
   $('#rdSleep').onclick = () => ttsSleepCycle(); ttsSleepPaint();
+  $('#rdPar').onclick = () => openParSheet();
+  const pc = $('#parChange'); if (pc) pc.onclick = () => openParSheet();
 
   const navBook = d => {
     ttsStop();
@@ -7921,8 +8053,13 @@ async function viewMe(v){
       <button class="btn block" id="diagBtn">${esc(L.diagRun)}</button>
       <div id="diagOut" class="muted" style="margin-top:10px;white-space:pre-wrap;font-size:12px;line-height:1.7"></div>
     </div>
+    <div class="section-title">${esc(L3('離線閱讀', '离线阅读', 'Offline reading'))}</div>
+    <div class="card" id="dlBox"></div>
     <div class="section-title">${esc(L.settings)}</div>
     <div class="card" style="padding:4px 16px">
+      <div class="setrow"><div class="sl">${esc(L3('並讀譯本', '并读译本', 'Parallel version'))}
+        <div class="muted" style="font-size:11.5px;line-height:1.6">${esc(state.par ? langName(state.par) : L3('不並讀', '不并读', 'Off'))}</div></div>
+        <div class="segbtns"><button id="setParBtn">${esc(L3('選擇', '选择', 'Choose'))}</button></div></div>
       <div class="setrow"><div class="sl">${esc(L.langLabel)}</div><div class="segbtns" id="setLang">
         <button class="${state.lang === 'zh' ? 'on' : ''}" data-l="zh">繁體中文</button>
         <button class="${state.lang === 'zs' ? 'on' : ''}" data-l="zs">简体中文</button>
@@ -8036,6 +8173,8 @@ async function viewMe(v){
       ${esc(L.app)} ${VERSION}<br>${esc(L3('和合本聖經屬公有領域，沒有版權限制','和合本圣经属公有领域，没有版权限制','The Chinese Union Version and the World English Bible are in the public domain.'))}${state.lang === 'bn' ? '<br>পবিত্র বাইবেল: Indian Revised Version (IRV) বাংলা — © 2019 Bridge Connectivity Solutions Pvt. Ltd., লাইসেন্স CC BY-SA 4.0; পদ-সংখ্যা অ্যাপের মানক সংখ্যায় মিলিয়ে নেওয়া হয়েছে।' : ''}${state.lang === 'uk' ? '<br>Святе Письмо: переклад П. Куліша, І. Пулюя та І. Нечуя-Левицького (1903), суспільне надбання; правопис оригіналу збережено; нумерація віршів узгоджена зі стандартною нумерацією застосунку.' : ''}${state.lang === 'am' ? '<br>መጽሐፍ ቅዱስ፦ የ1962 (1955 ዓ.ም.) የአማርኛ መጽሐፍ ቅዱስ (የሃይለ ሥላሴ ትርጉም)፤ የቅጂ መብት © የኢትዮጵያ መጽሐፍ ቅዱስ ማኅበር / ዩናይትድ ባይብል ሶሳይቲዎች። ለነጻና ለንግድ ዓላማ ላልሆነ የኅብረት አገልግሎት ብቻ ጥቅም ላይ ውሏል። የቁጥር አሰጣጡ ከመተግበሪያው መደበኛ ቁጥር ጋር ተስማምቷል፤ ምንጩ በአንዳንድ ቦታዎች ተከታታይ ቁጥሮችን በአንድ ቁጥር ስር አዋህዷል።' : ''}${state.lang === 'ta' ? '<br>வேதாகமம்: இந்தியன் ரிவைஸ்டு வெர்ஷன் (IRV) தமிழ் © 2017 Bridge Connectivity Solutions Pvt. Ltd., Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0) உரிமத்தில்; வசன எண்கள் செயலியின் நிலையான எண்ணுடன் இணைக்கப்பட்டுள்ளன.' : ''}${state.lang === 'sw' ? '<br>Maandiko: Biblica® Toleo Wazi Neno: Bibilia Takatifu™ © 2018 Biblica, Inc., leseni ya Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0); nambari za mistari zimeoanishwa na mpangilio wa kawaida wa programu (baadhi ya mistari haipo katika chanzo hiki).' : ''}${state.lang === 'fa' ? '<br>کتاب‌مقدس: ترجمهٔ قدیم (چاپ ۱۸۹۵، مالکیت عمومی)؛ ترجمهٔ ویکلیف/eBible.org؛ شمارهٔ آیه‌ها با شمارهٔ استاندارد برنامه هماهنگ شده است.' : ''}${state.lang === 'pt' ? '<br>Escritura: Tradução Brasileira (1917, domínio público); o nome divino «Jeová» foi atualizado para «o Senhor»; a numeração dos versículos segue a numeração padrão do aplicativo.' : ''}${state.lang === 'el' ? '<br>Γραφή: Μετάφραση Νεοφύτου Βάμβα (19ος αι., κοινό κτήμα)· η αρίθμηση των στίχων προσαρμόστηκε στην τυπική αρίθμηση της εφαρμογής.' : ''}${state.lang === 'he' ? '<br>הכתוב: המקרא — נוסח כתב יד לנינגרד (WLC, נחלת הכלל), מתוך Open Scriptures Hebrew Bible (CC BY 4.0); הברית החדשה — תרגום פרנץ דליטש (נחלת הכלל). מספור הפסוקים הותאם למספור הסטנדרטי של האפליקציה.' : ''}${state.lang === 'ru' ? '<br>Писание: Синодальный перевод (общественное достояние); нумерация стихов приведена к стандартной нумерации этого приложения.' : ''}${state.lang === 'it' ? '<br>Scrittura: Bibbia Riveduta 1927 (pubblico dominio); testo e numerazione dei versetti adattati alla numerazione standard di questa app.' : ''}${state.lang === 'de' ? '<br>Schrift: Lutherbibel 1912 (gemeinfrei); die Verszählung wurde an die Standardzählung dieser App angepasst.' : ''}${state.lang === 'fr' ? '<br>Écriture : Bible Louis Segond (1910), domaine public ; orthographe et typographie harmonisées par 321.' : ''}${state.lang === 'es' ? '<br>Escritura: Santa Biblia Reina-Valera 1909 (dominio público); ortografía actualizada por 321.' : ''}${state.lang === 'ceb' ? '<br>Ang Bibliya sa Cebuano: Balaan nga Bibliya (Unlocked Literal Bible) © 2019 Door43 World Missions Community, ug Biblica® Open Ang Pulong sa Dios © 2009, 2010, 2014, 2024 Biblica, Inc. — CC BY-SA 4.0 (www.biblica.com · open.bible). Giusab ang pagpahimutang sa mga bersikulo aron motakdo sa numero sa bersikulo niini nga app.' : ''}${state.lang === 'lo' ? '<br>ຂໍ້ພຣະຄຳພີສະແດງເປັນພາສາອັງກິດ (World English Bible, ສາທາລະນະສົມບັດ) ຊົ່ວຄາວ ຈົນກວ່າຈະໄດ້ຮັບອະນຸຍາດໃຊ້ພຣະຄຳພີພາສາລາວ.' : ''}${state.lang === 'ne' ? '<br>नेपाली बाइबल: Biblica® नेपाली समकालीन सर्वसुलभ संस्करण (ONCV) © 1998, 2006, 2021, 2024 Biblica, Inc. — CC BY-SA 4.0 (www.biblica.com · open.bible)। उत्पत्ति 24:29–30, रोमी 2:19–20, 1 थेसलोनिकी 4:3–4 र हिब्रू 6:1–2 स्रोतमा नभएकाले 321 ले ONCV को शैलीमा अनुवाद गरी थपेको हो।' : state.lang === 'hi' ? '<br>हिन्दी बाइबल: Indian Revised Version (IRV) Hindi 2019 © Bridge Connectivity Solutions — CC BY-SA 4.0। अध्ययन-टिप्पणियाँ हटाई गई हैं।' : ''}</div>`;
 
   $$('#setLang button', v).forEach(b => b.onclick = () => switchLang(b.dataset.l));
+  const spb = $('#setParBtn', v); if (spb) spb.onclick = () => openParSheet();
+  dlPaint($('#dlBox', v));
   const dg = $('#diagBtn', v); if (dg) dg.onclick = () => runDiag();
   const uo = $('#updOut', v); if (uo) uo.textContent = VERSION;
   const uh = $('#updHardBtn', v); if (uh) uh.onclick = () => applyUpdate(true);
@@ -9912,7 +10051,7 @@ async function switchLang(l){
   if (!l || l === state.lang) return;
   if (!I18N[l]){ toast(t().loading || '…', 1200); if (!(await ensurePack(l))) { toast('語言包載入失敗，請檢查網路後再試 / Could not load the language pack', 3200); return; } }
   ttsStop();
-  state.lang = l; saveState(); applyChrome();
+  state.lang = l; if (state.par === l) state.par = ''; saveState(); applyChrome();
   if (l === 'ms') toast('Buat sementara waktu, teks Alkitab menggunakan Bahasa Indonesia.', 3600);
   searchState = { q:searchState.q, results:[], busy:false };
   await render();
