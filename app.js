@@ -45,7 +45,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.62.0';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
+const VERSION = 'v2.63.0';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
    flex-basis:0），按鈕不准被擠扁（flex:0 0 auto）；長字串（網址、英文長字）也允許換行。 */
@@ -2607,7 +2607,7 @@ const PIC_L = {
   zh:{ lib:'免費圖庫', libBtn:'🖼 從免費圖庫選', title:'Pexels 免費圖庫',
        ph:'想找什麼樣的畫面…', search:'搜尋', more:'再多一些', loading:'載入中…',
        noKey:'還沒設定 Pexels 金鑰。到 pexels.com/api 免費申請一把，貼進 app.js 最上面的 PEXELS_KEY 就可以用了。',
-       err:'連不上圖庫，請稍後再試', none:'找不到相符的照片，換個字試試',
+       err:'連不上圖庫，請稍後再試，或改用上方「內建圖庫」', none:'找不到相符的照片，換個字試試',
        by:'攝影：', picked:'已選好這張照片', loadingPic:'下載照片中…',
        hint:'照片來自 Pexels，免費可商用。挑一張當卡片背景，字會自動壓上一層遮罩。',
        presets:[['風景','landscape'],['日出','sunrise'],['天空','sky'],['海','ocean'],
@@ -2617,7 +2617,7 @@ const PIC_L = {
   zs:{ lib:'免费图库', libBtn:'🖼 从免费图库选', title:'Pexels 免费图库',
        ph:'想找什么样的画面…', search:'搜索', more:'再多一些', loading:'载入中…',
        noKey:'还没设定 Pexels 密钥。到 pexels.com/api 免费申请一把，贴进 app.js 最上面的 PEXELS_KEY 就可以用了。',
-       err:'连不上图库，请稍后再试', none:'找不到相符的照片，换个字试试',
+       err:'连不上图库，请稍后再试，或改用上方「内建图库」', none:'找不到相符的照片，换个字试试',
        by:'摄影：', picked:'已选好这张照片', loadingPic:'下载照片中…',
        hint:'照片来自 Pexels，免费可商用。挑一张当卡片背景，字会自动压上一层遮罩。',
        presets:[['风景','landscape'],['日出','sunrise'],['天空','sky'],['海','ocean'],
@@ -2627,7 +2627,7 @@ const PIC_L = {
   en:{ lib:'Free photo library', libBtn:'🖼 Pick a free photo', title:'Pexels free photos',
        ph:'What kind of scene…', search:'Search', more:'Load more', loading:'Loading…',
        noKey:'No Pexels key yet. Get a free one at pexels.com/api and paste it into PEXELS_KEY at the top of app.js.',
-       err:'Cannot reach the photo library — try again later', none:'Nothing found — try another word',
+       err:'Cannot reach the photo library — try again later, or use the built-in gallery above', none:'Nothing found — try another word',
        by:'Photo: ', picked:'Photo chosen', loadingPic:'Downloading the photo…',
        hint:'Photos from Pexels — free to use. Pick one as the card background; the text gets a soft overlay automatically.',
        presets:[['Landscape','landscape'],['Sunrise','sunrise'],['Sky','sky'],['Ocean','ocean'],
@@ -2816,21 +2816,29 @@ function openAiGen(){
   $('#aigGen', mask).onclick = async () => {
     if (busy) return; busy = true;
     const sh = AIG_SHAPES.find(x => x[0] === aigSh) || AIG_SHAPES[0];
-    const url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(pr.value) + '?width=' + sh[2] + '&height=' + sh[3]
-      + '&nologo=true&model=flux&seed=' + Math.floor(Math.random() * 1e6);
     msg.textContent = L.wait;
-    try{
-      const ctl = new AbortController(); const tm = setTimeout(() => ctl.abort(), 90000);
-      const r = await fetch(url, { mode:'cors', signal: ctl.signal }); clearTimeout(tm);
-      if (!r.ok) throw new Error('http ' + r.status);
-      const blob = await r.blob();
-      if (!/^image\//.test(blob.type)) throw new Error('type');
-      const obj = URL.createObjectURL(blob);
-      const im = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('decode')); i.src = obj; });
-      if (!photoMode) photoMode = 'full';
-      setPhoto(im, 'AI'); plSave(im, 'AI');
-      mask.remove(); toast(L.ok); await studioRefresh();
-    }catch(e){ msg.textContent = L.fail; }
+    /* v2.63.0：最多試兩次（第二次換 seed），每次 60 秒逾時；等待時顯示已等幾秒；全失敗就提示改用「複製提示詞」 */
+    const t0 = Date.now(), tick = setInterval(() => { msg.textContent = L.wait + '（' + Math.round((Date.now() - t0) / 1000) + 's）'; }, 1000);
+    let done = false;
+    for (let at = 0; at < 2 && !done; at++){
+      const url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(pr.value) + '?width=' + sh[2] + '&height=' + sh[3]
+        + '&nologo=true&model=flux&seed=' + Math.floor(Math.random() * 1e6);
+      try{
+        const ctl = new AbortController(); const tm = setTimeout(() => ctl.abort(), 60000);
+        let r; try{ r = await fetch(url, { mode:'cors', signal: ctl.signal }); } finally { clearTimeout(tm); }
+        if (!r.ok) throw new Error('http ' + r.status);
+        const blob = await r.blob();
+        if (!/^image\//.test(blob.type)) throw new Error('type');
+        const obj = URL.createObjectURL(blob);
+        const im = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('decode')); i.src = obj; });
+        if (!photoMode) photoMode = 'full';
+        setPhoto(im, 'AI'); plSave(im, 'AI');
+        done = true;
+        clearInterval(tick); mask.remove(); toast(L.ok); await studioRefresh();
+      }catch(e){ if (at === 0) msg.textContent = L3('第一次沒成功，自動再試一次…', '第一次没成功，自动再试一次…', 'First try failed — retrying…'); }
+    }
+    clearInterval(tick);
+    if (!done) msg.textContent = L.fail + L3('（免費服務偶爾忙線，可稍後再試，或按「複製提示詞」到下面的工具生成）', '（免费服务偶尔忙线，可稍后再试，或按「复制提示词」到下面的工具生成）', ' (the free service is sometimes busy — retry later, or copy the prompt into a tool below)');
     busy = false;
   };
 }
@@ -3281,7 +3289,23 @@ const CARD_BORDERS = [ ['classic',['古典雙框','古典双框','Classic Double
 const CARD_FONT_TITLE = () => L3('字體與文字顏色','字体与文字颜色','Font and text colour');
 const CARD_FS = [[0.9,['小一點','小一点','Smaller']], [1,['標準','标准','Standard']], [1.2,['大','大','Large']],
                  [1.45,['特大','特大','Extra Large']], [1.7,['超大','超大','Huge']]];
-let cardImg = null, cardOverflow = '';   /* v2.62.0：''／'note'（領受放不下已省略）／'verse'（經文太長已縮到最小） */
+/* v2.63.0：依經文與領受長度，試幾組尺寸／字級，挑第一組放得下的 */
+function cardAutoFit(){
+  const h = studioItem; if (!h) return '';
+  const cands = [['t', 1.2], ['t', 1], ['p', 1.2], ['p', 1], ['p', .9]];
+  const sz0 = state.cardSize, fs0 = state.cardFs;
+  let pickC = cands[cands.length - 1];
+  for (const c of cands){
+    state.cardSize = c[0]; state.cardFs = c[1];
+    const [W, H] = CARD_SIZES[c[0]], cv = document.createElement('canvas');
+    drawVerseCard(cv, h, Math.round(W / 2), Math.round(H / 2));
+    if (!cardOverflow){ pickC = c; break; }
+  }
+  state.cardSize = pickC[0]; state.cardFs = pickC[1];
+  if (sz0 === pickC[0] && fs0 === pickC[1]) return L3('目前的尺寸與字級已經合適', '目前的尺寸与字级已经合适', 'Current size and text size already fit');
+  return L3('已選「', '已选「', 'Chose "') + pick2(CARD_SIZES[pickC[0]][2]) + L3('」與合適字級', '」与合适字级', '" and a fitting text size');
+}
+let cardImg = null, cardOut = null, cardOverflow = '';   /* v2.62.0：''／'note'（領受放不下已省略）／'verse'（經文太長已縮到最小） */
 const cardTpl = () => CARD_TPL[state.cardTpl] ? state.cardTpl : 'navy';
 const cardSize = () => CARD_SIZES[state.cardSize] ? state.cardSize : 't';
 const cardBorder = () => CARD_BORDERS.some(b => b[0] === state.cardBorder) ? state.cardBorder : 'classic';
@@ -4194,7 +4218,7 @@ function drawVerseCard(cv, h, W, H){
 function cardBlob(url){
   const b = atob(url.split(',')[1]), a = new Uint8Array(b.length);
   for (let i = 0; i < b.length; i++) a[i] = b.charCodeAt(i);
-  return new Blob([a], { type:'image/png' });
+  return new Blob([a], { type:/^data:([^;,]+)/.exec(url)[1] });
 }
 /* 卡片尺寸：「整張原圖」模式下，卡片就是相片本身的比例；其他模式照所選尺寸 */
 function cardDims(){
@@ -4210,6 +4234,8 @@ function renderCard(h){
   const cv = document.createElement('canvas');
   drawVerseCard(cv, h, W, H);
   cardImg = cv.toDataURL('image/png');
+  /* v2.63.0：有相片的卡片輸出成 JPEG（品質 .92，檔案小很多，LINE 本來就會再壓縮）；純色卡片維持 PNG 保持銳利 */
+  cardOut = (photoImg || stkImg) ? cv.toDataURL('image/jpeg', .92) : cardImg;
   const box = $('#cardPv');
   if (box) box.innerHTML = `<img src="${cardImg}" alt="">`;
   cardWarnPaint();
@@ -4303,23 +4329,25 @@ function openHoldSave(src){
 }
 async function cardDownload(){
   if (!cardImg) return;
-  const name = '321bible-' + Date.now() + '.png';
+  const mime = /^data:image\/jpeg/.test(cardOut || '') ? 'image/jpeg' : 'image/png', ext = mime === 'image/jpeg' ? '.jpg' : '.png';
+  const name = '321bible-' + Date.now() + ext;
   if (isIOS()){
-    const f = new File([cardBlob(cardImg)], name, { type:'image/png' });
+    const f = new File([cardBlob(cardOut)], name, { type:mime });
     if (navigator.canShare && navigator.canShare({ files:[f] })){
       toast(t().saveIOS, 5000);
       try{ await navigator.share({ files:[f], title: t().app }); return; }
       catch(e){ if (e && e.name === 'AbortError') return; }
     }
-    openHoldSave(cardImg); return;
+    openHoldSave(cardOut); return;
   }
   const a = document.createElement('a');
-  a.href = cardImg; a.download = name; a.click();
+  a.href = cardOut; a.download = name; a.click();
   toast(t().savedFile, 3200);
 }
 async function cardShare(){
   if (!cardImg) return;
-  const f = new File([cardBlob(cardImg)], '321bible.png', { type:'image/png' });
+  const mime = /^data:image\/jpeg/.test(cardOut || '') ? 'image/jpeg' : 'image/png';
+  const f = new File([cardBlob(cardOut)], '321bible' + (mime === 'image/jpeg' ? '.jpg' : '.png'), { type:mime });
   if (navigator.canShare && navigator.canShare({ files:[f] })){
     try{ await navigator.share({ files:[f], title: t().app }); return; }
     catch(e){ if (e && e.name === 'AbortError') return; }
@@ -5415,6 +5443,7 @@ async function viewStudio(v){
 
     ${FULL ? '' : `
     <div class="section-title">${esc(L.cardStyle)}</div>
+    <button class="btn block gold" id="cardAuto" style="margin:8px 0 4px">${esc(L3('✨ 一鍵調整：依經文長度自動選尺寸與字級', '✨ 一键调整：依经文长度自动选尺寸与字级', '✨ Auto-fit: pick size and text size for this verse'))}</button>
     ${chips('cTpl', CARD_ORDER.map(k => [k, CARD_TPL[k].n]), cardTpl(), 't')}
     <div class="section-title">${esc(L.cardBorder)}</div>
     ${chips('cBrd', CARD_BORDERS, cardBorder(), 'b')}
@@ -5571,6 +5600,7 @@ async function viewStudio(v){
   const bind = (sel, fn) => $$(sel, v).forEach(b => b.onclick = () => { fn(b); });
   bind('#cTpl button', b => { state.cardTpl = b.dataset.t; saveState(); studioRefresh(); });
   bind('#cBrd button', b => { state.cardBorder = b.dataset.b; saveState(); studioRefresh(); });
+  const ca = $('#cardAuto'); if (ca) ca.onclick = () => { const r = cardAutoFit(); toast(r, 3200); saveState(); studioRefresh(); };
   bind('#cSz  button', b => { state.cardSize = b.dataset.z; saveState(); studioRefresh(); });
   bind('#cFont button', b => { Object.keys(IBF).forEach(k => { if (IBF[k] !== 'ok' && IBF[k] !== 'loading') delete IBF[k]; }); state.cardFont = b.dataset.f; saveState(); studioRefresh(); });
   bind('#cInk button', b => { state.cardInk = b.dataset.c; saveState(); studioRefresh(); });

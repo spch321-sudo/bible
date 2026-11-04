@@ -28,3 +28,5 @@ jobs:
         run: node scripts/par-test.js
       - name: 美圖版面與對比測試
         run: node scripts/card-test.js
+      - name: 美圖工作室測試
+        run: node scripts/studio-test.js
