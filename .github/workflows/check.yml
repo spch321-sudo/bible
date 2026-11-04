@@ -22,3 +22,5 @@ jobs:
       - run: npm i --no-save playwright && npx playwright install --with-deps chromium
       - name: 冒煙測試（每種語言冷啟動與切換）
         run: node scripts/smoke.js
+      - name: 朗讀測試（發音回歸、快取、失敗回復、語速、定時）
+        run: node scripts/tts-test.js

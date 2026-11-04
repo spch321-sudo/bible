@@ -45,7 +45,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.59.0';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
+const VERSION = 'v2.60.0';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
    flex-basis:0），按鈕不准被擠扁（flex:0 0 auto）；長字串（網址、英文長字）也允許換行。 */
@@ -546,7 +546,7 @@ const VOICES = {
 const DEFAULTS = { lang:'zh', font:0, theme:0, flow:false, shCh:true, shV:true, hidenote:false,
                    cardTpl:'plain', cardSize:'p', cardBorder:'none', cardFs:1.45, cardFont:'auto', cardInk:'',
                    cardTop:'', cardSign:'', cardTo:'親愛的家人：平安！', cardGreet:'', photoLast:'', photoMode:'full',
-                   voice:{zh:0, zs:0, en:0, ko:0, ja:0, id:0, tl:0, my:0, vi:0, th:0, ms:0, ar:0, he:0, el:0, pt:0, fa:0, sw:0, ta:0, am:0, uk:0, bn:0, hi:0, ne:0, lo:0, ceb:0, es:0, fr:0, de:0, it:0, ru:0}, ttsAutoNext:false, beauty:true, planRemindOn:false,
+                   voice:{zh:0, zs:0, en:0, ko:0, ja:0, id:0, tl:0, my:0, vi:0, th:0, ms:0, ar:0, he:0, el:0, pt:0, fa:0, sw:0, ta:0, am:0, uk:0, bn:0, hi:0, ne:0, lo:0, ceb:0, es:0, fr:0, de:0, it:0, ru:0}, ttsAutoNext:false, ttsRate:1, beauty:true, planRemindOn:false,
                    audience:'adult', alen:'mid', skbg:'none' };
 /* 「淨」鍵依序切換的四種組合：[整卷連讀?, 顯示章號?] */
 /* 「淨」鍵循環的四種常用讀法：[整卷連讀, 顯示章, 顯示節] */
@@ -1981,6 +1981,7 @@ async function viewReader(v, bookId, ch){
         <button class="chtb-btn" id="rdPlay" title="${esc(L.ttsPlay)}">▶</button>
         <button class="chtb-btn" id="rdPause" title="${esc(L.ttsPause)}">⏸</button>
         <button class="chtb-btn" id="rdStop" title="${esc(L.ttsStop)}">⏹</button>
+        <button class="chtb-btn" id="rdSleep" title="${esc(L3('睡前定時：關／15／30／60 分鐘／唸完這章', '睡前定时：关／15／30／60 分钟／念完这章', 'Sleep timer: off / 15 / 30 / 60 min / end of chapter'))}">⏲</button>
       </span>
     </div>
     ${bmMode ? `<div class="bm-hint">${esc(L.bmHint)}</div>` : ''}
@@ -2015,6 +2016,7 @@ async function viewReader(v, bookId, ch){
   $('#rdPlay').onclick  = () => ttsStart();
   $('#rdPause').onclick = () => ttsPauseNow();
   $('#rdStop').onclick  = () => ttsStop();
+  $('#rdSleep').onclick = () => ttsSleepCycle(); ttsSleepPaint();
 
   const navBook = d => {
     ttsStop();
@@ -7984,6 +7986,11 @@ async function viewMe(v){
         <button class="${state.hidenote ? 'on' : ''}" data-i="1">${esc(L.onoff[1])}</button></div></div>
       <div class="setrow"><div class="sl">${esc(L.voice)}</div><div class="segbtns" id="setVoice">
         ${VOICES[state.lang].map((v2, i) => `<button class="${state.voice[state.lang] === i ? 'on' : ''}" data-i="${i}">${esc(v2.n)}</button>`).join('')}</div></div>
+      <div class="setrow"><div class="sl">${esc(L3('朗讀速度', '朗读速度', 'Reading speed'))}
+        <div class="muted" style="font-size:11.5px;line-height:1.6">${esc(L3('慢一點比較聽得清楚，按了馬上生效', '慢一点比较听得清楚，按了马上生效', 'Applies right away'))}</div></div>
+        <div class="segbtns" id="setRate">
+        ${[[0.85, L3('慢', '慢', 'Slow')], [1, L3('標準', '标准', 'Normal')], [1.2, L3('快', '快', 'Fast')]].map(r => `<button class="${ttsRateNow() === r[0] ? 'on' : ''}" data-r="${r[0]}">${esc(r[1])}</button>`).join('')}
+        </div></div>
       <div class="setrow"><div class="sl">${esc(L.ttsAutoNext)}
         <div class="muted" style="font-size:11.5px;line-height:1.6">${esc(L.ttsAutoNextHint[state.ttsAutoNext ? 0 : 1])}</div></div>
         <div class="segbtns" id="setAutoNext">
@@ -8047,6 +8054,7 @@ async function viewMe(v){
   $$('#setShV  button', v).forEach(b => b.onclick = () => { state.shV  = b.dataset.i === '0'; saveState(); applyChrome(); render(); });
   $$('#setNote button', v).forEach(b => b.onclick = () => { state.hidenote = b.dataset.i === '1'; saveState(); applyChrome(); render(); });
   $$('#setVoice button', v).forEach(b => b.onclick = () => { state.voice[state.lang] = +b.dataset.i; saveState(); render(); });
+  $$('#setRate button', v).forEach(b => b.onclick = () => { state.ttsRate = +b.dataset.r; saveState(); try{ if (spk.audio) ttsApplyRate(spk.audio); if (ttsEl) ttsApplyRate(ttsEl); }catch(e){} render(); });
   $$('#setAutoNext button', v).forEach(b => b.onclick = () => { state.ttsAutoNext = b.dataset.i === '0'; saveState(); render(); });
   const sortedMarks = user.marks.slice().sort((a, b2) => b2.ts - a.ts);
   $$('[data-bmgo]', v).forEach(b => b.onclick = () => openAt(sortedMarks[+b.dataset.bmgo]));
@@ -8424,6 +8432,11 @@ function ttsPrep(s){
 /* 一次送出去的語音仍然是好幾句接在一起（少一點請求、語氣才連得順），
    但畫面上的顏色標示要「一句一句」跟著走，不是整段一起亮。
    所以每一段都記下裡面每一句各佔多少字，播放時依進度比例算出正在讀哪一句。 */
+/* 標亮用的權重：字數＋逗號／句號的停頓（140／260 毫秒，換算成字數） */
+function ttsWeight(p){
+  const cps = isEP() ? 14 : 4.6;
+  return Math.max(1, p.length + 0.14 * cps * (p.match(/[，、；：,;:]/g) || []).length + 0.26 * cps * (p.match(/[。！？.!?]/g) || []).length);
+}
 function buildQueue(all){
   let els = $$('#reader .sent');
   if (!all){
@@ -8439,7 +8452,7 @@ function buildQueue(all){
     cur.text += txt;
     cur.els = cur.els.concat(g);
     cur.segs.push(g);
-    cur.lens.push(Math.max(1, ttsPrep(txt).length));
+    cur.lens.push(ttsWeight(ttsPrep(txt)));
   });
   push();
   return items.filter(i => ttsPrep(i.text).length > 0);
@@ -8539,9 +8552,9 @@ let ttsEl = null, ttsUnlocked = false, ttsLastErr = '';
    等太久還沒等到 onend／onended，就當作已經唸完，自己往下一段推進。 */
 let ttsWatchdog = null;
 function ttsClearWatchdog(){ if (ttsWatchdog){ clearTimeout(ttsWatchdog); ttsWatchdog = null; } }
-function ttsArmWatchdog(text, gen, cb){
-  ttsClearWatchdog();
-  const ms = Math.min(120000, Math.max(15000, ttsPrep(text).length * 480 + 10000));
+function ttsArmWatchdog(text, gen, cb, ms0){
+  ttsClearWatchdog(); spk.wdCb = cb;
+  const ms = ms0 || Math.min(120000, Math.max(15000, ttsPrep(text).length * 480 / ttsRateNow() + 10000));
   ttsWatchdog = setTimeout(() => {
     ttsWatchdog = null;
     if (gen === spk.gen && spk.on && !spk.abort) cb();
@@ -8566,24 +8579,54 @@ function ttsUnlock(){
     else ttsUnlocked = true;
   }catch(e){}
 }
-/* 日文／印尼文的雲端語音尚未驗證：第一次逾時或失敗後，本次開啟 App 期間直接改用裝置內建語音，不再讓每一句都等 */
-const TTS_BAD = {};
-async function ttsFetch(text, voice){
-  const lg = state.lang, unverified = false;   // Worker 已支援各語言語音（v2.26.4），不再另外縮短逾時
-  if (unverified && TTS_BAD[lg]) throw new Error('cloud voice skipped');
+/* ===== v2.60.0：語速、音檔快取、失敗回復 ===== */
+const ttsRateNow = () => { const r = +state.ttsRate; return (r === 0.85 || r === 1.2) ? r : 1; };
+function ttsApplyRate(a){ try{ const r = ttsRateNow(); a.defaultPlaybackRate = r; a.playbackRate = r; if ('preservesPitch' in a) a.preservesPitch = true; }catch(e){} }
+/* 音檔存在手機：快取名稱不能用 ib- 開頭（sw.js 更新時會清掉 ib- 開頭的快取）；鍵用雜湊，不把經文或小智的回答直接當網址 */
+const TTS_CACHE = 'tts-audio', TTS_CACHE_MAX = 300;
+function ttsKey(voice, text){
+  const s = voice + '|' + TTS_RATE + '|' + TTS_SIL + ',' + TTS_SILC + ',' + TTS_SILE + '|' + text;
+  let h1 = 0x811c9dc5, h2 = 5381;
+  for (let i = 0; i < s.length; i++){ const c = s.charCodeAt(i); h1 = Math.imul(h1 ^ c, 16777619) >>> 0; h2 = (Math.imul(h2, 33) ^ c) >>> 0; }
+  return location.origin + '/__tts/' + h1.toString(36) + h2.toString(36) + s.length.toString(36);
+}
+async function ttsCacheGet(key){
+  try{
+    if (!('caches' in window)) return '';
+    const c = await caches.open(TTS_CACHE), r = await c.match(key); if (!r) return '';
+    const bl = await r.blob(); if (bl.size < 128) return '';
+    return URL.createObjectURL(new Blob([bl], { type:'audio/mpeg' }));
+  }catch(e){ return ''; }
+}
+async function ttsCachePut(key, buf){
+  try{
+    if (!('caches' in window)) return;
+    const c = await caches.open(TTS_CACHE);
+    await c.put(key, new Response(buf.slice(0), { headers:{ 'Content-Type':'audio/mpeg' } }));
+    const ks = await c.keys();
+    for (let k = 0; k < ks.length - TTS_CACHE_MAX; k++) await c.delete(ks[k]);   // 超過上限就刪最舊的
+  }catch(e){}
+}
+/* 雲端連不上時，20 秒內其餘各段不再空等，直接改用裝置語音；按 ▶ 開新一輪時重新試 */
+let ttsDownUntil = 0;
+async function ttsFetch(text, voice, quick){
+  const key = ttsKey(voice, text);
+  const hit = await ttsCacheGet(key); if (hit) return hit;
+  if (Date.now() < ttsDownUntil) throw new Error('cloud paused');
   const body = JSON.stringify({ voice, rate: TTS_RATE, sil: TTS_SIL, silc: TTS_SILC, sile: TTS_SILE, text });
-  for (let a = 0; a <= TTS_RETRY.length; a++){
+  const tries = quick ? 1 : TTS_RETRY.length;     // quick＝第一段或已經失敗過：6 秒、重試 1 次，最壞約 13 秒
+  for (let a = 0; a <= tries; a++){
     try{
-      const ac = new AbortController(); const tm = setTimeout(() => ac.abort(), unverified ? 6000 : 15000);
+      const ac = new AbortController(); const tm = setTimeout(() => ac.abort(), quick ? 6000 : 15000);
       const r = await fetch(API.tts, { method:'POST', headers:{'Content-Type':'application/json'}, body, signal: ac.signal }).finally(() => clearTimeout(tm));
       if (!r.ok) throw new Error('http ' + r.status);
       const buf = await r.arrayBuffer();
       if (!buf || buf.byteLength < 128) throw new Error('empty audio');
+      ttsDownUntil = 0; ttsCachePut(key, buf);
       return URL.createObjectURL(new Blob([buf], { type:'audio/mpeg' }));
     }catch(e){
       ttsLastErr = (e && e.message) ? String(e.message) : 'network';
-      if (unverified){ TTS_BAD[lg] = true; throw e; }
-      if (a === TTS_RETRY.length) throw e;
+      if (a === tries){ ttsDownUntil = Date.now() + 20000; throw e; }
       await new Promise(r => setTimeout(r, TTS_RETRY[a]));
     }
   }
@@ -8599,8 +8642,8 @@ async function ttsPrefetch(i, gen){
   const it = spk.items[i]; if (!it || spk.cache[i]) return;
   if (gen !== spk.gen) return;      // 這一輪已經被换掉了，抓回來的東西不要再塞進新的一輪
   const voice = VOICES[state.lang][state.voice[state.lang]].v;
-  try{ const url = await ttsFetch(ttsPrep(it.text), voice); if (gen === spk.gen) spk.cache[i] = url; }
-  catch(e){ if (gen === spk.gen) spk.cache[i] = null; }
+  try{ const url = await ttsFetch(ttsPrep(it.text), voice, i === spk.first || spk.failed); if (gen === spk.gen){ spk.cache[i] = url; spk.failed = false; } }
+  catch(e){ if (gen === spk.gen){ spk.cache[i] = null; spk.failed = true; } }
 }
 async function ttsPlayFrom(i, gen){
   if (!spk.on || spk.abort || gen !== spk.gen) return;
@@ -8615,11 +8658,12 @@ async function ttsPlayFrom(i, gen){
   if (!spk.on || spk.abort || gen !== spk.gen) return;
   const url = spk.cache[i];
   if (!url){ return ttsNativeFrom(i, gen); }
+  spk.native = false;
   ttsBtn('playing');
   const a = ttsAudio(); spk.audio = a;
   const old = a.src;
   a.onended = null; a.onerror = null; a.ontimeupdate = null;
-  a.src = url;
+  a.src = url; ttsApplyRate(a);
   if (old && old.startsWith('blob:')){ try{ URL.revokeObjectURL(old); }catch(e){} }
   /* 依播放進度把顏色標示往下一句移——聲音還是整段連著唸，畫面是一句一句 */
   a.ontimeupdate = () => {
@@ -8641,12 +8685,18 @@ async function ttsPlayFrom(i, gen){
   try{
     const p = a.play();
     /* 保底：背景／鎖屏時瀏覽器偶爾會悄悄不觸發 onended，等太久就當作唸完自己往下推 */
-    ttsArmWatchdog(spk.items[i].text, gen, () => {
+    const wd = () => {
       if (spk.idx !== i) return;
       a.onended = null; a.onerror = null;
       try{ a.pause(); }catch(e){}
       ttsPlayFrom(i + 1, gen);
-    });
+    };
+    ttsArmWatchdog(spk.items[i].text, gen, wd);
+    /* 知道音檔實際長度後，看門狗改為「長度÷語速＋5 秒」，不再多等幾十秒 */
+    a.onloadedmetadata = a.ondurationchange = () => {
+      if (gen === spk.gen && spk.idx === i && !spk.paused && isFinite(a.duration) && a.duration > 0)
+        ttsArmWatchdog('', gen, wd, (a.duration / ttsRateNow()) * 1000 + 5000);
+    };
     if (p && p.catch) await p;
   }catch(e){
     ttsClearWatchdog();
@@ -8657,7 +8707,7 @@ async function ttsPlayFrom(i, gen){
 function ttsNativeFrom(i, gen){
   if (gen !== spk.gen) return;
   if (!('speechSynthesis' in window)){ toast(t().ttsErr); ttsStop(true); return; }
-  if (!spk.native){ spk.native = true;
+  spk.native = true; if (!spk.toasted){ spk.toasted = true;
     let msg = t().ttsFallback + (ttsLastErr ? '（' + ttsLastErr + '）' : '');
     try{
       const want = isRU() ? 'ru' : isIT() ? 'it' : isDE() ? 'de' : isFR() ? 'fr' : isES() ? 'es' : isCB() ? 'fil' : isLO() ? 'lo' : isNE() ? 'ne' : isHI() ? 'hi' : isAR() ? 'ar' : isHE() ? 'he' : isBN() ? 'bn' : isUK() ? 'uk' : isAM() ? 'am' : isTA() ? 'ta' : isSW() ? 'sw' : isFA() ? 'fa' : isPT() ? 'pt' : isEL() ? 'el' : isMS() ? 'ms' : isTH() ? 'th' : isVI() ? 'vi' : isMY() ? 'my' : isTL() ? 'fil' : isID() ? 'id' : isJA() ? 'ja' : isKO() ? 'ko' : '';
@@ -8669,15 +8719,15 @@ function ttsNativeFrom(i, gen){
   if (!spk.on || spk.abort || i >= spk.items.length){ ttsStop(i >= spk.items.length); return; }
   spk.idx = i; raShow(spk.items[i]); ttsBtn('playing');
   const say = ttsPrep(spk.items[i].text);
-  const u = new SpeechSynthesisUtterance(say);
+  const u = new SpeechSynthesisUtterance(say); u.rate = ttsRateNow();
   u.lang = isRU() ? 'ru-RU' : isIT() ? 'it-IT' : isDE() ? 'de-DE' : isFR() ? 'fr-FR' : isES() ? 'es-MX' : isCB() ? 'fil-PH' : isLO() ? 'lo-LA' : isNE() ? 'ne-NP' : isHI() ? 'hi-IN' : isAR() ? 'ar-SA' : isHE() ? 'he-IL' : isBN() ? 'bn-BD' : isUK() ? 'uk-UA' : isAM() ? 'am-ET' : isTA() ? 'ta-IN' : isSW() ? 'sw-KE' : isFA() ? 'fa-IR' : isPT() ? 'pt-BR' : isEL() ? 'el-GR' : isMS() ? 'ms-MY' : isTH() ? 'th-TH' : isVI() ? 'vi-VN' : isMY() ? 'my-MM' : isTL() ? 'fil-PH' : isID() ? 'id-ID' : isJA() ? 'ja-JP' : isKO() ? 'ko-KR' : (isEN() ? 'en-US' : (isZS() ? 'zh-CN' : 'zh-TW')); u.rate = .95;
   /* 裝置語音給得到字元位置，就直接照位置換句子 */
   u.onboundary = e => {
     if (!spk.on || spk.abort || spk.idx !== i || gen !== spk.gen) return;
     if (say.length) raProgress(spk.items[i], (e.charIndex || 0) / say.length);
   };
-  u.onend = () => { ttsClearWatchdog(); if (spk.on && !spk.abort && gen === spk.gen) ttsNativeFrom(i + 1, gen); };
-  u.onerror = () => { ttsClearWatchdog(); if (spk.on && !spk.abort && gen === spk.gen) ttsNativeFrom(i + 1, gen); };
+  u.onend = () => { ttsClearWatchdog(); if (spk.on && !spk.abort && gen === spk.gen) ttsPlayFrom(i + 1, gen); };
+  u.onerror = () => { ttsClearWatchdog(); if (spk.on && !spk.abort && gen === spk.gen) ttsPlayFrom(i + 1, gen); };
   try{
     speechSynthesis.speak(u);
     /* 保底：WKWebView（iOS PWA）的 speechSynthesis 偶爾唸完不觸發 onend，
@@ -8686,7 +8736,7 @@ function ttsNativeFrom(i, gen){
       if (spk.idx !== i) return;
       u.onend = null; u.onerror = null;
       try{ speechSynthesis.cancel(); }catch(e){}
-      ttsNativeFrom(i + 1, gen);
+      ttsPlayFrom(i + 1, gen);
     });
   }catch(e){ ttsClearWatchdog(); ttsStop(); }
 }
@@ -8710,7 +8760,8 @@ function ttsStart(){
   }
   if (!items.length) return;
   const myGen = ++ttsGen;   // 開新的一輪，舊一輪不管做到哪裡，回來時號碼對不上就自動放手
-  spk = { on:true, paused:false, items, idx:startIdx, audio:null, cache:{}, native:false, abort:false, gen:myGen };
+  ttsDownUntil = 0;
+  spk = { on:true, paused:false, items, idx:startIdx, audio:null, cache:{}, native:false, abort:false, gen:myGen, first:startIdx, failed:false, toasted:false };
   ttsBtn('loading');
   ttsPlayFrom(startIdx, myGen);
 }
@@ -8729,11 +8780,14 @@ function ttsResumePlaying(){
   ttsBtn('playing');
   try{
     if (spk.native){ if ('speechSynthesis' in window) speechSynthesis.resume(); }
-    else if (spk.audio){ const p = spk.audio.play(); if (p && p.catch) p.catch(() => {}); }
+    else if (spk.audio){ const a = spk.audio, p = a.play(); if (p && p.catch) p.catch(() => {});
+      if (spk.wdCb && isFinite(a.duration) && a.duration > 0) ttsArmWatchdog('', spk.gen, spk.wdCb, Math.max(3000, ((a.duration - a.currentTime) / ttsRateNow()) * 1000 + 5000)); }
   }catch(e){}
 }
 /* ⏹ 停止：natural=true 表示唸到整段結尾自然結束，不是使用者按停——這時候沒有「接續點」可言 */
 function ttsStop(natural){
+  const noNext = natural && ttsSleep.mode === 4;      // 睡前定時選了「唸完這章」：這章唸完就停，不接下一章
+  ttsSleepClear();
   ttsClearWatchdog();
   if (sayId !== null){ sayId = null; paintSay(); }
   if (spk.on && !natural){
@@ -8749,7 +8803,48 @@ function ttsStop(natural){
   spk.audio = null;
   try{ if ('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){}
   raClear(); ttsBtn('');
-  if (natural) ttsMaybeAutoNext();
+  if (natural && !noNext) ttsMaybeAutoNext();
+}
+/* ===== 睡前定時：關／15／30／60 分鐘／唸完這章。時間到先淡出 5 秒再停（停在原位，明天按 ▶ 可接續） ===== */
+const ttsSleep = { mode:0, t:null };
+const SLEEP_MIN = [0, 15, 30, 60, 0];
+function ttsSleepPaint(){
+  const b = document.getElementById('rdSleep'); if (!b) return;
+  const m = ttsSleep.mode;
+  b.textContent = '⏲' + (m === 4 ? L3('章', '章', 'Ch') : (m ? SLEEP_MIN[m] : ''));
+  b.classList.toggle('on', m > 0);
+}
+function ttsSleepClear(){ if (ttsSleep.t){ clearTimeout(ttsSleep.t); ttsSleep.t = null; } ttsSleep.mode = 0; ttsSleepPaint(); }
+function ttsSleepCycle(){
+  if (ttsSleep.t){ clearTimeout(ttsSleep.t); ttsSleep.t = null; }
+  ttsSleep.mode = (ttsSleep.mode + 1) % 5;
+  const m = ttsSleep.mode;
+  if (m >= 1 && m <= 3) ttsSleep.t = setTimeout(ttsSleepFire, SLEEP_MIN[m] * 60000);
+  ttsSleepPaint();
+  toast(m === 0 ? L3('已取消睡前定時', '已取消睡前定时', 'Sleep timer off')
+     : m === 4 ? L3('唸完這一章就停', '念完这一章就停', 'Will stop at the end of this chapter')
+     : L3(SLEEP_MIN[m] + ' 分鐘後停止朗讀', SLEEP_MIN[m] + ' 分钟后停止朗读', 'Will stop in ' + SLEEP_MIN[m] + ' min'));
+}
+function ttsSleepFire(){
+  ttsSleep.t = null;
+  if (!spk.on){ ttsSleepClear(); return; }
+  const a = spk.audio; let v = 1;
+  const step = setInterval(() => {
+    v -= 0.2;
+    if (!spk.on){ clearInterval(step); try{ if (a) a.volume = 1; }catch(e){} return; }
+    try{ if (a && v > 0) a.volume = Math.max(0, v); }catch(e){}
+    if (v <= 0){ clearInterval(step); ttsStop(); try{ if (a) a.volume = 1; }catch(e){} }
+  }, 1000);
+}
+/* 鎖屏／耳機的上一段、下一段：換一個新的 gen 重新從那一段開始 */
+function ttsJump(d){
+  if (!spk.on || !spk.items.length) return;
+  const to = Math.max(0, Math.min(spk.items.length - 1, spk.idx + d));
+  const g = ++ttsGen; spk.gen = g; spk.abort = false; spk.paused = false;
+  ttsClearWatchdog();
+  try{ if (spk.audio){ spk.audio.onended = null; spk.audio.onerror = null; spk.audio.pause(); } }catch(e){}
+  try{ if ('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){}
+  ttsBtn('loading'); ttsPlayFrom(to, g);
 }
 /* 一章自然唸完時（不是使用者按停），看設定要不要自動接下一章：
    整卷連讀本來就整卷唸完才會停，不需要再翻頁；分章模式才適用。
@@ -8778,31 +8873,53 @@ function ttsSayStop(){
   try{ if ('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){}
   sayId = null; paintSay();
 }
+/* 把長文依句子切成每段不超過 max 字，一句不拆開 */
+function ttsSplitText(s, max){
+  const out = []; let cur = '';
+  String(s).split(/(?<=[。！？!?；;\n])/).forEach(x => {
+    if (cur && cur.length + x.length > max){ out.push(cur); cur = ''; }
+    cur += x;
+    while (cur.length > max * 2){ out.push(cur.slice(0, max)); cur = cur.slice(max); }   // 沒有標點的超長句才硬切
+  });
+  if (cur.trim()) out.push(cur);
+  return out;
+}
+/* v2.60.0：小智回答完整朗讀（以前超過 900 字會被截斷）。依句子切成約 250 字一段，一段一段唸，
+   下一段先在背後抓；沿用快取、失敗改裝置語音、語速。 */
 async function ttsSpeakText(text, id){
   ttsUnlock();
   const clean = ttsPrep(mdSpeak(text));   // 表格先說成人話，再送去合成
   if (!clean) return;
   const voice = VOICES[state.lang][state.voice[state.lang]].v;
+  const alive = () => id == null || sayId === id;
   const done = () => { if (id == null || sayId === id) ttsSayStop(); };
-  try{
-    const url = await ttsFetch(clean.slice(0, 900), voice);
-    if (id != null && sayId !== id) return;          // 等的時候他已經按停了
-    const a = ttsAudio();
-    const old = a.src;
-    a.onended = null; a.onerror = null;
-    a.src = url;
+  const lang = () => isRU() ? 'ru-RU' : isIT() ? 'it-IT' : isDE() ? 'de-DE' : isFR() ? 'fr-FR' : isES() ? 'es-MX' : '';
+  const chunks = ttsSplitText(clean, isEP() ? 600 : 250);
+  const playUrl = url => new Promise(res => {
+    const a = ttsAudio(), old = a.src;
+    a.onended = a.onerror = a.onpause = null;
+    a.src = url; ttsApplyRate(a);
     if (old && old.startsWith('blob:')){ try{ URL.revokeObjectURL(old); }catch(e){} }
-    a.onended = done;
-    a.onerror = done;
-    const p = a.play(); if (p && p.catch) await p;
-  }catch(e){
-    if ('speechSynthesis' in window){
-      const u = new SpeechSynthesisUtterance(clean);
-      u.lang = isRU() ? 'ru-RU' : isIT() ? 'it-IT' : isDE() ? 'de-DE' : isFR() ? 'fr-FR' : isES() ? 'es-MX' : isCB() ? 'fil-PH' : isLO() ? 'lo-LA' : isNE() ? 'ne-NP' : isHI() ? 'hi-IN' : isAR() ? 'ar-SA' : isHE() ? 'he-IL' : isBN() ? 'bn-BD' : isUK() ? 'uk-UA' : isAM() ? 'am-ET' : isTA() ? 'ta-IN' : isSW() ? 'sw-KE' : isFA() ? 'fa-IR' : isPT() ? 'pt-BR' : isEL() ? 'el-GR' : isMS() ? 'ms-MY' : isTH() ? 'th-TH' : isVI() ? 'vi-VN' : isMY() ? 'my-MM' : isTL() ? 'fil-PH' : isID() ? 'id-ID' : isJA() ? 'ja-JP' : isKO() ? 'ko-KR' : (isEN() ? 'en-US' : (isZS() ? 'zh-CN' : 'zh-TW'));
-      u.onend = done; u.onerror = done;
-      speechSynthesis.speak(u); toast(t().ttsFallback);
-    } else { toast(t().ttsErr); done(); }
+    const fin = () => { a.onended = a.onerror = a.onpause = null; res(); };
+    a.onended = fin; a.onerror = fin; a.onpause = fin;      // 使用者按停（pause）也要結束這一段
+    const p = a.play(); if (p && p.catch) p.catch(fin);
+  });
+  const sayNative = tx => new Promise(res => {
+    if (!('speechSynthesis' in window)){ toast(t().ttsErr); res(); return; }
+    const u = new SpeechSynthesisUtterance(tx); u.rate = ttsRateNow();
+    const lg = lang(); if (lg) u.lang = lg;
+    u.onend = u.onerror = () => res();
+    speechSynthesis.speak(u);
+  });
+  let nextP = ttsFetch(chunks[0], voice, true).catch(() => null), toasted = false;
+  for (let k = 0; k < chunks.length; k++){
+    const url = await nextP; if (!alive()) return;
+    nextP = k + 1 < chunks.length ? ttsFetch(chunks[k + 1], voice, k > 0 || !url).catch(() => null) : null;
+    if (url) await playUrl(url);
+    else { if (!toasted){ toasted = true; toast(t().ttsFallback); } await sayNative(chunks[k]); }
+    if (!alive()) return;
   }
+  done();
 }
 
 /* ================================================================ v2.12.0 補強（依 321 互動聖經功能套件）
@@ -8918,6 +9035,7 @@ function msSet(){
       navigator.mediaSession.setActionHandler('play', () => { try{ ttsStart(); }catch(e){} });
       navigator.mediaSession.setActionHandler('pause', () => { try{ ttsPauseNow(); }catch(e){} });
       navigator.mediaSession.setActionHandler('stop', () => { try{ ttsStop(); }catch(e){} });
+      try{ navigator.mediaSession.setActionHandler('previoustrack', () => ttsJump(-1)); navigator.mediaSession.setActionHandler('nexttrack', () => ttsJump(1)); }catch(e){}
     }
     navigator.mediaSession.playbackState = 'playing';
   }catch(e){}
