@@ -45,7 +45,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.64.0';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
+const VERSION = 'v2.64.1';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
    flex-basis:0），按鈕不准被擠扁（flex:0 0 auto）；長字串（網址、英文長字）也允許換行。 */
@@ -10264,8 +10264,21 @@ async function boot(){
     await loadTOC();
     openWDB();                       // 作品庫（不擋開機）
     embedBoot();
+    /* v2.64.1 切出去再回來不丟位置：微信／iOS 會在背景回收網頁，重新載入後原本回到首頁。離開時記下頁面與捲動位置，2 小時內重新載入就回到原處 */
+    let resumeY = 0;
+    try{
+      const rs = JSON.parse(localStorage.getItem('ib_resume') || 'null');
+      const h0 = location.hash, plain = !h0 || h0 === '#/today' || h0 === '#/' || h0 === '#';
+      if (rs && rs.h && Date.now() - rs.t < 7200000 && plain && !/[?&](join|screen)=/.test(location.search) && /^#\/read\//.test(rs.h)){ location.hash = rs.h; resumeY = rs.y || 0; }
+    }catch(e){}
     if (!location.hash) location.hash = '#/today';
     await render();
+    if (resumeY){ [60, 400, 1200].forEach(d => setTimeout(() => { if (!document.body.scrollTop && window.scrollY < 5){ window.scrollTo(0, resumeY); document.body.scrollTop = resumeY; } }, d)); }
+    { const saveResume = () => { try{ if (/^#\/read\//.test(location.hash)) localStorage.setItem('ib_resume', JSON.stringify({ h:location.hash, y:Math.round(document.body.scrollTop || window.scrollY || 0), t:Date.now() })); else localStorage.removeItem('ib_resume'); }catch(e){} };
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveResume(); });
+      window.addEventListener('pagehide', saveResume);
+      let rt = 0; document.addEventListener('scroll', () => { clearTimeout(rt); rt = setTimeout(saveResume, 1500); }, { passive:true, capture:true });
+      window.addEventListener('hashchange', () => setTimeout(saveResume, 300)); }
     crBoot();
   }catch(e){
     $('#bootText').textContent = '載入失敗：' + (e.message || e);
