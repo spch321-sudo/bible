@@ -45,7 +45,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.64.4';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
+const VERSION = 'v2.64.5';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
    flex-basis:0），按鈕不准被擠扁（flex:0 0 auto）；長字串（網址、英文長字）也允許換行。 */
@@ -1552,6 +1552,8 @@ async function loadPlans(){
 const planTitle = p => (p.title[state.lang] || (isX() && p.title.en) || p.title.zh);
 const planSubtitle = p => (p.subtitle[state.lang] || (isX() && p.subtitle.en) || p.subtitle.zh);
 const planDayKey = (pid, day) => pid + '-' + day;
+/* v2.64.5：三年計畫是週一到週五讀，760 個「讀經日」不是日曆天，單位寫成讀經日（繁／簡／英；其他語言維持原單位） */
+const planUnit = (p, L0) => p && p.id === 'immerse3' ? (state.lang === 'zh' ? '讀經日' : state.lang === 'zs' ? '读经日' : state.lang === 'en' ? 'reading days' : L0.planDaysUnit) : L0.planDaysUnit;
 function planDoneCount(pid){
   let n = 0; const pfx = pid + '-';
   for (const k in user.plan.done) if (k.indexOf(pfx) === 0) n++;
@@ -1735,7 +1737,7 @@ function paintPair(v, p, today){
     const note = !mine ? '' : diff === 0 ? L3('你們讀到同樣的進度，一起往前！', '你们读到同样的进度，一起往前！', 'You are at the same place. Keep going together!')
       : diff > 0 ? L3(`對方比你多讀 ${diff} 天，一起追上吧`, `对方比你多读 ${diff} 天，一起追上吧`, `They are ${diff} day(s) ahead; catch up together`)
       : L3(`你比對方多讀 ${-diff} 天，可以鼓勵他`, `你比对方多读 ${-diff} 天，可以鼓励他`, `You are ${-diff} day(s) ahead; encourage them`);
-    return `<div class="pairrow"><div class="tmavatar">${esc((m.nick || '?').slice(0, 1))}</div><div class="meta"><div class="t">${esc(m.nick || '?')}　<span class="muted" style="font-size:12px">${s.done} / ${s.total} ${esc(t().planDaysUnit)}（${pc}%）</span></div>
+    return `<div class="pairrow"><div class="tmavatar">${esc((m.nick || '?').slice(0, 1))}</div><div class="meta"><div class="t">${esc(m.nick || '?')}　<span class="muted" style="font-size:12px">${s.done} / ${s.total} ${esc(planUnit({id:s.id}, t()))}（${pc}%）</span></div>
       <div class="tmbar" style="margin:5px 0"><i style="width:${pc}%"></i></div>
       <div class="s">${esc(L3('今天讀', '今天读', 'Today'))}：${esc(pairLabel(s))}　·　${esc(pairAgo(s.ts))}</div>
       ${note ? `<div class="s" style="margin-top:3px">${esc(note)}</div>` : ''}</div></div>`;
@@ -1743,7 +1745,7 @@ function paintPair(v, p, today){
   box.innerHTML = `<div class="card pairbox"><div class="pairhead"><div class="pill">${esc(title)}　${esc(tm ? tm.name : code)}</div>
       <div><button class="btn sm" id="pairSync">⟳ ${esc(L3('同步', '同步', 'Sync'))}</button> <button class="btn sm" id="pairOff">${esc(L3('取消連結', '取消连结', 'Unlink'))}</button></div></div>
     ${rows || `<div class="muted" style="font-size:13px;line-height:1.7;margin-top:8px">${esc(L3('團隊裡還沒有其他人。把團隊代碼傳給對方，請他加入並開始同一個計畫。', '团队里还没有其他人。把团队代码传给对方，请他加入并开始同一个计划。', 'No one else is on the team yet. Send them the team code and ask them to join and start the same plan.'))}</div>`}
-    <div class="muted" style="font-size:12px;margin-top:8px">${esc(L3('你的進度', '你的进度', 'Your progress'))}：${myDone} / ${p.totalDays} ${esc(t().planDaysUnit)}　·　${esc(L3('團隊代碼', '团队代码', 'Team code'))} ${esc(code)}</div></div>`;
+    <div class="muted" style="font-size:12px;margin-top:8px">${esc(L3('你的進度', '你的进度', 'Your progress'))}：${myDone} / ${p.totalDays} ${esc(planUnit(p, t()))}　·　${esc(L3('團隊代碼', '团队代码', 'Team code'))} ${esc(code)}</div></div>`;
   $('#pairSync', box).onclick = () => pairPull(v, p, today, true);
   $('#pairOff', box).onclick = () => { delete user.plan.pair[pid]; saveUser(); paintPair(v, p, today); };
 }
@@ -1780,7 +1782,7 @@ function planWeeksHtml(rows, pid, todayIdx){
     const open = seg.some(d => d.day === todayIdx);
     const wkInfo = P_WEEKS && P_WEEKS[wk];
     html += `<details class="grp" ${open ? 'open' : ''}>
-      <summary><span style="color:var(--gold)">◆</span>${esc(t().planWeek(wk))}${wkInfo ? '　' + esc(cpL(wkInfo.t)) : ''}<span class="cnt">${seg.length} ${esc(t().planDaysUnit)}</span></summary>
+      <summary><span style="color:var(--gold)">◆</span>${esc(t().planWeek(wk))}${wkInfo ? '　' + esc(cpL(wkInfo.t)) : ''}<span class="cnt">${seg.length} ${esc(planUnit({id:pid}, t()))}</span></summary>
       <div>${seg.map(d => planRowHtml(d, pid, todayIdx)).join('')}</div></details>`;
     i = j;
   }
@@ -1814,7 +1816,7 @@ async function viewPlan(v){
           ? `<div class="section-title" id="cpHead" style="margin-top:18px">${esc(L3('陪讀計畫：陪伴別人一起讀','陪读计划：陪伴别人一起读','Companion plans: read together with someone'))}</div>
              <div class="muted" style="font-size:12.5px;line-height:1.65;margin:0 4px 10px">${esc(L3('每週附上「陪讀指引」：本週重點、可以一起聊的三個問題、一句禱告，還能請小智幫你預備。','每周附上“陪读指引”：本周重点、可以一起聊的三个问题、一句祷告，还能请小智帮你预备。','Each week comes with a companion guide: a focus, three questions to talk through, a prayer, and Xiaozhi can help you prepare.'))}</div>` : '';
         return head + `<div class="card plancard">
-          <div class="pill">${comp ? esc(L3('陪讀','陪读','Companion')) + ' · ' : ''}${p.totalDays} ${esc(L.planDaysUnit)}</div>
+          <div class="pill">${comp ? esc(L3('陪讀','陪读','Companion')) + ' · ' : ''}${p.totalDays} ${esc(planUnit(p, L))}</div>
           <h3>${esc(planTitle(p))}</h3>
           <div class="muted" style="font-size:13px;line-height:1.6;margin-bottom:12px">${esc(planSubtitle(p))}</div>
           <button class="btn gold block" data-start="${pid}">${esc(L.planStart)}</button>
@@ -1848,7 +1850,7 @@ async function viewPlan(v){
         </svg>
         <div style="flex:1">
           <h3 style="margin:0">${esc(planTitle(p))}</h3>
-          <div class="muted">${doneN} / ${p.totalDays} ${esc(L.planDaysUnit)}</div>
+          <div class="muted">${doneN} / ${p.totalDays} ${esc(planUnit(p, L))}</div>
         </div>
       </div>
       <div style="margin-top:14px">
