@@ -46,7 +46,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.65.1';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
+const VERSION = 'v2.66.0';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
    flex-basis:0），按鈕不准被擠扁（flex:0 0 auto）；長字串（網址、英文長字）也允許換行。 */
@@ -132,7 +132,7 @@ const I18N = {
         spanHint:'按 ＋ 往下多畫一句，畫線就不只一句，可以連成一整段。',
         spanIsV:'這一節已經整節畫起來了', spanIsP:'這一段已經整段畫起來了',
         spanDoneV:n=>`已畫整節，共 ${n} 句`, spanDoneP:n=>`已畫整段，共 ${n} 句`,
-        team:'團隊', myHl:'我的畫線', myFav:'我的收藏', settings:'設定', font:'字級大小', theme:'主題',
+        team:'小家', myHl:'我的畫線', myFav:'我的收藏', settings:'設定', font:'字級大小', theme:'主題',
         fonts:['標準','大','特大','超大'], themes:['自動','日','夜','羊皮紙'],
         voice:'朗讀聲音', ttsAutoNext:'讀完自動接下一章',
         ttsAutoNextHint:['一章朗讀完會自動翻到下一章繼續唸','讀完這一章就停下來，不會自動翻頁'],
@@ -234,7 +234,7 @@ const I18N = {
         spanHint:'按 ＋ 往下多划一句，划线就不只一句，可以连成一整段。',
         spanIsV:'这一节已经整节划起来了', spanIsP:'这一段已经整段划起来了',
         spanDoneV:n=>`已划整节，共 ${n} 句`, spanDoneP:n=>`已划整段，共 ${n} 句`,
-        team:'团队', myHl:'我的划线', myFav:'我的收藏', settings:'设置', font:'字级大小', theme:'主题',
+        team:'小家', myHl:'我的划线', myFav:'我的收藏', settings:'设置', font:'字级大小', theme:'主题',
         fonts:['标准','大','特大','超大'], themes:['自动','日','夜','羊皮纸'],
         voice:'朗读声音', ttsAutoNext:'读完自动接下一章',
         ttsAutoNextHint:['一章朗读完会自动翻到下一章继续念','读完这一章就停下来，不会自动翻页'],
@@ -338,7 +338,7 @@ const I18N = {
         spanHint:'Tap ＋ to take in the next sentence, so a highlight can cover a whole passage.',
         spanIsV:'The whole verse is already highlighted', spanIsP:'The whole paragraph is already highlighted',
         spanDoneV:n=>`Whole verse — ${n} sentence${n===1?'':'s'}`, spanDoneP:n=>`Whole paragraph — ${n} sentence${n===1?'':'s'}`,
-        team:'Team', myHl:'My highlights', myFav:'My saved replies', settings:'Settings', font:'Text size', theme:'Theme',
+        team:'Group', myHl:'My highlights', myFav:'My saved replies', settings:'Settings', font:'Text size', theme:'Theme',
         fonts:['Normal','Large','Larger','Largest'], themes:['Auto','Day','Night','Parchment'],
         voice:'Reading voice', ttsAutoNext:'Auto-continue to next chapter',
         ttsAutoNextHint:['When a chapter finishes reading aloud, automatically move on to the next one','Stop when this chapter ends — no automatic page turn'],
@@ -2250,7 +2250,7 @@ function watchProgress(bookId, flow, total){
 
 function markRead(bookId, ch){
   const k = bookId + '-' + ch;
-  if (!user.progress[k]){ user.progress[k] = Date.now(); saveUser(); teamPingSoon(); planAutoCheck(bookId, ch); }
+  if (!user.progress[k]){ user.progress[k] = Date.now(); saveUser(); teamPingSoon(); planAutoCheck(bookId, ch); xjPlanHook(); }
 }
 /* 讀經計畫「讀完自行圈選」：不管是使用者自己滑到章節底，還是朗讀（TTS）自動接
    下一章唸完，最後都會經過這裡的 markRead() 幫這一章打勾——這裡接住同一個動作，
@@ -6087,7 +6087,7 @@ async function viewTeam(v, code, sub){
       </div>`;
   }).join('');
 
-  v.innerHTML = (window.xjEntryHtml ? xjEntryHtml() : '') + `
+  v.innerHTML = (window.xjGroupsHtml ? xjGroupsHtml() : '') + `
     <div class="card" style="background:var(--accent-soft); border-color:var(--accent)">
       <h3 style="color:var(--accent-ink)">${esc(L.t235)}</h3>
       <div class="muted" style="line-height:1.9">${esc(L.intro)}</div>
@@ -6153,7 +6153,7 @@ async function viewTeam(v, code, sub){
 }
 
 /* ================================================================ 團隊：團隊裡面 */
-const TM_SUBS = ['feed', 'pray', 'wall', 'reward', 'member'];
+const TM_SUBS = ['feed', 'chat', 'pray', 'wall', 'reward', 'member'];
 function memberList(tm){
   return Object.entries(tm.members || {}).map(([uid, m]) => Object.assign({ uid }, m));
 }
@@ -6170,7 +6170,7 @@ function idleDays(m){
 
 async function viewTeamRoom(v, code, sub){
   const L = tl();
-  TEAM.sub = TM_SUBS.includes(sub) ? sub : 'feed';
+  TEAM.sub = TM_SUBS.includes(sub) && sub !== 'chat' ? sub : 'feed';
   const cached = teamCached(code);
   if (cached){ TEAM.code = code; TEAM.data = cached; paintTeam(v); }
   else v.innerHTML = `<div class="empty">${esc(L.syncing)}</div>`;
@@ -6250,7 +6250,7 @@ function paintTeam(v){
       </div>` : `<div class="card tmcare ok"><div class="muted">${esc(L.careOk)}</div></div>`}
 
     <div class="cardchips tmsubs" id="tmSubs">
-      ${TM_SUBS.map(s => `<button data-s="${s}" class="${s === TEAM.sub ? 'on' : ''}">${esc(L.tabs[s])}</button>`).join('')}
+      ${TM_SUBS.map(s => `<button data-s="${s}" class="${s === TEAM.sub ? 'on' : ''}">${esc(L.tabs[s] || L3('💬 聊天', '💬 聊天', '💬 Chat'))}</button>`).join('')}
     </div>
     <div id="tmBody"></div>`;
 
@@ -6259,7 +6259,10 @@ function paintTeam(v){
   const gb = $('#tmGoalBtn'); if (gb) gb.onclick = () => openGoalSheet(tm);
   const gg = $('#tmGoalGo');
   if (gg && gg.classList.contains('link')) gg.onclick = () => go(`#/read/${gg.dataset.b}/${gg.dataset.c}`);
-  $$('#tmSubs button').forEach(b => b.onclick = () => { TEAM.sub = b.dataset.s; paintTeam(v); });
+  $$('#tmSubs button').forEach(b => b.onclick = () => {
+    if (b.dataset.s === 'chat'){ if (window.XJ321) XJ321.openChat('TM' + tm.code, tm.name); else toast(L3('載入中…', '载入中…', 'Loading…')); return; }
+    TEAM.sub = b.dataset.s; paintTeam(v);
+  });
   $$('[data-care]').forEach(b => b.onclick = () => openCareSheet(tm, b.dataset.care));
   $$('[data-mem]').forEach(b => b.onclick = () => { TEAM.sub = 'member'; paintTeam(v); });
 
@@ -10354,7 +10357,7 @@ PACK_LANGS.forEach(l => { if (window[l.toUpperCase() + '_PACK']) attachPack(l); 
    建立／加入小家（可多個）、小家聊天室（文字、相片、檔案、語音、貼圖）、今天完成讀經的家人名字＋獎勵、
    小家消息、關懷名單。後端沿用 church-news（小家本身）與 church-chat v4（聊天、附件、今天完成、關懷）。
    路由 #/xj、#/xjchat、#/xjcare；存檔前綴 ib_，和其他 App 的小家分開。入口在「團隊」頁最上面。 */
-var XJ_T2S = {"並": "并", "亞": "亚", "佈": "布", "來": "来", "係": "系", "個": "个", "們": "们", "傳": "传", "儲": "储", "內": "内", "兩": "两", "別": "别", "刪": "删", "則": "则", "剛": "刚", "動": "动", "務": "务", "勵": "励", "參": "参", "啟": "启", "單": "单", "嗎": "吗", "國": "国", "圖": "图", "團": "团", "堅": "坚", "實": "实", "寫": "写", "將": "将", "對": "对", "導": "导", "幾": "几", "張": "张", "後": "后", "從": "从", "愛": "爱", "懷": "怀", "換": "换", "擊": "击", "數": "数", "斷": "断", "時": "时", "書": "书", "會": "会", "樂": "乐", "標": "标", "樣": "样", "機": "机", "檔": "档", "權": "权", "歡": "欢", "沒": "没", "瀏": "浏", "為": "为", "燈": "灯", "獎": "奖", "獻": "献", "現": "现", "畫": "画", "當": "当", "發": "发", "確": "确", "碼": "码", "禱": "祷", "種": "种", "稱": "称", "穌": "稣", "筆": "笔", "節": "节", "紀": "纪", "約": "约", "細": "细", "組": "组", "結": "结", "絡": "络", "給": "给", "經": "经", "網": "网", "綴": "缀", "線": "线", "繼": "继", "續": "续", "聖": "圣", "聯": "联", "聲": "声", "腳": "脚", "與": "与", "舊": "旧", "華": "华", "著": "着", "處": "处", "補": "补", "裝": "装", "裡": "里", "製": "制", "複": "复", "親": "亲", "覽": "览", "計": "计", "訊": "讯", "託": "托", "記": "记", "設": "设", "許": "许", "詞": "词", "試": "试", "詩": "诗", "話": "话", "認": "认", "語": "语", "誠": "诚", "說": "说", "課": "课", "請": "请", "謝": "谢", "譯": "译", "讀": "读", "讓": "让", "讚": "赞", "貼": "贴", "資": "资", "載": "载", "輸": "输", "這": "这", "連": "连", "進": "进", "過": "过", "選": "选", "還": "还", "錄": "录", "錯": "错", "鐘": "钟", "長": "长", "閉": "闭", "開": "开", "間": "间", "閱": "阅", "關": "关", "隊": "队", "隨": "随", "隱": "隐", "離": "离", "靈": "灵", "頁": "页", "頂": "顶", "頭": "头", "題": "题", "願": "愿", "類": "类", "顧": "顾", "顯": "显", "風": "风", "馬": "马", "麥": "麦", "麼": "么", "點": "点"};
+var XJ_T2S = {"並": "并", "亞": "亚", "佈": "布", "來": "来", "係": "系", "個": "个", "們": "们", "傳": "传", "儲": "储", "兒": "儿", "內": "内", "兩": "两", "別": "别", "刪": "删", "則": "则", "剛": "刚", "動": "动", "務": "务", "勵": "励", "參": "参", "問": "问", "啟": "启", "單": "单", "嗎": "吗", "國": "国", "圖": "图", "團": "团", "堅": "坚", "實": "实", "寫": "写", "將": "将", "對": "对", "導": "导", "屬": "属", "幾": "几", "張": "张", "後": "后", "從": "从", "愛": "爱", "懷": "怀", "換": "换", "擊": "击", "數": "数", "斷": "断", "時": "时", "書": "书", "會": "会", "樂": "乐", "標": "标", "樣": "样", "機": "机", "檔": "档", "權": "权", "歡": "欢", "沒": "没", "瀏": "浏", "為": "为", "燈": "灯", "獎": "奖", "獻": "献", "現": "现", "畫": "画", "當": "当", "發": "发", "確": "确", "碼": "码", "禱": "祷", "種": "种", "稱": "称", "穌": "稣", "筆": "笔", "節": "节", "紀": "纪", "約": "约", "細": "细", "組": "组", "結": "结", "絡": "络", "給": "给", "經": "经", "網": "网", "綴": "缀", "線": "线", "繼": "继", "續": "续", "聖": "圣", "聯": "联", "聲": "声", "職": "职", "腳": "脚", "與": "与", "舊": "旧", "華": "华", "著": "着", "處": "处", "補": "补", "裝": "装", "裡": "里", "製": "制", "複": "复", "親": "亲", "覽": "览", "計": "计", "訊": "讯", "託": "托", "記": "记", "設": "设", "許": "许", "詞": "词", "試": "试", "詩": "诗", "話": "话", "認": "认", "語": "语", "誠": "诚", "說": "说", "課": "课", "請": "请", "謝": "谢", "譯": "译", "讀": "读", "讓": "让", "讚": "赞", "責": "责", "貼": "贴", "資": "资", "載": "载", "輸": "输", "這": "这", "連": "连", "進": "进", "過": "过", "選": "选", "還": "还", "錄": "录", "錯": "错", "鐘": "钟", "長": "长", "閉": "闭", "開": "开", "間": "间", "閱": "阅", "關": "关", "隊": "队", "隨": "随", "隱": "隐", "離": "离", "靈": "灵", "頁": "页", "頂": "顶", "頭": "头", "題": "题", "願": "愿", "類": "类", "顧": "顾", "顯": "显", "風": "风", "馬": "马", "麥": "麦", "麼": "么", "點": "点"};
 function xjZs(t){ t = String(t == null ? '' : t); let o = ''; for (let i = 0; i < t.length; i++){ const c = t.charAt(i); o += XJ_T2S[c] || c; } return o; }
 const XJR = { pages: {}, after: null };
 window.X321 = window.X321 || {};
@@ -10363,8 +10366,12 @@ window.X321.xj = {
   prefix: 'ib_', appZh: '321互動聖經', appEn: '321 Interactive Bible',
   whereZh: '「團隊」→「我的小家」', whereEn: 'Team → My Small Group',
   wordZh: '讀經', wordEn: 'Bible reading',
-  hintZh: '讀完讀經計畫裡今天的經文，會自動打卡；沒有用讀經計畫，讀完後按一下也可以。', hintEn: 'Finishing today’s reading in your Bible plan checks you in automatically; without a plan, just tap after reading.',
+  hintZh: '今天讀了任何一章（或完成讀經計畫的進度），就會自動打卡；也可以讀完後自己按一下。', hintEn: 'Reading any chapter today (or finishing your plan’s reading) checks you in automatically; you can also tap after reading.',
   didToday: () => xjPlanToday(),
+  getNick: () => String(user.nick || '').trim(),
+  setNick: n => { user.nick = n; saveUser(); },
+  teamCounts: () => { const o = { t2:0, t3:0, t5:0 }; (user.teams || []).forEach(x => { const k = 't' + x.kind; if (k in o) o[k]++; }); return o; },
+  groupExtra: X => xjGroup235(X),
   go: r => go('#/' + r),
   render: r => { if ((currentRoute()[0] || 'today') === r) render(); },
   route: () => currentRoute()[0] || 'today',
@@ -10381,11 +10388,16 @@ function xjPlanToday(){
   const t0 = new Date(); t0.setHours(0, 0, 0, 0);
   const d = (user.plan && user.plan.done) || {};
   for (const k in d) if ((+d[k] || 0) >= t0.getTime()) return true;
+  const pr = user.progress || {};
+  for (const k in pr) if ((+pr[k] || 0) >= t0.getTime()) return true;
   return false;
 }
+function xjTodayStr(){ const d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
 function xjPlanHook(){
   try{
     if (!window.XJ321 || !XJ321.groups().length || !xjPlanToday()) return;
+    const td = xjTodayStr();
+    if (XJ321.groups().every(g => g.doneDay === td)) return;   /* 今天每個小家都記過了，不重複送 */
     XJ321.autoDone(() => setTimeout(() => toast(L3('已記到小家的「今天完成」', '已记到小家的「今天完成」', 'Added to “Finished today” in your small group'), 2200), 2700));
   }catch(e){}
 }
@@ -10395,6 +10407,72 @@ function viewXj(v, tab){
   v.innerHTML = '<div class="xjv">' + f() + '</div>';
   try { if (XJR.after) XJR.after(tab); } catch (e) { console.error(e); }
 }
+/* 「小家」分頁上半部：我的小家清單；下半部是原本的 235 團隊 */
+function xjGroupsHtml(){
+  const G = (window.XJ321 && XJ321.groups()) || [], td = xjTodayStr();
+  let h = '<div class="section-title">🏡 ' + esc(L3('我的小家', '我的小家', 'My small groups')) + '</div>';
+  if (!G.length) h += '<a class="card rowlink" href="#/xj" style="display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit"><div class="tmavatar">🏡</div><div class="meta"><div class="t">' + esc(L3('建立或加入小家', '建立或加入小家', 'Create or join a small group')) + '</div><div class="s">' + esc(L3('和小家家人一起讀經、聊天、彼此代禱；再從小家裡建立 2、3、5 的屬靈關係', '和小家家人一起读经、聊天、彼此代祷；再从小家里建立 2、3、5 的属灵关系', 'Read, chat and pray together — then grow 2-3-5 relationships from your group')) + '</div></div><div class="chev">›</div></a>';
+  else {
+    h += '<div class="card" style="padding:4px 14px">' + G.map(g => '<div class="rowlink" data-xjopen="' + esc(g.code) + '"><div class="tmavatar">🏡</div><div class="meta"><div class="t">' + esc(g.name) + (g.pin ? ' 🔑' : '') + '</div><div class="s">' + esc(L3('小家代碼 ', '小家代码 ', 'Code ') + g.code) + (g.doneDay === td ? ' · ✅ ' + esc(L3('今天已讀', '今天已读', 'read today')) : '') + '</div></div><div class="chev">›</div></div>').join('') + '</div>';
+    h += '<button class="btn block" data-xjopen="+" style="margin:4px 0 6px">＋ ' + esc(L3('加入或建立其他小家', '加入或建立其他小家', 'Join or create another group')) + '</button>';
+  }
+  h += '<div class="section-title" style="margin-top:26px">🤝 ' + esc(L3('我的 235 團隊', '我的 235 团队', 'My 2-3-5 teams')) + '</div>';
+  return h;
+}
+/* 小家頁裡的「這個小家的 235」：從小家裡建立屬靈同伴／父母兒女／五重團隊，登記在小家名下 */
+const XJ235 = { links: {}, at: {}, busy: {} };
+function xjLinksLoad(code, force){
+  if (!window.XJ321 || XJ235.busy[code]) return;
+  if (!force && XJ235.at[code] && Date.now() - XJ235.at[code] < 60000) return;
+  XJ235.busy[code] = 1;
+  XJ321.api('GET', '/c/' + code + '/links', null, (j) => {
+    XJ235.busy[code] = 0; XJ235.at[code] = Date.now();
+    if (j){ XJ235.links[code] = j.list || []; if ((currentRoute()[0] || '') === 'xj') render(); }
+  });
+}
+function xjGroup235(X){
+  if (!X) return '';
+  const L = tl(), list = XJ235.links[X.code], mine = {};
+  (user.teams || []).forEach(x => { mine[x.code] = 1; });
+  xjLinksLoad(X.code);
+  let h = '<div class="card" style="padding:14px"><div style="display:flex;align-items:center;gap:8px"><b style="flex:1">🤝 ' + esc(L3('這個小家的 235', '这个小家的 235', 'This group’s 2-3-5')) + '</b></div>'
+    + '<div class="note" style="margin:4px 0 10px">' + esc(L3('在小家裡結成屬靈同伴（2）、屬靈父母兒女（3）、五重職份團隊（5），一起委身讀經、分享、代禱、彼此問責。', '在小家里结成属灵同伴（2）、属灵父母儿女（3）、五重职份团队（5），一起委身读经、分享、代祷、彼此问责。', 'Within the group, form spiritual partners (2), spiritual parents & children (3) and five-fold teams (5).')) + '</div>';
+  if (list && list.length){
+    h += list.map(t => '<div class="rowlink" data-xj235="' + esc(t.team) + '" data-in="' + (mine[t.team] ? 1 : 0) + '" style="padding:10px 0"><div class="tmavatar">' + esc(t.kind || '5') + '</div><div class="meta"><div class="t">' + esc(t.name || t.team) + '</div><div class="s">' + esc((L.kinds[t.kind] || '') + ' · ' + t.team) + '</div></div><div class="chev" style="font-size:13px">' + esc(mine[t.team] ? L3('進入', '进入', 'Open') : L3('加入', '加入', 'Join')) + ' ›</div></div>').join('');
+  } else if (list) h += '<div class="note" style="margin:0 0 8px">' + esc(L3('還沒有人建立。可以從你開始：找一位家人成為屬靈同伴。', '还没有人建立。可以从你开始：找一位家人成为属灵同伴。', 'None yet — start by finding a spiritual partner in your group.')) + '</div>';
+  h += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">' + ['2', '3', '5'].map(k => '<button class="xjsm" data-xj235new="' + k + '">＋ ' + k + ' ' + esc(L.kinds[k]) + '</button>').join('') + '</div></div>';
+  return h;
+}
+async function xjNew235(k){
+  const X = window.XJ321 && XJ321.state(); if (!X) return;
+  const L = tl();
+  if (!defNick()){ const n = (XJ321.nick && XJ321.nick()) || ''; if (n){ user.nick = n; saveUser(); } else return toast(L.needNick); }
+  const name = (X.name + '・' + L.kinds[k]).slice(0, 30);
+  toast(L.syncing);
+  try{
+    const j = await teamPull(null, 'create', { name, kind:k });
+    const code = j.team.code;
+    XJ321.api('POST', '/c/' + X.code + '/link', { dev: XJ321.dev(), team: code, name, kind: k }, () => { XJ235.at[X.code] = 0; });
+    try{ XJ321.shareNow(); }catch(e){}
+    toast(L.created);
+    go('#/team/' + code);
+  }catch(e){ toast(e.message, 4000); }
+}
+async function xj235Open(code, inTeam){
+  const L = tl();
+  if (inTeam){ go('#/team/' + code); return; }
+  if (!defNick()){ const n = (XJ321.nick && XJ321.nick()) || ''; if (n){ user.nick = n; saveUser(); } else return toast(L.needNick); }
+  toast(L.syncing);
+  try{ await teamPull(code, 'join'); try{ XJ321.shareNow(); }catch(e){} toast(L.joined); go('#/team/' + code); }
+  catch(e){ toast(e.message, 4000); }
+}
+document.addEventListener('click', ev => {
+  const a = ev.target.closest && ev.target.closest('[data-xjopen],[data-xj235],[data-xj235new]');
+  if (!a || !window.XJ321) return;
+  if (a.dataset.xjopen != null){ ev.preventDefault(); XJ321.open(a.dataset.xjopen); }
+  else if (a.dataset.xj235new){ ev.preventDefault(); xjNew235(a.dataset.xj235new); }
+  else if (a.dataset.xj235){ ev.preventDefault(); xj235Open(a.dataset.xj235, a.dataset.in === '1'); }
+});
 function xjEntryHtml(){
   const X = window.XJ321 && XJ321.state(), G = (window.XJ321 && XJ321.groups()) || [];
   const sub = X ? X.name + (G.length > 1 ? L3(' 等 ' + G.length + ' 個小家', ' 等 ' + G.length + ' 个小家', ' (+' + (G.length - 1) + ' more)') : '') + L3(' · 消息、聊天室、彼此代禱', ' · 消息、聊天室、彼此代祷', ' · news, chat, prayer')

@@ -49,8 +49,8 @@
   function findGroup(c) { for (var i = 0; i < GL.length; i++) if (GL[i].code === c) return GL[i]; return null; }
   function saveDays() { ls(P + 'xjdays', JSON.stringify(DAYS)); }
   function dev() { var d = lg(P + 'xjdev'); if (!d) { d = 'f' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); ls(P + 'xjdev', d); } return d; }
-  function nick() { var n = trim(lg(P + 'xjnick') || ''); if (!n && H.myName) { try { n = trim(H.myName() || ''); } catch (e) { } } return n.slice(0, 20); }
-  function setNick(n) { ls(P + 'xjnick', trim(n).slice(0, 20)); }
+  function nick() { var n = ''; if (H.getNick) { try { n = trim(H.getNick() || ''); } catch (e) { } } if (!n) n = trim(lg(P + 'xjnick') || ''); if (!n && H.myName) { try { n = trim(H.myName() || ''); } catch (e) { } } return n.slice(0, 20); }
+  function setNick(n) { ls(P + 'xjnick', trim(n).slice(0, 20)); if (H.setNick) { try { H.setNick(trim(n).slice(0, 20)); } catch (e) { } } }
   function trim(s) { return String(s == null ? '' : s).replace(/^\s+|\s+$/g, ''); }
   function now() { return Date.now(); }
   function today() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
@@ -129,7 +129,10 @@
   function findNews(id) { var L = (DATA && DATA.news) || []; for (var i = 0; i < L.length; i++) if (L[i].id === id) return L[i]; return null; }
 
   /* ── 聊天室（church-chat）── */
-  var CC = { msgs: [], last: 0, busy: 0, re: 0, err: '', unread: 0, uAt: 0, arm: 0, sel: 0, draft: '', sending: 0 };
+  /* CC.alt＝{code,name}：借用這個聊天室介面給別的群組（例如互動聖經的 235 團隊，代碼 TM＋六碼） */
+  function ccCode() { return CC.alt ? CC.alt.code : (X ? X.code : ''); }
+  function ccName() { return CC.alt ? CC.alt.name : (X ? X.name : ''); }
+  var CC = { alt: null, msgs: [], last: 0, busy: 0, re: 0, err: '', unread: 0, uAt: 0, arm: 0, sel: 0, draft: '', sending: 0 };
   var COLS = ['#1F3C88', '#5E8A35', '#A8572E', '#6C4BA3', '#2E7D8C', '#B8473E', '#8A6510', '#3A74B0'];
   function col(w) { var n = parseInt(String(w || '0').slice(0, 6), 16) || 0; return COLS[n % COLS.length]; }
   function chatSeen() { return (X && X.chatSeen) || 0; }
@@ -151,9 +154,9 @@
     });
   }
   function pull(full) {
-    if (!X || CC.busy) return;
+    if ((!X && !CC.alt) || CC.busy) return;
     CC.busy = 1;
-    api(CHAT, 'GET', '/c/' + X.code + '/msgs?after=' + (full ? 0 : CC.last) + '&dev=' + encodeURIComponent(dev()), null, function (j, e) {
+    api(CHAT, 'GET', '/c/' + ccCode() + '/msgs?after=' + (full ? 0 : CC.last) + '&dev=' + encodeURIComponent(dev()), null, function (j, e) {
       CC.busy = 0;
       if (!j) { CC.err = e; if (!CC.msgs.length || full) paintChat(); if (full) note(errTxt(e)); return; }
       CC.err = '';
@@ -176,7 +179,7 @@
     for (var i = 0; i < CC.msgs.length; i++) {
       var m = CC.msgs[i];
       var day = fmtDay(m.ts); if (day !== lastDay) { h += '<div class="xjday"><span>' + esc(day) + '</span></div>'; lastDay = day; }
-      var q = m.re ? findMsg(m.re) : null, sel = CC.sel === m.id, isAdm = !!(X && X.pin);
+      var q = m.re ? findMsg(m.re) : null, sel = CC.sel === m.id, isAdm = !CC.alt && !!(X && X.pin);
       h += '<div class="xjm' + (m.mine ? ' mine' : '') + '">' +
         (m.mine ? '' : '<div class="xjav" style="background:' + col(m.who) + '">' + esc(String(m.nick || '?').slice(0, 1)) + '</div>') +
         '<div class="xjb">' + (m.mine ? '' : '<div class="xjn">' + esc(m.nick || '') + (m.lead ? ' · ' + esc(f9('家長', 'Leader')) : '') + '</div>') +
@@ -201,7 +204,7 @@
   ];
   function stkFind(k) { for (var i = 0; i < STKS.length; i++) if (STKS[i][0] === k) return STKS[i]; return null; }
   function stkHtml(k) { var s = stkFind(k); if (!s) return '<div class="xjt">[' + esc(f9('貼圖', 'Sticker')) + ']</div>'; return '<div class="xjstk" style="background:' + s[4] + ';color:' + s[5] + '"><span class="e">' + s[1] + '</span><b>' + esc(f9(s[2], s[3])) + '</b></div>'; }
-  function attUrl(id) { return CHAT + '/c/' + X.code + '/att/' + id; }
+  function attUrl(id) { return CHAT + '/c/' + ccCode() + '/att/' + id; }
   function fmtSize(n) { n = +n || 0; return n >= 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; }
   function attHtml(m, q) {
     var mt = m.meta || {}, qh = q ? '<div class="xjq">↩ ' + esc((q.nick || '') + '：' + (q.del ? '…' : q.text)) + '</div>' : '';
@@ -294,7 +297,7 @@
     if (CC.sending) return; CC.sending = 1;
     var btn = $('xjSend'); if (btn) btn.disabled = true;
     body.dev = dev(); body.nick = nick(); body.re = CC.re || 0; body.after = CC.last;
-    api(CHAT, 'POST', '/c/' + X.code + '/send', body, function (j, e) {
+    api(CHAT, 'POST', '/c/' + ccCode() + '/send', body, function (j, e) {
       CC.sending = 0; var b = $('xjSend'); if (b) b.disabled = false;
       var up = $('xjUp'); if (up) up.style.display = 'none';
       if (!j && (e === 'slow' || e === 'http429') && !body._r) { body._r = 1; upShow(f9('稍等一下，馬上送出…', 'Sending in a moment…')); setTimeout(function () { post(body, done); }, 1700); return; }
@@ -346,7 +349,7 @@
     box.innerHTML = listHtml();
     try { H.simp(box); } catch (e) { }
     if (nearEnd) setTimeout(function () { window.scrollTo(0, document.body.scrollHeight); }, 30);
-    if (X && CC.last > chatSeen()) { X.chatSeen = CC.last; CC.unread = 0; save(); }
+    if (X && !CC.alt && CC.last > chatSeen()) { X.chatSeen = CC.last; CC.unread = 0; save(); }
   }
   function fitChat() {
     var tb = $('tabbar'), ft = $('xjFt'); if (!ft) return;
@@ -365,7 +368,7 @@
   function delMsg(id) {
     if (CC.arm !== id) { CC.arm = id; paintChat(); return; }
     CC.arm = 0;
-    api(CHAT, 'POST', '/c/' + X.code + '/del', { id: id, dev: dev(), pin: X.pin || '' }, function (j, e) {
+    api(CHAT, 'POST', '/c/' + ccCode() + '/del', { id: id, dev: dev(), pin: CC.alt ? '' : (X.pin || '') }, function (j, e) {
       if (!j) { note(errTxt(e)); return; }
       var m = findMsg(id); if (m) { m.del = 1; m.text = ''; }
       CC.sel = 0; paintChat(); note(f9('已刪除', 'Deleted'));
@@ -400,7 +403,9 @@
   function progress() {
     var last = 0, total = 0, d7 = 0, t7 = now() - 7 * 864e5;
     for (var k in DAYS) if (Object.prototype.hasOwnProperty.call(DAYS, k)) { var ts = +DAYS[k] || 0; total++; if (ts > last) last = ts; if (ts > t7) d7++; }
-    return { total: total, last: last, d7: d7, pw: 0, pd: 0, pn: 0 };
+    var o = { total: total, last: last, d7: d7, pw: 0, pd: 0, pn: 0 };
+    if (H.teamCounts) { try { var tc = H.teamCounts() || {}; o.t2 = tc.t2 || 0; o.t3 = tc.t3 || 0; o.t5 = tc.t5 || 0; } catch (e) { } }
+    return o;
   }
   function finish() {
     var d = today(), fresh = !DAYS[d];
@@ -507,6 +512,13 @@
       if (!j && force) note(errTxt(e));
       rr('xjcare');
     });
+  }
+  /* 235 關係（互動聖經才有）：2 屬靈同伴、3 屬靈父母兒女、5 五重團隊 */
+  function rel235(m) {
+    if (m.t2 == null && m.t3 == null && m.t5 == null) return '';
+    var K = [['t2', '2', f9('同伴', 'partner')], ['t3', '3', f9('父母兒女', 'parent/child')], ['t5', '5', f9('團隊', 'team')]], h = '';
+    for (var i = 0; i < K.length; i++) { var on = (m[K[i][0]] || 0) > 0; h += '<span class="xj235' + (on ? ' on' : '') + '">' + (on ? '✓ ' : '✗ ') + K[i][1] + ' ' + esc(K[i][2]) + '</span>'; }
+    return '<div class="xj235s">' + h + '</div>';
   }
   function daysAgo(ts) { if (!ts) return -1; var a = new Date(ts), b = new Date(); a.setHours(0, 0, 0, 0); b.setHours(0, 0, 0, 0); return Math.round((b - a) / 864e5); }
   function level(m) { var d = daysAgo(m.last); if (d < 0) return 3; if (d === 0) return 0; if (d <= 2) return 1; if (d <= 6) return 2; return 3; }
@@ -715,7 +727,7 @@
     var pp = pend();
     if (!X || JN.adding || pp) return joinView();
     var h = switcher() + H.pageHead(f9('我的小家', 'MY SMALL GROUP') + (GL.length > 1 ? ' · ' + f9('共 ' + GL.length + ' 個', GL.length + ' groups') : ''), X.name || f9('我的小家', 'My Small Group'), f9('小家代碼 ', 'Group code ') + X.code);
-    h += doneCard() + todayCard() + chatCard() + careAsk();
+    h += doneCard() + todayCard() + chatCard() + (H.groupExtra ? (function () { try { return H.groupExtra(X) || ''; } catch (e) { return ''; } })() : '') + careAsk();
     if (X.pin) h += '<div class="xjadm"><button class="btn" data-xj="nnew">＋ ' + esc(f9('發佈消息', 'Post news')) + '</button><button class="btn ghost" data-xj="gocare">💌 ' + esc(f9('關懷名單', 'Care list')) + '</button><button class="btn ghost" data-xj="tools">⚙️ ' + esc(f9('家長工具', 'Leader tools')) + '</button></div>';
     h += H.sect('消', f9('小家消息', 'Group News')) + newsHtml();
     h += H.sect('我', f9('我的設定', 'My Settings')) + settingsLines();
@@ -726,10 +738,10 @@
     return h;
   };
   PAGES.xjchat = function () {
-    if (!X) return PAGES.xj();
+    if (!X && !CC.alt) return PAGES.xj();
     var q = CC.re ? findMsg(CC.re) : null;
-    var h = '<div class="xjchathd"><b>' + esc(X.name) + ' · ' + esc(f9('小家聊天室', 'Group chat')) + '</b><button class="xjsm" data-xj="cref" aria-label="refresh">⟳</button></div>' +
-      '<div class="xjtip">' + esc(f9('請彼此尊重、用愛心說誠實話；個人隱私與代禱細節請斟酌。家長可以刪除不合宜的訊息。', 'Be respectful and speak the truth in love; take care with private details. The leader can remove messages.')) + '</div>' +
+    var h = '<div class="xjchathd"><b>' + esc(ccName()) + ' · ' + esc(CC.alt ? f9('聊天室', 'Chat') : f9('小家聊天室', 'Group chat')) + '</b><button class="xjsm" data-xj="cref" aria-label="refresh">⟳</button></div>' +
+      '<div class="xjtip">' + esc(CC.alt ? f9('請彼此尊重、用愛心說誠實話；個人隱私與代禱細節請斟酌。每個人可以刪除自己的訊息。', 'Be respectful and speak the truth in love; take care with private details. You can delete your own messages.') : f9('請彼此尊重、用愛心說誠實話；個人隱私與代禱細節請斟酌。家長可以刪除不合宜的訊息。', 'Be respectful and speak the truth in love; take care with private details. The leader can remove messages.')) + '</div>' +
       '<div id="xjList" class="xjlist">' + listHtml() + '</div>' +
       '<div class="xjft" id="xjFt"><div class="in">' +
       (q ? '<div class="xjre"><span>↩ ' + esc(f9('回覆 ', 'Reply to ') + (q.nick || '')) + '：' + esc(q.text) + '</span><button data-xj="recancel">✕</button></div>' : '') +
@@ -759,7 +771,7 @@
       var when = d < 0 ? f9('還沒有完成紀錄', 'No record yet') : (d === 0 ? f9('今天完成', 'Finished today') : f9(d + ' 天前完成', d + (d > 1 ? ' days ago' : ' day ago')));
       h += '<div class="card xjcr" style="border-left:5px solid ' + COL[lv] + '"><div class="xjrow"><div class="xjav" style="background:' + col(m.who) + '">' + esc(String(m.nick || '?').slice(0, 1)) + '</div>' +
         '<div class="xjgrow" style="min-width:0"><b>' + esc(m.nick) + '</b><div style="color:' + COL[lv] + ';font-weight:700;font-size:.85em">' + ICN[lv] + ' ' + esc(when) + '</div>' +
-        '<div class="note" style="margin:0">' + esc(f9('共 ' + (m.total || 0) + ' 天', (m.total || 0) + ' days in all')) + ' · ' + esc(f9('近 7 天 ' + (m.d7 || 0) + ' 天', (m.d7 || 0) + ' of last 7 days')) + '</div></div>' +
+        '<div class="note" style="margin:0">' + esc(f9('共 ' + (m.total || 0) + ' 天', (m.total || 0) + ' days in all')) + ' · ' + esc(f9('近 7 天 ' + (m.d7 || 0) + ' 天', (m.d7 || 0) + ' of last 7 days')) + '</div>' + rel235(m) + '</div>' +
         '<button class="xjsm" data-xj="care" data-i="' + i + '">💌 ' + esc(f9('關懷', 'Care')) + '</button></div></div>';
     }
     CR2.rows = rows;
@@ -812,7 +824,7 @@
       peek();
       shareProg(false);
     }
-    if (r === 'xjchat' && X) {
+    if (r === 'xjchat' && (X || CC.alt)) {
       var ta = $('xjIn');
       if (ta) { ta.oninput = function () { growTa(ta); }; ta.onkeydown = function (e) { if (e.keyCode === 13 && !e.shiftKey && !e.isComposing && window.innerWidth > 760) { e.preventDefault(); send(); } }; if (CC.draft) growTa(ta); }
       var ph = $('xjPhoto'), fl = $('xjFile');
@@ -838,7 +850,7 @@
     else if (a === 'joinback') { JN.adding = 0; ls(P + 'xjpend', null); H.render('xj'); }
     else if (a === 'create') create();
     else if (a === 'gohome') H.go('xj');
-    else if (a === 'gochat') H.go('xjchat');
+    else if (a === 'gochat') { if (CC.alt) { CC.alt = null; resetLive(); } H.go('xjchat'); }
     else if (a === 'gocare') { CR2.list = null; CR2.err = ''; H.go('xjcare'); }
     else if (a === 'finish') { ev.stopPropagation(); finish(); }
     else if (a === 'rwclose') { var el = $('xjRw'); if (el) el.parentNode.removeChild(el); }
@@ -941,6 +953,7 @@
     '.xjvoice audio{display:block;width:230px;max-width:100%;height:40px}.xjvoice small{display:block;font-size:.74em;opacity:.8;margin-top:2px}.xjm.mine .xjvoice{background:var(--white);color:var(--ink);border-color:var(--line)}' +
     '.xjrec{align-items:center;gap:8px;background:#FDECEC;border-radius:12px;padding:8px 10px;margin-bottom:6px;color:#9B2C2C}.xjrec .dot{flex:none;width:10px;height:10px;border-radius:50%;background:#D23B3B;animation:xjBlink 1s infinite}@keyframes xjBlink{50%{opacity:.25}}' +
     '.xjsw{display:flex;gap:6px;overflow-x:auto;padding:2px 0 12px;margin:0 0 4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}.xjsw::-webkit-scrollbar{display:none}.xjsw .xjchip{white-space:nowrap;flex:none;padding:6px 12px}.xjsw .xjadd{border-style:dashed;color:var(--head)}' +
+    '.xj235s{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}.xj235{font-size:.72em;border-radius:999px;padding:1px 8px;background:#FDECEC;color:#9B2C2C;font-weight:600}.xj235.on{background:#E3F0E1;color:#2E6B32}' +
     '.xjcr{padding:12px 14px}.xjchatmode .aic-fab,.xjchatmode .help-fab{display:none!important}' +
     '@media (prefers-color-scheme:dark){html:not([data-theme="light"]) .xjtd{background:#22304A;border-color:#33445F}html:not([data-theme="light"]) .xjft,html:not([data-theme="light"]) .xjt,html:not([data-theme="light"]) .xjsm,html:not([data-theme="light"]) .xjchip,html:not([data-theme="light"]) .xjinp{background:#16243A;color:#E8EEF6}}' +
     'html[data-theme="dark"] .xjtd{background:#22304A;border-color:#33445F}html[data-theme="dark"] .xjft,html[data-theme="dark"] .xjt,html[data-theme="dark"] .xjsm,html[data-theme="dark"] .xjchip,html[data-theme="dark"] .xjinp{background:#16243A;color:#E8EEF6}' +
@@ -979,7 +992,12 @@
     for (var i = 0; i < GL.length; i++) if (GL[i].doneDay !== d) need = true;
     if (need && !autoSync.busy) { autoSync.busy = 1; autoDone(function () { autoSync.busy = 0; }); }
   }
-  window.XJ321 = { finish: finish, autoDone: autoDone, autoSync: autoSync,
+  function openChat(code, name) {
+    if (!CC.alt || CC.alt.code !== code) { CC.alt = { code: code, name: name || code }; resetLive(); }
+    H.go('xjchat');
+  }
+  window.XJ321 = { finish: finish, autoDone: autoDone, autoSync: autoSync, openChat: openChat, shareNow: function () { shareAll(true); },
+    api: function (m, path, body, cb) { api(CHAT, m, path, body, cb); }, dev: dev, nick: nick,
     open: function (c) { if (c && findGroup(c)) { CUR = c; pick(); NW.at = 0; NW.f = ''; resetLive(); save(); } JN.adding = c === '+' ? 1 : 0; H.go('xj'); }, state: function () { return X; }, groups: function () { return GL; }, unread: function () { return CC.unread; }, go: function () { H.go('xj'); } };
   /* 已經停在小家相關頁（重新載入）就重畫一次 */
   var r0 = route(); if (r0 === 'xj' || r0 === 'xjchat' || r0 === 'xjcare' || r0 === 'home' || r0 === 'connect') { try { H.render(r0); } catch (e) { } }
