@@ -46,7 +46,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.65.0';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
+const VERSION = 'v2.65.1';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
    flex-basis:0），按鈕不准被擠扁（flex:0 0 auto）；長字串（網址、英文長字）也允許換行。 */
@@ -1608,7 +1608,7 @@ function togglePlanDone(pid, day){
   saveUser();
   if (PLANS && PLANS[pid]) planSumUpdate(PLANS[pid]);
   render();
-  if (turnedOn){ const dd = PLANS && PLANS[pid] && PLANS[pid].days.find(x => x.day === day); if (dd) rwCheckBook(pid, dd.book); }
+  if (turnedOn){ const dd = PLANS && PLANS[pid] && PLANS[pid].days.find(x => x.day === day); if (dd) rwCheckBook(pid, dd.book); xjPlanHook(); }
 }
 /* ================================================================ 陪讀計畫（v2.14.0）
    kind:'companion' 的計畫（seeker 陪慕道友、disciple 陪屬靈兒女）多一份 weeks 資料：
@@ -2274,7 +2274,7 @@ async function planAutoCheck(bookId, ch){
     for (let c = d.start; c <= d.end; c++){ if (!user.progress[bookId + '-' + c]){ allRead = false; break; } }
     if (allRead){ user.plan.done[k] = Date.now(); changed = true; }
   }
-  if (changed){ saveUser(); planSumUpdate(p); toast(t().planAutoDoneToast, 2600); rwCheckBook(pid, bookId); }
+  if (changed){ saveUser(); planSumUpdate(p); toast(t().planAutoDoneToast, 2600); rwCheckBook(pid, bookId); xjPlanHook(); }
 }
 /* ============ 讀經計畫：每日提醒（本機通知，不是伺服器推播）====================
    這個App是純前端PWA，沒有一直開著的伺服器可以主動推播；只能靠瀏覽器的
@@ -10354,7 +10354,7 @@ PACK_LANGS.forEach(l => { if (window[l.toUpperCase() + '_PACK']) attachPack(l); 
    建立／加入小家（可多個）、小家聊天室（文字、相片、檔案、語音、貼圖）、今天完成讀經的家人名字＋獎勵、
    小家消息、關懷名單。後端沿用 church-news（小家本身）與 church-chat v4（聊天、附件、今天完成、關懷）。
    路由 #/xj、#/xjchat、#/xjcare；存檔前綴 ib_，和其他 App 的小家分開。入口在「團隊」頁最上面。 */
-var XJ_T2S = {"並": "并", "亞": "亚", "佈": "布", "來": "来", "係": "系", "個": "个", "們": "们", "傳": "传", "儲": "储", "內": "内", "兩": "两", "別": "别", "刪": "删", "則": "则", "剛": "刚", "動": "动", "務": "务", "勵": "励", "參": "参", "啟": "启", "單": "单", "嗎": "吗", "國": "国", "圖": "图", "團": "团", "堅": "坚", "實": "实", "寫": "写", "將": "将", "對": "对", "導": "导", "幾": "几", "張": "张", "後": "后", "從": "从", "愛": "爱", "懷": "怀", "換": "换", "擊": "击", "數": "数", "時": "时", "書": "书", "會": "会", "樂": "乐", "標": "标", "樣": "样", "機": "机", "檔": "档", "權": "权", "歡": "欢", "沒": "没", "瀏": "浏", "為": "为", "燈": "灯", "獎": "奖", "獻": "献", "現": "现", "畫": "画", "當": "当", "發": "发", "確": "确", "碼": "码", "禱": "祷", "種": "种", "稱": "称", "穌": "稣", "筆": "笔", "節": "节", "紀": "纪", "約": "约", "細": "细", "組": "组", "結": "结", "絡": "络", "給": "给", "經": "经", "網": "网", "綴": "缀", "線": "线", "繼": "继", "續": "续", "聖": "圣", "聯": "联", "聲": "声", "腳": "脚", "與": "与", "舊": "旧", "華": "华", "著": "着", "處": "处", "補": "补", "裝": "装", "裡": "里", "製": "制", "複": "复", "親": "亲", "覽": "览", "訊": "讯", "託": "托", "記": "记", "設": "设", "許": "许", "詞": "词", "試": "试", "詩": "诗", "話": "话", "認": "认", "語": "语", "誠": "诚", "說": "说", "課": "课", "請": "请", "謝": "谢", "譯": "译", "讀": "读", "讓": "让", "讚": "赞", "貼": "贴", "資": "资", "載": "载", "輸": "输", "這": "这", "連": "连", "進": "进", "過": "过", "還": "还", "錄": "录", "錯": "错", "鐘": "钟", "長": "长", "閉": "闭", "開": "开", "間": "间", "關": "关", "隊": "队", "隨": "随", "隱": "隐", "離": "离", "靈": "灵", "頁": "页", "頂": "顶", "頭": "头", "題": "题", "願": "愿", "類": "类", "顧": "顾", "顯": "显", "風": "风", "馬": "马", "麥": "麦", "麼": "么", "點": "点"};
+var XJ_T2S = {"並": "并", "亞": "亚", "佈": "布", "來": "来", "係": "系", "個": "个", "們": "们", "傳": "传", "儲": "储", "內": "内", "兩": "两", "別": "别", "刪": "删", "則": "则", "剛": "刚", "動": "动", "務": "务", "勵": "励", "參": "参", "啟": "启", "單": "单", "嗎": "吗", "國": "国", "圖": "图", "團": "团", "堅": "坚", "實": "实", "寫": "写", "將": "将", "對": "对", "導": "导", "幾": "几", "張": "张", "後": "后", "從": "从", "愛": "爱", "懷": "怀", "換": "换", "擊": "击", "數": "数", "斷": "断", "時": "时", "書": "书", "會": "会", "樂": "乐", "標": "标", "樣": "样", "機": "机", "檔": "档", "權": "权", "歡": "欢", "沒": "没", "瀏": "浏", "為": "为", "燈": "灯", "獎": "奖", "獻": "献", "現": "现", "畫": "画", "當": "当", "發": "发", "確": "确", "碼": "码", "禱": "祷", "種": "种", "稱": "称", "穌": "稣", "筆": "笔", "節": "节", "紀": "纪", "約": "约", "細": "细", "組": "组", "結": "结", "絡": "络", "給": "给", "經": "经", "網": "网", "綴": "缀", "線": "线", "繼": "继", "續": "续", "聖": "圣", "聯": "联", "聲": "声", "腳": "脚", "與": "与", "舊": "旧", "華": "华", "著": "着", "處": "处", "補": "补", "裝": "装", "裡": "里", "製": "制", "複": "复", "親": "亲", "覽": "览", "計": "计", "訊": "讯", "託": "托", "記": "记", "設": "设", "許": "许", "詞": "词", "試": "试", "詩": "诗", "話": "话", "認": "认", "語": "语", "誠": "诚", "說": "说", "課": "课", "請": "请", "謝": "谢", "譯": "译", "讀": "读", "讓": "让", "讚": "赞", "貼": "贴", "資": "资", "載": "载", "輸": "输", "這": "这", "連": "连", "進": "进", "過": "过", "選": "选", "還": "还", "錄": "录", "錯": "错", "鐘": "钟", "長": "长", "閉": "闭", "開": "开", "間": "间", "閱": "阅", "關": "关", "隊": "队", "隨": "随", "隱": "隐", "離": "离", "靈": "灵", "頁": "页", "頂": "顶", "頭": "头", "題": "题", "願": "愿", "類": "类", "顧": "顾", "顯": "显", "風": "风", "馬": "马", "麥": "麦", "麼": "么", "點": "点"};
 function xjZs(t){ t = String(t == null ? '' : t); let o = ''; for (let i = 0; i < t.length; i++){ const c = t.charAt(i); o += XJ_T2S[c] || c; } return o; }
 const XJR = { pages: {}, after: null };
 window.X321 = window.X321 || {};
@@ -10363,7 +10363,8 @@ window.X321.xj = {
   prefix: 'ib_', appZh: '321互動聖經', appEn: '321 Interactive Bible',
   whereZh: '「團隊」→「我的小家」', whereEn: 'Team → My Small Group',
   wordZh: '讀經', wordEn: 'Bible reading',
-  hintZh: '讀完今天的經文後，按一下讓家人一起歡喜。', hintEn: 'After today’s Bible reading, tap to share the joy with your group.',
+  hintZh: '讀完讀經計畫裡今天的經文，會自動打卡；沒有用讀經計畫，讀完後按一下也可以。', hintEn: 'Finishing today’s reading in your Bible plan checks you in automatically; without a plan, just tap after reading.',
+  didToday: () => xjPlanToday(),
   go: r => go('#/' + r),
   render: r => { if ((currentRoute()[0] || 'today') === r) render(); },
   route: () => currentRoute()[0] || 'today',
@@ -10375,6 +10376,19 @@ window.X321.xj = {
   rowlink: () => '', simp: () => {},
   myName: () => String((typeof user !== 'undefined' && user && user.nick) || '').trim()
 };
+/* 讀完讀經計畫當天的經文（自動圈選或手動打勾）→ 自動記到每個小家的「今天完成」，不另外跳動畫，避免打斷閱讀與朗讀 */
+function xjPlanToday(){
+  const t0 = new Date(); t0.setHours(0, 0, 0, 0);
+  const d = (user.plan && user.plan.done) || {};
+  for (const k in d) if ((+d[k] || 0) >= t0.getTime()) return true;
+  return false;
+}
+function xjPlanHook(){
+  try{
+    if (!window.XJ321 || !XJ321.groups().length || !xjPlanToday()) return;
+    XJ321.autoDone(() => setTimeout(() => toast(L3('已記到小家的「今天完成」', '已记到小家的「今天完成」', 'Added to “Finished today” in your small group'), 2200), 2700));
+  }catch(e){}
+}
 function viewXj(v, tab){
   const f = XJR.pages[tab];
   if (!f){ v.innerHTML = '<div class="empty">' + esc(L3('載入中…', '载入中…', 'Loading…')) + '</div>'; setTimeout(() => { if (XJR.pages[tab]) render(); }, 600); return; }
