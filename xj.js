@@ -225,11 +225,11 @@
       h += '<div class="xjm' + (m.mine ? ' mine' : '') + '">' +
         (m.mine ? '' : '<div class="xjav" style="background:' + col(m.who) + '">' + esc(String(m.nick || '?').slice(0, 1)) + '</div>') +
         '<div class="xjb">' + (m.mine ? '' : '<div class="xjn">' + esc(m.nick || '') + (m.lead ? ' · ' + esc(f9('家長', 'Leader')) : '') + '</div>') +
-        (m.del ? '<div class="xjt gone">' + esc(f9('這則訊息已刪除', 'Message deleted')) + '</div>' :
+        (m.del ? '<div class="xjt gone">' + esc(f9('這則訊息已收回', 'This message was unsent')) + '</div>' :
           (m.kind ? attHtml(m, q) : '<div class="xjt" data-xj="tap" data-id="' + m.id + '">' + (q ? '<div class="xjq">↩ ' + esc((q.nick || '') + '：' + (q.del ? '…' : q.text)) + '</div>' : '') + linkify(m.text) + '</div>')) +
         (sel && !m.del ? '<div class="xjacts"><button data-xj="reply" data-id="' + m.id + '">' + esc(f9('回覆', 'Reply')) + '</button><button data-xj="copy" data-id="' + m.id + '">' + esc(f9('複製', 'Copy')) + '</button>' +
           (!m.mine && !CC.dm && m.who ? '<button data-xj="dmopen" data-who="' + esc(m.who) + '" data-nick="' + esc(m.nick || '') + '">✉️ ' + esc(f9('私訊', 'Message')) + '</button>' : '') +
-          (m.mine || isAdm ? '<button data-xj="mdel" data-id="' + m.id + '">' + esc(CC.arm === m.id ? f9('再按一次刪除', 'Tap again to delete') : f9('刪除', 'Delete')) + '</button>' : '') + '</div>' : '') +
+          (m.mine || isAdm ? '<button data-xj="mdel" data-id="' + m.id + '">' + esc(m.mine ? (CC.arm === m.id ? f9('再按一次收回', 'Tap again to unsend') : '↩️ ' + f9('收回', 'Unsend')) : (CC.arm === m.id ? f9('再按一次刪除', 'Tap again to delete') : f9('刪除', 'Delete'))) + '</button>' : '') + '</div>' : '') +
         '</div><div class="xjtime">' + (m.kind && !m.del ? '<button class="xjmore" data-xj="tap" data-id="' + m.id + '" aria-label="more">⋯</button>' : '') + fmtTime(m.ts) + '</div></div>';
     }
     return h;
@@ -263,7 +263,11 @@
   function viewImg(id) {
     var old = $('xjView'); if (old) old.parentNode.removeChild(old);
     var u = attUrl(id), el = document.createElement('div'); el.id = 'xjView'; el.className = 'xjview';
-    el.innerHTML = '<img src="' + esc(u) + '" alt=""><div class="bar"><a class="xjsm" href="' + esc(u) + '" target="_blank" rel="noopener" download>' + esc(f9('下載／另存', 'Download')) + '</a><button class="xjsm" data-xj="vclose">' + esc(f9('關閉', 'Close')) + '</button></div>';
+    var mm = null; for (var i = 0; i < CC.msgs.length; i++) if (String(CC.msgs[i].att) === String(id) && !CC.msgs[i].del) mm = CC.msgs[i];
+    var canDel = mm && (mm.mine || (!CC.alt && !CC.dm && X && X.pin));
+    el.innerHTML = '<img src="' + esc(u) + '" alt=""><div class="bar"><a class="xjsm" href="' + esc(u) + '" target="_blank" rel="noopener" download>' + esc(f9('下載／另存', 'Download')) + '</a>' +
+      (canDel ? '<button class="xjsm" data-xj="vdel" data-id="' + mm.id + '" data-mine="' + (mm.mine ? 1 : 0) + '">' + esc(mm.mine ? '↩️ ' + f9('收回', 'Unsend') : f9('刪除', 'Delete')) + '</button>' : '') +
+      '<button class="xjsm" data-xj="vclose">' + esc(f9('關閉', 'Close')) + '</button></div>';
     document.body.appendChild(el);
     el.onclick = function (e) { if (e.target === el || e.target.tagName === 'IMG') el.parentNode.removeChild(el); };
   }
@@ -409,13 +413,14 @@
     var text = trim(ta ? ta.value : ''); if (!text) { note(errTxt('empty')); return; }
     post({ text: text }, function () { CC.draft = ''; var t2 = $('xjIn'); if (t2) { t2.value = ''; growTa(t2); } });
   }
-  function delMsg(id) {
-    if (CC.arm !== id) { CC.arm = id; paintChat(); return; }
+  function delMsg(id, now2) {
+    if (!now2 && CC.arm !== id) { CC.arm = id; paintChat(); return; }
     CC.arm = 0;
     api(CHAT, 'POST', '/c/' + ccCode() + '/del', { id: id, dev: dev(), pin: (CC.alt || CC.dm) ? '' : (X.pin || ''), 'with': CC.dm ? CC.dm.who : '' }, function (j, e) {
       if (!j) { note(errTxt(e)); return; }
-      var m = findMsg(id); if (m) { m.del = 1; m.text = ''; }
-      CC.sel = 0; paintChat(); note(f9('已刪除', 'Deleted'));
+      var m = findMsg(id), mine = m && m.mine; if (m) { m.del = 1; m.text = ''; }
+      var vw = $('xjView'); if (vw && vw.parentNode) vw.parentNode.removeChild(vw);
+      CC.sel = 0; paintChat(); note(mine ? f9('已收回，大家都看不到了', 'Unsent — no one can see it now') : f9('已刪除', 'Deleted'));
     });
   }
   setInterval(function () { if (route() === 'xjchat' && !document.hidden) pull(0); }, 6000);
@@ -944,6 +949,7 @@
     else if (a === 'recsend') recStop(0);
     else if (a === 'reccancel') recStop(1);
     else if (a === 'img') viewImg(id);
+    else if (a === 'vdel') { if (t.getAttribute('data-arm')) delMsg(+id, 1); else { t.setAttribute('data-arm', '1'); t.textContent = t.getAttribute('data-mine') === '1' ? f9('再按一次收回', 'Tap again to unsend') : f9('再按一次刪除', 'Tap again to delete'); t.style.background = '#C8463C'; t.style.color = '#fff'; } }
     else if (a === 'vclose') { var vw = $('xjView'); if (vw) vw.parentNode.removeChild(vw); }
     else if (a === 'cref') pull(1);
     else if (a === 'tap') { var mid = +id; CC.sel = CC.sel === mid ? 0 : mid; CC.arm = 0; paintChat(); }
