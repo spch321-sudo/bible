@@ -48,7 +48,7 @@
   function save() { if (X && DATA) DM[X.code] = DATA; ls(P + 'xjs', JSON.stringify(GL)); ls(P + 'xjdm', JSON.stringify(DM)); ls(P + 'xjcur', CUR); }
   function findGroup(c) { for (var i = 0; i < GL.length; i++) if (GL[i].code === c) return GL[i]; return null; }
   function saveDays() { ls(P + 'xjdays', JSON.stringify(DAYS)); }
-  function dev() { var d = lg(P + 'xjdev'); if (!d) { d = 'f' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); ls(P + 'xjdev', d); } return d; }
+  function dev() { if (H.altDev && typeof CC !== 'undefined' && CC && CC.alt) { try { var ad = H.altDev(CC.alt.code); if (ad) return ad; } catch (e) { } } var d = lg(P + 'xjdev'); if (!d) { d = 'f' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); ls(P + 'xjdev', d); } return d; }
   function nick() { var n = ''; if (H.getNick) { try { n = trim(H.getNick() || ''); } catch (e) { } } if (!n) n = trim(lg(P + 'xjnick') || ''); if (!n && H.myName) { try { n = trim(H.myName() || ''); } catch (e) { } } return n.slice(0, 20); }
   function setNick(n) { ls(P + 'xjnick', trim(n).slice(0, 20)); if (H.setNick) { try { H.setNick(trim(n).slice(0, 20)); } catch (e) { } } }
   function trim(s) { return String(s == null ? '' : s).replace(/^\s+|\s+$/g, ''); }
@@ -132,7 +132,12 @@
   /* CC.alt＝{code,name}：借用這個聊天室介面給別的群組（例如互動聖經的 235 團隊，代碼 TM＋六碼） */
   function ccCode() { return CC.alt ? CC.alt.code : (X ? X.code : ''); }
   function ccName() { return CC.alt ? CC.alt.name : (X ? X.name : ''); }
-  var CC = { alt: null, msgs: [], last: 0, busy: 0, re: 0, err: '', unread: 0, uAt: 0, arm: 0, sel: 0, draft: '', sending: 0 };
+  /* CC.dm＝{who,nick}：一對一私訊（同一個群組代碼裡，伺服器只讓這兩支手機讀得到） */
+  function dmq() { return CC.dm ? '&with=' + CC.dm.who : ''; }
+  var DMS = { list: [], at: 0, unread: 0, busy: 0 };
+  function dmSeenMap() { try { return JSON.parse(lg(P + 'xjdmseen') || '{}') || {}; } catch (e) { return {}; } }
+  function dmKey(who) { return ccCode() + ':' + who; }
+  var CC = { alt: null, dm: null, msgs: [], last: 0, busy: 0, re: 0, err: '', unread: 0, uAt: 0, arm: 0, sel: 0, draft: '', sending: 0 };
   var COLS = ['#1F3C88', '#5E8A35', '#A8572E', '#6C4BA3', '#2E7D8C', '#B8473E', '#8A6510', '#3A74B0'];
   function col(w) { var n = parseInt(String(w || '0').slice(0, 6), 16) || 0; return COLS[n % COLS.length]; }
   function chatSeen() { return (X && X.chatSeen) || 0; }
@@ -152,11 +157,47 @@
       CC.unread = n; var el = $('xjChatCard'); if (el) el.outerHTML = chatCard();
       var hb = $('xjHomeUnread'); if (hb) hb.innerHTML = n ? '<span class="xjdot">' + esc(f9(n + ' 則新訊息', n + ' new')) + '</span>' : '';
     });
+    dmLoad();
+  }
+  /* 私訊清單與未讀數 */
+  function dmLoad(cb) {
+    var c = ccCode(); if (!c || DMS.busy) { if (cb) cb(); return; }
+    DMS.busy = 1;
+    api(CHAT, 'GET', '/c/' + c + '/dms?dev=' + encodeURIComponent(dev()), null, function (j) {
+      DMS.busy = 0;
+      if (j) {
+        var sm = dmSeenMap(), u = 0;
+        DMS.list = j.list || []; DMS.at = now(); DMS.code = c;
+        for (var i = 0; i < DMS.list.length; i++) { var d = DMS.list[i]; d.unread = !d.mine && d.last > (sm[c + ':' + d['with']] || 0); if (d.unread) u++; }
+        DMS.unread = u;
+        var b = $('xjDmBtn'); if (b) b.innerHTML = '✉️' + (u ? '<span class="xjdot" style="margin-left:4px">' + u + '</span>' : '');
+        var el = $('xjChatCard'); if (el) el.outerHTML = chatCard();
+      }
+      if (cb) cb(j);
+    });
+  }
+  function dmInbox() {
+    dmLoad(function (j) {
+      var L = DMS.list, h = '<h3>✉️ ' + esc(f9('私訊', 'Private messages')) + '</h3>';
+      if (!j) h += '<p class="note">' + esc(errTxt('net')) + '</p>';
+      else if (!L.length) h += '<p class="note">' + esc(f9('還沒有私訊。在聊天室點一下別人的訊息，按「✉️ 私訊」就可以一對一聊天，只有你們兩個人看得到。', 'No private messages yet. Tap someone’s message in the chat and choose “✉️ Message” — only the two of you can read it.')) + '</p>';
+      for (var i = 0; i < L.length; i++) {
+        var d = L[i];
+        h += '<div class="xjdmrow" data-xj="dmopen" data-who="' + esc(d['with']) + '" data-nick="' + esc(d.nick || '') + '"><div class="xjav" style="background:' + col(d['with']) + '">' + esc(String(d.nick || '?').slice(0, 1)) + '</div><div class="xjgrow" style="min-width:0"><b>' + esc(d.nick || f9('家人', 'Member')) + '</b>' + (d.unread ? ' <span class="xjdot">' + esc(f9('新', 'New')) + '</span>' : '') + '<div class="note" style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc((d.mine ? f9('我：', 'Me: ') : '') + (d.text || '')) + '</div></div><span class="note" style="margin:0">' + esc(d.ts ? fmtDay(d.ts) : '') + '</span></div>';
+      }
+      h += '<div class="xjbtns"><button class="btn ghost" data-xj="mclose">' + esc(f9('關閉', 'Close')) + '</button></div>';
+      modal(h);
+    });
+  }
+  function dmOpen(who, nickName) {
+    closeModal();
+    CC.dm = { who: who, nick: nickName || f9('家人', 'Member') }; CC.msgs = []; CC.last = 0; CC.loaded = 0; CC.re = 0; CC.sel = 0; CC.draft = '';
+    if (route() === 'xjchat') H.render('xjchat'); else H.go('xjchat');
   }
   function pull(full) {
     if ((!X && !CC.alt) || CC.busy) return;
     CC.busy = 1;
-    api(CHAT, 'GET', '/c/' + ccCode() + '/msgs?after=' + (full ? 0 : CC.last) + '&dev=' + encodeURIComponent(dev()), null, function (j, e) {
+    api(CHAT, 'GET', '/c/' + ccCode() + '/msgs?after=' + (full ? 0 : CC.last) + '&dev=' + encodeURIComponent(dev()) + dmq(), null, function (j, e) {
       CC.busy = 0;
       if (!j) { CC.err = e; if (!CC.msgs.length || full) paintChat(); if (full) note(errTxt(e)); return; }
       CC.err = '';
@@ -179,13 +220,14 @@
     for (var i = 0; i < CC.msgs.length; i++) {
       var m = CC.msgs[i];
       var day = fmtDay(m.ts); if (day !== lastDay) { h += '<div class="xjday"><span>' + esc(day) + '</span></div>'; lastDay = day; }
-      var q = m.re ? findMsg(m.re) : null, sel = CC.sel === m.id, isAdm = !CC.alt && !!(X && X.pin);
+      var q = m.re ? findMsg(m.re) : null, sel = CC.sel === m.id, isAdm = !CC.alt && !CC.dm && !!(X && X.pin);
       h += '<div class="xjm' + (m.mine ? ' mine' : '') + '">' +
         (m.mine ? '' : '<div class="xjav" style="background:' + col(m.who) + '">' + esc(String(m.nick || '?').slice(0, 1)) + '</div>') +
         '<div class="xjb">' + (m.mine ? '' : '<div class="xjn">' + esc(m.nick || '') + (m.lead ? ' · ' + esc(f9('家長', 'Leader')) : '') + '</div>') +
         (m.del ? '<div class="xjt gone">' + esc(f9('這則訊息已刪除', 'Message deleted')) + '</div>' :
           (m.kind ? attHtml(m, q) : '<div class="xjt" data-xj="tap" data-id="' + m.id + '">' + (q ? '<div class="xjq">↩ ' + esc((q.nick || '') + '：' + (q.del ? '…' : q.text)) + '</div>' : '') + linkify(m.text) + '</div>')) +
         (sel && !m.del ? '<div class="xjacts"><button data-xj="reply" data-id="' + m.id + '">' + esc(f9('回覆', 'Reply')) + '</button><button data-xj="copy" data-id="' + m.id + '">' + esc(f9('複製', 'Copy')) + '</button>' +
+          (!m.mine && !CC.dm && m.who ? '<button data-xj="dmopen" data-who="' + esc(m.who) + '" data-nick="' + esc(m.nick || '') + '">✉️ ' + esc(f9('私訊', 'Message')) + '</button>' : '') +
           (m.mine || isAdm ? '<button data-xj="mdel" data-id="' + m.id + '">' + esc(CC.arm === m.id ? f9('再按一次刪除', 'Tap again to delete') : f9('刪除', 'Delete')) + '</button>' : '') + '</div>' : '') +
         '</div><div class="xjtime">' + (m.kind && !m.del ? '<button class="xjmore" data-xj="tap" data-id="' + m.id + '" aria-label="more">⋯</button>' : '') + fmtTime(m.ts) + '</div></div>';
     }
@@ -204,7 +246,7 @@
   ];
   function stkFind(k) { for (var i = 0; i < STKS.length; i++) if (STKS[i][0] === k) return STKS[i]; return null; }
   function stkHtml(k) { var s = stkFind(k); if (!s) return '<div class="xjt">[' + esc(f9('貼圖', 'Sticker')) + ']</div>'; return '<div class="xjstk" style="background:' + s[4] + ';color:' + s[5] + '"><span class="e">' + s[1] + '</span><b>' + esc(f9(s[2], s[3])) + '</b></div>'; }
-  function attUrl(id) { return CHAT + '/c/' + ccCode() + '/att/' + id; }
+  function attUrl(id) { return CHAT + '/c/' + ccCode() + '/att/' + id + (CC.dm ? '?dev=' + encodeURIComponent(dev()) : ''); }
   function fmtSize(n) { n = +n || 0; return n >= 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; }
   function attHtml(m, q) {
     var mt = m.meta || {}, qh = q ? '<div class="xjq">↩ ' + esc((q.nick || '') + '：' + (q.del ? '…' : q.text)) + '</div>' : '';
@@ -296,7 +338,7 @@
   function post(body, done) {
     if (CC.sending) return; CC.sending = 1;
     var btn = $('xjSend'); if (btn) btn.disabled = true;
-    body.dev = dev(); body.nick = nick(); body.re = CC.re || 0; body.after = CC.last;
+    body.dev = dev(); body.nick = nick(); body.re = CC.re || 0; body.after = CC.last; if (CC.dm) body['with'] = CC.dm.who;
     api(CHAT, 'POST', '/c/' + ccCode() + '/send', body, function (j, e) {
       CC.sending = 0; var b = $('xjSend'); if (b) b.disabled = false;
       var up = $('xjUp'); if (up) up.style.display = 'none';
@@ -349,7 +391,8 @@
     box.innerHTML = listHtml();
     try { H.simp(box); } catch (e) { }
     if (nearEnd) setTimeout(function () { window.scrollTo(0, document.body.scrollHeight); }, 30);
-    if (X && !CC.alt && CC.last > chatSeen()) { X.chatSeen = CC.last; CC.unread = 0; save(); }
+    if (CC.dm) { var sm = dmSeenMap(), k = dmKey(CC.dm.who); if (CC.last > (sm[k] || 0)) { sm[k] = CC.last; ls(P + 'xjdmseen', JSON.stringify(sm)); } }
+    else if (X && !CC.alt && CC.last > chatSeen()) { X.chatSeen = CC.last; CC.unread = 0; save(); }
   }
   function fitChat() {
     var tb = $('tabbar'), ft = $('xjFt'); if (!ft) return;
@@ -368,7 +411,7 @@
   function delMsg(id) {
     if (CC.arm !== id) { CC.arm = id; paintChat(); return; }
     CC.arm = 0;
-    api(CHAT, 'POST', '/c/' + ccCode() + '/del', { id: id, dev: dev(), pin: CC.alt ? '' : (X.pin || '') }, function (j, e) {
+    api(CHAT, 'POST', '/c/' + ccCode() + '/del', { id: id, dev: dev(), pin: (CC.alt || CC.dm) ? '' : (X.pin || ''), 'with': CC.dm ? CC.dm.who : '' }, function (j, e) {
       if (!j) { note(errTxt(e)); return; }
       var m = findMsg(id); if (m) { m.del = 1; m.text = ''; }
       CC.sel = 0; paintChat(); note(f9('已刪除', 'Deleted'));
@@ -646,7 +689,7 @@
   /* ── 畫面 ── */
   function chatCard() {
     return '<div class="card xjcard" id="xjChatCard" data-xj="gochat" role="button"><div class="xjrow"><div class="xjic">💬</div><div class="xjgrow"><b>' + esc(f9('小家聊天室', 'Group chat')) + '</b><div class="note" style="margin:2px 0 0">' + esc(f9('和小家家人聊天、分享、彼此代禱', 'Chat, share and pray for one another')) + '</div></div>' +
-      (CC.unread ? '<span class="xjdot">' + esc(f9(CC.unread + ' 則新訊息', CC.unread + ' new')) + '</span>' : '<span class="note" style="margin:0">' + esc(f9('進入', 'Open')) + ' ›</span>') + '</div></div>';
+      (DMS.unread && DMS.code === (X && X.code) ? '<span class="xjdot" style="margin-right:4px">✉️ ' + DMS.unread + '</span>' : '') + (CC.unread ? '<span class="xjdot">' + esc(f9(CC.unread + ' 則新訊息', CC.unread + ' new')) + '</span>' : '<span class="note" style="margin:0">' + esc(f9('進入', 'Open')) + ' ›</span>') + '</div></div>';
   }
   function doneCard() {
     if (H.autoDone) {
@@ -740,8 +783,10 @@
   PAGES.xjchat = function () {
     if (!X && !CC.alt) return PAGES.xj();
     var q = CC.re ? findMsg(CC.re) : null;
-    var h = '<div class="xjchathd"><b>' + esc(ccName()) + ' · ' + esc(CC.alt ? f9('聊天室', 'Chat') : f9('小家聊天室', 'Group chat')) + '</b><button class="xjsm" data-xj="cref" aria-label="refresh">⟳</button></div>' +
-      '<div class="xjtip">' + esc(CC.alt ? f9('請彼此尊重、用愛心說誠實話；個人隱私與代禱細節請斟酌。每個人可以刪除自己的訊息。', 'Be respectful and speak the truth in love; take care with private details. You can delete your own messages.') : f9('請彼此尊重、用愛心說誠實話；個人隱私與代禱細節請斟酌。家長可以刪除不合宜的訊息。', 'Be respectful and speak the truth in love; take care with private details. The leader can remove messages.')) + '</div>' +
+    var h = (CC.dm ? '<div class="xjchathd"><button class="xjsm" data-xj="dmback">‹ ' + esc(f9('回聊天室', 'Back')) + '</button><b>✉️ ' + esc(CC.dm.nick) + '</b><button class="xjsm" data-xj="cref" aria-label="refresh">⟳</button></div>' +
+        '<div class="xjtip">' + esc(f9('這是你和「' + CC.dm.nick + '」的私訊，只有你們兩個人看得到。', 'Private messages with ' + CC.dm.nick + ' — only the two of you can see them.')) + '</div>'
+      : '<div class="xjchathd"><b>' + esc(ccName()) + ' · ' + esc(CC.alt ? f9('聊天室', 'Chat') : f9('小家聊天室', 'Group chat')) + '</b><button class="xjsm" id="xjDmBtn" data-xj="dminbox" aria-label="private messages">✉️' + (DMS.unread && DMS.code === ccCode() ? '<span class="xjdot" style="margin-left:4px">' + DMS.unread + '</span>' : '') + '</button><button class="xjsm" data-xj="cref" aria-label="refresh">⟳</button></div>') +
+      (CC.dm ? '' : '<div class="xjtip">') + (CC.dm ? '' : esc(CC.alt ? f9('請彼此尊重、用愛心說誠實話；個人隱私與代禱細節請斟酌。每個人可以刪除自己的訊息。', 'Be respectful and speak the truth in love; take care with private details. You can delete your own messages.') : f9('請彼此尊重、用愛心說誠實話；個人隱私與代禱細節請斟酌。家長可以刪除不合宜的訊息。', 'Be respectful and speak the truth in love; take care with private details. The leader can remove messages.')) + '') + (CC.dm ? '' : '</div>') +
       '<div id="xjList" class="xjlist">' + listHtml() + '</div>' +
       '<div class="xjft" id="xjFt"><div class="in">' +
       (q ? '<div class="xjre"><span>↩ ' + esc(f9('回覆 ', 'Reply to ') + (q.nick || '')) + '：' + esc(q.text) + '</span><button data-xj="recancel">✕</button></div>' : '') +
@@ -832,6 +877,7 @@
       if (fl) fl.onchange = function () { pickFile(fl); };
       setTimeout(fitChat, 0); setTimeout(fitChat, 300);
       if (!CC.loaded) { CC.loaded = 1; pull(1); } else { paintChat(true); pull(0); }
+      if (!CC.dm) dmLoad();
     }
   }
   H.wrapRender(after);
@@ -850,7 +896,10 @@
     else if (a === 'joinback') { JN.adding = 0; ls(P + 'xjpend', null); H.render('xj'); }
     else if (a === 'create') create();
     else if (a === 'gohome') H.go('xj');
-    else if (a === 'gochat') { if (CC.alt) { CC.alt = null; resetLive(); } H.go('xjchat'); }
+    else if (a === 'gochat') { if (CC.alt || CC.dm) { CC.alt = null; CC.dm = null; resetLive(); } H.go('xjchat'); }
+    else if (a === 'dminbox') dmInbox();
+    else if (a === 'dmopen') dmOpen(t.getAttribute('data-who'), t.getAttribute('data-nick'));
+    else if (a === 'dmback') { CC.dm = null; CC.msgs = []; CC.last = 0; CC.loaded = 0; CC.re = 0; H.render('xjchat'); }
     else if (a === 'gocare') { CR2.list = null; CR2.err = ''; H.go('xjcare'); }
     else if (a === 'finish') { ev.stopPropagation(); finish(); }
     else if (a === 'rwclose') { var el = $('xjRw'); if (el) el.parentNode.removeChild(el); }
@@ -954,6 +1003,7 @@
     '.xjrec{align-items:center;gap:8px;background:#FDECEC;border-radius:12px;padding:8px 10px;margin-bottom:6px;color:#9B2C2C}.xjrec .dot{flex:none;width:10px;height:10px;border-radius:50%;background:#D23B3B;animation:xjBlink 1s infinite}@keyframes xjBlink{50%{opacity:.25}}' +
     '.xjsw{display:flex;gap:6px;overflow-x:auto;padding:2px 0 12px;margin:0 0 4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}.xjsw::-webkit-scrollbar{display:none}.xjsw .xjchip{white-space:nowrap;flex:none;padding:6px 12px}.xjsw .xjadd{border-style:dashed;color:var(--head)}' +
     '.xj235s{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}.xj235{font-size:.72em;border-radius:999px;padding:1px 8px;background:#FDECEC;color:#9B2C2C;font-weight:600}.xj235.on{background:#E3F0E1;color:#2E6B32}' +
+    '.xjdmrow{display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom:1px solid var(--line);cursor:pointer}.xjchathd .xjsm{flex:none}' +
     '.xjcr{padding:12px 14px}.xjchatmode .aic-fab,.xjchatmode .help-fab{display:none!important}' +
     '@media (prefers-color-scheme:dark){html:not([data-theme="light"]) .xjtd{background:#22304A;border-color:#33445F}html:not([data-theme="light"]) .xjft,html:not([data-theme="light"]) .xjt,html:not([data-theme="light"]) .xjsm,html:not([data-theme="light"]) .xjchip,html:not([data-theme="light"]) .xjinp{background:#16243A;color:#E8EEF6}}' +
     'html[data-theme="dark"] .xjtd{background:#22304A;border-color:#33445F}html[data-theme="dark"] .xjft,html[data-theme="dark"] .xjt,html[data-theme="dark"] .xjsm,html[data-theme="dark"] .xjchip,html[data-theme="dark"] .xjinp{background:#16243A;color:#E8EEF6}' +
@@ -993,10 +1043,13 @@
     if (need && !autoSync.busy) { autoSync.busy = 1; autoDone(function () { autoSync.busy = 0; }); }
   }
   function openChat(code, name) {
-    if (!CC.alt || CC.alt.code !== code) { CC.alt = { code: code, name: name || code }; resetLive(); }
+    if (!CC.alt || CC.alt.code !== code || CC.dm) { CC.alt = { code: code, name: name || code }; CC.dm = null; resetLive(); }
     H.go('xjchat');
   }
-  window.XJ321 = { finish: finish, autoDone: autoDone, autoSync: autoSync, openChat: openChat, shareNow: function () { shareAll(true); },
+  function setAlt(code, name) { if (!CC.alt || CC.alt.code !== code) { CC.alt = { code: code, name: name || code }; CC.dm = null; resetLive(); } }
+  window.XJ321 = { finish: finish, autoDone: autoDone, autoSync: autoSync, openChat: openChat,
+    dm: function (code, name, who, nk) { setAlt(code, name); dmOpen(who, nk); },
+    inbox: function (code, name) { setAlt(code, name); dmInbox(); }, shareNow: function () { shareAll(true); },
     api: function (m, path, body, cb) { api(CHAT, m, path, body, cb); }, dev: dev, nick: nick,
     open: function (c) { if (c && findGroup(c)) { CUR = c; pick(); NW.at = 0; NW.f = ''; resetLive(); save(); } JN.adding = c === '+' ? 1 : 0; H.go('xj'); }, state: function () { return X; }, groups: function () { return GL; }, unread: function () { return CC.unread; }, go: function () { H.go('xj'); } };
   /* 已經停在小家相關頁（重新載入）就重畫一次 */
