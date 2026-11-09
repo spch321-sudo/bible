@@ -204,8 +204,17 @@
       CC.err = '';
       if (full) { CC.msgs = []; CC.last = 0; }
       var before = CC.last; merge(j.msgs);
-      if (full || CC.last !== before) paintChat(full);
+      var dch = applyDels(j.dels);
+      if (full || CC.last !== before || dch) paintChat(full);
     });
+  }
+  /* 別人收回（或無痕收回）了我已經看到的訊息：跟著改 */
+  function applyDels(L) {
+    var ch = 0; if (!L || !L.length) return 0;
+    for (var i = 0; i < L.length; i++) { var id = L[i][0], d = L[i][1], m = findMsg(id); if (!m) continue;
+      if (d === 2) { CC.msgs = CC.msgs.filter(function (x) { return x.id !== id; }); ch = 1; }
+      else if (!m.del) { m.del = 1; m.text = ''; delete m.kind; delete m.att; delete m.meta; ch = 1; } }
+    return ch;
   }
   function fmtTime(ts) { var d = new Date(ts); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
   function fmtDay(ts) {
@@ -229,6 +238,7 @@
           (m.kind ? attHtml(m, q) : '<div class="xjt" data-xj="tap" data-id="' + m.id + '">' + (q ? '<div class="xjq">↩ ' + esc((q.nick || '') + '：' + (q.del ? '…' : q.text)) + '</div>' : '') + linkify(m.text) + '</div>')) +
         (sel && !m.del ? '<div class="xjacts"><button data-xj="reply" data-id="' + m.id + '">' + esc(f9('回覆', 'Reply')) + '</button><button data-xj="copy" data-id="' + m.id + '">' + esc(f9('複製', 'Copy')) + '</button>' +
           (!m.mine && !CC.dm && m.who ? '<button data-xj="dmopen" data-who="' + esc(m.who) + '" data-nick="' + esc(m.nick || '') + '">✉️ ' + esc(f9('私訊', 'Message')) + '</button>' : '') +
+          (m.mine ? '<button data-xj="mdelh" data-id="' + m.id + '">' + esc(CC.arm === m.id + 'h' ? f9('再按一次無痕收回', 'Tap again to unsend without a trace') : '🫥 ' + f9('無痕收回', 'Unsend, no trace')) + '</button>' : '') +
           (m.mine || isAdm ? '<button data-xj="mdel" data-id="' + m.id + '">' + esc(m.mine ? (CC.arm === m.id ? f9('再按一次收回', 'Tap again to unsend') : '↩️ ' + f9('收回', 'Unsend')) : (CC.arm === m.id ? f9('再按一次刪除', 'Tap again to delete') : f9('刪除', 'Delete'))) + '</button>' : '') + '</div>' : '') +
         '</div><div class="xjtime">' + (m.kind && !m.del ? '<button class="xjmore" data-xj="tap" data-id="' + m.id + '" aria-label="more">⋯</button>' : '') + fmtTime(m.ts) + '</div></div>';
     }
@@ -267,6 +277,7 @@
     var canDel = mm && (mm.mine || (!CC.alt && !CC.dm && X && X.pin));
     el.innerHTML = '<img src="' + esc(u) + '" alt=""><div class="bar"><a class="xjsm" href="' + esc(u) + '" target="_blank" rel="noopener" download>' + esc(f9('下載／另存', 'Download')) + '</a>' +
       (canDel ? '<button class="xjsm" data-xj="vdel" data-id="' + mm.id + '" data-mine="' + (mm.mine ? 1 : 0) + '">' + esc(mm.mine ? '↩️ ' + f9('收回', 'Unsend') : f9('刪除', 'Delete')) + '</button>' : '') +
+      (mm && mm.mine ? '<button class="xjsm" data-xj="vdel" data-hide="1" data-id="' + mm.id + '" data-mine="1">🫥 ' + esc(f9('無痕收回', 'Unsend, no trace')) + '</button>' : '') +
       '<button class="xjsm" data-xj="vclose">' + esc(f9('關閉', 'Close')) + '</button></div>';
     document.body.appendChild(el);
     el.onclick = function (e) { if (e.target === el || e.target.tagName === 'IMG') el.parentNode.removeChild(el); };
@@ -413,12 +424,14 @@
     var text = trim(ta ? ta.value : ''); if (!text) { note(errTxt('empty')); return; }
     post({ text: text }, function () { CC.draft = ''; var t2 = $('xjIn'); if (t2) { t2.value = ''; growTa(t2); } });
   }
-  function delMsg(id, now2) {
-    if (!now2 && CC.arm !== id) { CC.arm = id; paintChat(); return; }
+  function delMsg(id, now2, hide) {
+    var key = hide ? id + 'h' : id;
+    if (!now2 && CC.arm !== key) { CC.arm = key; paintChat(); return; }
     CC.arm = 0;
-    api(CHAT, 'POST', '/c/' + ccCode() + '/del', { id: id, dev: dev(), pin: (CC.alt || CC.dm) ? '' : (X.pin || ''), 'with': CC.dm ? CC.dm.who : '' }, function (j, e) {
+    api(CHAT, 'POST', '/c/' + ccCode() + '/del', { id: id, dev: dev(), hide: hide ? 1 : 0, pin: (CC.alt || CC.dm) ? '' : (X.pin || ''), 'with': CC.dm ? CC.dm.who : '' }, function (j, e) {
       if (!j) { note(errTxt(e)); return; }
       var m = findMsg(id), mine = m && m.mine; if (m) { m.del = 1; m.text = ''; }
+      if (hide) { CC.msgs = CC.msgs.filter(function (x) { return x.id !== id; }); var vh = $('xjView'); if (vh && vh.parentNode) vh.parentNode.removeChild(vh); CC.sel = 0; paintChat(); note(f9('已無痕收回，聊天室裡不留任何痕跡', 'Unsent without a trace')); return; }
       var vw = $('xjView'); if (vw && vw.parentNode) vw.parentNode.removeChild(vw);
       CC.sel = 0; paintChat(); note(mine ? f9('已收回，大家都看不到了', 'Unsent — no one can see it now') : f9('已刪除', 'Deleted'));
     });
@@ -949,7 +962,7 @@
     else if (a === 'recsend') recStop(0);
     else if (a === 'reccancel') recStop(1);
     else if (a === 'img') viewImg(id);
-    else if (a === 'vdel') { if (t.getAttribute('data-arm')) delMsg(+id, 1); else { t.setAttribute('data-arm', '1'); t.textContent = t.getAttribute('data-mine') === '1' ? f9('再按一次收回', 'Tap again to unsend') : f9('再按一次刪除', 'Tap again to delete'); t.style.background = '#C8463C'; t.style.color = '#fff'; } }
+    else if (a === 'vdel') { var vh2 = t.getAttribute('data-hide') === '1'; if (t.getAttribute('data-arm')) delMsg(+id, 1, vh2); else { t.setAttribute('data-arm', '1'); t.textContent = vh2 ? f9('再按一次無痕收回', 'Tap again to unsend without a trace') : t.getAttribute('data-mine') === '1' ? f9('再按一次收回', 'Tap again to unsend') : f9('再按一次刪除', 'Tap again to delete'); t.style.background = '#C8463C'; t.style.color = '#fff'; } }
     else if (a === 'vclose') { var vw = $('xjView'); if (vw) vw.parentNode.removeChild(vw); }
     else if (a === 'cref') pull(1);
     else if (a === 'tap') { var mid = +id; CC.sel = CC.sel === mid ? 0 : mid; CC.arm = 0; paintChat(); }
@@ -957,6 +970,7 @@
     else if (a === 'recancel') { CC.re = 0; H.render('xjchat'); }
     else if (a === 'copy') { var mm = findMsg(+id); if (mm) { try { navigator.clipboard.writeText(mm.text).then(function () { note(f9('已複製', 'Copied')); }, function () { note(mm.text); }); } catch (e) { note(mm.text); } } CC.sel = 0; paintChat(); }
     else if (a === 'mdel') delMsg(+id);
+    else if (a === 'mdelh') delMsg(+id, 0, 1);
     else if (a === 'cf') { CR2.f = t.getAttribute('data-k'); rr('xjcare'); }
     else if (a === 'cload') loadRoster(1);
     else if (a === 'care') {
@@ -1005,7 +1019,7 @@
     '.xjimg{display:block;max-width:min(240px,100%);max-height:320px;width:auto;border-radius:14px;border:1px solid var(--line);cursor:zoom-in;background:var(--sky);object-fit:cover}' +
     '.xjfile{display:flex!important;align-items:center;gap:10px;text-decoration:none;color:inherit;flex-wrap:wrap}.xjfile .fi{font-size:1.7em}.xjfile .fn{display:flex;flex-direction:column;min-width:0}.xjfile .fn b{word-break:break-all}.xjfile small{opacity:.75;font-size:.78em}' +
     '.xjmore{border:0;background:none;color:var(--muted);font-size:1.2em;line-height:1;padding:0 4px;cursor:pointer;display:block;margin:0 auto 2px}' +
-    '.xjview{position:fixed;inset:0;z-index:96;background:rgba(0,0,0,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px}.xjview img{max-width:100%;max-height:80vh;object-fit:contain;border-radius:8px}.xjview .bar{display:flex;gap:10px;margin-top:14px}' +
+    '.xjview{position:fixed;inset:0;z-index:96;background:rgba(0,0,0,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px}.xjview img{max-width:100%;max-height:80vh;object-fit:contain;border-radius:8px}.xjview .bar{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;justify-content:center}' +
     '.xjvoice audio{display:block;width:230px;max-width:100%;height:40px}.xjvoice small{display:block;font-size:.74em;opacity:.8;margin-top:2px}.xjm.mine .xjvoice{background:var(--white);color:var(--ink);border-color:var(--line)}' +
     '.xjrec{align-items:center;gap:8px;background:#FDECEC;border-radius:12px;padding:8px 10px;margin-bottom:6px;color:#9B2C2C}.xjrec .dot{flex:none;width:10px;height:10px;border-radius:50%;background:#D23B3B;animation:xjBlink 1s infinite}@keyframes xjBlink{50%{opacity:.25}}' +
     '.xjsw{display:flex;gap:6px;overflow-x:auto;padding:2px 0 12px;margin:0 0 4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}.xjsw::-webkit-scrollbar{display:none}.xjsw .xjchip{white-space:nowrap;flex:none;padding:6px 12px}.xjsw .xjadd{border-style:dashed;color:var(--head)}' +
