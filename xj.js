@@ -154,8 +154,9 @@
     CC.uAt = now();
     api(CHAT, 'GET', '/c/' + X.code + '/msgs?after=' + chatSeen() + '&dev=' + encodeURIComponent(dev()), null, function (j) {
       if (!j) return; var n = 0;
-      for (var i = 0; i < j.msgs.length; i++) { var m = j.msgs[i]; if (!m.mine && !m.del && m.id > chatSeen()) n++; }
-      CC.unread = n; var el = $('xjChatCard'); if (el) el.outerHTML = chatCard();
+      var mn = 0;
+      for (var i = 0; i < j.msgs.length; i++) { var m = j.msgs[i]; if (!m.mine && !m.del && m.id > chatSeen()) { n++; if (mentionsMe(m)) mn++; } }
+      CC.unread = n; CC.ment = mn; var el = $('xjChatCard'); if (el) el.outerHTML = chatCard();
       var hb = $('xjHomeUnread'); if (hb) hb.innerHTML = n ? '<span class="xjdot">' + esc(f9(n + ' 則新訊息', n + ' new')) + '</span>' : '';
     });
     dmLoad();
@@ -192,7 +193,7 @@
   }
   function dmOpen(who, nickName) {
     closeModal();
-    CC.dm = { who: who, nick: nickName || f9('家人', 'Member') }; CC.msgs = []; CC.last = 0; CC.loaded = 0; CC.re = 0; CC.sel = 0; CC.draft = '';
+    liveReset(); CC.dm = { who: who, nick: nickName || f9('家人', 'Member') }; CC.msgs = []; CC.last = 0; CC.loaded = 0; CC.re = 0; CC.sel = 0; CC.draft = '';
     if (route() === 'xjchat') H.render('xjchat'); else H.go('xjchat');
   }
   function pull(full) {
@@ -204,7 +205,7 @@
       CC.err = '';
       if (full) { CC.msgs = []; CC.last = 0; }
       var before = CC.last; merge(j.msgs);
-      var dch = applyDels(j.dels);
+      var dch = applyDels(j.dels) | applyPack(j);
       if (full || CC.last !== before || dch) paintChat(full);
     });
   }
@@ -226,22 +227,21 @@
   function findMsg(id) { for (var i = 0; i < CC.msgs.length; i++) if (CC.msgs[i].id === id) return CC.msgs[i]; return null; }
   function listHtml() {
     if (!CC.msgs.length) return '<div class="xjempty">' + esc(CC.err ? errTxt(CC.err) : (CC.busy || !CC.loaded ? f9('載入中…', 'Loading…') : f9('還沒有人說話，來打聲招呼吧！', 'No messages yet — say hello!'))) + '</div>';
-    var h = '', lastDay = '';
+    var h = '', lastDay = '', hid = hidSet(), fav = favSet(), shown = 0;
     for (var i = 0; i < CC.msgs.length; i++) {
-      var m = CC.msgs[i];
+      var m = CC.msgs[i]; if (hid[m.id]) continue; shown++;
       var day = fmtDay(m.ts); if (day !== lastDay) { h += '<div class="xjday"><span>' + esc(day) + '</span></div>'; lastDay = day; }
-      var q = m.re ? findMsg(m.re) : null, sel = CC.sel === m.id, isAdm = !CC.alt && !CC.dm && !!(X && X.pin);
-      h += '<div class="xjm' + (m.mine ? ' mine' : '') + '">' +
+      var q = m.re ? findMsg(m.re) : null, pk = CC.shot ? (CC.shot.ids[m.id] ? ' xjpick on' : ' xjpick') : '';
+      h += '<div class="xjm' + (m.mine ? ' mine' : '') + pk + '" id="xjm' + m.id + '" data-mid="' + m.id + '"' + (CC.shot ? ' data-xj="shotsel"' : '') + '>' +
+        (CC.shot ? '<span class="xjck">' + (CC.shot.ids[m.id] ? '✓' : '') + '</span>' : '') +
         (m.mine ? '' : '<div class="xjav" style="background:' + col(m.who) + '">' + esc(String(m.nick || '?').slice(0, 1)) + '</div>') +
         '<div class="xjb">' + (m.mine ? '' : '<div class="xjn">' + esc(m.nick || '') + (m.lead ? ' · ' + esc(f9('家長', 'Leader')) : '') + '</div>') +
         (m.del ? '<div class="xjt gone">' + esc(f9('這則訊息已收回', 'This message was unsent')) + '</div>' :
-          (m.kind ? attHtml(m, q) : '<div class="xjt" data-xj="tap" data-id="' + m.id + '">' + (q ? '<div class="xjq">↩ ' + esc((q.nick || '') + '：' + (q.del ? '…' : q.text)) + '</div>' : '') + linkify(m.text) + '</div>')) +
-        (sel && !m.del ? '<div class="xjacts"><button data-xj="reply" data-id="' + m.id + '">' + esc(f9('回覆', 'Reply')) + '</button><button data-xj="copy" data-id="' + m.id + '">' + esc(f9('複製', 'Copy')) + '</button>' +
-          (!m.mine && !CC.dm && m.who ? '<button data-xj="dmopen" data-who="' + esc(m.who) + '" data-nick="' + esc(m.nick || '') + '">✉️ ' + esc(f9('私訊', 'Message')) + '</button>' : '') +
-          (m.mine ? '<button data-xj="mdelh" data-id="' + m.id + '">' + esc(CC.arm === m.id + 'h' ? f9('再按一次無痕收回', 'Tap again to unsend without a trace') : '🫥 ' + f9('無痕收回', 'Unsend, no trace')) + '</button>' : '') +
-          (m.mine || isAdm ? '<button data-xj="mdel" data-id="' + m.id + '">' + esc(m.mine ? (CC.arm === m.id ? f9('再按一次收回', 'Tap again to unsend') : '↩️ ' + f9('收回', 'Unsend')) : (CC.arm === m.id ? f9('再按一次刪除', 'Tap again to delete') : f9('刪除', 'Delete'))) + '</button>' : '') + '</div>' : '') +
-        '</div><div class="xjtime">' + (m.kind && !m.del ? '<button class="xjmore" data-xj="tap" data-id="' + m.id + '" aria-label="more">⋯</button>' : '') + fmtTime(m.ts) + '</div></div>';
+          (m.kind ? attHtml(m, q) : '<div class="xjt' + (mentionsMe(m) ? ' ment' : '') + '" data-xj="tap" data-id="' + m.id + '">' + (q ? '<div class="xjq">↩ ' + esc((q.nick || '') + '：' + (q.del ? '…' : q.text)) + '</div>' : '') + fmtText(m.text) + '</div>')) +
+        (m.del ? '' : rxHtml(m.id)) +
+        '</div><div class="xjtime">' + (m.kind && !m.del ? '<button class="xjmore" data-xj="tap" data-id="' + m.id + '" aria-label="more">⋯</button>' : '') + (fav[m.id] ? '<span class="xjfavmk">★</span>' : '') + fmtTime(m.ts) + '</div></div>';
     }
+    if (!shown) return '<div class="xjempty">' + esc(f9('還沒有人說話，來打聲招呼吧！', 'No messages yet — say hello!')) + '</div>';
     return h;
   }
   /* ── 相片、檔案、貼圖 ── */
@@ -261,6 +261,9 @@
   function fmtSize(n) { n = +n || 0; return n >= 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; }
   function attHtml(m, q) {
     var mt = m.meta || {}, qh = q ? '<div class="xjq">↩ ' + esc((q.nick || '') + '：' + (q.del ? '…' : q.text)) + '</div>' : '';
+    if (m.kind === 'poll') return pollHtml(m, q);
+    if (m.kind === 'evt') return evtHtml(m, q);
+    if (m.kind === 'loc') return locHtml(m, q);
     if (m.kind === 'stk') return (qh ? '<div class="xjt">' + qh + '</div>' : '') + stkHtml(mt.stk);
     if (m.kind === 'img' && m.att) {
       var ar = mt.w && mt.h ? ' style="aspect-ratio:' + mt.w + '/' + mt.h + '"' : '';
@@ -361,7 +364,7 @@
       if (!j && (e === 'slow' || e === 'http429') && !body._r) { body._r = 1; upShow(f9('稍等一下，馬上送出…', 'Sending in a moment…')); setTimeout(function () { post(body, done); }, 1700); return; }
       if (!j) { note(errTxt(e)); return; }
       var hadRe = CC.re; CC.re = 0;
-      merge(j.msgs);
+      merge(j.msgs); applyPack(j);
       if (done) done();
       if (hadRe || $('xjNick')) { H.render('xjchat'); return; }
       paintChat(true);
@@ -406,9 +409,12 @@
     var nearEnd = stick || (window.innerHeight + (window.pageYOffset || 0) >= document.body.scrollHeight - 160);
     box.innerHTML = listHtml();
     try { H.simp(box); } catch (e) { }
+    var pb = $('xjPinBox'); if (pb) { pb.innerHTML = pinHtml(); try { H.simp(pb); } catch (e) { } }
+    if (CC.shot) shotBar();
     if (nearEnd) setTimeout(function () { window.scrollTo(0, document.body.scrollHeight); }, 30);
     if (CC.dm) { var sm = dmSeenMap(), k = dmKey(CC.dm.who); if (CC.last > (sm[k] || 0)) { sm[k] = CC.last; ls(P + 'xjdmseen', JSON.stringify(sm)); } }
     else if (X && !CC.alt && CC.last > chatSeen()) { X.chatSeen = CC.last; CC.unread = 0; save(); }
+    else if (CC.alt && H.chatSeen) { try { H.chatSeen(CC.alt.code, CC.last); } catch (e) { } }
   }
   function fitChat() {
     var tb = $('tabbar'), ft = $('xjFt'); if (!ft) return;
@@ -428,7 +434,7 @@
     var key = hide ? id + 'h' : id;
     if (!now2 && CC.arm !== key) { CC.arm = key; paintChat(); return; }
     CC.arm = 0;
-    api(CHAT, 'POST', '/c/' + ccCode() + '/del', { id: id, dev: dev(), hide: hide ? 1 : 0, pin: (CC.alt || CC.dm) ? '' : (X.pin || ''), 'with': CC.dm ? CC.dm.who : '' }, function (j, e) {
+    api(CHAT, 'POST', '/c/' + ccCode() + '/del', { id: id, dev: dev(), hide: hide ? 1 : 0, pin: CC.dm ? '' : pinPw(), 'with': CC.dm ? CC.dm.who : '' }, function (j, e) {
       if (!j) { note(errTxt(e)); return; }
       var m = findMsg(id), mine = m && m.mine; if (m) { m.del = 1; m.text = ''; }
       if (hide) { CC.msgs = CC.msgs.filter(function (x) { return x.id !== id; }); var vh = $('xjView'); if (vh && vh.parentNode) vh.parentNode.removeChild(vh); CC.sel = 0; paintChat(); note(f9('已無痕收回，聊天室裡不留任何痕跡', 'Unsent without a trace')); return; }
@@ -689,7 +695,7 @@
     if (!findGroup(c) || (X && X.code === c)) return;
     CUR = c; pick(); NW.at = 0; NW.f = ''; resetLive(); save(); H.render('xj'); try { window.scrollTo(0, 0); } catch (e) { }
   }
-  function resetLive() { CC.msgs = []; CC.last = 0; CC.unread = 0; CC.uAt = 0; CC.loaded = 0; TD.list = null; TD.at = 0; CR2.list = null; }
+  function resetLive() { liveReset(); CC.msgs = []; CC.last = 0; CC.unread = 0; CC.uAt = 0; CC.loaded = 0; TD.list = null; TD.at = 0; CR2.list = null; }
   function inviteUrl() { return location.origin + location.pathname.replace(/index\.html$/, '') + '?xj=' + X.code; }
   function invite() {
     shareText(f9('邀請你加入我們的小家「' + X.name + '」，在《' + APPZ + '》App 裡一起晨讀／晚禱、聊天、彼此代禱。\n點這個連結：' + inviteUrl() + '\n或在 App ' + WHEREZ + ' 輸入代碼：' + X.code,
@@ -708,7 +714,7 @@
   /* ── 畫面 ── */
   function chatCard() {
     return '<div class="card xjcard" id="xjChatCard" data-xj="gochat" role="button"><div class="xjrow"><div class="xjic">💬</div><div class="xjgrow"><b>' + esc(f9('小家聊天室', 'Group chat')) + '</b><div class="note" style="margin:2px 0 0">' + esc(f9('和小家家人聊天、分享、彼此代禱', 'Chat, share and pray for one another')) + '</div></div>' +
-      (DMS.unread && DMS.code === (X && X.code) ? '<span class="xjdot" style="margin-right:4px">✉️ ' + DMS.unread + '</span>' : '') + (CC.unread ? '<span class="xjdot">' + esc(f9(CC.unread + ' 則新訊息', CC.unread + ' new')) + '</span>' : '<span class="note" style="margin:0">' + esc(f9('進入', 'Open')) + ' ›</span>') + '</div></div>';
+      (DMS.unread && DMS.code === (X && X.code) ? '<span class="xjdot" style="margin-right:4px">✉️ ' + DMS.unread + '</span>' : '') + (CC.ment ? '<span class="xjdot" style="margin-right:4px;background:#B8860B">@ ' + esc(f9('有人提到你', 'Mentioned')) + '</span>' : '') + (CC.unread ? '<span class="xjdot">' + esc(f9(CC.unread + ' 則新訊息', CC.unread + ' new')) + '</span>' : '<span class="note" style="margin:0">' + esc(f9('進入', 'Open')) + ' ›</span>') + '</div></div>';
   }
   function doneCard() {
     if (H.autoDone) {
@@ -802,19 +808,20 @@
   PAGES.xjchat = function () {
     if (!X && !CC.alt) return PAGES.xj();
     var q = CC.re ? findMsg(CC.re) : null;
-    var h = (CC.dm ? '<div class="xjchathd"><button class="xjsm" data-xj="dmback">‹ ' + esc(f9('回聊天室', 'Back')) + '</button><b>✉️ ' + esc(CC.dm.nick) + '</b><button class="xjsm" data-xj="cref" aria-label="refresh">⟳</button></div>' +
+    var h = (CC.dm ? '<div class="xjchathd"><button class="xjsm" data-xj="dmback">‹ ' + esc(f9('回聊天室', 'Back')) + '</button><b>✉️ ' + esc(CC.dm.nick) + '</b><button class="xjsm" data-xj="search" aria-label="search">🔍</button><button class="xjsm" data-xj="menu" aria-label="menu">☰</button></div>' +
         '<div class="xjtip">' + esc(f9('這是你和「' + CC.dm.nick + '」的私訊，只有你們兩個人看得到。', 'Private messages with ' + CC.dm.nick + ' — only the two of you can see them.')) + '</div>'
-      : '<div class="xjchathd"><b>' + esc(ccName()) + ' · ' + esc(CC.alt ? f9('聊天室', 'Chat') : f9('小家聊天室', 'Group chat')) + '</b><button class="xjsm" id="xjDmBtn" data-xj="dminbox" aria-label="private messages">✉️' + (DMS.unread && DMS.code === ccCode() ? '<span class="xjdot" style="margin-left:4px">' + DMS.unread + '</span>' : '') + '</button><button class="xjsm" data-xj="cref" aria-label="refresh">⟳</button></div>') +
-      (CC.dm ? '' : '<div class="xjtip">') + (CC.dm ? '' : esc(CC.alt ? f9('請彼此尊重、用愛心說誠實話；個人隱私與代禱細節請斟酌。每個人可以刪除自己的訊息。', 'Be respectful and speak the truth in love; take care with private details. You can delete your own messages.') : f9('請彼此尊重、用愛心說誠實話；個人隱私與代禱細節請斟酌。家長可以刪除不合宜的訊息。', 'Be respectful and speak the truth in love; take care with private details. The leader can remove messages.')) + '') + (CC.dm ? '' : '</div>') +
+      : '<div class="xjchathd"><b>' + esc(ccName()) + ' · ' + esc(CC.alt ? (CC.alt.church ? f9('教會聊天室', 'Church chat') : f9('聊天室', 'Chat')) : f9('小家聊天室', 'Group chat')) + '</b><button class="xjsm" id="xjDmBtn" data-xj="dminbox" aria-label="private messages">✉️' + (DMS.unread && DMS.code === ccCode() ? '<span class="xjdot" style="margin-left:4px">' + DMS.unread + '</span>' : '') + '</button><button class="xjsm" data-xj="search" aria-label="search">🔍</button><button class="xjsm" data-xj="menu" aria-label="menu">☰</button></div>') +
+      (CC.dm ? '' : '<div class="xjtip">') + (CC.dm ? '' : esc(CC.alt && !CC.alt.church ? f9('請彼此尊重、用愛心說誠實話；個人隱私與代禱細節請斟酌。每個人可以刪除自己的訊息。', 'Be respectful and speak the truth in love; take care with private details. You can delete your own messages.') : (CC.alt && CC.alt.church ? f9('請彼此尊重、用愛心說誠實話；個人隱私與代禱細節請斟酌。負責人可以刪除不合宜的訊息。', 'Be respectful and speak the truth in love; take care with private details. Leaders can remove messages.') : f9('請彼此尊重、用愛心說誠實話；個人隱私與代禱細節請斟酌。家長可以刪除不合宜的訊息。', 'Be respectful and speak the truth in love; take care with private details. The leader can remove messages.'))) + '') + (CC.dm ? '' : '</div>') +
+      '<div id="xjPinBox">' + pinHtml() + '</div>' +
       '<div id="xjList" class="xjlist">' + listHtml() + '</div>' +
       '<div class="xjft" id="xjFt"><div class="in">' +
       (q ? '<div class="xjre"><span>↩ ' + esc(f9('回覆 ', 'Reply to ') + (q.nick || '')) + '：' + esc(q.text) + '</span><button data-xj="recancel">✕</button></div>' : '') +
       (nick() ? '' : '<input id="xjNick" class="xjinp" type="text" maxlength="20" placeholder="' + esc(f9('你的稱呼（大家會看到）', 'Your name (everyone will see it)')) + '">') +
-      stkPanel() + '<div class="xjup" id="xjUp" style="display:none"></div>' +
+      '<div class="xjatp" id="xjAt" style="display:none"></div>' + plusPanel() + stkPanel() + '<div class="xjup" id="xjUp" style="display:none"></div>' +
       '<div class="xjrec" id="xjRec" style="display:none"><span class="dot"></span><b>' + esc(f9('錄音中', 'Recording')) + '</b><span id="xjRecT">0:00</span><span class="xjgrow"></span><button class="xjsm" data-xj="reccancel">' + esc(f9('取消', 'Cancel')) + '</button><button class="btn" data-xj="recsend" style="width:auto;padding:8px 16px;min-height:0">' + esc(f9('送出', 'Send')) + '</button></div>' +
-      '<div class="xjrow"><button class="xjtool" data-xj="file" aria-label="' + esc(f9('傳相片或檔案', 'Send photo or file')) + '">📎</button><button class="xjtool" data-xj="rec" aria-label="' + esc(f9('錄音', 'Record voice')) + '">🎤</button><button class="xjtool" data-xj="stkp" aria-label="' + esc(f9('貼圖', 'Stickers')) + '">😊</button>' +
+      '<div class="xjrow"><button class="xjtool xjplusb" data-xj="plus" aria-label="' + esc(f9('更多：相片、檔案、投票、活動、位置', 'More: photo, file, poll, event, location')) + '">＋</button><button class="xjtool" data-xj="rec" aria-label="' + esc(f9('錄音', 'Record voice')) + '">🎤</button><button class="xjtool" data-xj="stkp" aria-label="' + esc(f9('貼圖', 'Stickers')) + '">😊</button>' +
       '<input type="file" id="xjPhoto" accept="image/*" style="display:none"><input type="file" id="xjFile" style="display:none">' +
-      '<textarea id="xjIn" class="xjinp" rows="1" maxlength="600" placeholder="' + esc(f9('說些什麼…', 'Say something…')) + '">' + esc(CC.draft) + '</textarea><button class="btn" id="xjSend" data-xj="send" style="width:auto">' + esc(f9('送出', 'Send')) + '</button></div></div></div>';
+      '<textarea id="xjIn" class="xjinp" rows="1" maxlength="600" placeholder="' + esc(f9('說些什麼…（打 @ 可以提到某人）', 'Say something… (type @ to mention)')) + '">' + esc(CC.draft) + '</textarea><button class="btn" id="xjSend" data-xj="send" style="width:auto">' + esc(f9('送出', 'Send')) + '</button></div></div></div>';
     return h;
   };
   PAGES.xjcare = function () {
@@ -856,6 +863,7 @@
     var view = $('view'); if (!view) return;
     try { document.body.classList[r === 'xjchat' ? 'add' : 'remove']('xjchatmode'); } catch (e) { }
     if (r !== 'xjchat' && RC.rec) recStop(1);
+    if (r !== 'xjchat' && CC.shot) { CC.shot = null; } shotBar();
     if (r === 'xjchat' || r === 'xjcare') {
       var tabs = document.querySelectorAll('#tabbar .tab');
       for (var ti = 0; ti < tabs.length; ti++) { var on = tabs[ti].getAttribute('data-route') === 'xj'; tabs[ti].className = 'tab' + (on ? ' on' : ''); if (on) tabs[ti].setAttribute('aria-current', 'page'); else tabs[ti].removeAttribute('aria-current'); }
@@ -890,7 +898,7 @@
     }
     if (r === 'xjchat' && (X || CC.alt)) {
       var ta = $('xjIn');
-      if (ta) { ta.oninput = function () { growTa(ta); }; ta.onkeydown = function (e) { if (e.keyCode === 13 && !e.shiftKey && !e.isComposing && window.innerWidth > 760) { e.preventDefault(); send(); } }; if (CC.draft) growTa(ta); }
+      if (ta) { ta.oninput = function () { growTa(ta); atCheck(ta); }; ta.onkeydown = function (e) { if (e.keyCode === 13 && !e.shiftKey && !e.isComposing && window.innerWidth > 760) { e.preventDefault(); send(); } }; if (CC.draft) growTa(ta); }
       var ph = $('xjPhoto'), fl = $('xjFile');
       if (ph) ph.onchange = function () { pickPhoto(ph); };
       if (fl) fl.onchange = function () { pickFile(fl); };
@@ -908,6 +916,15 @@
     while (t && t !== document && !(t.getAttribute && t.getAttribute('data-xj'))) t = t.parentNode;
     if (!t || t === document) return;
     var a = t.getAttribute('data-xj'), id = t.getAttribute('data-id');
+    /* 截圖選取中：點訊息就是選取或取消 */
+    if (CC.shot && route() === 'xjchat' && !(t.closest && t.closest('#xjModal')) && ['shotcancel', 'shotmake', 'mclose'].indexOf(a) < 0) {
+      var row = t.closest ? t.closest('.xjm') : null;
+      if (row) { ev.preventDefault(); var sid = +row.getAttribute('data-mid'); CC.shot.ids[sid] = CC.shot.ids[sid] ? 0 : 1; paintChat(); shotBar(); }
+      return;
+    }
+    var inSheet = t.closest && t.closest('.xjsheet');
+    if (inSheet && ['rx', 'mdel', 'mdelh', 'fwd', 'shot', 'selcopy', 'fav', 'pinset', 'hidelocal', 'dmopen'].indexOf(a) < 0) closeModal();
+    if (inSheet && (a === 'fav' || a === 'pinset' || a === 'hidelocal')) closeModal();
     if (a === 'join') join();
     else if (a === 'goread') { if (H.goRead) H.goRead(); }
     else if (a === 'sw') switchTo(t.getAttribute('data-k'));
@@ -918,7 +935,7 @@
     else if (a === 'gochat') { if (CC.alt || CC.dm) { CC.alt = null; CC.dm = null; resetLive(); } H.go('xjchat'); }
     else if (a === 'dminbox') dmInbox();
     else if (a === 'dmopen') dmOpen(t.getAttribute('data-who'), t.getAttribute('data-nick'));
-    else if (a === 'dmback') { CC.dm = null; CC.msgs = []; CC.last = 0; CC.loaded = 0; CC.re = 0; H.render('xjchat'); }
+    else if (a === 'dmback') { liveReset(); CC.dm = null; CC.msgs = []; CC.last = 0; CC.loaded = 0; CC.re = 0; H.render('xjchat'); }
     else if (a === 'gocare') { CR2.list = null; CR2.err = ''; H.go('xjcare'); }
     else if (a === 'finish') { ev.stopPropagation(); finish(); }
     else if (a === 'rwclose') { var el = $('xjRw'); if (el) el.parentNode.removeChild(el); }
@@ -954,8 +971,8 @@
     else if (a === 'nshare') { var n = findNews(id); if (n) shareText('【' + X.name + '・' + kindTxt(n.kind) + '】' + (nTi(n) ? nTi(n) + '\n' : '') + (nBo(n) || '') + (n.link ? '\n' + n.link : '')); }
     else if (a === 'nf') { NW.f = t.getAttribute('data-k') || ''; rr('xj'); }
     else if (a === 'send') send();
-    else if (a === 'photo') { var ip = $('xjPhoto'); if (ip) ip.click(); }
-    else if (a === 'file') { var ifl = $('xjFile'); if (ifl) ifl.click(); }
+    else if (a === 'photo') { if (CC.plus) plusHide(); var ip = $('xjPhoto'); if (ip) ip.click(); }
+    else if (a === 'file') { if (CC.plus) plusHide(); var ifl = $('xjFile'); if (ifl) ifl.click(); }
     else if (a === 'stkp') { CC.stk = CC.stk ? 0 : 1; var pn = $('xjStk'); if (pn) pn.style.display = CC.stk ? 'grid' : 'none'; fitChat(); }
     else if (a === 'stk') sendStk(t.getAttribute('data-k'));
     else if (a === 'rec') recStart();
@@ -964,13 +981,17 @@
     else if (a === 'img') viewImg(id);
     else if (a === 'vdel') { var vh2 = t.getAttribute('data-hide') === '1'; if (t.getAttribute('data-arm')) delMsg(+id, 1, vh2); else { t.setAttribute('data-arm', '1'); t.textContent = vh2 ? f9('再按一次無痕收回', 'Tap again to unsend without a trace') : t.getAttribute('data-mine') === '1' ? f9('再按一次收回', 'Tap again to unsend') : f9('再按一次刪除', 'Tap again to delete'); t.style.background = '#C8463C'; t.style.color = '#fff'; } }
     else if (a === 'vclose') { var vw = $('xjView'); if (vw) vw.parentNode.removeChild(vw); }
-    else if (a === 'cref') pull(1);
-    else if (a === 'tap') { var mid = +id; CC.sel = CC.sel === mid ? 0 : mid; CC.arm = 0; paintChat(); }
+    else if (a === 'cref') { closeModal(); pull(1); }
+    else if (a === 'tap') actSheet(+id);
     else if (a === 'reply') { CC.re = +id; CC.sel = 0; H.render('xjchat'); var ta = $('xjIn'); if (ta) ta.focus(); }
     else if (a === 'recancel') { CC.re = 0; H.render('xjchat'); }
     else if (a === 'copy') { var mm = findMsg(+id); if (mm) { try { navigator.clipboard.writeText(mm.text).then(function () { note(f9('已複製', 'Copied')); }, function () { note(mm.text); }); } catch (e) { note(mm.text); } } CC.sel = 0; paintChat(); }
-    else if (a === 'mdel') delMsg(+id);
-    else if (a === 'mdelh') delMsg(+id, 0, 1);
+    else if (a === 'mdel' || a === 'mdelh') {
+      var hd = a === 'mdelh';
+      if (!inSheet) delMsg(+id, 0, hd);
+      else if (t.getAttribute('data-arm')) { closeModal(); delMsg(+id, 1, hd); }
+      else { t.setAttribute('data-arm', '1'); t.classList.add('arm'); var lb = t.querySelector('b'); if (lb) lb.textContent = hd ? f9('再按一次無痕收回', 'Tap again') : (findMsg(+id) || {}).mine ? f9('再按一次收回', 'Tap again') : f9('再按一次移除', 'Tap again'); }
+    }
     else if (a === 'cf') { CR2.f = t.getAttribute('data-k'); rr('xjcare'); }
     else if (a === 'cload') loadRoster(1);
     else if (a === 'care') {
@@ -1063,8 +1084,10 @@
     for (var i = 0; i < GL.length; i++) if (GL[i].doneDay !== d) need = true;
     if (need && !autoSync.busy) { autoSync.busy = 1; autoDone(function () { autoSync.busy = 0; }); }
   }
-  function openChat(code, name) {
+  function openChat(code, name, opt) {
+    opt = opt || {};
     if (!CC.alt || CC.alt.code !== code || CC.dm) { CC.alt = { code: code, name: name || code }; CC.dm = null; resetLive(); }
+    CC.alt.pin = opt.pin || ''; CC.alt.church = opt.church ? 1 : 0; if (name) CC.alt.name = name;
     H.go('xjchat');
   }
   function setAlt(code, name) { if (!CC.alt || CC.alt.code !== code) { CC.alt = { code: code, name: name || code }; CC.dm = null; resetLive(); } }
@@ -1169,6 +1192,603 @@
     '.xjshr b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--head)}.xjshr .xjic{width:38px;height:38px;font-size:1.15em}.xjshr[disabled]{opacity:.6}.xjshgo{color:var(--muted);font-size:.9em;white-space:nowrap}' +
     '.xjshok{text-align:center;font-weight:700;color:#2E7D32;margin:6px 0}.xjpanel textarea.xjinp{resize:vertical;min-height:58px}';
   document.head.appendChild(st2);
+  /* ── 聊天室 LINE 式功能（ln1109，搭配 church-chat v8）──
+     點訊息 → 底部選單：表情回應、回覆、複製、選擇並複製、轉傳、收藏、設為公告、截圖、私訊、刪除（只刪自己手機）、收回、無痕收回
+     ＋ 面板：相片、檔案、投票、挑日子、活動（加入行事曆）、位置；標題列：🔍 搜尋、☰（我的收藏、截圖、重新整理）；輸入 @ 可以提到某人 */
+  var RXS = [['pray', '🙏', '阿們', 'Amen'], ['love', '❤️', '愛你', 'Love'], ['like', '👍', '讚', 'Like'], ['praise', '🙌', '讚美主', 'Praise'], ['sad', '😢', '難過', 'Sad'], ['hug', '🤗', '抱抱', 'Hug']];
+  function rxFind(k) { for (var i = 0; i < RXS.length; i++) if (RXS[i][0] === k) return RXS[i]; return null; }
+  CC.rx = {}; CC.vt = {}; CC.pc = {}; CC.pin = null; CC.shot = null; CC.plus = 0;
+  var WD = ['日', '一', '二', '三', '四', '五', '六'], WDE = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  function pad2(n) { return ('0' + n).slice(-2); }
+  function dLabel(ds) { var p = String(ds || '').split('-'); if (p.length !== 3) return ds || ''; var d = new Date(+p[0], +p[1] - 1, +p[2]); return isEN() ? WDE[d.getDay()] + ', ' + d.toLocaleDateString('en', { month: 'short', day: 'numeric' }) : (+p[1]) + '/' + (+p[2]) + '（' + f9('週', '') + WD[d.getDay()] + '）'; }
+
+  /* 伺服器回來的表情、投票、公告（lo 以上的訊息整批替換） */
+  function winSig(lo) { var a = []; for (var i = 0; i < CC.msgs.length; i++) { var id = CC.msgs[i].id; if (id >= lo) a.push(id, CC.rx[id] || 0, CC.vt[id] || 0, CC.pc[id] || 0); } return JSON.stringify(a); }
+  function applyPack(j) {
+    if (!j || j.lo == null) return 0;
+    var before = winSig(j.lo) + JSON.stringify(CC.pin);
+    for (var i = 0; i < CC.msgs.length; i++) {
+      var id = CC.msgs[i].id; if (id < j.lo) continue;
+      CC.rx[id] = (j.rx && j.rx[id]) || 0; CC.vt[id] = (j.vt && j.vt[id]) || 0; CC.pc[id] = (j.pc || []).indexOf(id) >= 0 ? 1 : 0;
+    }
+    if (j.pin !== undefined) CC.pin = j.pin || null;
+    return before !== winSig(j.lo) + JSON.stringify(CC.pin) ? 1 : 0;
+  }
+  function liveReset() { CC.pin = null; CC.shot = null; CC.plus = 0; shotBar(); }
+
+  /* 只從自己手機刪除、收藏 */
+  function roomKey() { return ccCode() + (CC.dm ? ':' + CC.dm.who : ''); }
+  function hidMap() { return lj(P + 'xjhid', {}); }
+  function hidSet() { var a = hidMap()[roomKey()] || [], o = {}; for (var i = 0; i < a.length; i++) o[a[i]] = 1; return o; }
+  function hideLocal(id) { var m = hidMap(), k = roomKey(); (m[k] = m[k] || []).push(id); if (m[k].length > 400) m[k] = m[k].slice(-400); ls(P + 'xjhid', JSON.stringify(m)); }
+  function favs() { var L = lj(P + 'xjfav', []); return L && L.length ? L : []; }
+  function favSet() { var L = favs(), o = {}, k = roomKey() + ':'; for (var i = 0; i < L.length; i++) if (L[i].k.indexOf(k) === 0) o[L[i].k.slice(k.length)] = 1; return o; }
+  function roomTitle() { return ccName() + (CC.dm ? ' · ✉️ ' + CC.dm.nick : ''); }
+  function toggleFav(id) {
+    var m = findMsg(id); if (!m) return;
+    var L = favs(), k = roomKey() + ':' + id, i;
+    for (i = 0; i < L.length; i++) if (L[i].k === k) { L.splice(i, 1); ls(P + 'xjfav', JSON.stringify(L)); note(f9('已取消收藏', 'Removed from saved')); paintChat(); return; }
+    L.unshift({ k: k, room: roomTitle(), nick: m.nick || '', mine: m.mine ? 1 : 0, ts: m.ts, text: m.text || '', kind: m.kind || '', meta: m.meta || null, att: m.att ? attUrl(m.att) : '', at: now() });
+    if (L.length > 300) L = L.slice(0, 300);
+    ls(P + 'xjfav', JSON.stringify(L)); note(f9('已收藏，可在聊天室右上角 ☰ →「我的收藏」找到', 'Saved — find it under ☰ → Saved messages')); paintChat();
+  }
+  function favPage() {
+    var L = favs(), h = '<h3>⭐ ' + esc(f9('我的收藏', 'Saved messages')) + '</h3><p class="note" style="margin-top:0">' + esc(f9('只存在這支手機，別人看不到。', 'Stored only on this phone.')) + '</p>';
+    if (!L.length) h += '<div class="xjempty">' + esc(f9('還沒有收藏。點一下聊天室的訊息，按「☆ 收藏」就會存到這裡。', 'Nothing saved yet. Tap a message in the chat and choose “☆ Save”.')) + '</div>';
+    for (var i = 0; i < L.length; i++) {
+      var f = L[i], body = f.kind === 'img' && f.att ? '<img class="xjimg" src="' + esc(f.att) + '" alt="" style="max-height:180px">' : '<div class="xjfavt">' + linkify(f.text) + '</div>';
+      h += '<div class="xjfav"><div class="note" style="margin:0 0 4px">' + esc(f.room) + ' · ' + esc(f.mine ? f9('我', 'Me') : f.nick) + ' · ' + esc(fmtDay(f.ts) + ' ' + fmtTime(f.ts)) + '</div>' + body +
+        '<div class="xjbtns" style="margin-top:6px"><button class="xjsm" data-xj="favcopy" data-i="' + i + '">📋 ' + esc(f9('複製', 'Copy')) + '</button><button class="xjsm" data-xj="favrm" data-i="' + i + '">✕ ' + esc(f9('移除', 'Remove')) + '</button></div></div>';
+    }
+    h += '<div class="xjbtns"><button class="btn ghost block" data-xj="mclose">' + esc(f9('關閉', 'Close')) + '</button></div>';
+    modal(h);
+  }
+  function copyText(t) { try { navigator.clipboard.writeText(t).then(function () { note(f9('已複製', 'Copied')); }, function () { note(t); }); } catch (e) { note(t); } }
+
+  /* 表情回應 */
+  function rxHtml(id) {
+    var L = CC.rx[id]; if (!L || !L.length) return '';
+    var c = {}, mine = {}, order = [], i;
+    for (i = 0; i < L.length; i++) { var e = L[i][0]; if (!c[e]) { c[e] = 0; order.push(e); } c[e]++; if (L[i][2]) mine[e] = 1; }
+    var h = '<div class="xjrxs" data-xj="rxlist" data-id="' + id + '">';
+    for (i = 0; i < order.length; i++) { var r = rxFind(order[i]); if (r) h += '<span class="' + (mine[order[i]] ? 'on' : '') + '">' + r[1] + ' ' + c[order[i]] + '</span>'; }
+    return h + '</div>';
+  }
+  function rxList(id) {
+    var L = CC.rx[id] || [], h = '<h3>' + esc(f9('誰回應了', 'Reactions')) + '</h3>', by = {};
+    for (var i = 0; i < L.length; i++) (by[L[i][0]] = by[L[i][0]] || []).push(L[i][2] ? f9('我', 'Me') : L[i][1]);
+    for (var k = 0; k < RXS.length; k++) if (by[RXS[k][0]]) h += '<div class="xjline"><b style="font-size:1.3em">' + RXS[k][1] + '</b><span>' + esc(by[RXS[k][0]].join('、')) + '</span></div>';
+    modal(h + '<div class="xjbtns"><button class="btn ghost block" data-xj="mclose">' + esc(f9('關閉', 'Close')) + '</button></div>');
+  }
+  function react(id, e) {
+    if (!nick()) { note(f9('請先在下方填你的稱呼', 'Please enter your name below first')); return; }
+    closeModal();
+    api(CHAT, 'POST', '/c/' + ccCode() + '/react', { id: id, e: e, dev: dev(), nick: nick(), 'with': CC.dm ? CC.dm.who : '' }, function (j, er) {
+      if (!j) { note(er === 'notfound' ? f9('請先更新聊天室伺服器（第 8 版）', 'Please update the chat server (v8)') : errTxt(er)); return; }
+      CC.rx[id] = j.rx || 0; paintChat();
+    });
+  }
+
+  /* 公告 */
+  function canPin() { if (CC.dm || /^TM/.test(ccCode())) return true; return CC.alt ? !!CC.alt.pin : !!(X && X.pin); }
+  function pinPw() { return CC.alt ? (CC.alt.pin || '') : ((X && X.pin) || ''); }
+  function isAdmNow() { return !CC.dm && (CC.alt ? !!CC.alt.pin : !!(X && X.pin)); }
+  function pinHtml() {
+    var p = CC.pin; if (!p) return '';
+    var t = p.kind === 'img' ? f9('📷 相片', '📷 Photo') : (p.text || '');
+    return '<div class="xjpinbar" data-xj="pingo" data-id="' + p.id + '"><span class="pi">📌</span><span class="pt"><b>' + esc(f9('公告', 'Pinned')) + '</b> ' + esc((p.nick || '') + '：' + t) + '</span>' + (canPin() ? '<button data-xj="pinrm" aria-label="unpin">✕</button>' : '') + '</div>';
+  }
+  function setPin(id) {
+    api(CHAT, 'POST', '/c/' + ccCode() + '/pin', { id: id, dev: dev(), pin: pinPw(), 'with': CC.dm ? CC.dm.who : '' }, function (j, er) {
+      if (!j) { note(er === 'forbid' ? f9('只有家長／負責人可以設定公告', 'Only the leader can pin messages') : er === 'notfound' ? f9('請先更新聊天室伺服器（第 8 版）', 'Please update the chat server (v8)') : errTxt(er)); return; }
+      note(id ? f9('已設為公告，大家都會在聊天室上方看到', 'Pinned for everyone') : f9('已取消公告', 'Unpinned'));
+      if (!id) CC.pin = null; else { var m = findMsg(id); if (m) CC.pin = m; }
+      paintChat(); pull(0);
+    });
+  }
+  function jumpTo(id) {
+    var el = $('xjm' + id);
+    if (!el) { var m = findMsg(id); if (m) return; note(f9('這是比較早的訊息，用 🔍 搜尋可以看到內容', 'This is an older message — use 🔍 search to see it')); return; }
+    try { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) { el.scrollIntoView(); }
+    el.classList.add('xjflash'); setTimeout(function () { el.classList.remove('xjflash'); }, 1800);
+  }
+
+  /* 訊息選單 */
+  function actSheet(id) {
+    var m = findMsg(id); if (!m || m.del) return;
+    var mineRx = {}, R = CC.rx[id] || [], i;
+    for (i = 0; i < R.length; i++) if (R[i][2]) mineRx[R[i][0]] = 1;
+    var h = '<div class="xjsheet"><div class="xjrxbar">';
+    for (i = 0; i < RXS.length; i++) h += '<button class="' + (mineRx[RXS[i][0]] ? 'on' : '') + '" data-xj="rx" data-id="' + id + '" data-k="' + RXS[i][0] + '"><span>' + RXS[i][1] + '</span><small>' + esc(f9(RXS[i][2], RXS[i][3])) + '</small></button>';
+    h += '</div><div class="xjgrid">';
+    var add = function (act, icon, zh, en, extra) { h += '<button data-xj="' + act + '" data-id="' + id + '"' + (extra || '') + '><span>' + icon + '</span><b>' + esc(f9(zh, en)) + '</b></button>'; };
+    var fav = favSet()[id];
+    add('reply', '↩️', '回覆', 'Reply');
+    add('copy', '📋', '複製', 'Copy');
+    if (!m.kind && m.text && m.text.length > 6) add('selcopy', '✂️', '選擇並複製', 'Select text');
+    add('fwd', '↪️', '轉傳', 'Forward');
+    add('fav', fav ? '★' : '☆', fav ? '取消收藏' : '收藏', fav ? 'Unsave' : 'Save');
+    if (canPin()) add('pinset', '📌', CC.pin && CC.pin.id === id ? '取消公告' : '設為公告', CC.pin && CC.pin.id === id ? 'Unpin' : 'Pin');
+    add('shot', '📸', '截圖', 'Screenshot');
+    if (!m.mine && !CC.dm && m.who) add('dmopen', '✉️', '私訊', 'Message', ' data-who="' + esc(m.who) + '" data-nick="' + esc(m.nick || '') + '"');
+    add('hidelocal', '🗑️', '刪除', 'Delete');
+    if (m.mine) { add('mdel', '↩️', '收回', 'Unsend'); add('mdelh', '🫥', '無痕收回', 'Unsend, no trace'); }
+    else if (isAdmNow()) add('mdel', '⛔', '移除（家長）', 'Remove (leader)');
+    h += '</div><p class="note" style="margin:8px 2px 0">' + esc(f9('「刪除」只從你的手機刪除，別人還看得到；「收回」大家都看不到。', '“Delete” only removes it from your phone; “Unsend” removes it for everyone.')) + '</p>' +
+      '<div class="xjbtns"><button class="btn ghost block" data-xj="mclose">' + esc(f9('取消', 'Cancel')) + '</button></div></div>';
+    var md = modal(h); md.className = 'xjmodal xjtop';
+  }
+  function selCopy(id) {
+    var m = findMsg(id); if (!m) return;
+    modal('<h3>✂️ ' + esc(f9('選擇並複製', 'Select text')) + '</h3><p class="note" style="margin-top:0">' + esc(f9('用手指按住文字、拖曳選取要的部分，再按「拷貝」。', 'Press and drag to select the part you want, then copy.')) + '</p>' +
+      '<textarea id="xjSel" class="xjinp" readonly rows="8" style="min-height:180px;line-height:1.7">' + esc(m.text) + '</textarea>' +
+      '<div class="xjbtns"><button class="btn ghost" data-xj="mclose">' + esc(f9('關閉', 'Close')) + '</button><button class="btn" data-xj="selall" data-id="' + id + '">' + esc(f9('複製全部', 'Copy all')) + '</button></div>');
+  }
+
+  /* 送到任何一個聊天室（轉傳、美圖分享共用） */
+  function sendTo(tg, body, cb) {
+    body.dev = tg.dev || baseDev(); body.nick = trim(tg.nick || '') || nick() || f9('弟兄姊妹', 'Friend'); body.re = 0; body.after = 0;
+    var go = function (n) {
+      api(CHAT, 'POST', '/c/' + tg.code + '/send', body, function (j, e) {
+        if (!j && (e === 'slow' || e === 'http429') && n < 3) { setTimeout(function () { go(n + 1); }, 1700); return; }
+        cb(j, e);
+      }, body.data ? 120000 : 15000);
+    };
+    go(0);
+  }
+  function bodyOf(m, cb) {
+    var mt = m.meta || {};
+    if (!m.kind) { cb({ text: m.text }); return; }
+    if (m.kind === 'stk') { cb({ kind: 'stk', stk: mt.stk, text: m.text }); return; }
+    if (m.kind === 'poll') { cb({ kind: 'poll', poll: { q: mt.q, opts: mt.opts, multi: mt.multi, dates: mt.dates } }); return; }
+    if (m.kind === 'evt') { cb({ kind: 'evt', evt: mt }); return; }
+    if (m.kind === 'loc') { cb({ kind: 'loc', lat: mt.lat, lng: mt.lng, label: mt.label, addr: mt.addr }); return; }
+    if (!m.att) { cb({ text: m.text }); return; }
+    var x = new XMLHttpRequest(); x.open('GET', attUrl(m.att)); x.responseType = 'blob';
+    x.onload = function () { if (x.status !== 200) { cb(null); return; } readDataUrl(x.response, function (d) { cb(d ? { kind: m.kind, data: d, mime: mt.mime || x.response.type, name: mt.name || 'file', w: mt.w, h: mt.h, dur: mt.dur, text: '' } : null); }); };
+    x.onerror = function () { cb(null); }; x.send();
+  }
+  var FW = { id: 0, list: [], busy: 0 };
+  function fwdSheet(id) {
+    var m = findMsg(id); if (!m) return;
+    FW.id = id; FW.list = shTargets(); FW.busy = 0;
+    var h = '<h3>↪️ ' + esc(f9('轉傳到…', 'Forward to…')) + '</h3><div class="xjtip" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc((m.nick || '') + '：' + (m.text || '')) + '</div><div class="xjshl">';
+    for (var i = 0; i < FW.list.length; i++) { var tg = FW.list[i]; h += '<button class="xjshr" data-xj="fwdgo" data-i="' + i + '"><span class="xjic">' + esc(tg.icon || '💬') + '</span><b>' + esc(tg.name) + (tg.code === ccCode() && !CC.dm ? ' ' + f9('（這裡）', '(here)') : '') + '</b><span class="xjshgo">›</span></button>'; }
+    h += '<button class="xjshr" data-xj="fwdout"><span class="xjic">📤</span><b>' + esc(f9('分享到其他 App（LINE 等）', 'Share to other apps (LINE…)')) + '</b><span class="xjshgo">›</span></button></div>' +
+      '<div class="xjbtns"><button class="btn ghost block" data-xj="mclose">' + esc(f9('取消', 'Cancel')) + '</button></div>';
+    var md = modal(h); md.className = 'xjmodal xjtop';
+  }
+  function fwdGo(i, btn) {
+    var tg = FW.list[i], m = findMsg(FW.id); if (!tg || !m || FW.busy) return;
+    if (!nick()) { note(f9('請先在下方填你的稱呼', 'Please enter your name below first')); return; }
+    FW.busy = 1; if (btn) { var g = btn.querySelector('.xjshgo'); if (g) g.textContent = f9('傳送中…', 'Sending…'); }
+    bodyOf(m, function (b) {
+      if (!b) { FW.busy = 0; note(f9('這個附件讀不出來', 'Couldn’t read this attachment')); return; }
+      sendTo(tg, b, function (j, e) {
+        FW.busy = 0; closeModal();
+        if (!j) { note(errTxt(e)); return; }
+        note(f9('已轉傳到「' + tg.name + '」', 'Forwarded to “' + tg.name + '”'));
+        if (tg.code === ccCode() && !CC.dm) pull(0);
+      });
+    });
+  }
+  function fwdOut() {
+    var m = findMsg(FW.id); if (!m) return; closeModal();
+    if (m.kind === 'img' && m.att && navigator.canShare) {
+      var x = new XMLHttpRequest(); x.open('GET', attUrl(m.att)); x.responseType = 'blob';
+      x.onload = function () { try { var f = new File([x.response], (m.meta && m.meta.name) || 'photo.jpg', { type: x.response.type || 'image/jpeg' }); if (navigator.canShare({ files: [f] })) { navigator.share({ files: [f] })['catch'](function () { }); return; } } catch (e) { } shareText(m.text); };
+      x.send(); return;
+    }
+    var t = m.text || '';
+    if (m.kind === 'evt') t = evtText(m.meta || {}); else if (m.kind === 'loc') t = (m.text || '') + '\n' + mapUrl(m.meta || {}); else if (m.kind === 'poll') t = pollText(m);
+    shareText(t);
+  }
+
+  /* 投票、挑日子 */
+  function pollTally(m) {
+    var mt = m.meta || {}, V = CC.vt[m.id] || [], n = (mt.opts || []).length, cnt = [], who = [], mine = {}, people = {}, i;
+    for (i = 0; i < n; i++) { cnt.push(0); who.push([]); }
+    for (i = 0; i < V.length; i++) { var o = V[i][0]; if (o >= n) continue; cnt[o]++; who[o].push(V[i][2] ? f9('我', 'Me') : V[i][1]); if (V[i][2]) mine[o] = 1; people[V[i][2] ? '\u0000me' : V[i][1]] = 1; }
+    var np = 0; for (var k in people) np++;
+    return { cnt: cnt, who: who, mine: mine, np: np };
+  }
+  function pollText(m) { var mt = m.meta || {}, t = pollTally(m), s = (mt.dates ? '📅 ' : '📊 ') + mt.q; for (var i = 0; i < (mt.opts || []).length; i++) s += '\n・' + mt.opts[i] + '（' + t.cnt[i] + '）'; return s; }
+  function pollHtml(m, q) {
+    var mt = m.meta || {}, t = pollTally(m), closed = CC.pc[m.id] || mt.closed, mx = 0, i;
+    for (i = 0; i < t.cnt.length; i++) if (t.cnt[i] > mx) mx = t.cnt[i];
+    var h = '<div class="xjt xjcardm xjpoll" data-xj="tap" data-id="' + m.id + '">' + (q ? '<div class="xjq">↩ ' + esc((q.nick || '') + '：' + (q.del ? '…' : q.text)) + '</div>' : '') +
+      '<div class="pq">' + (mt.dates ? '📅 ' : '📊 ') + '<b>' + esc(mt.q) + '</b></div><div class="pn">' + esc((mt.dates ? f9('挑日子', 'Pick a date') : f9('投票', 'Poll')) + ' · ' + (mt.multi ? f9('可複選', 'multiple choice') : f9('單選', 'single choice')) + ' · ' + f9(t.np + ' 人已回應', t.np + ' responded')) + (closed ? ' · <b>' + esc(f9('已結束', 'Closed')) + '</b>' : '') + '</div>';
+    for (i = 0; i < (mt.opts || []).length; i++) {
+      var pct = t.np ? Math.round(t.cnt[i] * 100 / t.np) : 0;
+      h += '<button class="po' + (t.mine[i] ? ' on' : '') + (mx && t.cnt[i] === mx ? ' top' : '') + '" data-xj="vote" data-id="' + m.id + '" data-o="' + i + '"' + (closed ? ' disabled' : '') + '><span class="pbar" style="width:' + pct + '%"></span><span class="ck">' + (t.mine[i] ? '✓' : '') + '</span><span class="pl">' + esc(mt.opts[i]) + '</span><span class="pc">' + t.cnt[i] + '</span></button>' +
+        (t.who[i].length ? '<div class="pw">' + esc(t.who[i].join('、')) + '</div>' : '');
+    }
+    if (m.mine) h += '<button class="xjsm" data-xj="pollclose" data-id="' + m.id + '" data-v="' + (closed ? -1 : 1) + '" style="margin-top:8px">' + esc(closed ? f9('重新開放', 'Reopen') : f9('結束投票', 'Close poll')) + '</button>';
+    return h + '</div>';
+  }
+  function vote(id, o) {
+    var m = findMsg(id); if (!m) return;
+    if (!nick()) { note(f9('請先在下方填你的稱呼', 'Please enter your name below first')); return; }
+    var mt = m.meta || {}, t = pollTally(m), cur = [], k;
+    for (k in t.mine) cur.push(+k);
+    if (mt.multi) { var ix = cur.indexOf(o); if (ix >= 0) cur.splice(ix, 1); else cur.push(o); }
+    else cur = cur.length === 1 && cur[0] === o ? [] : [o];
+    api(CHAT, 'POST', '/c/' + ccCode() + '/vote', { id: id, opts: cur, dev: dev(), nick: nick(), 'with': CC.dm ? CC.dm.who : '' }, function (j, er) {
+      if (!j) { note(er === 'closed' ? f9('投票已結束', 'This poll is closed') : errTxt(er)); return; }
+      CC.vt[id] = j.vt || 0; CC.pc[id] = j.closed ? 1 : 0; paintChat();
+    });
+  }
+  function pollClose(id, v) {
+    api(CHAT, 'POST', '/c/' + ccCode() + '/vote', { id: id, close: v, dev: dev(), 'with': CC.dm ? CC.dm.who : '' }, function (j, er) {
+      if (!j) { note(errTxt(er)); return; }
+      CC.vt[id] = j.vt || 0; CC.pc[id] = j.closed ? 1 : 0; paintChat(); note(j.closed ? f9('投票已結束', 'Poll closed') : f9('已重新開放', 'Poll reopened'));
+    });
+  }
+  function pollForm(dates) {
+    var rows = '';
+    for (var i = 0; i < 3; i++) rows += dates ? dateRow() : '<input class="xjinp xjpopt" type="text" maxlength="60" placeholder="' + esc(f9('選項 ' + (i + 1), 'Option ' + (i + 1))) + '">';
+    modal('<h3>' + (dates ? '📅 ' + esc(f9('挑日子', 'Pick a date')) : '📊 ' + esc(f9('發起投票', 'New poll'))) + '</h3>' +
+      fld(f9('題目', 'Question'), '<input id="xjPq" class="xjinp" type="text" maxlength="120" value="' + esc(dates ? f9('哪一天比較方便？', 'Which day works best?') : '') + '" placeholder="' + esc(dates ? '' : f9('例如：聚會後要吃什麼？', 'e.g. What should we eat after the meeting?')) + '">') +
+      '<div class="note" style="margin:6px 0">' + esc(dates ? f9('可以選的日子（時間可不填）', 'Dates to choose from (time optional)') : f9('選項', 'Options')) + '</div><div id="xjPo">' + rows + '</div>' +
+      '<button class="xjsm" data-xj="polladd" data-d="' + (dates ? 1 : 0) + '">＋ ' + esc(dates ? f9('再加一天', 'Add a date') : f9('新增選項', 'Add an option')) + '</button>' +
+      (dates ? '' : '<label class="chk"><input type="checkbox" id="xjPm"> ' + esc(f9('可以複選', 'Allow multiple choices')) + '</label>') +
+      '<div class="xjbtns"><button class="btn ghost" data-xj="mclose">' + esc(f9('取消', 'Cancel')) + '</button><button class="btn" data-xj="pollsend" data-d="' + (dates ? 1 : 0) + '">' + esc(f9('發起', 'Post')) + '</button></div>');
+  }
+  function dateRow() { return '<div class="xjrow xjpdr" style="gap:6px;margin-bottom:8px"><input class="xjinp xjpd" type="date" style="margin:0;flex:1.4"><input class="xjinp xjpt" type="time" style="margin:0;flex:1"></div>'; }
+  function pollSend(dates) {
+    var q = trim(($('xjPq') || {}).value || ''), opts = [], i;
+    if (!q) { note(f9('請填題目', 'Please enter a question')); return; }
+    if (dates) {
+      var ds = document.querySelectorAll('#xjPo .xjpdr');
+      for (i = 0; i < ds.length; i++) { var d = ds[i].querySelector('.xjpd').value, t = ds[i].querySelector('.xjpt').value; if (d) opts.push(dLabel(d) + (t ? ' ' + t : '')); }
+    } else { var os = document.querySelectorAll('#xjPo .xjpopt'); for (i = 0; i < os.length; i++) if (trim(os[i].value)) opts.push(trim(os[i].value)); }
+    if (opts.length < 2) { note(dates ? f9('請至少選兩個日子', 'Please choose at least two dates') : f9('請至少填兩個選項', 'Please enter at least two options')); return; }
+    if (needNick()) return;
+    closeModal();
+    post({ kind: 'poll', poll: { q: q, opts: opts, multi: dates ? 1 : ($('xjPm') && $('xjPm').checked ? 1 : 0), dates: dates ? 1 : 0 } });
+  }
+
+  /* 活動（加入行事曆） */
+  function evtText(mt) { return '🗓️ ' + mt.title + '\n' + dLabel(mt.date) + (mt.time ? ' ' + mt.time + (mt.end ? '–' + mt.end : '') : '') + (mt.place ? '\n📍 ' + mt.place : '') + (mt.note ? '\n' + mt.note : ''); }
+  function evtHtml(m, q) {
+    var mt = m.meta || {};
+    return '<div class="xjt xjcardm xjevt" data-xj="tap" data-id="' + m.id + '">' + (q ? '<div class="xjq">↩ ' + esc((q.nick || '') + '：' + (q.del ? '…' : q.text)) + '</div>' : '') +
+      '<div class="et">🗓️ <b>' + esc(mt.title) + '</b></div><div class="ed">📆 ' + esc(dLabel(mt.date) + (mt.time ? ' ' + mt.time + (mt.end ? '–' + mt.end : '') : ' ' + f9('（全天）', '(all day)'))) + '</div>' +
+      (mt.place ? '<div class="ed">📍 ' + esc(mt.place) + '</div>' : '') + (mt.note ? '<div class="en">' + linkify(mt.note) + '</div>' : '') +
+      '<div class="eb"><button class="xjsm" data-xj="ics" data-id="' + m.id + '">📅 ' + esc(f9('加入行事曆', 'Add to calendar')) + '</button>' + (mt.place ? '<a class="xjsm" href="' + esc(mapUrl({ addr: mt.place })) + '" target="_blank" rel="noopener">🗺️ ' + esc(f9('地圖', 'Map')) + '</a>' : '') + '</div></div>';
+  }
+  function evtForm() {
+    var d = new Date(now() + 864e5), ds = d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+    modal('<h3>🗓️ ' + esc(f9('建立活動', 'New event')) + '</h3>' +
+      fld(f9('活動名稱', 'Title'), '<input id="xjEt" class="xjinp" type="text" maxlength="60" placeholder="' + esc(f9('例如：週五小家聚會', 'e.g. Friday small group')) + '">') +
+      fld(f9('日期', 'Date'), '<input id="xjEd" class="xjinp" type="date" value="' + ds + '">') +
+      '<div class="xjrow" style="gap:8px"><div class="xjgrow">' + fld(f9('開始時間（可不填）', 'Start (optional)'), '<input id="xjEs" class="xjinp" type="time">') + '</div><div class="xjgrow">' + fld(f9('結束時間（可不填）', 'End (optional)'), '<input id="xjEe" class="xjinp" type="time">') + '</div></div>' +
+      fld(f9('地點（可不填）', 'Place (optional)'), '<input id="xjEp" class="xjinp" type="text" maxlength="80" placeholder="' + esc(f9('例如：新埔教會二樓', 'e.g. Church, 2nd floor')) + '">') +
+      fld(f9('說明（可不填）', 'Notes (optional)'), '<textarea id="xjEn" class="xjinp" rows="2" maxlength="300"></textarea>') +
+      '<div class="xjbtns"><button class="btn ghost" data-xj="mclose">' + esc(f9('取消', 'Cancel')) + '</button><button class="btn" data-xj="evtsend">' + esc(f9('發佈', 'Post')) + '</button></div>');
+  }
+  function evtSend() {
+    var g = function (x) { return trim(($(x) || {}).value || ''); };
+    var e = { title: g('xjEt'), date: g('xjEd'), time: g('xjEs'), end: g('xjEe'), place: g('xjEp'), note: g('xjEn') };
+    if (!e.title) { note(f9('請填活動名稱', 'Please enter a title')); return; }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(e.date)) { note(f9('請選日期', 'Please choose a date')); return; }
+    if (needNick()) return;
+    closeModal(); post({ kind: 'evt', evt: e });
+  }
+  function icsOf(mt) {
+    var d = mt.date.replace(/-/g, ''), esc2 = function (s) { return String(s || '').replace(/([,;\\])/g, '\\$1').replace(/\n/g, '\\n'); };
+    var L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//321//chat//ZH', 'BEGIN:VEVENT', 'UID:' + d + '-' + now() + '@321', 'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z'];
+    if (mt.time) {
+      var s = mt.time.replace(':', '') + '00', e = mt.end ? mt.end.replace(':', '') + '00' : pad2((+mt.time.slice(0, 2) + 1) % 24) + mt.time.slice(3) + '00';
+      L.push('DTSTART:' + d + 'T' + s, 'DTEND:' + d + 'T' + e);
+    } else {
+      var n = new Date(+mt.date.slice(0, 4), +mt.date.slice(5, 7) - 1, +mt.date.slice(8, 10) + 1);
+      L.push('DTSTART;VALUE=DATE:' + d, 'DTEND;VALUE=DATE:' + n.getFullYear() + pad2(n.getMonth() + 1) + pad2(n.getDate()));
+    }
+    L.push('SUMMARY:' + esc2(mt.title)); if (mt.place) L.push('LOCATION:' + esc2(mt.place)); if (mt.note) L.push('DESCRIPTION:' + esc2(mt.note));
+    L.push('BEGIN:VALARM', 'TRIGGER:-PT1H', 'ACTION:DISPLAY', 'DESCRIPTION:' + esc2(mt.title), 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR');
+    return L.join('\r\n');
+  }
+  function gcalUrl(mt) {
+    var d = mt.date.replace(/-/g, ''), dates;
+    if (mt.time) { var s = d + 'T' + mt.time.replace(':', '') + '00', e = d + 'T' + (mt.end ? mt.end.replace(':', '') : pad2((+mt.time.slice(0, 2) + 1) % 24) + mt.time.slice(3)) + '00'; dates = s + '/' + e; }
+    else { var n = new Date(+mt.date.slice(0, 4), +mt.date.slice(5, 7) - 1, +mt.date.slice(8, 10) + 1); dates = d + '/' + n.getFullYear() + pad2(n.getMonth() + 1) + pad2(n.getDate()); }
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(mt.title) + '&dates=' + dates + '&ctz=Asia/Taipei' + (mt.place ? '&location=' + encodeURIComponent(mt.place) : '') + (mt.note ? '&details=' + encodeURIComponent(mt.note) : '');
+  }
+  function icsSheet(id) {
+    var m = findMsg(id); if (!m) return; var mt = m.meta || {};
+    modal('<h3>📅 ' + esc(f9('加入行事曆', 'Add to calendar')) + '</h3><div class="xjtip">' + esc(evtText(mt)) + '</div>' +
+      '<div class="xjshl"><button class="xjshr" data-xj="icsdl" data-id="' + id + '"><span class="xjic">📱</span><b>' + esc(f9('手機行事曆（iPhone／Android）', 'Phone calendar (iPhone / Android)')) + '</b><span class="xjshgo">›</span></button>' +
+      '<a class="xjshr" href="' + esc(gcalUrl(mt)) + '" target="_blank" rel="noopener" style="text-decoration:none"><span class="xjic">🗓️</span><b>Google ' + esc(f9('日曆', 'Calendar')) + '</b><span class="xjshgo">›</span></a></div>' +
+      '<p class="note">' + esc(f9('會在活動前 1 小時提醒你。', 'You’ll get a reminder 1 hour before.')) + '</p><div class="xjbtns"><button class="btn ghost block" data-xj="mclose">' + esc(f9('關閉', 'Close')) + '</button></div>');
+  }
+  function icsDl(id) {
+    var m = findMsg(id); if (!m) return; var ics = icsOf(m.meta || {}), name = 'event-' + (m.meta.date || '') + '.ics';
+    var ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (ios) { location.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics); return; }
+    try { var f = new File([ics], name, { type: 'text/calendar' }); if (navigator.canShare && navigator.canShare({ files: [f] }) && /Android/i.test(navigator.userAgent)) { navigator.share({ files: [f] })['catch'](function () { }); return; } } catch (e) { }
+    var u = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })), a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.parentNode.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(u); }, 5000); note(f9('已下載，打開這個檔案就會加入行事曆', 'Downloaded — open it to add to your calendar'));
+  }
+
+  /* 位置 */
+  function mapUrl(mt) { return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(mt.lat != null && mt.lng != null ? mt.lat + ',' + mt.lng : (mt.addr || mt.label || '')); }
+  function locHtml(m, q) {
+    var mt = m.meta || {};
+    return '<div class="xjt xjcardm xjloc" data-xj="tap" data-id="' + m.id + '">' + (q ? '<div class="xjq">↩ ' + esc((q.nick || '') + '：' + (q.del ? '…' : q.text)) + '</div>' : '') +
+      '<div class="lm">📍</div><div class="lt"><b>' + esc(mt.label || mt.addr || f9('位置', 'Location')) + '</b>' + (mt.addr && mt.label ? '<div class="ed">' + esc(mt.addr) + '</div>' : '') + (mt.lat != null ? '<div class="ed">' + esc(mt.lat + ', ' + mt.lng) + '</div>' : '') +
+      '<a class="xjsm" href="' + esc(mapUrl(mt)) + '" target="_blank" rel="noopener">🗺️ ' + esc(f9('開地圖導航', 'Open in Maps')) + '</a></div></div>';
+  }
+  function locForm() {
+    modal('<h3>📍 ' + esc(f9('傳送位置', 'Send a location')) + '</h3>' +
+      fld(f9('地點名稱', 'Place name'), '<input id="xjLl" class="xjinp" type="text" maxlength="80" placeholder="' + esc(f9('例如：新埔教會', 'e.g. Our church')) + '">') +
+      '<button class="btn block" data-xj="locnow" style="margin:4px 0 12px">📡 ' + esc(f9('傳我現在的位置', 'Send my current location')) + '</button>' +
+      fld(f9('或輸入地址', 'Or type an address'), '<input id="xjLa" class="xjinp" type="text" maxlength="120" placeholder="' + esc(f9('例如：新竹縣新埔鎮…', 'Street address')) + '">') +
+      '<div class="xjbtns"><button class="btn ghost" data-xj="mclose">' + esc(f9('取消', 'Cancel')) + '</button><button class="btn" data-xj="locsend">' + esc(f9('傳送地址', 'Send address')) + '</button></div>');
+  }
+  function locNow(btn) {
+    if (needNick()) return;
+    if (!navigator.geolocation) { note(f9('這台裝置無法取得位置', 'Location isn’t available on this device')); return; }
+    var lb = trim(($('xjLl') || {}).value || '') || f9('我的位置', 'My location');
+    if (btn) { btn.disabled = true; btn.textContent = f9('取得位置中…', 'Getting location…'); }
+    navigator.geolocation.getCurrentPosition(function (p) { closeModal(); post({ kind: 'loc', lat: p.coords.latitude, lng: p.coords.longitude, label: lb }); },
+      function () { if (btn) { btn.disabled = false; btn.textContent = '📡 ' + f9('傳我現在的位置', 'Send my current location'); } note(f9('沒有取得位置權限，請在手機設定允許，或改輸入地址', 'Location permission denied — allow it in settings or type an address')); }, { enableHighAccuracy: true, timeout: 15000 });
+  }
+  function locSend() {
+    var a = trim(($('xjLa') || {}).value || ''), lb = trim(($('xjLl') || {}).value || '');
+    if (!a && !lb) { note(f9('請輸入地址或地點名稱', 'Please enter an address or place name')); return; }
+    if (needNick()) return;
+    closeModal(); post({ kind: 'loc', addr: a || lb, label: lb });
+  }
+
+  /* ＋ 面板 */
+  function plusHide() { CC.plus = 0; var pl = $('xjPlus'); if (pl) pl.style.display = 'none'; fitChat(); }
+  function plusPanel() {
+    var it = [['photo', '🖼️', '相片', 'Photo'], ['file', '📎', '檔案', 'File'], ['mkpoll', '📊', '投票', 'Poll'], ['mkdate', '📅', '挑日子', 'Pick date'], ['mkevt', '🗓️', '活動', 'Event'], ['mkloc', '📍', '位置', 'Location']], h = '<div class="xjplus" id="xjPlus" style="display:' + (CC.plus ? 'grid' : 'none') + '">';
+    for (var i = 0; i < it.length; i++) h += '<button data-xj="' + it[i][0] + '"><span>' + it[i][1] + '</span><b>' + esc(f9(it[i][2], it[i][3])) + '</b></button>';
+    return h + '</div>';
+  }
+
+  /* 搜尋 */
+  function searchBox() {
+    modal('<h3>🔍 ' + esc(f9('搜尋聊天記錄', 'Search this chat')) + '</h3><div class="xjrow" style="gap:8px"><input id="xjSq" class="xjinp" type="search" maxlength="30" style="margin:0" placeholder="' + esc(f9('關鍵字或人名', 'Keyword or name')) + '"><button class="btn" data-xj="searchgo" style="width:auto">' + esc(f9('搜尋', 'Search')) + '</button></div><div id="xjSr" style="margin-top:10px"></div>' +
+      '<div class="xjbtns"><button class="btn ghost block" data-xj="mclose">' + esc(f9('關閉', 'Close')) + '</button></div>');
+    var i = $('xjSq'); if (i) { i.focus(); i.onkeydown = function (e) { if (e.keyCode === 13) { e.preventDefault(); searchGo(); } }; }
+  }
+  var SR = [];
+  function searchGo() {
+    var q = trim(($('xjSq') || {}).value || ''), box = $('xjSr'); if (!q || !box) return;
+    box.innerHTML = '<div class="note">' + esc(f9('搜尋中…', 'Searching…')) + '</div>';
+    api(CHAT, 'GET', '/c/' + ccCode() + '/search?q=' + encodeURIComponent(q) + '&dev=' + encodeURIComponent(dev()) + dmq(), null, function (j, er) {
+      var b = $('xjSr'); if (!b) return;
+      if (!j) {
+        /* 伺服器還沒更新：先在已載入的訊息裡找 */
+        j = { msgs: [] }; var lq = q.toLowerCase();
+        for (var k = CC.msgs.length - 1; k >= 0; k--) { var x = CC.msgs[k]; if (!x.del && ((x.text || '').toLowerCase().indexOf(lq) >= 0 || (x.nick || '').toLowerCase().indexOf(lq) >= 0)) j.msgs.push(x); }
+      }
+      SR = j.msgs || [];
+      if (!SR.length) { b.innerHTML = '<div class="xjempty">' + esc(f9('找不到「' + q + '」', 'No results for “' + q + '”')) + '</div>'; return; }
+      var h = '<div class="note">' + esc(f9('找到 ' + SR.length + ' 則', SR.length + ' found')) + '</div>';
+      for (var i = 0; i < SR.length; i++) {
+        var m = SR[i], t = esc(m.text || '').replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), function (s) { return '<mark>' + s + '</mark>'; });
+        h += '<div class="xjsr" data-xj="srgo" data-i="' + i + '"><div class="note" style="margin:0">' + esc((m.mine ? f9('我', 'Me') : m.nick) + ' · ' + fmtDay(m.ts) + ' ' + fmtTime(m.ts)) + '</div><div>' + t + '</div></div>';
+      }
+      b.innerHTML = h;
+    });
+  }
+  function srGo(i) {
+    var m = SR[i]; if (!m) return;
+    if ($('xjm' + m.id)) { closeModal(); jumpTo(m.id); return; }
+    modal('<h3>' + esc((m.mine ? f9('我', 'Me') : m.nick) + ' · ' + fmtDay(m.ts) + ' ' + fmtTime(m.ts)) + '</h3><div class="xjtip" style="font-size:1em;color:var(--ink)">' + linkify(m.text || '') + '</div><p class="note">' + esc(f9('這是比較早的訊息，聊天室只顯示最近的訊息。', 'This is an older message; the chat shows recent messages only.')) + '</p>' +
+      '<div class="xjbtns"><button class="btn ghost" data-xj="search">‹ ' + esc(f9('回搜尋', 'Back')) + '</button><button class="btn" data-xj="srcopy" data-i="' + i + '">📋 ' + esc(f9('複製', 'Copy')) + '</button></div>');
+  }
+  function menuBox() {
+    modal('<h3>☰ ' + esc(f9('聊天室選單', 'Chat menu')) + '</h3><div class="xjshl">' +
+      '<button class="xjshr" data-xj="favs"><span class="xjic">⭐</span><b>' + esc(f9('我的收藏', 'Saved messages')) + '</b><span class="xjshgo">' + favs().length + ' ›</span></button>' +
+      '<button class="xjshr" data-xj="search"><span class="xjic">🔍</span><b>' + esc(f9('搜尋聊天記錄', 'Search this chat')) + '</b><span class="xjshgo">›</span></button>' +
+      '<button class="xjshr" data-xj="shot0"><span class="xjic">📸</span><b>' + esc(f9('截圖（選幾則訊息做成圖片）', 'Screenshot (turn messages into a picture)')) + '</b><span class="xjshgo">›</span></button>' +
+      (CC.pin ? '<button class="xjshr" data-xj="pingo2"><span class="xjic">📌</span><b>' + esc(f9('看公告', 'View pinned message')) + '</b><span class="xjshgo">›</span></button>' : '') +
+      '<button class="xjshr" data-xj="cref"><span class="xjic">⟳</span><b>' + esc(f9('重新整理', 'Refresh')) + '</b><span class="xjshgo">›</span></button></div>' +
+      '<div class="xjbtns"><button class="btn ghost block" data-xj="mclose">' + esc(f9('關閉', 'Close')) + '</button></div>');
+  }
+
+  /* @提到某人 */
+  function atNames() { var o = {}, L = [], me = nick(); for (var i = CC.msgs.length - 1; i >= 0; i--) { var n = CC.msgs[i].nick; if (n && !CC.msgs[i].mine && n !== me && !o[n]) { o[n] = 1; L.push(n); } } return L; }
+  function atCheck(ta) {
+    var box = $('xjAt'); if (!box) return;
+    var pos = ta.selectionStart == null ? ta.value.length : ta.selectionStart, m = ta.value.slice(0, pos).match(/(^|\s)@([^\s@]{0,10})$/);
+    if (!m) { box.style.display = 'none'; return; }
+    var key = m[2], L = atNames().filter(function (n) { return !key || n.indexOf(key) >= 0; }).slice(0, 8);
+    if (!L.length) { box.style.display = 'none'; return; }
+    box.innerHTML = L.map(function (n) { return '<button data-xj="atpick" data-n="' + esc(n) + '">@' + esc(n) + '</button>'; }).join('');
+    box.style.display = 'flex'; fitChat();
+  }
+  function atPick(n) {
+    var ta = $('xjIn'), box = $('xjAt'); if (!ta) return;
+    var pos = ta.selectionStart == null ? ta.value.length : ta.selectionStart, pre = ta.value.slice(0, pos).replace(/@([^\s@]{0,10})$/, '@' + n + ' ');
+    ta.value = pre + ta.value.slice(pos); growTa(ta); if (box) box.style.display = 'none';
+    try { ta.focus(); ta.selectionStart = ta.selectionEnd = pre.length; } catch (e) { }
+  }
+  function fmtText(s) {
+    var me = nick();
+    return linkify(s).replace(/(^|[\s>（(，,：:])@([^\s@<，,。：:]{1,20})/g, function (a, pre, n) { return pre + '<span class="xjat' + (n === me ? ' me' : '') + '">@' + n + '</span>'; });
+  }
+  function mentionsMe(m) { var me = nick(); return !!(me && !m.mine && !m.del && m.text && m.text.indexOf('@' + me) >= 0); }
+
+  /* 截圖：選幾則訊息畫成一張圖 */
+  function shotStart(id) { closeModal(); CC.shot = { ids: {} }; if (id) CC.shot.ids[id] = 1; paintChat(); shotBar(); note(f9('點訊息可以選取或取消，選好按「做成圖片」', 'Tap messages to select them, then “Make picture”')); }
+  function shotCount() { var n = 0; if (CC.shot) for (var k in CC.shot.ids) if (CC.shot.ids[k]) n++; return n; }
+  function shotBar() {
+    var b = $('xjShotBar');
+    if (!CC.shot || route() !== 'xjchat') { if (b) b.parentNode.removeChild(b); try { document.body.classList.remove('xjshotmode'); } catch (e) { } return; }
+    if (!b) { b = document.createElement('div'); b.id = 'xjShotBar'; b.className = 'xjshotbar'; document.body.appendChild(b); }
+    try { document.body.classList.add('xjshotmode'); } catch (e) { }
+    b.innerHTML = '<span>📸 ' + esc(f9('已選 ' + shotCount() + ' 則', shotCount() + ' selected')) + '</span><button class="xjsm" data-xj="shotcancel">' + esc(f9('取消', 'Cancel')) + '</button><button class="btn" data-xj="shotmake" style="width:auto;min-height:0;padding:8px 16px">' + esc(f9('做成圖片', 'Make picture')) + '</button>';
+    try { H.simp(b); } catch (e) { }
+  }
+  function wrapLines(g, text, maxW) {
+    var out = [], paras = String(text || '').split('\n');
+    for (var p = 0; p < paras.length; p++) {
+      var s = paras[p], line = '';
+      if (!s) { out.push(''); continue; }
+      var chars = Array.from ? Array.from(s) : s.split('');
+      for (var i = 0; i < chars.length; i++) { var t = line + chars[i]; if (g.measureText(t).width > maxW && line) { out.push(line); line = chars[i]; } else line = t; }
+      out.push(line);
+    }
+    return out;
+  }
+  function loadImg(url, cb) {
+    var x = new XMLHttpRequest(); x.open('GET', url); x.responseType = 'blob';
+    x.onload = function () { if (x.status !== 200) { cb(null); return; } var u = URL.createObjectURL(x.response), im = new Image(); im.onload = function () { cb(im); }; im.onerror = function () { cb(null); }; im.src = u; };
+    x.onerror = function () { cb(null); }; x.send();
+  }
+  function shotMake() {
+    var L = []; for (var i = 0; i < CC.msgs.length; i++) if (CC.shot && CC.shot.ids[CC.msgs[i].id] && !CC.msgs[i].del) L.push(CC.msgs[i]);
+    if (!L.length) { note(f9('請先點選要截圖的訊息', 'Select some messages first')); return; }
+    note(f9('圖片製作中…', 'Making the picture…'));
+    var imgs = {}, left = 0;
+    for (i = 0; i < L.length; i++) if (L[i].kind === 'img' && L[i].att) left++;
+    var draw = function () {
+      var S = 2, W = 540, PAD = 18, BW = 340, F = '"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif';
+      var cv = document.createElement('canvas'), g = cv.getContext('2d');
+      g.font = '16px ' + F;
+      var items = [], y = 70;
+      for (var k = 0; k < L.length; k++) {
+        var m = L[k], it = { m: m, y: y }, mt = m.meta || {}, txt = m.text || '';
+        if (m.kind === 'poll') txt = pollText(m); else if (m.kind === 'evt') txt = evtText(mt); else if (m.kind === 'loc') txt = '📍 ' + (mt.label || mt.addr || '') + (mt.addr && mt.label ? '\n' + mt.addr : '');
+        else if (m.kind === 'file') txt = '📎 ' + (mt.name || ''); else if (m.kind === 'voice') txt = '🎤 ' + f9('語音', 'Voice') + (mt.dur ? ' ' + fmtDur(mt.dur) : '');
+        if (m.kind === 'img' && imgs[m.id]) { var im = imgs[m.id], iw = Math.min(BW, im.naturalWidth), ih = im.naturalHeight * iw / im.naturalWidth; if (ih > 420) { iw = iw * 420 / ih; ih = 420; } it.img = im; it.w = iw; it.h = ih; }
+        else if (m.kind === 'stk') { it.stk = stkFind(mt.stk); it.w = 110; it.h = 110; }
+        else { it.lines = wrapLines(g, txt, BW - 26); var mw = 0; for (var q = 0; q < it.lines.length; q++) mw = Math.max(mw, g.measureText(it.lines[q]).width); it.w = Math.min(BW, mw + 26); it.h = it.lines.length * 24 + 18; }
+        it.top = y + (m.mine ? 0 : 20); y = it.top + it.h + (CC.rx[m.id] && CC.rx[m.id].length ? 28 : 0) + 16; items.push(it);
+      }
+      var H2 = y + 40; cv.width = W * S; cv.height = H2 * S; g.scale(S, S);
+      g.fillStyle = '#F4F1EA'; g.fillRect(0, 0, W, H2);
+      g.fillStyle = '#12233F'; g.fillRect(0, 0, W, 52); g.fillStyle = '#fff'; g.font = 'bold 18px ' + F; g.textBaseline = 'middle';
+      g.fillText(roomTitle().slice(0, 24), PAD, 26); g.font = '13px ' + F; g.textAlign = 'right'; g.fillText(fmtDay(L[0].ts) + ' ' + fmtTime(L[0].ts), W - PAD, 26); g.textAlign = 'left';
+      var rr = function (x, yy, w, h, r) { g.beginPath(); g.moveTo(x + r, yy); g.arcTo(x + w, yy, x + w, yy + h, r); g.arcTo(x + w, yy + h, x, yy + h, r); g.arcTo(x, yy + h, x, yy, r); g.arcTo(x, yy, x + w, yy, r); g.closePath(); };
+      for (k = 0; k < items.length; k++) {
+        var it2 = items[k], m2 = it2.m, x = m2.mine ? W - PAD - it2.w : PAD + 44;
+        if (!m2.mine) {
+          g.fillStyle = col(m2.who); g.beginPath(); g.arc(PAD + 17, it2.top + 17, 17, 0, Math.PI * 2); g.fill();
+          g.fillStyle = '#fff'; g.font = 'bold 15px ' + F; g.textAlign = 'center'; g.fillText(String(m2.nick || '?').slice(0, 1), PAD + 17, it2.top + 18); g.textAlign = 'left';
+          g.fillStyle = '#6B7280'; g.font = '12px ' + F; g.fillText(m2.nick || '', x + 2, it2.y + 9);
+        }
+        if (it2.img) { g.save(); rr(x, it2.top, it2.w, it2.h, 12); g.clip(); g.drawImage(it2.img, x, it2.top, it2.w, it2.h); g.restore(); }
+        else if (it2.stk) { g.fillStyle = it2.stk[4]; rr(x, it2.top, 110, 110, 20); g.fill(); g.textAlign = 'center'; g.font = '44px ' + F; g.fillText(it2.stk[1], x + 55, it2.top + 44); g.fillStyle = it2.stk[5]; g.font = 'bold 14px ' + F; g.fillText(f9(it2.stk[2], it2.stk[3]), x + 55, it2.top + 88); g.textAlign = 'left'; }
+        else {
+          g.fillStyle = m2.mine ? '#1F3C88' : '#FFFFFF'; rr(x, it2.top, it2.w, it2.h, 14); g.fill();
+          if (!m2.mine) { g.strokeStyle = '#E2DED3'; g.lineWidth = 1; g.stroke(); }
+          g.fillStyle = m2.mine ? '#FFFFFF' : '#1B2333'; g.font = '16px ' + F;
+          for (var ln = 0; ln < it2.lines.length; ln++) g.fillText(it2.lines[ln], x + 13, it2.top + 9 + 12 + ln * 24);
+        }
+        g.fillStyle = '#9AA0A8'; g.font = '11px ' + F; g.textAlign = m2.mine ? 'right' : 'left';
+        g.fillText(fmtTime(m2.ts), m2.mine ? x - 6 : x + it2.w + 6, it2.top + it2.h - 8); g.textAlign = 'left';
+        var R2 = CC.rx[m2.id]; if (R2 && R2.length) { var c = {}, s = ''; for (var z = 0; z < R2.length; z++) c[R2[z][0]] = (c[R2[z][0]] || 0) + 1; for (var e in c) { var rf = rxFind(e); if (rf) s += rf[1] + c[e] + '  '; } g.font = '14px ' + F; g.fillStyle = '#4B5563'; g.textAlign = m2.mine ? 'right' : 'left'; g.fillText(s, m2.mine ? W - PAD : x, it2.top + it2.h + 16); g.textAlign = 'left'; }
+      }
+      g.fillStyle = '#9AA0A8'; g.font = '12px ' + F; g.textAlign = 'center'; g.fillText('— ' + f9(APPZ, APPE) + ' —', W / 2, H2 - 18);
+      var url = cv.toDataURL('image/jpeg', 0.9);
+      CC.shot = null; shotBar(); paintChat();
+      SHOT.url = url;
+      modal('<h3>📸 ' + esc(f9('截圖', 'Screenshot')) + '</h3><div class="xjshpv"><img src="' + url + '" alt="" style="max-height:55vh"></div>' +
+        '<div class="xjbtns"><button class="btn ghost" data-xj="shotsave">⬇ ' + esc(f9('存到手機／分享', 'Save / share')) + '</button><button class="btn" data-xj="shotchat">💬 ' + esc(f9('傳到聊天室', 'Send to a chat')) + '</button></div>' +
+        '<div class="xjbtns" style="margin-top:8px"><button class="btn ghost block" data-xj="mclose">' + esc(f9('關閉', 'Close')) + '</button></div>');
+    };
+    if (!left) { draw(); return; }
+    for (i = 0; i < L.length; i++) if (L[i].kind === 'img' && L[i].att) (function (m) { loadImg(attUrl(m.att), function (im) { if (im) imgs[m.id] = im; if (--left === 0) draw(); }); })(L[i]);
+  }
+  var SHOT = { url: '' };
+  function shotSave() {
+    var u = SHOT.url; if (!u) return;
+    var b = atob(u.split(',')[1]), a = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) a[i] = b.charCodeAt(i);
+    var blob = new Blob([a], { type: 'image/jpeg' }), name = '321-chat-' + now() + '.jpg';
+    try { var f = new File([blob], name, { type: 'image/jpeg' }); if (navigator.canShare && navigator.canShare({ files: [f] })) { navigator.share({ files: [f] })['catch'](function () { }); return; } } catch (e) { }
+    var l = document.createElement('a'), ou = URL.createObjectURL(blob); l.href = ou; l.download = name; document.body.appendChild(l); l.click(); l.parentNode.removeChild(l); setTimeout(function () { URL.revokeObjectURL(ou); }, 5000);
+    note(f9('已下載圖片', 'Image downloaded'));
+  }
+
+  /* 點擊（新功能） */
+  document.addEventListener('click', function (ev) {
+    var t = ev.target;
+    while (t && t !== document && !(t.getAttribute && t.getAttribute('data-xj'))) t = t.parentNode;
+    if (!t || t === document) return;
+    var a = t.getAttribute('data-xj'), id = +t.getAttribute('data-id') || 0;
+    if (CC.shot && route() === 'xjchat' && !(t.closest && t.closest('#xjModal')) && ['shotcancel', 'shotmake'].indexOf(a) < 0) return;
+    if (a === 'rx') react(id, t.getAttribute('data-k'));
+    else if (a === 'rxlist') rxList(id);
+    else if (a === 'selcopy') selCopy(id);
+    else if (a === 'selall') { var mm = findMsg(id); closeModal(); if (mm) copyText(mm.text); }
+    else if (a === 'fwd') fwdSheet(id);
+    else if (a === 'fwdgo') fwdGo(+t.getAttribute('data-i'), t);
+    else if (a === 'fwdout') fwdOut();
+    else if (a === 'fav') toggleFav(id);
+    else if (a === 'favs') favPage();
+    else if (a === 'favcopy') { var fv = favs()[+t.getAttribute('data-i')]; if (fv) copyText(fv.text); }
+    else if (a === 'favrm') { var FL = favs(); FL.splice(+t.getAttribute('data-i'), 1); ls(P + 'xjfav', JSON.stringify(FL)); favPage(); paintChat(); }
+    else if (a === 'pinset') setPin(CC.pin && CC.pin.id === id ? 0 : id);
+    else if (a === 'pinrm') { ev.stopPropagation(); setPin(0); }
+    else if (a === 'pingo') { if (!(ev.target.getAttribute && ev.target.getAttribute('data-xj') === 'pinrm')) jumpTo(id); }
+    else if (a === 'pingo2') { closeModal(); if (CC.pin) jumpTo(CC.pin.id); }
+    else if (a === 'shot') shotStart(id);
+    else if (a === 'shot0') shotStart(0);
+    else if (a === 'shotcancel') { CC.shot = null; shotBar(); paintChat(); }
+    else if (a === 'shotmake') shotMake();
+    else if (a === 'shotsave') shotSave();
+    else if (a === 'shotchat') { closeModal(); shareImg(SHOT.url, {}); }
+    else if (a === 'hidelocal') { hideLocal(id); paintChat(); note(f9('已從你的手機刪除（別人還看得到）', 'Deleted from your phone (others can still see it)')); }
+    else if (a === 'vote') { if (!t.disabled) vote(id, +t.getAttribute('data-o')); }
+    else if (a === 'pollclose') pollClose(id, +t.getAttribute('data-v'));
+    else if (a === 'plus') { CC.plus = CC.plus ? 0 : 1; CC.stk = 0; var pl = $('xjPlus'), sp = $('xjStk'); if (pl) pl.style.display = CC.plus ? 'grid' : 'none'; if (sp) sp.style.display = 'none'; fitChat(); }
+    else if (a === 'mkpoll') { CC.plus = 0; plusHide(); pollForm(0); }
+    else if (a === 'mkdate') { CC.plus = 0; plusHide(); pollForm(1); }
+    else if (a === 'polladd') { var po = $('xjPo'); if (po && po.children.length < 12) { var d = document.createElement('div'); d.innerHTML = t.getAttribute('data-d') === '1' ? dateRow() : '<input class="xjinp xjpopt" type="text" maxlength="60" placeholder="' + esc(f9('選項 ' + (po.children.length + 1), 'Option ' + (po.children.length + 1))) + '">'; po.appendChild(d.firstChild); } }
+    else if (a === 'pollsend') pollSend(t.getAttribute('data-d') === '1');
+    else if (a === 'mkevt') { CC.plus = 0; plusHide(); evtForm(); }
+    else if (a === 'evtsend') evtSend();
+    else if (a === 'ics') icsSheet(id);
+    else if (a === 'icsdl') icsDl(id);
+    else if (a === 'mkloc') { CC.plus = 0; plusHide(); locForm(); }
+    else if (a === 'locnow') locNow(t);
+    else if (a === 'locsend') locSend();
+    else if (a === 'search') searchBox();
+    else if (a === 'searchgo') searchGo();
+    else if (a === 'srgo') srGo(+t.getAttribute('data-i'));
+    else if (a === 'srcopy') { var sm = SR[+t.getAttribute('data-i')]; if (sm) copyText(sm.text); }
+    else if (a === 'menu') menuBox();
+    else if (a === 'atpick') atPick(t.getAttribute('data-n'));
+  });
+
+  var st3 = document.createElement('style');
+  st3.textContent =
+    '.xjsheet{margin:-4px 0 0}.xjrxbar{display:flex;justify-content:space-between;gap:4px;background:var(--sky);border-radius:16px;padding:8px 6px;margin-bottom:12px}' +
+    '.xjrxbar button{flex:1;border:0;background:none;border-radius:12px;padding:4px 0;cursor:pointer;font-family:inherit;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:2px}.xjrxbar button span{font-size:1.7em;line-height:1.1}.xjrxbar button small{font-size:.66em;color:var(--muted)}.xjrxbar button.on{background:var(--white);box-shadow:0 0 0 2px var(--gold) inset}' +
+    '.xjgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.xjgrid button{border:1px solid var(--line);background:var(--white);border-radius:14px;padding:10px 2px 8px;cursor:pointer;font-family:inherit;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}' +
+    '.xjgrid button span{font-size:1.35em;line-height:1}.xjgrid button b{font-size:.74em;font-weight:600;line-height:1.25;text-align:center;word-break:keep-all}.xjgrid button.arm{background:#C8463C;border-color:#C8463C;color:#fff}' +
+    '.xjrxs{display:flex;flex-wrap:wrap;gap:4px;margin:3px 2px 0;cursor:pointer}.xjm.mine .xjrxs{justify-content:flex-end}.xjrxs span{background:var(--white);border:1px solid var(--line);border-radius:999px;padding:1px 8px;font-size:.78em;color:var(--ink)}.xjrxs span.on{border-color:var(--gold);background:#FFF6DA}' +
+    '.xjfavmk{color:#C99A2E;margin-right:3px}.xjflash .xjt,.xjflash .xjimg{box-shadow:0 0 0 3px var(--gold)!important;transition:box-shadow .3s}' +
+    '.xjpinbar{display:flex;align-items:center;gap:8px;background:#FFF6DA;border:1px solid #EAD9A6;border-radius:12px;padding:7px 10px;margin:0 0 8px;cursor:pointer;color:#5C4510}.xjpinbar .pt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.86em}.xjpinbar button{border:0;background:none;color:#8A6A20;cursor:pointer;font-size:1em;padding:0 2px}' +
+    '.xjt.xjcardm,.xjm.mine .xjt.xjcardm{background:var(--white);color:var(--ink);border:1px solid var(--line);border-radius:16px;min-width:220px;white-space:normal}.xjm.mine .xjt.xjcardm a{color:inherit}' +
+    '.xjpoll .pq{font-size:1.02em;margin-bottom:2px}.xjpoll .pn{font-size:.76em;color:var(--muted);margin-bottom:8px}' +
+    '.xjpoll .po{position:relative;display:flex;align-items:center;gap:8px;width:100%;border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:7px 10px;margin:5px 0 0;cursor:pointer;font-family:inherit;font-size:.92em;color:var(--ink);overflow:hidden;text-align:left}' +
+    '.xjpoll .po .pbar{position:absolute;left:0;top:0;bottom:0;background:rgba(31,60,136,.12);z-index:0}.xjpoll .po.top .pbar{background:rgba(201,154,46,.25)}.xjpoll .po>span:not(.pbar){position:relative;z-index:1}' +
+    '.xjpoll .po .ck{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--muted);display:flex;align-items:center;justify-content:center;font-size:.8em;flex:none;background:var(--white)}.xjpoll .po.on .ck{background:var(--navy);border-color:var(--navy);color:#fff}' +
+    '.xjpoll .po .pl{flex:1;min-width:0}.xjpoll .po .pc{font-weight:700;color:var(--head)}.xjpoll .po[disabled]{cursor:default;opacity:.85}.xjpoll .pw{font-size:.72em;color:var(--muted);margin:2px 4px 0}' +
+    '.xjevt .et{font-size:1.04em;margin-bottom:4px}.xjevt .ed,.xjloc .ed{font-size:.86em;color:var(--muted);margin:2px 0}.xjevt .en{font-size:.88em;margin:6px 0 0;line-height:1.6}.xjevt .eb{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.xjevt .eb .xjsm,.xjloc .xjsm{text-decoration:none;display:inline-block}' +
+    '.xjloc{display:flex;gap:10px;align-items:flex-start}.xjloc .lm{font-size:2em;line-height:1}.xjloc .lt{flex:1;min-width:0}.xjloc .xjsm{margin-top:6px}' +
+    '.xjplus{grid-template-columns:repeat(3,1fr);gap:8px;padding:4px 0 8px}.xjplus button{border:1px solid var(--line);background:var(--paper);border-radius:14px;padding:10px 4px;cursor:pointer;font-family:inherit;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:3px}.xjplus button span{font-size:1.5em}.xjplus button b{font-size:.78em;font-weight:600}' +
+    '.xjplusb{font-size:1.6em!important;font-weight:300;color:var(--head)}' +
+    '.xjatp{flex-wrap:wrap;gap:6px;padding:2px 0 8px}.xjatp button{border:1px solid var(--line);background:var(--sky);border-radius:999px;padding:4px 12px;cursor:pointer;font-family:inherit;color:var(--head);font-size:.86em}' +
+    '.xjat{color:#1F5C99;font-weight:700}.xjm.mine .xjat{color:#FFE7A3}.xjat.me{background:#FFF0B8;color:#6B4E00;border-radius:4px;padding:0 2px}.xjt.ment{border-color:#E0B84A;box-shadow:0 0 0 2px rgba(224,184,74,.35)}' +
+    '.xjpick{cursor:pointer;position:relative}.xjpick .xjb,.xjpick .xjav{pointer-events:none}.xjck{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--muted);display:flex;align-items:center;justify-content:center;font-size:.8em;align-self:center;background:var(--white);color:#fff}.xjpick.on .xjck{background:var(--navy);border-color:var(--navy)}.xjpick.on .xjb{opacity:1}.xjpick:not(.on) .xjb{opacity:.6}' +
+    '.xjshotbar{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:var(--maxw);z-index:60;background:var(--white);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:10px;box-shadow:0 -4px 14px rgba(0,0,0,.08)}.xjshotbar span{flex:1;font-weight:700;color:var(--head)}' +
+    'body.xjshotmode .xjft,body.xjshotmode #tabbar{display:none!important}' +
+    '.xjm.mine .xjt.gone{background:none;color:var(--muted);border-color:var(--line)}' +
+    '.xjfav{border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:8px 0;background:var(--white)}.xjfavt{white-space:pre-wrap;word-break:break-word;line-height:1.7}' +
+    '.xjsr{border-bottom:1px dashed var(--line);padding:8px 2px;cursor:pointer;word-break:break-word}.xjsr mark{background:#FFE58A;border-radius:3px;padding:0 1px}' +
+    '.xjchathd b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.xjchathd{gap:6px}.xjchathd .xjsm{padding:6px 10px}' +
+    '@media (prefers-color-scheme:dark){html:not([data-theme="light"]) .xjpinbar{background:#3A3220;border-color:#5A4A26;color:#F2E2B4}html:not([data-theme="light"]) .xjgrid button,html:not([data-theme="light"]) .xjfav,html:not([data-theme="light"]) .xjt.xjcardm{background:#16243A;color:#E8EEF6}}' +
+    'html[data-theme="dark"] .xjpinbar{background:#3A3220;border-color:#5A4A26;color:#F2E2B4}html[data-theme="dark"] .xjgrid button,html[data-theme="dark"] .xjfav,html[data-theme="dark"] .xjt.xjcardm{background:#16243A;color:#E8EEF6}';
+  document.head.appendChild(st3);
   window.XJ321 = { shareImg: shareImg, finish: finish, autoDone: autoDone, autoSync: autoSync, openChat: openChat,
     dm: function (code, name, who, nk) { setAlt(code, name); dmOpen(who, nk); },
     inbox: function (code, name) { setAlt(code, name); dmInbox(); }, shareNow: function () { shareAll(true); },
