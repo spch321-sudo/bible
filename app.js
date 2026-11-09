@@ -46,7 +46,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.64.6';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
+const VERSION = 'v2.65.0';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
    flex-basis:0），按鈕不准被擠扁（flex:0 0 auto）；長字串（網址、英文長字）也允許換行。 */
@@ -920,7 +920,7 @@ async function render0(){
   const tab = r[0] || 'today';
   if (EMBED && tab !== 'studio'){ if (studioItem) location.hash = '#/studio'; else embedClose(); return; }
   navTrack();
-  $$('#tabbar a').forEach(a => a.classList.toggle('active', a.dataset.tab === (tab === 'read' ? 'books' : ((tab === 'plan' || tab === 'play' || tab === 'meet') ? 'today' : tab))));
+  $$('#tabbar a').forEach(a => a.classList.toggle('active', a.dataset.tab === (tab === 'read' ? 'books' : ((tab === 'plan' || tab === 'play' || tab === 'meet') ? 'today' : (/^xj/.test(tab) ? 'team' : tab)))));
   const v = $('#view');
   try{
     if (tab === 'today')          await viewToday(v);
@@ -934,6 +934,7 @@ async function render0(){
     else if (tab === 'plan')      await viewPlan(v);
     else if (tab === 'play')      await viewPlay(v);
     else if (tab === 'meet')      await viewMeet(v);
+    else if (tab === 'xj' || tab === 'xjchat' || tab === 'xjcare') viewXj(v, tab);
     else { go('#/today'); return; }
   }catch(e){
     v.innerHTML = `<div class="empty">載入失敗：${esc(e.message || e)}</div>`;
@@ -6086,7 +6087,7 @@ async function viewTeam(v, code, sub){
       </div>`;
   }).join('');
 
-  v.innerHTML = `
+  v.innerHTML = (window.xjEntryHtml ? xjEntryHtml() : '') + `
     <div class="card" style="background:var(--accent-soft); border-color:var(--accent)">
       <h3 style="color:var(--accent-ink)">${esc(L.t235)}</h3>
       <div class="muted" style="line-height:1.9">${esc(L.intro)}</div>
@@ -10348,5 +10349,53 @@ function attachPack(l){
   return true;
 }
 PACK_LANGS.forEach(l => { if (window[l.toUpperCase() + '_PACK']) attachPack(l); });
+
+/* ── 我的小家（v2.65.0，移植自空中團契／教會生活，共用 xj.js）──
+   建立／加入小家（可多個）、小家聊天室（文字、相片、檔案、語音、貼圖）、今天完成讀經的家人名字＋獎勵、
+   小家消息、關懷名單。後端沿用 church-news（小家本身）與 church-chat v4（聊天、附件、今天完成、關懷）。
+   路由 #/xj、#/xjchat、#/xjcare；存檔前綴 ib_，和其他 App 的小家分開。入口在「團隊」頁最上面。 */
+var XJ_T2S = {"並": "并", "亞": "亚", "佈": "布", "來": "来", "係": "系", "個": "个", "們": "们", "傳": "传", "儲": "储", "內": "内", "兩": "两", "別": "别", "刪": "删", "則": "则", "剛": "刚", "動": "动", "務": "务", "勵": "励", "參": "参", "啟": "启", "單": "单", "嗎": "吗", "國": "国", "圖": "图", "團": "团", "堅": "坚", "實": "实", "寫": "写", "將": "将", "對": "对", "導": "导", "幾": "几", "張": "张", "後": "后", "從": "从", "愛": "爱", "懷": "怀", "換": "换", "擊": "击", "數": "数", "時": "时", "書": "书", "會": "会", "樂": "乐", "標": "标", "樣": "样", "機": "机", "檔": "档", "權": "权", "歡": "欢", "沒": "没", "瀏": "浏", "為": "为", "燈": "灯", "獎": "奖", "獻": "献", "現": "现", "畫": "画", "當": "当", "發": "发", "確": "确", "碼": "码", "禱": "祷", "種": "种", "稱": "称", "穌": "稣", "筆": "笔", "節": "节", "紀": "纪", "約": "约", "細": "细", "組": "组", "結": "结", "絡": "络", "給": "给", "經": "经", "網": "网", "綴": "缀", "線": "线", "繼": "继", "續": "续", "聖": "圣", "聯": "联", "聲": "声", "腳": "脚", "與": "与", "舊": "旧", "華": "华", "著": "着", "處": "处", "補": "补", "裝": "装", "裡": "里", "製": "制", "複": "复", "親": "亲", "覽": "览", "訊": "讯", "託": "托", "記": "记", "設": "设", "許": "许", "詞": "词", "試": "试", "詩": "诗", "話": "话", "認": "认", "語": "语", "誠": "诚", "說": "说", "課": "课", "請": "请", "謝": "谢", "譯": "译", "讀": "读", "讓": "让", "讚": "赞", "貼": "贴", "資": "资", "載": "载", "輸": "输", "這": "这", "連": "连", "進": "进", "過": "过", "還": "还", "錄": "录", "錯": "错", "鐘": "钟", "長": "长", "閉": "闭", "開": "开", "間": "间", "關": "关", "隊": "队", "隨": "随", "隱": "隐", "離": "离", "靈": "灵", "頁": "页", "頂": "顶", "頭": "头", "題": "题", "願": "愿", "類": "类", "顧": "顾", "顯": "显", "風": "风", "馬": "马", "麥": "麦", "麼": "么", "點": "点"};
+function xjZs(t){ t = String(t == null ? '' : t); let o = ''; for (let i = 0; i < t.length; i++){ const c = t.charAt(i); o += XJ_T2S[c] || c; } return o; }
+const XJR = { pages: {}, after: null };
+window.X321 = window.X321 || {};
+window.X321.xj = {
+  PAGES: XJR.pages, TITLES: {}, CR_SKIP: {},
+  prefix: 'ib_', appZh: '321互動聖經', appEn: '321 Interactive Bible',
+  whereZh: '「團隊」→「我的小家」', whereEn: 'Team → My Small Group',
+  wordZh: '讀經', wordEn: 'Bible reading',
+  hintZh: '讀完今天的經文後，按一下讓家人一起歡喜。', hintEn: 'After today’s Bible reading, tap to share the joy with your group.',
+  go: r => go('#/' + r),
+  render: r => { if ((currentRoute()[0] || 'today') === r) render(); },
+  route: () => currentRoute()[0] || 'today',
+  wrapRender: f => { XJR.after = f; },
+  f9: (zh, en) => L3(zh, xjZs(zh), en),
+  esc: esc, note: m => toast(m), lang: () => isEN() || isX() ? 'en' : (isZS() ? 'zh-Hans' : 'zh-Hant'),
+  pageHead: (eb, title, sub) => '<div class="xjhd"><div class="xjeb">' + esc(eb) + '</div><h2 class="xjh2">' + esc(title) + '</h2>' + (sub ? '<div class="muted" style="font-size:13px;margin:2px 0 10px">' + esc(sub) + '</div>' : '') + '</div>',
+  sect: (n, title) => '<div class="section-title">' + esc(title) + '</div>',
+  rowlink: () => '', simp: () => {},
+  myName: () => String((typeof user !== 'undefined' && user && user.nick) || '').trim()
+};
+function viewXj(v, tab){
+  const f = XJR.pages[tab];
+  if (!f){ v.innerHTML = '<div class="empty">' + esc(L3('載入中…', '载入中…', 'Loading…')) + '</div>'; setTimeout(() => { if (XJR.pages[tab]) render(); }, 600); return; }
+  v.innerHTML = '<div class="xjv">' + f() + '</div>';
+  try { if (XJR.after) XJR.after(tab); } catch (e) { console.error(e); }
+}
+function xjEntryHtml(){
+  const X = window.XJ321 && XJ321.state(), G = (window.XJ321 && XJ321.groups()) || [];
+  const sub = X ? X.name + (G.length > 1 ? L3(' 等 ' + G.length + ' 個小家', ' 等 ' + G.length + ' 个小家', ' (+' + (G.length - 1) + ' more)') : '') + L3(' · 消息、聊天室、彼此代禱', ' · 消息、聊天室、彼此代祷', ' · news, chat, prayer')
+    : L3('建立或加入小家，一起讀經、聊天、彼此代禱', '建立或加入小家，一起读经、聊天、彼此代祷', 'Create or join a small group — read, chat and pray together');
+  return '<a class="card rowlink" href="#/xj" style="display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit"><div class="tmavatar">🏡</div><div class="meta"><div class="t">' + esc(L3('我的小家', '我的小家', 'My Small Group')) + '</div><div class="s">' + esc(sub) + '</div></div><div class="chev">›</div></a>';
+}
+(function(){
+  const st = document.createElement('style');
+  st.textContent = '.xjv,.xjmodal,.xjrw,.xjview{--navy:var(--accent);--sky:var(--accent-soft);--white:var(--surface);--line:var(--border);--muted:var(--ink-soft);--head:var(--ink);--gold-text:#8A6400;--font-display:var(--f-serif);--maxw:640px;--paper:var(--bg);--fs:1}'
+    + '.xjv .btn,.xjmodal .btn{display:flex;align-items:center;justify-content:center;width:100%;background:var(--accent);border:1px solid var(--accent);color:#fff;border-radius:14px;min-height:48px;font-weight:700;font-size:15px;padding:10px 16px;cursor:pointer}'
+    + '.xjv .btn.ghost,.xjmodal .btn.ghost{background:transparent;border:2px solid var(--accent);color:var(--ink)}.xjv .btn.gold{background:linear-gradient(180deg,#F5D47A,#D9A830);border-color:#C9962A;color:#3A2A00}'
+    + '.xjv .note,.xjmodal .note{color:var(--ink-soft);font-size:13px;margin:6px 2px 0;line-height:1.6}.xjv h3,.xjmodal h3{margin:0 0 8px;font-size:16px}'
+    + '.xjv .fld,.xjmodal .fld{display:block;margin:8px 0}.xjv .fld span,.xjmodal .fld span{display:block;font-size:13px;font-weight:600;margin-bottom:4px}.xjv .fld input,.xjmodal .fld input,.xjmodal .fld textarea,.xjmodal .fld select{width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:12px;padding:11px 12px;background:var(--bg);color:var(--ink);font-size:16px;min-height:46px}'
+    + '.xjeb{font-size:12px;letter-spacing:.12em;color:var(--gold);font-weight:700;margin:2px 2px 2px}.xjh2{font-family:var(--f-serif);margin:0 2px 2px;font-size:22px}.xjv .card{margin:10px 0}';
+  document.head.appendChild(st);
+})();
 
 boot();

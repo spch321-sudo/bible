@@ -711,7 +711,7 @@ select.cardinput{appearance:none; -webkit-appearance:none;
 
 <script>
 /* 程式檔帶上更新時間戳（?u=…）載入：更新後重整的那一次一定抓到最新的 app.js，不會被瀏覽器或 CDN 的舊快取擋住 */
-(function(){var m=location.search.match(/[?&]u=(\d+)/);var V='2.64.6',U=(m?'&u='+m[1]:'');
+(function(){var m=location.search.match(/[?&]u=(\d+)/);var V='2.65.0',U=(m?'&u='+m[1]:'');
 /* v2.56.0：只載入「當前語言」的語言包（其餘在切換語言時才下載），首次載入少約 1MB */
 var P='ko ja id tl my vi th ms ar he el pt fa sw ta am uk bn hi ne ceb es fr de it ru'.split(' '),PF='ko ja id tl my vi th ms ar hi ne ceb es fr de it ru'.split(' '),l='zh';
 try{var raw=localStorage.getItem('ib_state');
@@ -725,7 +725,7 @@ function w(f){document.write('<script src="'+f+'?v='+V+U+'"><\/script>');}
 if(P.indexOf(l)>-1){w('lang-'+l+'.js');if(PF.indexOf(l)>-1)w('lang-pf.js');}
 w('app.js');
 /* v2.58.2：小智回答逐句跟讀＋點句畫線外掛（xzm.js），放在 app.js 之後；壞了不影響宿主 */
-w('xzm.js');w('xzpar.js');document.write('<script>try{XZM.install(XZM.preset.bb());}catch(e){}<\/script>');
+w('xzm.js');w('xzpar.js');w('xj.js');document.write('<script>try{XZM.install(XZM.preset.bb());}catch(e){}<\/script>');
 })();
 </script>
 </body>
