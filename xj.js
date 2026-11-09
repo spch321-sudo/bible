@@ -270,7 +270,7 @@
       return (qh ? '<div class="xjt">' + qh + '</div>' : '') + '<img class="xjimg" src="' + esc(attUrl(m.att)) + '" alt="' + esc(f9('相片', 'Photo')) + '" loading="lazy" data-xj="img" data-id="' + m.att + '"' + ar + '>';
     }
     if (m.kind === 'voice' && m.att) return '<div class="xjt xjvoice">' + qh + '<audio controls preload="none" src="' + esc(attUrl(m.att)) + '"></audio>' + (mt.dur ? '<small>🎤 ' + fmtDur(mt.dur) + '</small>' : '') + '</div>';
-    if (m.att) return '<a class="xjt xjfile" href="' + esc(attUrl(m.att)) + '" target="_blank" rel="noopener" download="' + esc(mt.name || 'file') + '">' + qh + '<span class="fi">📄</span><span class="fn"><b>' + esc(mt.name || f9('檔案', 'File')) + '</b><small>' + esc(fmtSize(mt.size)) + ' · ' + esc(f9('點一下下載', 'Tap to download')) + '</small></span></a>';
+    if (m.att) return '<a class="xjt xjfile" href="' + esc(attUrl(m.att)) + '" data-xj="fileget" data-id="' + m.id + '">' + qh + '<span class="fi">📄</span><span class="fn"><b>' + esc(mt.name || f9('檔案', 'File')) + '</b><small>' + esc(fmtSize(mt.size)) + ' · ' + esc(f9('點一下下載', 'Tap to download')) + '</small></span></a>';
     return '<div class="xjt">' + linkify(m.text) + '</div>';
   }
   function viewImg(id) {
@@ -278,7 +278,7 @@
     var u = attUrl(id), el = document.createElement('div'); el.id = 'xjView'; el.className = 'xjview';
     var mm = null; for (var i = 0; i < CC.msgs.length; i++) if (String(CC.msgs[i].att) === String(id) && !CC.msgs[i].del) mm = CC.msgs[i];
     var canDel = mm && (mm.mine || (!CC.alt && !CC.dm && X && X.pin));
-    el.innerHTML = '<img src="' + esc(u) + '" alt=""><div class="bar"><a class="xjsm" href="' + esc(u) + '" target="_blank" rel="noopener" download>' + esc(f9('下載／另存', 'Download')) + '</a>' +
+    el.innerHTML = '<img src="' + esc(u) + '" alt=""><div class="bar"><a class="xjsm" href="' + esc(u) + '"' + (mm ? ' data-xj="fileget" data-id="' + mm.id + '"' : ' target="_blank" rel="noopener" download') + '>' + esc(f9('下載／另存', 'Download')) + '</a>' +
       (canDel ? '<button class="xjsm" data-xj="vdel" data-id="' + mm.id + '" data-mine="' + (mm.mine ? 1 : 0) + '">' + esc(mm.mine ? '↩️ ' + f9('收回', 'Unsend') : f9('刪除', 'Delete')) + '</button>' : '') +
       (mm && mm.mine ? '<button class="xjsm" data-xj="vdel" data-hide="1" data-id="' + mm.id + '" data-mine="1">🫥 ' + esc(f9('無痕收回', 'Unsend, no trace')) + '</button>' : '') +
       '<button class="xjsm" data-xj="vclose">' + esc(f9('關閉', 'Close')) + '</button></div>';
@@ -1386,15 +1386,7 @@
   function fwdApp(app) {
     var m = findMsg(FW.id); if (!m) return;
     var names = { line: 'LINE', wa: 'WhatsApp', wx: f9('微信', 'WeChat') }, nm = names[app] || '';
-    if (m.att && (m.kind === 'img' || m.kind === 'file' || m.kind === 'voice')) {
-      closeModal();
-      var x = new XMLHttpRequest(); x.open('GET', attUrl(m.att)); x.responseType = 'blob';
-      x.onload = function () {
-        try { var f = new File([x.response], (m.meta && m.meta.name) || 'file', { type: x.response.type || 'application/octet-stream' }); if (navigator.canShare && navigator.canShare({ files: [f] })) { note(f9('請在分享選單裡選「' + nm + '」', 'Choose “' + nm + '” in the share menu')); navigator.share({ files: [f] })['catch'](function () { }); return; } } catch (e) { }
-        note(f9('這支手機不支援直接分享檔案，請先「下載／另存」再到 ' + nm + ' 傳送', 'This phone can’t share files directly — save it first, then send it in ' + nm));
-      };
-      x.onerror = function () { note(f9('這個附件讀不出來', 'Couldn’t read this attachment')); }; x.send(); return;
-    }
+    if (m.att && (m.kind === 'img' || m.kind === 'file' || m.kind === 'voice')) { fileGet(m.id, nm); return; }
     var t = outText(m); closeModal();
     if (app === 'line') { window.open('https://line.me/R/share?text=' + encodeURIComponent(t), '_blank'); return; }
     if (app === 'wa') { window.open('https://wa.me/?text=' + encodeURIComponent(t), '_blank'); return; }
@@ -1404,12 +1396,40 @@
   }
   function fwdOut() {
     var m = findMsg(FW.id); if (!m) return; closeModal();
-    if (m.kind === 'img' && m.att && navigator.canShare) {
-      var x = new XMLHttpRequest(); x.open('GET', attUrl(m.att)); x.responseType = 'blob';
-      x.onload = function () { try { var f = new File([x.response], (m.meta && m.meta.name) || 'photo.jpg', { type: x.response.type || 'image/jpeg' }); if (navigator.canShare({ files: [f] })) { navigator.share({ files: [f] })['catch'](function () { }); return; } } catch (e) { } shareText(m.text); };
-      x.send(); return;
-    }
+    if (m.att && (m.kind === 'img' || m.kind === 'file' || m.kind === 'voice') && canShareFile()) { fileGet(m.id, f9('想傳的 App', 'the app you want')); return; }
     shareText(outText(m));
+  }
+
+  /* 檔案下載（ff1110）：先在 App 裡下載，再用手機的「開啟／儲存」（iPhone 直接開連結會被擋成空白頁） */
+  var FG = { blob: null, name: '', type: '', app: '' };
+  function canShareFile() { try { return !!(navigator.canShare && navigator.canShare({ files: [new File(['x'], 'x.txt', { type: 'text/plain' })] })); } catch (e) { return false; } }
+  function topModal(h) { var m = modal(h); m.className = 'xjmodal xjtop'; return m; }
+  function fileGet(id, app) {
+    var m = findMsg(id); if (!m || !m.att) return;
+    var mt = m.meta || {}, name = mt.name || 'file';
+    FG.blob = null; FG.app = app || '';
+    topModal('<h3>📄 ' + esc(name) + '</h3><p class="note" id="xjFgS">' + esc(f9('下載中…', 'Downloading…')) + '</p><div class="xjbtns"><button class="btn ghost block" data-xj="mclose">' + esc(f9('取消', 'Cancel')) + '</button></div>');
+    var x = new XMLHttpRequest(); x.open('GET', attUrl(m.att)); x.responseType = 'blob';
+    x.onload = function () {
+      if (x.status !== 200 || !$('xjFgS')) { if ($('xjFgS')) $('xjFgS').textContent = f9('下載失敗，檔案可能已被收回或過期', 'Download failed — the file may have been removed'); return; }
+      FG.type = mt.mime || x.response.type || 'application/octet-stream'; FG.blob = new Blob([x.response], { type: FG.type }); FG.name = name;
+      var sh = canShareFile();
+      if (!sh && !FG.app) { closeModal(); fgDl(); return; }
+      var tip = FG.app ? f9('按下面的按鈕，在分享選單裡選「' + FG.app + '」。', 'Tap the button and choose “' + FG.app + '” in the share menu.') : f9('按「開啟／儲存」，可以選「儲存到檔案」或用 Word、PDF 等 App 打開。', 'Tap “Open / Save” to save it to Files or open it in another app.');
+      topModal('<h3>📄 ' + esc(name) + '</h3><p class="note">' + esc(fmtSize(FG.blob.size) + ' · ' + f9('已下載', 'Downloaded')) + '</p><p class="note">' + esc(tip) + '</p>' +
+        '<div class="xjshl">' + (sh ? '<button class="xjshr" data-xj="fgshare"><span class="xjic">📂</span><b>' + esc(FG.app ? f9('打開分享選單', 'Open the share menu') : f9('開啟／儲存', 'Open / Save')) + '</b><span class="xjshgo">›</span></button>' : '') +
+        '<button class="xjshr" data-xj="fgdl"><span class="xjic">⬇️</span><b>' + esc(f9('下載到這台裝置', 'Download to this device')) + '</b><span class="xjshgo">›</span></button></div>' +
+        '<div class="xjbtns"><button class="btn ghost block" data-xj="mclose">' + esc(f9('關閉', 'Close')) + '</button></div>');
+    };
+    x.onerror = function () { var e = $('xjFgS'); if (e) e.textContent = f9('網路不穩，請再試一次', 'Network problem — please try again'); };
+    x.send();
+  }
+  function fgShare() { if (!FG.blob) return; try { navigator.share({ files: [new File([FG.blob], FG.name, { type: FG.type })] }).then(function () { closeModal(); }, function () { }); } catch (e) { fgDl(); } }
+  function fgDl() {
+    if (!FG.blob) return;
+    var u = URL.createObjectURL(FG.blob), a = document.createElement('a'); a.href = u; a.download = FG.name; a.rel = 'noopener';
+    document.body.appendChild(a); a.click(); a.parentNode.removeChild(a); setTimeout(function () { URL.revokeObjectURL(u); }, 60000);
+    note(f9('已開始下載', 'Download started'));
   }
 
   /* 投票、挑日子 */
@@ -1749,6 +1769,9 @@
     else if (a === 'fwd') fwdSheet(id);
     else if (a === 'fwdgo') fwdGo(+t.getAttribute('data-i'), t);
     else if (a === 'fwdout') fwdOut();
+    else if (a === 'fileget') { ev.preventDefault(); fileGet(id); }
+    else if (a === 'fgshare') fgShare();
+    else if (a === 'fgdl') fgDl();
     else if (a === 'fwdapp') fwdApp(t.getAttribute('data-app'));
     else if (a === 'fav') toggleFav(id);
     else if (a === 'favs') favPage();
