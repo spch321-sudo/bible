@@ -48,7 +48,8 @@
   function save() { if (X && DATA) DM[X.code] = DATA; ls(P + 'xjs', JSON.stringify(GL)); ls(P + 'xjdm', JSON.stringify(DM)); ls(P + 'xjcur', CUR); }
   function findGroup(c) { for (var i = 0; i < GL.length; i++) if (GL[i].code === c) return GL[i]; return null; }
   function saveDays() { ls(P + 'xjdays', JSON.stringify(DAYS)); }
-  function dev() { if (H.altDev && typeof CC !== 'undefined' && CC && CC.alt) { try { var ad = H.altDev(CC.alt.code); if (ad) return ad; } catch (e) { } } var d = lg(P + 'xjdev'); if (!d) { d = 'f' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); ls(P + 'xjdev', d); } return d; }
+  function dev() { if (H.altDev && typeof CC !== 'undefined' && CC && CC.alt) { try { var ad = H.altDev(CC.alt.code); if (ad) return ad; } catch (e) { } } return baseDev(); }
+  function baseDev() { var d = lg(P + 'xjdev'); if (!d) { d = 'f' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); ls(P + 'xjdev', d); } return d; }
   function nick() { var n = ''; if (H.getNick) { try { n = trim(H.getNick() || ''); } catch (e) { } } if (!n) n = trim(lg(P + 'xjnick') || ''); if (!n && H.myName) { try { n = trim(H.myName() || ''); } catch (e) { } } return n.slice(0, 20); }
   function setNick(n) { ls(P + 'xjnick', trim(n).slice(0, 20)); if (H.setNick) { try { H.setNick(trim(n).slice(0, 20)); } catch (e) { } } }
   function trim(s) { return String(s == null ? '' : s).replace(/^\s+|\s+$/g, ''); }
@@ -1047,7 +1048,108 @@
     H.go('xjchat');
   }
   function setAlt(code, name) { if (!CC.alt || CC.alt.code !== code) { CC.alt = { code: code, name: name || code }; CC.dm = null; resetLive(); } }
-  window.XJ321 = { finish: finish, autoDone: autoDone, autoSync: autoSync, openChat: openChat,
+  /* ── 美圖分享到聊天室（sh1109）：宿主把做好的美圖（data URL 或 Blob）交給 XJ321.shareImg(src, {beforeGo})，
+     選一個聊天室（我的小家；宿主可經 H.chatTargets() 加上教會聊天室、235 團隊聊天室）就以相片送出，可附一段話。 */
+  var SH = { src: '', list: [], opt: {}, busy: 0, sent: null };
+  function shTargets() {
+    var L = [];
+    for (var i = 0; i < GL.length; i++) L.push({ code: GL[i].code, name: GL[i].name || GL[i].code, icon: '🏡', grp: 1 });
+    if (H.chatTargets) { try { var ex = H.chatTargets() || []; for (var j = ex.length - 1; j >= 0; j--) if (ex[j] && ex[j].code) { if (ex[j].first) L.unshift(ex[j]); else L.splice(GL.length, 0, ex[j]); } } catch (e) { } }
+    return L;
+  }
+  function prepSrc(src, cb) {
+    var url = src, own = 0;
+    if (typeof src !== 'string') { try { url = URL.createObjectURL(src); own = 1; } catch (e) { cb(null); return; } }
+    var im = new Image();
+    im.onload = function () {
+      var MAX = 2048, w = im.naturalWidth, h = im.naturalHeight, k = Math.min(1, MAX / Math.max(w, h));
+      var cw = Math.max(1, Math.round(w * k)), ch = Math.max(1, Math.round(h * k));
+      var cv = document.createElement('canvas'); cv.width = cw; cv.height = ch;
+      var g = cv.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, cw, ch); g.drawImage(im, 0, 0, cw, ch);
+      var q = 0.9, d = cv.toDataURL('image/jpeg', q);
+      while (d.length * 0.75 > 4.5 * 1048576 && q > 0.4) { q -= 0.12; d = cv.toDataURL('image/jpeg', q); }
+      if (own) { try { URL.revokeObjectURL(url); } catch (e) { } }
+      cb({ data: d, mime: 'image/jpeg', name: '321-card-' + now() + '.jpg', w: cw, h: ch });
+    };
+    im.onerror = function () { if (own) { try { URL.revokeObjectURL(url); } catch (e) { } } cb(null); };
+    im.src = url;
+  }
+  function shThumb() { return typeof SH.src === 'string' ? SH.src : (SH.thumb || (SH.thumb = URL.createObjectURL(SH.src))); }
+  function shareImg(src, opt) {
+    if (!src) return;
+    SH.src = src; SH.thumb = ''; SH.opt = opt || {}; SH.busy = 0; SH.sent = null; SH.list = shTargets();
+    shPaint();
+  }
+  function shPaint() {
+    var L = SH.list, h = '<h3>💬 ' + esc(f9('分享到聊天室', 'Share to a chat')) + '</h3>' +
+      '<div class="xjshpv"><img src="' + esc(shThumb()) + '" alt=""></div>';
+    if (SH.sent) {
+      h += '<p class="xjshok">✅ ' + esc(f9('已傳到「' + SH.sent.name + '」', 'Sent to “' + SH.sent.name + '”')) + '</p>' +
+        '<div class="xjbtns"><button class="btn ghost" data-xj="mclose">' + esc(f9('好', 'OK')) + '</button><button class="btn" data-xj="shopen">' + esc(f9('前往聊天室', 'Open the chat')) + '</button></div>';
+    } else if (!L.length) {
+      h += '<p class="xjempty" style="padding:12px 6px">' + esc(f9('你還沒有加入任何小家或聊天室。先建立或加入一個小家，就能把美圖傳給家人。', 'You haven’t joined a small group or chat yet. Create or join one first, then you can send cards to everyone.')) + '</p>' +
+        '<div class="xjbtns"><button class="btn ghost" data-xj="mclose">' + esc(f9('取消', 'Cancel')) + '</button><button class="btn" data-xj="shjoin">' + esc(f9('建立或加入小家', 'Create or join a group')) + '</button></div>';
+    } else {
+      var nk = nick();
+      if (!nk) h += fld(f9('你的稱呼（家人會看到）', 'Your name (others will see it)'), '<input id="xjShNk" type="text" maxlength="20">');
+      h += fld(f9('說幾句話（可留空）', 'Add a message (optional)'), '<textarea id="xjShCap" class="xjinp" rows="2" maxlength="600" placeholder="' + esc(f9('例如：今天這句話很感動我，分享給大家', 'e.g. This verse touched me today')) + '"></textarea>') +
+        '<p class="xjtip">' + esc(f9('點一個聊天室，美圖就會送出', 'Tap a chat to send the card')) + '</p><div class="xjshl">';
+      for (var i = 0; i < L.length; i++) h += '<button class="xjshr" data-xj="shgo" data-i="' + i + '"' + (SH.busy ? ' disabled' : '') + '><span class="xjic">' + esc(L[i].icon || '💬') + '</span><b>' + esc(L[i].name) + '</b><span class="xjshgo">' + esc(SH.busy === i + 1 ? f9('傳送中…', 'Sending…') : '›') + '</span></button>';
+      h += '</div><div class="xjbtns"><button class="btn ghost block" data-xj="mclose">' + esc(f9('取消', 'Cancel')) + '</button></div>';
+    }
+    var cap = $('xjShCap'), cv = cap ? cap.value : '', nkEl = $('xjShNk'), nv = nkEl ? nkEl.value : '';
+    var m = modal(h); m.className = 'xjmodal xjtop';
+    var c2 = $('xjShCap'); if (c2) c2.value = cv; var n2 = $('xjShNk'); if (n2) n2.value = nv;
+  }
+  function shGo(i) {
+    var tg = SH.list[i]; if (!tg || SH.busy) return;
+    var nkEl = $('xjShNk');
+    if (nkEl) { var nv = trim(nkEl.value); if (!nv) { note(f9('請先填你的稱呼', 'Please enter your name first')); nkEl.focus(); return; } setNick(nv); }
+    var cap = trim(($('xjShCap') || {}).value || '');
+    SH.busy = i + 1; shPaint(); var c2 = $('xjShCap'); if (c2) c2.value = cap;
+    var fail = function (e) { SH.busy = 0; shPaint(); var c3 = $('xjShCap'); if (c3) c3.value = cap; note(e ? errTxt(e) : f9('美圖讀不出來，請再做一次', 'Couldn’t read the card — please make it again')); };
+    prepSrc(SH.src, function (r) {
+      if (!r) { fail(''); return; }
+      var dv = tg.dev || baseDev(), nk = trim(tg.nick || '') || nick() || f9('弟兄姊妹', 'Friend');
+      var body = { kind: 'img', data: r.data, mime: r.mime, name: r.name, w: r.w, h: r.h, text: '', dev: dv, nick: nk, re: 0, after: 0 };
+      var go = function (retry) {
+        api(CHAT, 'POST', '/c/' + tg.code + '/send', body, function (j, e) {
+          if (!j && (e === 'slow' || e === 'http429') && !retry) { setTimeout(function () { go(1); }, 1700); return; }
+          if (!j) { fail(e); return; }
+          var done = function () { SH.busy = 0; SH.sent = tg; shPaint(); if (CC.loaded && ccCode() === tg.code && !CC.dm) pull(0); };
+          if (!cap) { done(); return; }
+          var capGo = function (n) { api(CHAT, 'POST', '/c/' + tg.code + '/send', { text: cap, dev: dv, nick: nk, re: 0, after: 0 }, function (j2, e2) { if (!j2 && (e2 === 'slow' || e2 === 'http429') && n < 3) { setTimeout(function () { capGo(n + 1); }, 1700); return; } done(); }); };
+          capGo(0);
+        }, 120000);
+      };
+      go(0);
+    });
+  }
+  function shOpen() {
+    var tg = SH.sent; closeModal(); if (!tg) return;
+    var nav = function () {
+      if (tg.open) { tg.open(); return; }
+      if (tg.grp) { if (findGroup(tg.code) && (!X || X.code !== tg.code)) { CUR = tg.code; pick(); NW.at = 0; NW.f = ''; save(); } CC.alt = null; CC.dm = null; resetLive(); H.go('xjchat'); return; }
+      openChat(tg.code, tg.name);
+    };
+    if (SH.opt.beforeGo) { try { SH.opt.beforeGo(); } catch (e) { } setTimeout(nav, SH.opt.delay || 350); } else nav();
+  }
+  document.addEventListener('click', function (ev) {
+    var t = ev.target;
+    while (t && t !== document && !(t.getAttribute && t.getAttribute('data-xj'))) t = t.parentNode;
+    if (!t || t === document) return;
+    var a = t.getAttribute('data-xj');
+    if (a === 'shgo') shGo(+t.getAttribute('data-i'));
+    else if (a === 'shopen') shOpen();
+    else if (a === 'shjoin') { closeModal(); var gj = function () { JN.adding = GL.length ? 1 : 0; H.go('xj'); }; if (SH.opt.beforeGo) { try { SH.opt.beforeGo(); } catch (e) { } setTimeout(gj, SH.opt.delay || 350); } else gj(); }
+  });
+  var st2 = document.createElement('style');
+  st2.textContent = '.xjmodal.xjtop{z-index:5000}.xjshpv{text-align:center;margin:4px 0 10px}.xjshpv img{max-width:100%;max-height:min(30vh,240px);border-radius:12px;box-shadow:0 4px 14px rgba(18,35,63,.16)}' +
+    '.xjshl{display:flex;flex-direction:column;gap:8px}.xjshr{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:1px solid var(--line);background:var(--white);border-radius:14px;padding:8px 12px;cursor:pointer;font-family:inherit;font-size:1em;color:var(--ink)}' +
+    '.xjshr b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--head)}.xjshr .xjic{width:38px;height:38px;font-size:1.15em}.xjshr[disabled]{opacity:.6}.xjshgo{color:var(--muted);font-size:.9em;white-space:nowrap}' +
+    '.xjshok{text-align:center;font-weight:700;color:#2E7D32;margin:6px 0}.xjpanel textarea.xjinp{resize:vertical;min-height:58px}';
+  document.head.appendChild(st2);
+  window.XJ321 = { shareImg: shareImg, finish: finish, autoDone: autoDone, autoSync: autoSync, openChat: openChat,
     dm: function (code, name, who, nk) { setAlt(code, name); dmOpen(who, nk); },
     inbox: function (code, name) { setAlt(code, name); dmInbox(); }, shareNow: function () { shareAll(true); },
     api: function (m, path, body, cb) { api(CHAT, m, path, body, cb); }, dev: dev, nick: nick,
