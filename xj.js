@@ -1354,7 +1354,11 @@
     FW.id = id; FW.list = shTargets(); FW.busy = 0;
     var h = '<h3>↪️ ' + esc(f9('轉傳到…', 'Forward to…')) + '</h3><div class="xjtip" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc((m.nick || '') + '：' + (m.text || '')) + '</div><div class="xjshl">';
     for (var i = 0; i < FW.list.length; i++) { var tg = FW.list[i]; h += '<button class="xjshr" data-xj="fwdgo" data-i="' + i + '"><span class="xjic">' + esc(tg.icon || '💬') + '</span><b>' + esc(tg.name) + (tg.code === ccCode() && !CC.dm ? ' ' + f9('（這裡）', '(here)') : '') + '</b><span class="xjshgo">›</span></button>'; }
-    h += '<button class="xjshr" data-xj="fwdout"><span class="xjic">📤</span><b>' + esc(f9('分享到其他 App（LINE 等）', 'Share to other apps (LINE…)')) + '</b><span class="xjshgo">›</span></button></div>' +
+    h += '</div><div class="note" style="margin:12px 2px 6px">' + esc(f9('傳到其他 App', 'Send to other apps')) + '</div><div class="xjapps">' +
+      '<button data-xj="fwdapp" data-app="line"><span class="ap" style="background:#06C755">LINE</span><b>LINE</b></button>' +
+      '<button data-xj="fwdapp" data-app="wa"><span class="ap" style="background:#25D366">WA</span><b>WhatsApp</b></button>' +
+      '<button data-xj="fwdapp" data-app="wx"><span class="ap" style="background:#07C160">' + esc(f9('微信', 'WX')) + '</span><b>' + esc(f9('微信', 'WeChat')) + '</b></button>' +
+      '<button data-xj="fwdout"><span class="ap" style="background:#6B7280">📤</span><b>' + esc(f9('其他', 'More')) + '</b></button></div>' +
       '<div class="xjbtns"><button class="btn ghost block" data-xj="mclose">' + esc(f9('取消', 'Cancel')) + '</button></div>';
     var md = modal(h); md.className = 'xjmodal xjtop';
   }
@@ -1372,6 +1376,32 @@
       });
     });
   }
+  function outText(m) {
+    var t = m.text || '', mt = m.meta || {};
+    if (m.kind === 'evt') t = evtText(mt); else if (m.kind === 'loc') t = (m.text || '') + '\n' + mapUrl(mt); else if (m.kind === 'poll') t = pollText(m);
+    else if (m.kind === 'stk') { var sk = stkFind(mt.stk); t = sk ? sk[1] + ' ' + f9(sk[2], sk[3]) : t; }
+    return t;
+  }
+  /* 傳到 LINE／WhatsApp／微信：文字用各家的分享網址；相片與檔案改用手機的分享選單（選該 App） */
+  function fwdApp(app) {
+    var m = findMsg(FW.id); if (!m) return;
+    var names = { line: 'LINE', wa: 'WhatsApp', wx: f9('微信', 'WeChat') }, nm = names[app] || '';
+    if (m.att && (m.kind === 'img' || m.kind === 'file' || m.kind === 'voice')) {
+      closeModal();
+      var x = new XMLHttpRequest(); x.open('GET', attUrl(m.att)); x.responseType = 'blob';
+      x.onload = function () {
+        try { var f = new File([x.response], (m.meta && m.meta.name) || 'file', { type: x.response.type || 'application/octet-stream' }); if (navigator.canShare && navigator.canShare({ files: [f] })) { note(f9('請在分享選單裡選「' + nm + '」', 'Choose “' + nm + '” in the share menu')); navigator.share({ files: [f] })['catch'](function () { }); return; } } catch (e) { }
+        note(f9('這支手機不支援直接分享檔案，請先「下載／另存」再到 ' + nm + ' 傳送', 'This phone can’t share files directly — save it first, then send it in ' + nm));
+      };
+      x.onerror = function () { note(f9('這個附件讀不出來', 'Couldn’t read this attachment')); }; x.send(); return;
+    }
+    var t = outText(m); closeModal();
+    if (app === 'line') { window.open('https://line.me/R/share?text=' + encodeURIComponent(t), '_blank'); return; }
+    if (app === 'wa') { window.open('https://wa.me/?text=' + encodeURIComponent(t), '_blank'); return; }
+    /* 微信沒有網頁分享網址：先複製文字，再打開微信讓使用者貼上 */
+    var openWx = function () { note(f9('已複製，打開微信後在聊天裡「貼上」就可以了', 'Copied — paste it in a WeChat chat')); setTimeout(function () { try { location.href = 'weixin://'; } catch (e) { } }, 900); };
+    try { navigator.clipboard.writeText(t).then(openWx, function () { note(t); }); } catch (e) { note(t); }
+  }
   function fwdOut() {
     var m = findMsg(FW.id); if (!m) return; closeModal();
     if (m.kind === 'img' && m.att && navigator.canShare) {
@@ -1379,9 +1409,7 @@
       x.onload = function () { try { var f = new File([x.response], (m.meta && m.meta.name) || 'photo.jpg', { type: x.response.type || 'image/jpeg' }); if (navigator.canShare({ files: [f] })) { navigator.share({ files: [f] })['catch'](function () { }); return; } } catch (e) { } shareText(m.text); };
       x.send(); return;
     }
-    var t = m.text || '';
-    if (m.kind === 'evt') t = evtText(m.meta || {}); else if (m.kind === 'loc') t = (m.text || '') + '\n' + mapUrl(m.meta || {}); else if (m.kind === 'poll') t = pollText(m);
-    shareText(t);
+    shareText(outText(m));
   }
 
   /* 投票、挑日子 */
@@ -1721,6 +1749,7 @@
     else if (a === 'fwd') fwdSheet(id);
     else if (a === 'fwdgo') fwdGo(+t.getAttribute('data-i'), t);
     else if (a === 'fwdout') fwdOut();
+    else if (a === 'fwdapp') fwdApp(t.getAttribute('data-app'));
     else if (a === 'fav') toggleFav(id);
     else if (a === 'favs') favPage();
     else if (a === 'favcopy') { var fv = favs()[+t.getAttribute('data-i')]; if (fv) copyText(fv.text); }
@@ -1765,6 +1794,8 @@
     '.xjgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.xjgrid button{border:1px solid var(--line);background:var(--white);border-radius:14px;padding:10px 2px 8px;cursor:pointer;font-family:inherit;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}' +
     '.xjgrid button span{font-size:1.35em;line-height:1}.xjgrid button b{font-size:.74em;font-weight:600;line-height:1.25;text-align:center;word-break:keep-all}.xjgrid button.arm{background:#C8463C;border-color:#C8463C;color:#fff}' +
     '.xjrxs{display:flex;flex-wrap:wrap;gap:4px;margin:3px 2px 0;cursor:pointer}.xjm.mine .xjrxs{justify-content:flex-end}.xjrxs span{background:var(--white);border:1px solid var(--line);border-radius:999px;padding:1px 8px;font-size:.78em;color:var(--ink)}.xjrxs span.on{border-color:var(--gold);background:#FFF6DA}' +
+    '.xjapps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.xjapps button{border:0;background:none;cursor:pointer;font-family:inherit;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0}' +
+    '.xjapps .ap{width:48px;height:48px;border-radius:14px;color:#fff;font-weight:800;font-size:.8em;display:flex;align-items:center;justify-content:center;letter-spacing:.02em}.xjapps b{font-size:.74em;font-weight:600}' +
     '.xjfavmk{color:#C99A2E;margin-right:3px}.xjflash .xjt,.xjflash .xjimg{box-shadow:0 0 0 3px var(--gold)!important;transition:box-shadow .3s}' +
     '.xjpinbar{display:flex;align-items:center;gap:8px;background:#FFF6DA;border:1px solid #EAD9A6;border-radius:12px;padding:7px 10px;margin:0 0 8px;cursor:pointer;color:#5C4510}.xjpinbar .pt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.86em}.xjpinbar button{border:0;background:none;color:#8A6A20;cursor:pointer;font-size:1em;padding:0 2px}' +
     '.xjt.xjcardm,.xjm.mine .xjt.xjcardm{background:var(--white);color:var(--ink);border:1px solid var(--line);border-radius:16px;min-width:220px;white-space:normal}.xjm.mine .xjt.xjcardm a{color:inherit}' +
