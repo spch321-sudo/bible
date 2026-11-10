@@ -2142,32 +2142,45 @@
   }
   /* 第二層（vf2）：iPhone（尤其 iOS 26）鍵盤收起或回到 App 後，排版畫面比實際螢幕矮，固定在底部的元素會浮在半空。
      量出差距，把所有貼底的固定元素往下推回去；差距消失就還原。 */
-  var VV = { d: 0, els: [] };
-  function vvGap() {
-    var v = window.visualViewport; if (!v) return 0;
-    var d = Math.round(v.height + v.offsetTop - window.innerHeight);
-    return d > 30 ? d : 0;
+  var VV = { els: [], raf: 0, list: null, at: 0 };
+  function vvBottom() {
+    var v = window.visualViewport, b = v ? v.offsetTop + v.height : window.innerHeight;
+    /* 主畫面 App（全螢幕）時，真正的底就是螢幕高度；有些 iPhone 版本會把排版高度算矮 */
+    var sa = window.navigator.standalone || (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+    if (sa && screen && screen.height && window.innerWidth === screen.width && screen.height > b && screen.height - b < screen.height * 0.6) b = screen.height;
+    return b;
   }
   function vvApply() {
-    var d = vvGap();
-    if (d === VV.d && (!d || VV.els.length)) return;
-    var i;
-    for (i = 0; i < VV.els.length; i++) { try { VV.els[i].style.translate = ''; } catch (e) { } }
-    VV.els = []; VV.d = d;
-    if (!d) return;
+    VV.raf = 0;
+    var vb = vvBottom(), i, list = [];
+    if (VV.list && now() - VV.at < 2000) list = VV.list; else {
     var all = document.querySelectorAll('body *');
     for (i = 0; i < all.length; i++) {
-      var el = all[i], cs = window.getComputedStyle(el);
-      if (cs.position !== 'fixed' || cs.bottom === 'auto' || cs.display === 'none') continue;
-      if (el.parentElement && el.parentElement.closest && el.parentElement.closest('[style*="translate"]')) continue;
+      var el = all[i]; if (el.offsetParent === null && window.getComputedStyle(el).position !== 'fixed') continue;
+      var cs = window.getComputedStyle(el);
+      if (cs.position !== 'fixed' || cs.bottom === 'auto' || cs.display === 'none' || cs.visibility === 'hidden') continue;
       var b = parseFloat(cs.bottom) || 0; if (b > 260) continue;
-      if (parseFloat(cs.top) === 0 && b === 0 && el.offsetHeight > window.innerHeight * 0.8) continue;   /* 全螢幕遮罩不用推 */
-      el.style.translate = '0 ' + d + 'px'; VV.els.push(el);
+      if (el.offsetHeight > window.innerHeight * 0.8) continue;   /* 全螢幕遮罩 */
+      if (el.parentElement && el.parentElement.closest && el.parentElement.closest('[data-vvfix]')) continue;
+      list.push(el);
     }
+    VV.list = list; VV.at = now(); }
+    for (i = 0; i < list.length; i++) {
+      var e2 = list[i], cur = parseFloat(e2.getAttribute('data-vvfix') || '0') || 0;
+      var r = e2.getBoundingClientRect(), b2 = parseFloat(window.getComputedStyle(e2).bottom) || 0;
+      var want = vb - b2, d = Math.round(want - (r.bottom - cur));   /* 沒推之前的位置與應有位置的差 */
+      if (d > 30 && d < vb * 0.7) { if (Math.abs(d - cur) > 2) { e2.style.translate = '0 ' + d + 'px'; e2.setAttribute('data-vvfix', d); } }
+      else if (cur) { e2.style.translate = ''; e2.removeAttribute('data-vvfix'); }
+    }
+    VV.els = list;
   }
+  function vvSoon() { if (!VV.raf) VV.raf = (window.requestAnimationFrame || setTimeout)(vvApply); }
   function vvLoop(n) { vvApply(); if (n > 0) setTimeout(function () { vvLoop(n - 1); }, 400); }
-  if (window.visualViewport) { window.visualViewport.addEventListener('resize', function () { vvApply(); }); window.visualViewport.addEventListener('scroll', function () { vvApply(); }); }
-  window.addEventListener('scroll', function () { if (VV.d || vvGap()) vvApply(); }, { passive: true });
+  if (window.visualViewport) { window.visualViewport.addEventListener('resize', vvSoon); window.visualViewport.addEventListener('scroll', vvSoon); }
+  window.addEventListener('scroll', vvSoon, { passive: true });
+  window.addEventListener('resize', vvSoon);
+  window.addEventListener('hashchange', function () { VV.list = null; setTimeout(vvSoon, 300); });
+  setInterval(vvSoon, 2500);
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') vvLoop(8); });
   window.addEventListener('focus', function () { vvLoop(8); });
   document.addEventListener('focusout', function () { vvLoop(6); });
@@ -2177,7 +2190,8 @@
   window.addEventListener('orientationchange', function () { setTimeout(vfFix, 300); });
   if (window.visualViewport) window.visualViewport.addEventListener('resize', function () { if (window.visualViewport.height > window.innerHeight * 0.85) vfFix(); });
   document.addEventListener('focusout', function (e) { if (e.target && /^(INPUT|TEXTAREA)$/.test(e.target.tagName)) setTimeout(vfFix, 250); });
-  window.XJ321 = { shareImg: shareImg, uploadTo: uploadTo, getFile: fileGetUrl, errTxt: function (e) { return errTxt(e); }, finish: finish, autoDone: autoDone, autoSync: autoSync, openChat: openChat,
+  function vvInfo() { var v = window.visualViewport || {}; return 'iH ' + window.innerHeight + ' vvH ' + Math.round(v.height || 0) + ' vvT ' + Math.round(v.offsetTop || 0) + ' sH ' + (screen && screen.height) + ' fix ' + VV.els.map(function (e) { return (e.id || e.className || e.tagName).toString().slice(0, 10) + ':' + (e.getAttribute('data-vvfix') || 0); }).join(','); }
+  window.XJ321 = { vvInfo: vvInfo, shareImg: shareImg, uploadTo: uploadTo, getFile: fileGetUrl, errTxt: function (e) { return errTxt(e); }, finish: finish, autoDone: autoDone, autoSync: autoSync, openChat: openChat,
     dm: function (code, name, who, nk) { setAlt(code, name); dmOpen(who, nk); },
     inbox: function (code, name) { setAlt(code, name); dmInbox(); }, shareNow: function () { shareAll(true); },
     api: function (m, path, body, cb) { api(CHAT, m, path, body, cb); }, dev: dev, nick: nick,
