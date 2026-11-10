@@ -388,6 +388,9 @@
 
 
 
+## v2.73.0（大投影片自動壓縮）
+- 聊天室上傳投影片（pptx／ppsx／potx）、Word（docx）、Excel（xlsx）超過 5MB 時自動壓縮：在手機上把檔內圖片縮小並轉 JPEG（有透明背景的圖保留 PNG），依序試 1920→800 像素、畫質 0.85→0.5，直到小於 4.8MB 再上傳；顯示進度與「27.3 MB → 3.7 MB」。用瀏覽器內建 CompressionStream 讀寫 zip，不需外部程式庫；舊手機不支援時提示另存 PDF。
+
 ## v2.72.2（檔案下載修正）
 - 修正聊天室檔案在 iPhone 點了只出現空白頁、無法下載：改成先在 App 裡下載，再按「開啟／儲存」（可存到「檔案」或用 Word、PDF App 打開）或「下載到這台裝置」；看大圖的「下載／另存」與轉傳檔案到 LINE／WhatsApp／微信也改用同一方式。church-chat Worker v8 的附件回應拿掉 CSP sandbox（它會讓 iPhone 擋下載）。
 

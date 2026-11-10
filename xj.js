@@ -92,7 +92,7 @@
       createkey: f9('建立小家需要「建立碼」，請向團契同工索取', 'Creating a group needs a creation code — ask a fellowship co-worker'),
       badkey: f9('建立碼不對', 'Wrong creation code'), slow: f9('說太快了，等一下再送', 'Too fast — wait a moment'),
       full: f9('今天的訊息太多了，明天再聊', 'Too many messages today — try tomorrow'), forbid: f9('只能刪除自己的訊息', 'You can only delete your own messages'),
-      empty: f9('請輸入內容', 'Please write something'), toobig: f9('檔案太大，上限 5MB', 'File too large — 5 MB maximum'),
+      empty: f9('請輸入內容', 'Please write something'), toobig: f9('檔案太大，上限 5MB（投影片、Word、Excel 會自動壓縮；其他檔案請先壓小或另存 PDF）', 'File too large — 5 MB maximum (slides, Word and Excel are compressed automatically)'),
       attfull: f9('今天小家傳的相片和檔案太多了，明天再傳', 'Too many photos and files today — try tomorrow'), mime: f9('這種相片格式不支援', 'This image format isn’t supported'),
       http413: f9('檔案太大，上限 5MB', 'File too large — 5 MB maximum'), dev: f9('裝置資料不完整，請重新打開 App', 'Please reopen the app')
     };
@@ -385,7 +385,7 @@
     var f = inp.files && inp.files[0]; inp.value = ''; if (!f) return;
     if (needNick()) return;
     if ((/^image\//i.test(f.type) && !/svg/i.test(f.type) && (f.size > 1.5 * 1048576 || !/^image\/(jpeg|png|webp|gif)$/i.test(f.type))) || /\.(heic|heif)$/i.test(f.name || '')) { pickPhoto({ files: [f], value: '' }); return; }
-    if (f.size > 5 * 1048576) { note(errTxt('toobig')); return; }
+    if (f.size > 5 * 1048576) { if (ozIsOffice(f.name)) { ozUpload(f); return; } note(errTxt('toobig')); return; }
     upShow(f9('檔案上傳中…', 'Uploading file…') + ' ' + fmtSize(f.size));
     readDataUrl(f, function (d) {
       if (!d) { $('xjUp').style.display = 'none'; note(f9('檔案讀不出來', 'Couldn’t read this file')); return; }
@@ -1843,6 +1843,158 @@
     '@media (prefers-color-scheme:dark){html:not([data-theme="light"]) .xjpinbar{background:#3A3220;border-color:#5A4A26;color:#F2E2B4}html:not([data-theme="light"]) .xjgrid button,html:not([data-theme="light"]) .xjfav,html:not([data-theme="light"]) .xjt.xjcardm{background:#16243A;color:#E8EEF6}}' +
     'html[data-theme="dark"] .xjpinbar{background:#3A3220;border-color:#5A4A26;color:#F2E2B4}html[data-theme="dark"] .xjgrid button,html[data-theme="dark"] .xjfav,html[data-theme="dark"] .xjt.xjcardm{background:#16243A;color:#E8EEF6}';
   document.head.appendChild(st3);
+  /* ── Office 檔自動壓縮（oz1110）：投影片／Word／Excel 超過 5MB 時，在手機上把裡面的圖片縮小、轉 JPEG，再重新打包上傳。
+     不靠外部程式庫：用瀏覽器內建的 DecompressionStream／CompressionStream 讀寫 zip。 */
+  var OZ_MAX = 4.8 * 1048576;
+  function ozOk() { return typeof DecompressionStream !== 'undefined' && typeof CompressionStream !== 'undefined' && typeof Blob !== 'undefined' && !!(new Blob([]).stream); }
+  function ozIsOffice(name) { return /\.(pptx|ppsx|potx|docx|dotx|xlsx)$/i.test(name || ''); }
+  var CRCT = null;
+  function crc32(u8) {
+    if (!CRCT) { CRCT = new Uint32Array(256); for (var n = 0; n < 256; n++) { var c = n; for (var k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; CRCT[n] = c >>> 0; } }
+    var x = 0xFFFFFFFF; for (var i = 0; i < u8.length; i++) x = CRCT[(x ^ u8[i]) & 255] ^ (x >>> 8);
+    return (x ^ 0xFFFFFFFF) >>> 0;
+  }
+  function ozStream(u8, Ctor) { return new Response(new Blob([u8]).stream().pipeThrough(new Ctor('deflate-raw'))).arrayBuffer().then(function (b) { return new Uint8Array(b); }); }
+  function ozRead(buf) {
+    var u8 = new Uint8Array(buf), dv = new DataView(buf), e = -1;
+    for (var i = u8.length - 22; i >= Math.max(0, u8.length - 66000); i--) if (dv.getUint32(i, true) === 0x06054b50) { e = i; break; }
+    if (e < 0) throw new Error('nozip');
+    var cnt = dv.getUint16(e + 10, true), off = dv.getUint32(e + 16, true), list = [], td = new TextDecoder();
+    if (off === 0xFFFFFFFF || cnt === 0xFFFF) throw new Error('zip64');
+    for (var j = 0; j < cnt; j++) {
+      if (dv.getUint32(off, true) !== 0x02014b50) throw new Error('cd');
+      var meth = dv.getUint16(off + 10, true), csz = dv.getUint32(off + 20, true), nl = dv.getUint16(off + 28, true), xl = dv.getUint16(off + 30, true), cl = dv.getUint16(off + 32, true), lho = dv.getUint32(off + 42, true);
+      var name = td.decode(u8.subarray(off + 46, off + 46 + nl));
+      var ds = lho + 30 + dv.getUint16(lho + 26, true) + dv.getUint16(lho + 28, true);
+      list.push({ name: name, meth: meth, raw: u8.subarray(ds, ds + csz) });
+      off += 46 + nl + xl + cl;
+    }
+    return list;
+  }
+  function ozData(en) { return en.meth === 0 ? Promise.resolve(en.raw) : en.meth === 8 ? ozStream(en.raw, DecompressionStream) : Promise.reject(new Error('method')); }
+  function ozWrite(files) {
+    /* files: [{name, data(Uint8Array), store}] → Promise<Blob> */
+    var te = new TextEncoder(), parts = [], cds = [], off = 0, i = 0;
+    var next = function () {
+      if (i >= files.length) {
+        var cdSize = 0; for (var k = 0; k < cds.length; k++) cdSize += cds[k].length;
+        var end = new Uint8Array(22), ev = new DataView(end.buffer);
+        ev.setUint32(0, 0x06054b50, true); ev.setUint16(8, files.length, true); ev.setUint16(10, files.length, true); ev.setUint32(12, cdSize, true); ev.setUint32(16, off, true);
+        return Promise.resolve(new Blob(parts.concat(cds, [end]), { type: 'application/octet-stream' }));
+      }
+      var f = files[i++], nm = te.encode(f.name), crc = crc32(f.data);
+      return (f.store ? Promise.resolve(f.data) : ozStream(f.data, CompressionStream)).then(function (c) {
+        var meth = f.store ? 0 : 8; if (!f.store && c.length >= f.data.length) { c = f.data; meth = 0; }
+        var lh = new Uint8Array(30 + nm.length), lv = new DataView(lh.buffer);
+        lv.setUint32(0, 0x04034b50, true); lv.setUint16(4, 20, true); lv.setUint16(6, 0x0800, true); lv.setUint16(8, meth, true); lv.setUint16(12, 0x21, true);
+        lv.setUint32(14, crc, true); lv.setUint32(18, c.length, true); lv.setUint32(22, f.data.length, true); lv.setUint16(26, nm.length, true); lh.set(nm, 30);
+        var cd = new Uint8Array(46 + nm.length), cv = new DataView(cd.buffer);
+        cv.setUint32(0, 0x02014b50, true); cv.setUint16(4, 20, true); cv.setUint16(6, 20, true); cv.setUint16(8, 0x0800, true); cv.setUint16(10, meth, true); cv.setUint16(14, 0x21, true);
+        cv.setUint32(16, crc, true); cv.setUint32(20, c.length, true); cv.setUint32(24, f.data.length, true); cv.setUint16(28, nm.length, true); cv.setUint32(42, off, true); cd.set(nm, 46);
+        parts.push(lh, c); cds.push(cd); off += lh.length + c.length;
+        return next();
+      });
+    };
+    return next();
+  }
+  function ozImg(u8, type, maxDim, q) {
+    /* 回傳 {data, jpg} 或 null（不需要／不能壓） */
+    return new Promise(function (res) {
+      var url = URL.createObjectURL(new Blob([u8], { type: type })), im = new Image();
+      im.onload = function () {
+        URL.revokeObjectURL(url);
+        var w = im.naturalWidth, h = im.naturalHeight, k = Math.min(1, maxDim / Math.max(w, h)), cw = Math.max(1, Math.round(w * k)), ch = Math.max(1, Math.round(h * k));
+        var cv = document.createElement('canvas'); cv.width = cw; cv.height = ch; var g = cv.getContext('2d');
+        var alpha = false;
+        if (type === 'image/png') {
+          var t = document.createElement('canvas'); t.width = 48; t.height = 48; var tg = t.getContext('2d'); tg.drawImage(im, 0, 0, 48, 48);
+          var px = tg.getImageData(0, 0, 48, 48).data; for (var i = 3; i < px.length; i += 4) if (px[i] < 250) { alpha = true; break; }
+        }
+        if (alpha) { g.drawImage(im, 0, 0, cw, ch); cv.toBlob(function (b) { done(b, false); }, 'image/png'); }
+        else { g.fillStyle = '#fff'; g.fillRect(0, 0, cw, ch); g.drawImage(im, 0, 0, cw, ch); cv.toBlob(function (b) { done(b, true); }, 'image/jpeg', q); }
+        function done(b, jpg) { if (!b) { res(null); return; } b.arrayBuffer().then(function (ab) { var d = new Uint8Array(ab); res(d.length < u8.length * 0.95 ? { data: d, jpg: jpg } : null); }); }
+      };
+      im.onerror = function () { URL.revokeObjectURL(url); res(null); };
+      im.src = url;
+    });
+  }
+  function ozCompress(file, prog) {
+    /* Promise<File>：一路降低解析度與畫質，直到小於 4.8MB */
+    var passes = [[1920, 0.85], [1600, 0.78], [1280, 0.7], [1024, 0.6], [800, 0.5]];
+    return file.arrayBuffer().then(function (buf) {
+      var list = ozRead(buf), ents = [], p = Promise.resolve();
+      list.forEach(function (en) { p = p.then(function () { return ozData(en).then(function (d) { ents.push({ name: en.name, data: d }); }); }); });
+      return p.then(function () {
+        var media = ents.filter(function (e) { return /\/media\/[^/]+\.(png|jpe?g|bmp)$/i.test(e.name) && e.data.length > 60000; });
+        var pi = 0;
+        var tryPass = function () {
+          var ps = passes[pi], ren = {}, out = {}, k = 0;
+          var q2 = Promise.resolve();
+          media.forEach(function (e) {
+            q2 = q2.then(function () {
+              prog && prog(++k, media.length, pi);
+              var type = /\.png$/i.test(e.name) ? 'image/png' : /\.bmp$/i.test(e.name) ? 'image/bmp' : 'image/jpeg';
+              return ozImg(e.data, type, ps[0], ps[1]).then(function (r) {
+                if (!r) return;
+                if (r.jpg && !/\.jpe?g$/i.test(e.name)) { var nn = e.name.replace(/\.(png|bmp)$/i, '.jpg'); if (!ents.some(function (x) { return x.name === nn; })) { ren[e.name] = nn; out[nn] = r.data; return; } }
+                if (!r.jpg && type !== 'image/png') return;
+                out[e.name] = r.data;
+              });
+            });
+          });
+          return q2.then(function () {
+            var td = new TextDecoder(), te = new TextEncoder(), files = [], hasJpg = false;
+            ents.forEach(function (e) {
+              var name = ren[e.name] || e.name, data = out[name] || e.data;
+              if (/\.jpe?g$/i.test(name)) hasJpg = true;
+              if (/\.rels$/i.test(e.name) && Object.keys(ren).length) {
+                var t = td.decode(e.data);
+                for (var a in ren) { var bn = a.split('/').pop(), nb = ren[a].split('/').pop(); t = t.split('/' + bn + '"').join('/' + nb + '"').split('"' + bn + '"').join('"' + nb + '"'); }
+                data = te.encode(t);
+              }
+              files.push({ name: name, data: data, store: /\.(jpe?g|png|gif|mp4|m4a|mp3|wav|zip)$/i.test(name) });
+            });
+            if (hasJpg) {
+              for (var i = 0; i < files.length; i++) if (files[i].name === '[Content_Types].xml') {
+                var ct = td.decode(files[i].data);
+                if (!/Extension="jpe?g"/i.test(ct) || !/Extension="jpg"/i.test(ct)) ct = ct.replace(/<Default /, '<Default Extension="jpg" ContentType="image/jpeg"/><Default ');
+                files[i].data = te.encode(ct);
+              }
+            }
+            files.sort(function (a, b) { return a.name === '[Content_Types].xml' ? -1 : b.name === '[Content_Types].xml' ? 1 : 0; });
+            return ozWrite(files).then(function (blob) {
+              if (blob.size <= OZ_MAX || ++pi >= passes.length) return blob;
+              return tryPass();
+            });
+          });
+        };
+        return tryPass();
+      });
+    }).then(function (blob) {
+      return new File([blob], file.name, { type: file.type || 'application/octet-stream' });
+    });
+  }
+  function ozUpload(f) {
+    if (!ozOk()) { note(f9('這支手機版本較舊，無法自動壓縮。請把投影片另存成 PDF，或用 PowerPoint「壓縮圖片」後再傳', 'This phone can’t compress automatically — save it as PDF or compress pictures in PowerPoint first')); return; }
+    var before = f.size;
+    upShow(f9('檔案超過 5MB，正在自動壓縮圖片…', 'File is over 5 MB — compressing pictures…') + ' ' + fmtSize(before));
+    ozCompress(f, function (k, n, pass) { upShow(f9('自動壓縮中', 'Compressing') + (pass ? f9('（第 ' + (pass + 1) + ' 輪）', ' (pass ' + (pass + 1) + ')') : '') + ' ' + k + '/' + n + f9(' 張圖片', ' pictures')); }).then(function (nf) {
+      if (nf.size > 5 * 1048576) {
+        $('xjUp').style.display = 'none'; fitChat();
+        modal('<h3>📦 ' + esc(f9('壓縮後還是太大', 'Still too large after compressing')) + '</h3><p>' + esc(f9('已從 ' + fmtSize(before) + ' 壓到 ' + fmtSize(nf.size) + '，仍超過 5MB（可能含有影片或大量圖片）。建議另存成 PDF，或分成兩個檔案再傳。', 'Compressed from ' + fmtSize(before) + ' to ' + fmtSize(nf.size) + ', still over 5 MB (it may contain video or many pictures). Try saving as PDF or splitting it into two files.')) + '</p>' +
+          '<div class="xjbtns"><button class="btn block" data-xj="mclose">' + esc(f9('知道了', 'OK')) + '</button></div>');
+        return;
+      }
+      upShow(f9('壓縮完成：' + fmtSize(before) + ' → ' + fmtSize(nf.size) + '，上傳中…', 'Compressed ' + fmtSize(before) + ' → ' + fmtSize(nf.size) + ', uploading…'));
+      readDataUrl(nf, function (d) {
+        if (!d) { $('xjUp').style.display = 'none'; note(f9('檔案讀不出來', 'Couldn’t read this file')); return; }
+        post({ kind: 'file', data: d, mime: f.type || 'application/octet-stream', name: f.name || 'file', text: '' }, function (ok) { if (ok !== false) note(f9('已自動壓縮並傳出：' + fmtSize(before) + ' → ' + fmtSize(nf.size), 'Compressed and sent: ' + fmtSize(before) + ' → ' + fmtSize(nf.size))); });
+      });
+    })['catch'](function () {
+      var up = $('xjUp'); if (up) up.style.display = 'none'; fitChat();
+      note(f9('這個檔案無法自動壓縮，請另存成 PDF 或用 PowerPoint「壓縮圖片」後再傳', 'Couldn’t compress this file — save it as PDF or compress pictures first'));
+    });
+  }
   window.XJ321 = { shareImg: shareImg, finish: finish, autoDone: autoDone, autoSync: autoSync, openChat: openChat,
     dm: function (code, name, who, nk) { setAlt(code, name); dmOpen(who, nk); },
     inbox: function (code, name) { setAlt(code, name); dmInbox(); }, shareNow: function () { shareAll(true); },
