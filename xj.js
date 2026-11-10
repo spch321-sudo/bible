@@ -1412,6 +1412,7 @@
   function fwdApp(app) {
     var m = findMsg(FW.id); if (!m) return;
     var names = { line: 'LINE', wa: 'WhatsApp', wx: f9('微信', 'WeChat') }, nm = names[app] || '';
+    if (m.att && (m.kind === 'file' || m.kind === 'voice') && !CC.dm) { closeModal(); FG.url = attUrl(m.att); FG.name = (m.meta && m.meta.name) || (m.kind === 'voice' ? 'voice.m4a' : 'file'); FG.done = ''; fgApp(app === 'line' ? 'line' : app === 'wa' ? 'wa' : 'wx'); return; }
     if (m.att && (m.kind === 'img' || m.kind === 'file' || m.kind === 'voice')) { fileGet(m.id, nm); return; }
     var t = outText(m); closeModal();
     if (app === 'line') { window.open('https://line.me/R/share?text=' + encodeURIComponent(t), '_blank'); return; }
@@ -1435,11 +1436,35 @@
     var mt = m.meta || {};
     fileGetUrl(attUrl(m.att), mt.name || 'file', mt.mime || '', app);
   }
+  /* 公開附件網址後面加上檔名（伺服器會忽略），微軟／Google 線上檢視器靠副檔名判斷檔案種類，沒有副檔名會說「找不到檔案」 */
+  function namedUrl(url, name) {
+    if (/[?&]dev=/.test(url) || !/\/att\/\d+$/.test(url)) return url;
+    var ext = (String(name || '').match(/\.[A-Za-z0-9]{1,5}$/) || [''])[0].toLowerCase();
+    return ext ? url + '/file' + ext : url;
+  }
+  function isPub(url) { return !/[?&]dev=/.test(url); }
   function viewerUrl(url, name) {
-    if (/[?&]dev=/.test(url)) return '';   /* 私訊附件不交給外部預覽，保護隱私 */
-    if (/\.(docx?|pptx?|ppsx|potx|xlsx?|dotx)$/i.test(name || '')) return 'https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(url);
-    if (/\.pdf$/i.test(name || '')) return 'https://docs.google.com/viewer?url=' + encodeURIComponent(url);
+    if (!isPub(url)) return '';   /* 私訊附件不交給外部預覽，保護隱私 */
+    var u = namedUrl(url, name);
+    if (/\.(docx?|pptx?|ppsx|potx|xlsx?|dotx)$/i.test(name || '')) return 'https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(u);
+    if (/\.pdf$/i.test(name || '')) return 'https://docs.google.com/viewer?url=' + encodeURIComponent(u);
     return '';
+  }
+  /* 分享到 LINE／WhatsApp／微信：公開檔案傳「線上瀏覽＋下載」連結（LINE、微信的分享選單不收 Word／投影片檔案本身） */
+  function fgLinkText() {
+    var t = '📄 ' + FG.name, v = viewerUrl(FG.url, FG.name);
+    if (v) t += '\n' + f9('👀 直接瀏覽：', '👀 View: ') + v;
+    t += '\n' + f9('⬇️ 下載：', '⬇️ Download: ') + namedUrl(FG.url, FG.name);
+    return t;
+  }
+  function fgApp(app) {
+    if (!isPub(FG.url)) { fgShare(); return; }
+    var t = fgLinkText();
+    if (app === 'line') { window.open('https://line.me/R/share?text=' + encodeURIComponent(t), '_blank'); return; }
+    if (app === 'wa') { window.open('https://wa.me/?text=' + encodeURIComponent(t), '_blank'); return; }
+    if (app === 'wx') { try { navigator.clipboard.writeText(t).then(function () { FG.done = '✅ ' + f9('連結已複製，打開微信貼上就可以了', 'Link copied — paste it in WeChat'); if ($('xjFgS')) fgPaint(); else note(FG.done); setTimeout(function () { try { location.href = 'weixin://'; } catch (e) { } }, 900); }, function () { note(t); }); } catch (e) { note(t); } return; }
+    if (navigator.share) { navigator.share({ title: FG.name, text: t })['catch'](function () { }); return; }
+    copyText(t);
   }
   function isIOS() { return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); }
   function fgRows() {
@@ -1450,13 +1475,18 @@
     if (FG.view) h += row('fgview', '👀', '直接瀏覽', 'View now', f9('不用下載，馬上翻閱', 'No download needed'));
     if (sh) h += row('fgshare', '📱', '用 WPS 或其他 App 打開', 'Open in WPS or another app', f9('也可以選「儲存到檔案」存在手機裡', 'Or choose “Save to Files”'), wait);
     h += row('fgchat', '💬', '分享到 321 App 的聊天室', 'Share to a 321 app chat', f9('小家、教會、235 團隊…', 'Small groups, church, teams…'), wait);
-    if (sh) h += row('fgsocial', '📤', '分享到 LINE、微信', 'Share to LINE, WeChat…', f9('WhatsApp、Messenger、Email 也可以', 'WhatsApp, Messenger, Email…'), wait);
+    if (isPub(FG.url)) h += '</div><div class="note" style="margin:12px 2px 6px">' + esc(f9('傳給朋友（傳連結，對方點了就能看或下載）', 'Send to friends (as a link they can open)')) + '</div><div class="xjapps">' +
+      '<button data-xj="fgapp" data-app="line"><span class="ap" style="background:#06C755">LINE</span><b>LINE</b></button>' +
+      '<button data-xj="fgapp" data-app="wa"><span class="ap" style="background:#25D366">WA</span><b>WhatsApp</b></button>' +
+      '<button data-xj="fgapp" data-app="wx"><span class="ap" style="background:#07C160">' + esc(f9('微信', 'WX')) + '</span><b>' + esc(f9('微信', 'WeChat')) + '</b></button>' +
+      '<button data-xj="fgapp" data-app="more"><span class="ap" style="background:#6B7280">📤</span><b>' + esc(f9('其他', 'More')) + '</b></button></div><div class="xjshl" style="margin-top:8px">';
+    else if (sh) h += row('fgsocial', '📤', '分享檔案到其他 App', 'Share the file to other apps', '', wait);
     if (!isIOS() || !sh) h += row('fgdl', '⬇️', '下載到這台裝置', 'Download to this device', f9('存到「下載」資料夾', 'Saved to your Downloads folder'), wait);
     return h + '</div>';
   }
   function fgPaint() {
     var tip = FG.app ? f9('按「打開分享選單」，在選單裡選「' + FG.app + '」。', 'Tap “Open the share menu” and choose “' + FG.app + '”.') :
-      (canShareFile() ? f9('「用 WPS 或其他 App 打開」與「分享到 LINE、微信」都會跳出手機的選單：選「WPS Office」直接打開、選「儲存到檔案」存在手機的「檔案」App，或選 LINE、WhatsApp、微信傳給朋友（第一次沒看到，滑到最後按「更多」）。', 'Both open your phone’s menu: choose WPS Office to open it, “Save to Files” to keep it, or LINE / WhatsApp / WeChat to send it.') :
+      (canShareFile() ? f9('「用 WPS 或其他 App 打開」會跳出手機的選單：選「WPS Office」直接打開，或選「儲存到檔案」存在手機的「檔案」App（沒看到 WPS，把那一排 App 滑到最後按「更多」）。', 'This opens your phone’s menu: choose WPS Office to open it, or “Save to Files” to keep it.') :
         f9('「下載到這台裝置」會存到瀏覽器的「下載」資料夾。', '“Download” saves it to your browser’s Downloads folder.'));
     topModal('<h3>📄 ' + esc(FG.name) + '</h3><p class="note" id="xjFgS">' + esc(FG.done || (FG.blob ? fmtSize(FG.blob.size) + ' · ' + f9('已下載到 App，請選要做什麼', 'Ready — choose what to do') : f9('下載中…', 'Downloading…'))) + '</p>' + fgRows() +
       '<p class="note" style="margin-top:10px">' + esc(tip) + '</p><div class="xjbtns"><button class="btn ghost block" data-xj="mclose">' + esc(f9('關閉', 'Close')) + '</button></div>');
@@ -1852,6 +1882,7 @@
     else if (a === 'fgchatgo') fgChatGo(+t.getAttribute('data-i'), t);
     else if (a === 'fgback') fgPaint();
     else if (a === 'fgsocial') fgShare();
+    else if (a === 'fgapp') fgApp(t.getAttribute('data-app'));
     else if (a === 'fgview') { if (FG.view) window.open(FG.view, '_blank', 'noopener'); }
     else if (a === 'fwdapp') fwdApp(t.getAttribute('data-app'));
     else if (a === 'fav') toggleFav(id);
