@@ -1098,7 +1098,33 @@
     var L = [];
     for (var i = 0; i < GL.length; i++) L.push({ code: GL[i].code, name: GL[i].name || GL[i].code, icon: '🏡', grp: 1 });
     if (H.chatTargets) { try { var ex = H.chatTargets() || []; for (var j = ex.length - 1; j >= 0; j--) if (ex[j] && ex[j].code) { if (ex[j].first) L.unshift(ex[j]); else L.splice(GL.length, 0, ex[j]); } } catch (e) { } }
-    return L;
+    return L.concat(otherTargets(L));
+  }
+  /* 其他 321 App 的聊天室（同一個網域，資料都在這支手機上）：用那個 App 自己的裝置代號與稱呼送出，回到那個 App 時就是「我」說的話 */
+  var APPS321 = [
+    { p: 'fl321_', zh: '空中團契', en: 'Fellowship', url: '/321fellowship/', hash: '#/xjchat' },
+    { p: 'cl321_', zh: '教會生活', en: 'Church Life', url: '/321churchlife/', hash: '' },
+    { p: 'ib_', zh: '互動聖經', en: 'Interactive Bible', url: '/bible/', hash: '#/xjchat' }
+  ];
+  function appDev(p) { var d = lg(p + 'xjdev'); if (!d) { d = 'f' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); ls(p + 'xjdev', d); } return d; }
+  function otherTargets(have) {
+    var seen = {}, out = [], i, k;
+    for (i = 0; i < have.length; i++) seen[have[i].code] = 1;
+    for (k = 0; k < APPS321.length; k++) {
+      var A = APPS321[k]; if (A.p === P) continue;
+      var gl = lj(A.p + 'xjs', []), lab = f9(A.zh, A.en), nk = '';
+      if (A.p === 'cl321_') { var cs = lj('cl321', {}) || {}; nk = trim(cs.name || ''); if (cs.ch && cs.ch.code && cs.ch.dev && !seen[cs.ch.code]) { seen[cs.ch.code] = 1; out.push({ code: cs.ch.code, name: cs.ch.name || cs.ch.code, icon: '⛪', dev: cs.ch.dev, nick: nk, app: lab, open: (function (A) { return function () { window.open(A.url, '_blank'); }; })(A) }); } }
+      if (A.p === 'ib_') { var us = lj('ib_user', {}) || {}; nk = trim(us.nick || ''); }
+      nk = trim(lg(A.p + 'xjnick') || '') || nk;
+      if (gl && gl.length) for (i = 0; i < gl.length; i++) {
+        var g = gl[i]; if (!g || !g.code || seen[g.code]) continue; seen[g.code] = 1;
+        out.push({ code: g.code, name: g.name || g.code, icon: '🏡', dev: appDev(A.p), nick: nk, app: lab, open: (function (A, c) { return function () { ls(A.p + 'xjcur', c); window.open(A.url + A.hash, '_blank'); }; })(A, g.code) });
+      }
+      if (A.p === 'ib_') { var tm = (lj('ib_user', {}) || {}).teams || [];
+        for (i = 0; i < tm.length; i++) { var tc = 'TM' + tm[i].code; if (!tm[i].code || seen[tc]) continue; seen[tc] = 1;
+          out.push({ code: tc, name: tm[i].name || tm[i].code, icon: String(tm[i].kind) === '2' ? '🤝' : String(tm[i].kind) === '3' ? '👪' : '👥', dev: appDev(A.p), nick: nk, app: lab, open: (function (A) { return function () { window.open(A.url + '#/team', '_blank'); }; })(A) }); } }
+    }
+    return out;
   }
   function prepSrc(src, cb) {
     var url = src, own = 0;
@@ -1137,7 +1163,7 @@
       if (!nk) h += fld(f9('你的稱呼（家人會看到）', 'Your name (others will see it)'), '<input id="xjShNk" type="text" maxlength="20">');
       h += fld(f9('說幾句話（可留空）', 'Add a message (optional)'), '<textarea id="xjShCap" class="xjinp" rows="2" maxlength="600" placeholder="' + esc(f9('例如：今天這句話很感動我，分享給大家', 'e.g. This verse touched me today')) + '"></textarea>') +
         '<p class="xjtip">' + esc(f9('點一個聊天室，美圖就會送出', 'Tap a chat to send the card')) + '</p><div class="xjshl">';
-      for (var i = 0; i < L.length; i++) h += '<button class="xjshr" data-xj="shgo" data-i="' + i + '"' + (SH.busy ? ' disabled' : '') + '><span class="xjic">' + esc(L[i].icon || '💬') + '</span><b>' + esc(L[i].name) + '</b><span class="xjshgo">' + esc(SH.busy === i + 1 ? f9('傳送中…', 'Sending…') : '›') + '</span></button>';
+      for (var i = 0; i < L.length; i++) h += '<button class="xjshr" data-xj="shgo" data-i="' + i + '"' + (SH.busy ? ' disabled' : '') + '><span class="xjic">' + esc(L[i].icon || '💬') + '</span><b>' + esc(L[i].name) + (L[i].app ? '<small class="xjapp">' + esc(L[i].app) + '</small>' : '') + '</b><span class="xjshgo">' + esc(SH.busy === i + 1 ? f9('傳送中…', 'Sending…') : '›') + '</span></button>';
       h += '</div><div class="xjbtns"><button class="btn ghost block" data-xj="mclose">' + esc(f9('取消', 'Cancel')) + '</button></div>';
     }
     var cap = $('xjShCap'), cv = cap ? cap.value : '', nkEl = $('xjShNk'), nv = nkEl ? nkEl.value : '';
@@ -1190,7 +1216,7 @@
   st2.textContent = '.xjmodal.xjtop{z-index:5000}.xjshpv{text-align:center;margin:4px 0 10px}.xjshpv img{max-width:100%;max-height:min(30vh,240px);border-radius:12px;box-shadow:0 4px 14px rgba(18,35,63,.16)}' +
     '.xjshl{display:flex;flex-direction:column;gap:8px}.xjshr{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:1px solid var(--line);background:var(--white);border-radius:14px;padding:8px 12px;cursor:pointer;font-family:inherit;font-size:1em;color:var(--ink)}' +
     '.xjshr b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--head)}.xjshr .xjic{width:38px;height:38px;font-size:1.15em}.xjshr[disabled]{opacity:.6}.xjshgo{color:var(--muted);font-size:.9em;white-space:nowrap}' +
-    '.xjshok{text-align:center;font-weight:700;color:#2E7D32;margin:6px 0}.xjpanel textarea.xjinp{resize:vertical;min-height:58px}';
+    '.xjshr b .xjapp{display:block;font-size:.72em;font-weight:500;color:var(--muted);margin-top:1px}.xjshok{text-align:center;font-weight:700;color:#2E7D32;margin:6px 0}.xjpanel textarea.xjinp{resize:vertical;min-height:58px}';
   document.head.appendChild(st2);
   /* ── 聊天室 LINE 式功能（ln1109，搭配 church-chat v8）──
      點訊息 → 底部選單：表情回應、回覆、複製、選擇並複製、轉傳、收藏、設為公告、截圖、私訊、刪除（只刪自己手機）、收回、無痕收回
@@ -1353,7 +1379,7 @@
     var m = findMsg(id); if (!m) return;
     FW.id = id; FW.list = shTargets(); FW.busy = 0;
     var h = '<h3>↪️ ' + esc(f9('轉傳到…', 'Forward to…')) + '</h3><div class="xjtip" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc((m.nick || '') + '：' + (m.text || '')) + '</div><div class="xjshl">';
-    for (var i = 0; i < FW.list.length; i++) { var tg = FW.list[i]; h += '<button class="xjshr" data-xj="fwdgo" data-i="' + i + '"><span class="xjic">' + esc(tg.icon || '💬') + '</span><b>' + esc(tg.name) + (tg.code === ccCode() && !CC.dm ? ' ' + f9('（這裡）', '(here)') : '') + '</b><span class="xjshgo">›</span></button>'; }
+    for (var i = 0; i < FW.list.length; i++) { var tg = FW.list[i]; h += '<button class="xjshr" data-xj="fwdgo" data-i="' + i + '"><span class="xjic">' + esc(tg.icon || '💬') + '</span><b>' + esc(tg.name) + (tg.code === ccCode() && !CC.dm ? ' ' + f9('（這裡）', '(here)') : '') + (tg.app ? '<small class="xjapp">' + esc(tg.app) + '</small>' : '') + '</b><span class="xjshgo">›</span></button>'; }
     h += '</div><div class="note" style="margin:12px 2px 6px">' + esc(f9('傳到其他 App', 'Send to other apps')) + '</div><div class="xjapps">' +
       '<button data-xj="fwdapp" data-app="line"><span class="ap" style="background:#06C755">LINE</span><b>LINE</b></button>' +
       '<button data-xj="fwdapp" data-app="wa"><span class="ap" style="background:#25D366">WA</span><b>WhatsApp</b></button>' +
@@ -1409,28 +1435,44 @@
     var mt = m.meta || {};
     fileGetUrl(attUrl(m.att), mt.name || 'file', mt.mime || '', app);
   }
+  function viewerUrl(url, name) {
+    if (/[?&]dev=/.test(url)) return '';   /* 私訊附件不交給外部預覽，保護隱私 */
+    if (/\.(docx?|pptx?|ppsx|potx|xlsx?|dotx)$/i.test(name || '')) return 'https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(url);
+    if (/\.pdf$/i.test(name || '')) return 'https://docs.google.com/viewer?url=' + encodeURIComponent(url);
+    return '';
+  }
+  function fgRows() {
+    var sh = canShareFile(), rd = !!FG.blob, wait = rd ? '›' : f9('下載中…', 'Downloading…');
+    return '<div class="xjshl">' +
+      (FG.view ? '<button class="xjshr" data-xj="fgview"><span class="xjic">👀</span><b>' + esc(f9('直接瀏覽（不用下載）', 'View now (no download)')) + '</b><span class="xjshgo">›</span></button>' : '') +
+      (sh ? '<button class="xjshr" data-xj="fgshare"><span class="xjic">📱</span><b>' + esc(FG.app ? f9('打開分享選單', 'Open the share menu') : f9('用 WPS 或其他 App 打開', 'Open in WPS or another app')) + '</b><span class="xjshgo">' + esc(wait) + '</span></button>' : '') +
+      '<button class="xjshr" data-xj="fgdl"><span class="xjic">⬇️</span><b>' + esc(f9('下載到這台裝置', 'Download to this device')) + '</b><span class="xjshgo">' + esc(wait) + '</span></button></div>';
+  }
+  function fgPaint() {
+    var tip = FG.app ? f9('按「打開分享選單」，在選單裡選「' + FG.app + '」。', 'Tap “Open the share menu” and choose “' + FG.app + '”.') :
+      f9('「用 WPS 或其他 App 打開」會跳出手機選單，選「WPS Office」就能直接打開（第一次沒看到，滑到最後按「更多」把它加進來），也可以選「儲存到檔案」。', '“Open in WPS or another app” shows your phone’s menu — choose WPS Office, Word, or “Save to Files”.');
+    topModal('<h3>📄 ' + esc(FG.name) + '</h3><p class="note" id="xjFgS">' + esc(FG.blob ? fmtSize(FG.blob.size) + ' · ' + f9('已下載', 'Downloaded') : f9('下載中…', 'Downloading…')) + '</p>' + fgRows() +
+      '<p class="note" style="margin-top:10px">' + esc(tip) + '</p><div class="xjbtns"><button class="btn ghost block" data-xj="mclose">' + esc(f9('關閉', 'Close')) + '</button></div>');
+  }
   function fileGetUrl(url, name, mime, app) {
-    var mt = { mime: mime };
-    FG.blob = null; FG.app = app || '';
-    topModal('<h3>📄 ' + esc(name) + '</h3><p class="note" id="xjFgS">' + esc(f9('下載中…', 'Downloading…')) + '</p><div class="xjbtns"><button class="btn ghost block" data-xj="mclose">' + esc(f9('取消', 'Cancel')) + '</button></div>');
+    FG.blob = null; FG.app = app || ''; FG.name = name || 'file'; FG.url = url; FG.view = FG.app ? '' : viewerUrl(url, FG.name); FG.err = 0;
+    var tk = FG.tk = now();
+    fgPaint();
     var x = new XMLHttpRequest(); x.open('GET', url); x.responseType = 'blob';
     x.onload = function () {
-      if (x.status !== 200 || !$('xjFgS')) { if ($('xjFgS')) $('xjFgS').textContent = f9('下載失敗，檔案可能已被收回或過期', 'Download failed — the file may have been removed'); return; }
-      FG.type = mt.mime || x.response.type || 'application/octet-stream'; FG.blob = new Blob([x.response], { type: FG.type }); FG.name = name;
-      var sh = canShareFile();
-      if (!sh && !FG.app) { closeModal(); fgDl(); return; }
-      var tip = FG.app ? f9('按下面的按鈕，在分享選單裡選「' + FG.app + '」。', 'Tap the button and choose “' + FG.app + '” in the share menu.') : f9('按「開啟／儲存」，可以選「儲存到檔案」或用 Word、PDF 等 App 打開。', 'Tap “Open / Save” to save it to Files or open it in another app.');
-      topModal('<h3>📄 ' + esc(name) + '</h3><p class="note">' + esc(fmtSize(FG.blob.size) + ' · ' + f9('已下載', 'Downloaded')) + '</p><p class="note">' + esc(tip) + '</p>' +
-        '<div class="xjshl">' + (sh ? '<button class="xjshr" data-xj="fgshare"><span class="xjic">📂</span><b>' + esc(FG.app ? f9('打開分享選單', 'Open the share menu') : f9('開啟／儲存', 'Open / Save')) + '</b><span class="xjshgo">›</span></button>' : '') +
-        '<button class="xjshr" data-xj="fgdl"><span class="xjic">⬇️</span><b>' + esc(f9('下載到這台裝置', 'Download to this device')) + '</b><span class="xjshgo">›</span></button></div>' +
-        '<div class="xjbtns"><button class="btn ghost block" data-xj="mclose">' + esc(f9('關閉', 'Close')) + '</button></div>');
+      if (FG.tk !== tk) return;
+      if (x.status !== 200) { FG.err = 1; var e0 = $('xjFgS'); if (e0) e0.textContent = f9('下載失敗，檔案可能已被收回或過期', 'Download failed — the file may have been removed'); return; }
+      FG.type = mime || x.response.type || 'application/octet-stream'; FG.blob = new Blob([x.response], { type: FG.type });
+      if (!$('xjFgS')) return;
+      if (!canShareFile() && !FG.app && !FG.view) { closeModal(); fgDl(); return; }
+      fgPaint();
     };
-    x.onerror = function () { var e = $('xjFgS'); if (e) e.textContent = f9('網路不穩，請再試一次', 'Network problem — please try again'); };
+    x.onerror = function () { if (FG.tk !== tk) return; FG.err = 1; var e = $('xjFgS'); if (e) e.textContent = f9('網路不穩，請再試一次', 'Network problem — please try again'); };
     x.send();
   }
-  function fgShare() { if (!FG.blob) return; try { navigator.share({ files: [new File([FG.blob], FG.name, { type: FG.type })] }).then(function () { closeModal(); }, function () { }); } catch (e) { fgDl(); } }
+  function fgShare() { if (!FG.blob) { note(f9('還在下載，請稍候再按', 'Still downloading — try again in a moment')); return; } try { navigator.share({ files: [new File([FG.blob], FG.name, { type: FG.type })] }).then(function () { closeModal(); }, function () { }); } catch (e) { fgDl(); } }
   function fgDl() {
-    if (!FG.blob) return;
+    if (!FG.blob) { note(f9('還在下載，請稍候再按', 'Still downloading — try again in a moment')); return; }
     var u = URL.createObjectURL(FG.blob), a = document.createElement('a'); a.href = u; a.download = FG.name; a.rel = 'noopener';
     document.body.appendChild(a); a.click(); a.parentNode.removeChild(a); setTimeout(function () { URL.revokeObjectURL(u); }, 60000);
     note(f9('已開始下載', 'Download started'));
@@ -1776,6 +1818,7 @@
     else if (a === 'fileget') { ev.preventDefault(); fileGet(id); }
     else if (a === 'fgshare') fgShare();
     else if (a === 'fgdl') fgDl();
+    else if (a === 'fgview') { if (FG.view) window.open(FG.view, '_blank', 'noopener'); }
     else if (a === 'fwdapp') fwdApp(t.getAttribute('data-app'));
     else if (a === 'fav') toggleFav(id);
     else if (a === 'favs') favPage();
