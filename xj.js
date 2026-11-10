@@ -2140,6 +2140,37 @@
       } catch (e) { }
     }, 120);
   }
+  /* 第二層（vf2）：iPhone（尤其 iOS 26）鍵盤收起或回到 App 後，排版畫面比實際螢幕矮，固定在底部的元素會浮在半空。
+     量出差距，把所有貼底的固定元素往下推回去；差距消失就還原。 */
+  var VV = { d: 0, els: [] };
+  function vvGap() {
+    var v = window.visualViewport; if (!v) return 0;
+    var d = Math.round(v.height + v.offsetTop - window.innerHeight);
+    return d > 30 ? d : 0;
+  }
+  function vvApply() {
+    var d = vvGap();
+    if (d === VV.d && (!d || VV.els.length)) return;
+    var i;
+    for (i = 0; i < VV.els.length; i++) { try { VV.els[i].style.translate = ''; } catch (e) { } }
+    VV.els = []; VV.d = d;
+    if (!d) return;
+    var all = document.querySelectorAll('body *');
+    for (i = 0; i < all.length; i++) {
+      var el = all[i], cs = window.getComputedStyle(el);
+      if (cs.position !== 'fixed' || cs.bottom === 'auto' || cs.display === 'none') continue;
+      if (el.parentElement && el.parentElement.closest && el.parentElement.closest('[style*="translate"]')) continue;
+      var b = parseFloat(cs.bottom) || 0; if (b > 260) continue;
+      if (parseFloat(cs.top) === 0 && b === 0 && el.offsetHeight > window.innerHeight * 0.8) continue;   /* 全螢幕遮罩不用推 */
+      el.style.translate = '0 ' + d + 'px'; VV.els.push(el);
+    }
+  }
+  function vvLoop(n) { vvApply(); if (n > 0) setTimeout(function () { vvLoop(n - 1); }, 400); }
+  if (window.visualViewport) { window.visualViewport.addEventListener('resize', function () { vvApply(); }); window.visualViewport.addEventListener('scroll', function () { vvApply(); }); }
+  window.addEventListener('scroll', function () { if (VV.d || vvGap()) vvApply(); }, { passive: true });
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') vvLoop(8); });
+  window.addEventListener('focus', function () { vvLoop(8); });
+  document.addEventListener('focusout', function () { vvLoop(6); });
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') { vfFix(); setTimeout(vfFix, 600); } });
   window.addEventListener('pageshow', vfFix);
   window.addEventListener('focus', function () { vfFix(); setTimeout(vfFix, 600); });
