@@ -2147,11 +2147,22 @@
     var v = window.visualViewport, b = v ? v.offsetTop + v.height : window.innerHeight;
     /* 主畫面 App（全螢幕）時，真正的底就是螢幕高度；有些 iPhone 版本會把排版高度算矮 */
     var sa = window.navigator.standalone || (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
-    if (sa && screen && screen.height && window.innerWidth === screen.width && screen.height > b && screen.height - b < screen.height * 0.6) b = screen.height;
+    /* 只有狀態列設為 black-translucent（畫面延伸到狀態列下面）時，App 高度才等於螢幕高度；其他 App 狀態列另佔空間，不能用螢幕高度 */
+    var mt = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+    if (!mt || mt.getAttribute('content') !== 'black-translucent') sa = false;
+    if (sa && !vvTyping() && screen && screen.height && window.innerWidth === screen.width && screen.height > b && screen.height - b < screen.height * 0.6 && (!v || v.height >= window.innerHeight - 2)) b = screen.height;
     return b;
   }
+  function vvTyping() {
+    var ae = document.activeElement;
+    return !!(ae && (/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName) || ae.isContentEditable) && !/^(button|checkbox|radio|range|file|submit|color)$/i.test(ae.type || ''));
+  }
+  function vvClear() { for (var i = 0; i < VV.els.length; i++) { try { if (VV.els[i].getAttribute('data-vvfix')) { VV.els[i].style.translate = ''; VV.els[i].removeAttribute('data-vvfix'); } } catch (e) { } } }
   function vvApply() {
     VV.raf = 0;
+    /* 正在打字（鍵盤開著）時一律不推：鍵盤本來就會讓可視畫面變矮，推了會把輸入框藏到鍵盤後面 */
+    if (vvTyping()) { vvClear(); return; }
+    var v0 = window.visualViewport; if (v0 && v0.height < window.innerHeight * 0.85) { vvClear(); return; }
     var vb = vvBottom(), i, list = [];
     if (VV.list && now() - VV.at < 2000) list = VV.list; else {
     var all = document.querySelectorAll('body *');
@@ -2184,6 +2195,7 @@
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') vvLoop(8); });
   window.addEventListener('focus', function () { vvLoop(8); });
   document.addEventListener('focusout', function () { vvLoop(6); });
+  document.addEventListener('focusin', function () { vvClear(); });
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') { vfFix(); setTimeout(vfFix, 600); } });
   window.addEventListener('pageshow', vfFix);
   window.addEventListener('focus', function () { vfFix(); setTimeout(vfFix, 600); });
