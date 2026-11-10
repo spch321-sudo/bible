@@ -1441,21 +1441,50 @@
     if (/\.pdf$/i.test(name || '')) return 'https://docs.google.com/viewer?url=' + encodeURIComponent(url);
     return '';
   }
+  function isIOS() { return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); }
   function fgRows() {
     var sh = canShareFile(), rd = !!FG.blob, wait = rd ? '›' : f9('下載中…', 'Downloading…');
-    return '<div class="xjshl">' +
-      (FG.view ? '<button class="xjshr" data-xj="fgview"><span class="xjic">👀</span><b>' + esc(f9('直接瀏覽（不用下載）', 'View now (no download)')) + '</b><span class="xjshgo">›</span></button>' : '') +
-      (sh ? '<button class="xjshr" data-xj="fgshare"><span class="xjic">📱</span><b>' + esc(FG.app ? f9('打開分享選單', 'Open the share menu') : f9('用 WPS 或其他 App 打開', 'Open in WPS or another app')) + '</b><span class="xjshgo">' + esc(wait) + '</span></button>' : '') +
-      '<button class="xjshr" data-xj="fgdl"><span class="xjic">⬇️</span><b>' + esc(f9('下載到這台裝置', 'Download to this device')) + '</b><span class="xjshgo">' + esc(wait) + '</span></button></div>';
+    var row = function (act, ic, zh, en, sub, go) { return '<button class="xjshr" data-xj="' + act + '"><span class="xjic">' + ic + '</span><b>' + esc(f9(zh, en)) + (sub ? '<small class="xjapp">' + esc(sub) + '</small>' : '') + '</b><span class="xjshgo">' + esc(go || '›') + '</span></button>'; };
+    if (FG.app) return '<div class="xjshl">' + (sh ? row('fgshare', '📤', '打開分享選單', 'Open the share menu', '', wait) : '') + '</div>';
+    var h = '<div class="xjshl">';
+    if (FG.view) h += row('fgview', '👀', '直接瀏覽', 'View now', f9('不用下載，馬上翻閱', 'No download needed'));
+    if (sh) h += row('fgshare', '📱', '用 WPS 或其他 App 打開', 'Open in WPS or another app', f9('也可以選「儲存到檔案」存在手機裡', 'Or choose “Save to Files”'), wait);
+    h += row('fgchat', '💬', '分享到 321 App 的聊天室', 'Share to a 321 app chat', f9('小家、教會、235 團隊…', 'Small groups, church, teams…'), wait);
+    if (sh) h += row('fgsocial', '📤', '分享到 LINE、微信', 'Share to LINE, WeChat…', f9('WhatsApp、Messenger、Email 也可以', 'WhatsApp, Messenger, Email…'), wait);
+    if (!isIOS() || !sh) h += row('fgdl', '⬇️', '下載到這台裝置', 'Download to this device', f9('存到「下載」資料夾', 'Saved to your Downloads folder'), wait);
+    return h + '</div>';
   }
   function fgPaint() {
     var tip = FG.app ? f9('按「打開分享選單」，在選單裡選「' + FG.app + '」。', 'Tap “Open the share menu” and choose “' + FG.app + '”.') :
-      f9('「用 WPS 或其他 App 打開」會跳出手機選單，選「WPS Office」就能直接打開（第一次沒看到，滑到最後按「更多」把它加進來），也可以選「儲存到檔案」。', '“Open in WPS or another app” shows your phone’s menu — choose WPS Office, Word, or “Save to Files”.');
-    topModal('<h3>📄 ' + esc(FG.name) + '</h3><p class="note" id="xjFgS">' + esc(FG.blob ? fmtSize(FG.blob.size) + ' · ' + f9('已下載', 'Downloaded') : f9('下載中…', 'Downloading…')) + '</p>' + fgRows() +
+      (canShareFile() ? f9('「用 WPS 或其他 App 打開」與「分享到 LINE、微信」都會跳出手機的選單：選「WPS Office」直接打開、選「儲存到檔案」存在手機的「檔案」App，或選 LINE、WhatsApp、微信傳給朋友（第一次沒看到，滑到最後按「更多」）。', 'Both open your phone’s menu: choose WPS Office to open it, “Save to Files” to keep it, or LINE / WhatsApp / WeChat to send it.') :
+        f9('「下載到這台裝置」會存到瀏覽器的「下載」資料夾。', '“Download” saves it to your browser’s Downloads folder.'));
+    topModal('<h3>📄 ' + esc(FG.name) + '</h3><p class="note" id="xjFgS">' + esc(FG.done || (FG.blob ? fmtSize(FG.blob.size) + ' · ' + f9('已下載到 App，請選要做什麼', 'Ready — choose what to do') : f9('下載中…', 'Downloading…'))) + '</p>' + fgRows() +
       '<p class="note" style="margin-top:10px">' + esc(tip) + '</p><div class="xjbtns"><button class="btn ghost block" data-xj="mclose">' + esc(f9('關閉', 'Close')) + '</button></div>');
   }
+  /* 把下載好的檔案傳到任一 321 App 的聊天室 */
+  var FC = { list: [], busy: 0 };
+  function fgChat() {
+    if (!FG.blob) { note(f9('還在下載，請稍候再按', 'Still downloading — try again in a moment')); return; }
+    FC.list = shTargets(); FC.busy = 0;
+    if (!FC.list.length) { note(f9('你還沒有加入任何聊天室', 'You haven’t joined any chat yet')); return; }
+    var h = '<h3>💬 ' + esc(f9('分享到聊天室', 'Share to a chat')) + '</h3><div class="xjtip">📄 ' + esc(FG.name) + '</div><div class="xjshl">';
+    for (var i = 0; i < FC.list.length; i++) { var tg = FC.list[i]; h += '<button class="xjshr" data-xj="fgchatgo" data-i="' + i + '"><span class="xjic">' + esc(tg.icon || '💬') + '</span><b>' + esc(tg.name) + (tg.app ? '<small class="xjapp">' + esc(tg.app) + '</small>' : '') + '</b><span class="xjshgo">›</span></button>'; }
+    topModal(h + '</div><div class="xjbtns"><button class="btn ghost block" data-xj="fgback">‹ ' + esc(f9('返回', 'Back')) + '</button></div>');
+  }
+  function fgChatGo(i, btn) {
+    var tg = FC.list[i]; if (!tg || FC.busy || !FG.blob) return;
+    FC.busy = 1; var g = btn && btn.querySelector('.xjshgo'); if (g) g.textContent = f9('傳送中…', 'Sending…');
+    var f = new File([FG.blob], FG.name, { type: FG.type }), done = function (j, e) {
+      FC.busy = 0;
+      if (!j) { if (g) g.textContent = '›'; note(errTxt(e)); return; }
+      FG.done = '✅ ' + f9('已傳到「' + tg.name + '」' + (tg.app ? '（' + tg.app + '）' : ''), 'Sent to “' + tg.name + '”'); fgPaint();
+      if (tg.code === ccCode() && !CC.dm && route() === 'xjchat') pull(0);
+    };
+    if (/^image\/(jpeg|png|webp|gif)$/i.test(FG.type) || /\.(jpe?g|png|webp|gif)$/i.test(FG.name)) prepImage(f, function (r) { if (!r) { done(null, 'read'); return; } r.kind = 'img'; r.text = ''; sendTo(tg, r, done); });
+    else readDataUrl(f, function (d) { if (!d) { done(null, 'read'); return; } sendTo(tg, { kind: 'file', data: d, mime: FG.type || 'application/octet-stream', name: FG.name, text: '' }, done); });
+  }
   function fileGetUrl(url, name, mime, app) {
-    FG.blob = null; FG.app = app || ''; FG.name = name || 'file'; FG.url = url; FG.view = FG.app ? '' : viewerUrl(url, FG.name); FG.err = 0;
+    FG.blob = null; FG.done = ''; FG.app = app || ''; FG.name = name || 'file'; FG.url = url; FG.view = FG.app ? '' : viewerUrl(url, FG.name); FG.err = 0;
     var tk = FG.tk = now();
     fgPaint();
     var x = new XMLHttpRequest(); x.open('GET', url); x.responseType = 'blob';
@@ -1464,18 +1493,19 @@
       if (x.status !== 200) { FG.err = 1; var e0 = $('xjFgS'); if (e0) e0.textContent = f9('下載失敗，檔案可能已被收回或過期', 'Download failed — the file may have been removed'); return; }
       FG.type = mime || x.response.type || 'application/octet-stream'; FG.blob = new Blob([x.response], { type: FG.type });
       if (!$('xjFgS')) return;
-      if (!canShareFile() && !FG.app && !FG.view) { closeModal(); fgDl(); return; }
       fgPaint();
     };
     x.onerror = function () { if (FG.tk !== tk) return; FG.err = 1; var e = $('xjFgS'); if (e) e.textContent = f9('網路不穩，請再試一次', 'Network problem — please try again'); };
     x.send();
   }
-  function fgShare() { if (!FG.blob) { note(f9('還在下載，請稍候再按', 'Still downloading — try again in a moment')); return; } try { navigator.share({ files: [new File([FG.blob], FG.name, { type: FG.type })] }).then(function () { closeModal(); }, function () { }); } catch (e) { fgDl(); } }
+  function fgShare() { if (!FG.blob) { note(f9('還在下載，請稍候再按', 'Still downloading — try again in a moment')); return; } try { navigator.share({ files: [new File([FG.blob], FG.name, { type: FG.type })] }).then(function () { FG.done = '✅ ' + f9('完成', 'Done'); if ($('xjFgS')) fgPaint(); }, function () { }); } catch (e) { fgDl(); } }
   function fgDl() {
     if (!FG.blob) { note(f9('還在下載，請稍候再按', 'Still downloading — try again in a moment')); return; }
     var u = URL.createObjectURL(FG.blob), a = document.createElement('a'); a.href = u; a.download = FG.name; a.rel = 'noopener';
     document.body.appendChild(a); a.click(); a.parentNode.removeChild(a); setTimeout(function () { URL.revokeObjectURL(u); }, 60000);
-    note(f9('已開始下載', 'Download started'));
+    var msg = /Android/i.test(navigator.userAgent) ? f9('✅ 已下載「' + FG.name + '」，請到手機的「檔案」→「下載」資料夾找（或下拉通知列）', '✅ Downloaded — find it in Files → Downloads') :
+      f9('✅ 已下載「' + FG.name + '」，在瀏覽器的「下載」資料夾（電腦按 Ctrl+J／Mac 按 ⌥⌘L 可以看到）', '✅ Downloaded — it’s in your browser’s Downloads folder');
+    FG.done = msg; note(msg); if ($('xjFgS')) fgPaint();
   }
 
   /* 投票、挑日子 */
@@ -1818,6 +1848,10 @@
     else if (a === 'fileget') { ev.preventDefault(); fileGet(id); }
     else if (a === 'fgshare') fgShare();
     else if (a === 'fgdl') fgDl();
+    else if (a === 'fgchat') fgChat();
+    else if (a === 'fgchatgo') fgChatGo(+t.getAttribute('data-i'), t);
+    else if (a === 'fgback') fgPaint();
+    else if (a === 'fgsocial') fgShare();
     else if (a === 'fgview') { if (FG.view) window.open(FG.view, '_blank', 'noopener'); }
     else if (a === 'fwdapp') fwdApp(t.getAttribute('data-app'));
     else if (a === 'fav') toggleFav(id);
