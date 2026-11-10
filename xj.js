@@ -2126,13 +2126,14 @@
   }
   /* vf1110：iPhone 從分享選單、線上檢視器、LINE 等回到 App 時，畫面高度沒恢復，底部按鈕列與輸入框會卡在畫面中間。
      回到前景、畫面尺寸改變、鍵盤收起時，強迫瀏覽器重新排版一次。 */
-  var VF = { t: 0 };
+  var VF = { t: 0, off: false };
+  try { VF.off = window.top !== window; } catch (e) { VF.off = true; }   /* 嵌在別的 App（iframe）裡：鍵盤與畫面由外層 App 管，這裡完全不調整 */
   function vfFix() {
     clearTimeout(VF.t);
     VF.t = setTimeout(function () {
       try {
-        var ae = document.activeElement;
-        if (ae && /^(INPUT|TEXTAREA)$/.test(ae.tagName) && window.visualViewport && window.visualViewport.height > window.innerHeight * 0.85) ae.blur();
+        /* 絕不在這裡拿掉輸入框焦點（kf1110：嵌在別的 App 裡時，鍵盤一開就被收掉、無法打字）；正在打字時也不動畫面 */
+        if (vvTyping() || VF.off) return;
         var y = window.pageYOffset || 0, h = document.documentElement;
         window.scrollTo(0, y + 1); window.scrollTo(0, y);
         h.style.minHeight = (window.innerHeight + 1) + 'px';
@@ -2155,11 +2156,13 @@
   }
   function vvTyping() {
     var ae = document.activeElement;
+    if (ae && ae.tagName === 'IFRAME') return true;   /* 焦點在嵌入的 App 裡（可能正在那裡打字） */
     return !!(ae && (/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName) || ae.isContentEditable) && !/^(button|checkbox|radio|range|file|submit|color)$/i.test(ae.type || ''));
   }
   function vvClear() { for (var i = 0; i < VV.els.length; i++) { try { if (VV.els[i].getAttribute('data-vvfix')) { VV.els[i].style.translate = ''; VV.els[i].removeAttribute('data-vvfix'); } } catch (e) { } } }
   function vvApply() {
     VV.raf = 0;
+    if (VF.off) return;
     /* 正在打字（鍵盤開著）時一律不推：鍵盤本來就會讓可視畫面變矮，推了會把輸入框藏到鍵盤後面 */
     if (vvTyping()) { vvClear(); return; }
     var v0 = window.visualViewport; if (v0 && v0.height < window.innerHeight * 0.85) { vvClear(); return; }
