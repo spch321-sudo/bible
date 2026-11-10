@@ -1406,10 +1406,14 @@
   function topModal(h) { var m = modal(h); m.className = 'xjmodal xjtop'; return m; }
   function fileGet(id, app) {
     var m = findMsg(id); if (!m || !m.att) return;
-    var mt = m.meta || {}, name = mt.name || 'file';
+    var mt = m.meta || {};
+    fileGetUrl(attUrl(m.att), mt.name || 'file', mt.mime || '', app);
+  }
+  function fileGetUrl(url, name, mime, app) {
+    var mt = { mime: mime };
     FG.blob = null; FG.app = app || '';
     topModal('<h3>📄 ' + esc(name) + '</h3><p class="note" id="xjFgS">' + esc(f9('下載中…', 'Downloading…')) + '</p><div class="xjbtns"><button class="btn ghost block" data-xj="mclose">' + esc(f9('取消', 'Cancel')) + '</button></div>');
-    var x = new XMLHttpRequest(); x.open('GET', attUrl(m.att)); x.responseType = 'blob';
+    var x = new XMLHttpRequest(); x.open('GET', url); x.responseType = 'blob';
     x.onload = function () {
       if (x.status !== 200 || !$('xjFgS')) { if ($('xjFgS')) $('xjFgS').textContent = f9('下載失敗，檔案可能已被收回或過期', 'Download failed — the file may have been removed'); return; }
       FG.type = mt.mime || x.response.type || 'application/octet-stream'; FG.blob = new Blob([x.response], { type: FG.type }); FG.name = name;
@@ -1995,7 +1999,24 @@
       note(f9('這個檔案無法自動壓縮，請另存成 PDF 或用 PowerPoint「壓縮圖片」後再傳', 'Couldn’t compress this file — save it as PDF or compress pictures first'));
     });
   }
-  window.XJ321 = { shareImg: shareImg, finish: finish, autoDone: autoDone, autoSync: autoSync, openChat: openChat,
+  /* 給宿主用的上傳（nf1110：最新消息附件）：把檔案傳到某個聊天室（例如 TMNWFL21），回傳下載網址 */
+  function uploadTo(code, f, prog, cb) {
+    var send = function (b) {
+      sendTo({ code: code, nick: nick() || f9('負責人', 'Leader') }, b, function (j, e) {
+        if (!j || !j.msgs) { cb(null, e || 'net'); return; }
+        var m = null; for (var i = j.msgs.length - 1; i >= 0; i--) if (j.msgs[i].mine && j.msgs[i].att) { m = j.msgs[i]; break; }
+        if (!m) { cb(null, 'net'); return; }
+        cb({ url: CHAT + '/c/' + code + '/att/' + m.att, name: (m.meta && m.meta.name) || b.name, size: (m.meta && m.meta.size) || 0, img: m.kind === 'img' });
+      });
+    };
+    var isImg = /^image\//i.test(f.type) && !/svg/i.test(f.type);
+    if (isImg) { prog && prog(f9('相片處理中…', 'Preparing photo…')); prepImage(f, function (r) { if (!r) { cb(null, 'read'); return; } r.kind = 'img'; r.text = ''; prog && prog(f9('上傳中…', 'Uploading…')); send(r); }); return; }
+    var go = function (ff) { prog && prog(f9('上傳中…', 'Uploading…') + ' ' + fmtSize(ff.size)); readDataUrl(ff, function (d) { if (!d) { cb(null, 'read'); return; } send({ kind: 'file', data: d, mime: f.type || 'application/octet-stream', name: f.name || 'file', text: '' }); }); };
+    if (f.size <= 5 * 1048576) { go(f); return; }
+    if (!ozIsOffice(f.name) || !ozOk()) { cb(null, 'toobig'); return; }
+    ozCompress(f, function (k, n) { prog && prog(f9('自動壓縮中 ', 'Compressing ') + k + '/' + n); }).then(function (nf) { if (nf.size > 5 * 1048576) cb(null, 'toobig'); else go(nf); }, function () { cb(null, 'toobig'); });
+  }
+  window.XJ321 = { shareImg: shareImg, uploadTo: uploadTo, getFile: fileGetUrl, errTxt: function (e) { return errTxt(e); }, finish: finish, autoDone: autoDone, autoSync: autoSync, openChat: openChat,
     dm: function (code, name, who, nk) { setAlt(code, name); dmOpen(who, nk); },
     inbox: function (code, name) { setAlt(code, name); dmInbox(); }, shareNow: function () { shareAll(true); },
     api: function (m, path, body, cb) { api(CHAT, m, path, body, cb); }, dev: dev, nick: nick,
