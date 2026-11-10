@@ -1,8 +1,8 @@
 /* 321互動聖經 — Service Worker
    每次改動內容或程式，務必把 VERSION 往上加（也要同步 app.js 的 VERSION 與 version.json），
    否則已安裝的使用者不會看到更新。 */
-const VERSION = 'ib-v2.74.2';
-const VER = 'v2.74.2';
+const VERSION = 'ib-v2.74.3';
+const VER = 'v2.74.3';
 /* v2.61.0：整本經文檔（bible.<語言>.<分卷>.json）改存在獨立的快取 DATA_CACHE，不跟著程式版本一起清掉——
    以前每次更新版本，已經下載、預先存好的經文都被清空，離線閱讀等於重來。
    名稱不能以 ib- 開頭（更新時會清掉 ib- 開頭的快取）。經文檔內容若有改動，要把這個名稱的數字加 1，舊的會在 activate 時自動刪除。 */

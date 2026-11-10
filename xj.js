@@ -2124,6 +2124,28 @@
     if (!ozIsOffice(f.name) || !ozOk()) { cb(null, 'toobig'); return; }
     ozCompress(f, function (k, n) { prog && prog(f9('自動壓縮中 ', 'Compressing ') + k + '/' + n); }).then(function (nf) { if (nf.size > 5 * 1048576) cb(null, 'toobig'); else go(nf); }, function () { cb(null, 'toobig'); });
   }
+  /* vf1110：iPhone 從分享選單、線上檢視器、LINE 等回到 App 時，畫面高度沒恢復，底部按鈕列與輸入框會卡在畫面中間。
+     回到前景、畫面尺寸改變、鍵盤收起時，強迫瀏覽器重新排版一次。 */
+  var VF = { t: 0 };
+  function vfFix() {
+    clearTimeout(VF.t);
+    VF.t = setTimeout(function () {
+      try {
+        var ae = document.activeElement;
+        if (ae && /^(INPUT|TEXTAREA)$/.test(ae.tagName) && window.visualViewport && window.visualViewport.height > window.innerHeight * 0.85) ae.blur();
+        var y = window.pageYOffset || 0, h = document.documentElement;
+        window.scrollTo(0, y + 1); window.scrollTo(0, y);
+        h.style.minHeight = (window.innerHeight + 1) + 'px';
+        requestAnimationFrame(function () { h.style.minHeight = ''; window.scrollTo(0, y); try { fitChat(); } catch (e) { } });
+      } catch (e) { }
+    }, 120);
+  }
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') { vfFix(); setTimeout(vfFix, 600); } });
+  window.addEventListener('pageshow', vfFix);
+  window.addEventListener('focus', function () { vfFix(); setTimeout(vfFix, 600); });
+  window.addEventListener('orientationchange', function () { setTimeout(vfFix, 300); });
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', function () { if (window.visualViewport.height > window.innerHeight * 0.85) vfFix(); });
+  document.addEventListener('focusout', function (e) { if (e.target && /^(INPUT|TEXTAREA)$/.test(e.target.tagName)) setTimeout(vfFix, 250); });
   window.XJ321 = { shareImg: shareImg, uploadTo: uploadTo, getFile: fileGetUrl, errTxt: function (e) { return errTxt(e); }, finish: finish, autoDone: autoDone, autoSync: autoSync, openChat: openChat,
     dm: function (code, name, who, nk) { setAlt(code, name); dmOpen(who, nk); },
     inbox: function (code, name) { setAlt(code, name); dmInbox(); }, shareNow: function () { shareAll(true); },
