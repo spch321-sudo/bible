@@ -1,12 +1,13 @@
 /* 321互動聖經 — Service Worker
    每次改動內容或程式，務必把 VERSION 往上加（也要同步 app.js 的 VERSION 與 version.json），
    否則已安裝的使用者不會看到更新。 */
-const VERSION = 'ib-v2.74.8';
-const VER = 'v2.74.7';
+const VERSION = 'ib-v2.74.9';
+const VER = 'v2.74.9';
 /* v2.61.0：整本經文檔（bible.<語言>.<分卷>.json）改存在獨立的快取 DATA_CACHE，不跟著程式版本一起清掉——
    以前每次更新版本，已經下載、預先存好的經文都被清空，離線閱讀等於重來。
    名稱不能以 ib- 開頭（更新時會清掉 ib- 開頭的快取）。經文檔內容若有改動，要把這個名稱的數字加 1，舊的會在 activate 時自動刪除。 */
 const DATA_CACHE = 'bible-data-v1';
+const DATA_FIXED = ['bible.ceb.law.json', 'bible.ceb.nt.json', 'bible.id.nt.json', 'bible.ja.nt.json'];
 /* v2.56.0：語言包不再全部預先快取，改為用到才下載並快取（見下方 fetch 處理） */
 const SHELL = [
   './', './index.html', './app.js', './xzm.js', './xzpar.js', './xj.js', './k321acct-addon.js', './qrcode.js', './manifest.json', './toc.json', './plans.json', './cover.jpg', './hero.jpg', './wxpay.jpg',
@@ -25,6 +26,8 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(ks => Promise.all(ks.filter(k => (k.indexOf('ib-') === 0 && k !== VERSION) || (k.indexOf('bible-data-') === 0 && k !== DATA_CACHE)).map(k => caches.delete(k))))
+      /* v2.74.9：經文校正過的分卷，從經文快取移除，下次讀取時重新下載 */
+      .then(() => caches.open(DATA_CACHE)).then(dc => dc.keys().then(rs => Promise.all(rs.filter(r => DATA_FIXED.some(n => new URL(r.url).pathname.endsWith('/' + n))).map(r => dc.delete(r))))).catch(() => {})
       .then(() => self.clients.claim())
       .then(() => self.clients.matchAll({ type:'window', includeUncontrolled:true }))
       .then(cs => cs.forEach(c => {
