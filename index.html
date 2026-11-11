@@ -711,9 +711,12 @@ select.cardinput{appearance:none; -webkit-appearance:none;
 
 <script>
 /* 程式檔帶上更新時間戳（?u=…）載入：更新後重整的那一次一定抓到最新的 app.js，不會被瀏覽器或 CDN 的舊快取擋住 */
-(function(){var m=location.search.match(/[?&]u=(\d+)/);var V='2.74.9',U=(m?'&u='+m[1]:'');
+(function(){var m=location.search.match(/[?&]u=(\d+)/);var V='2.74.10',U=(m?'&u='+m[1]:'');
 /* v2.56.0：只載入「當前語言」的語言包（其餘在切換語言時才下載），首次載入少約 1MB */
 var P='ko ja id tl my vi th ms ar he el pt fa sw ta am uk bn hi ne ceb es fr de it ru'.split(' '),PF='ko ja id tl my vi th ms ar hi ne ceb es fr de it ru'.split(' '),l='zh';
+/* v2.74.10：空中團契／小智問答開連結時帶 ?lang321=（zh zs en ko ja id ceb），以帶入的語言開啟並記住；網址列移除 lang321 */
+try{var q3=(location.search.match(/[?&]lang321=([A-Za-z]+)/)||[])[1];if(q3){q3=q3.toLowerCase();if(('zh zs en '+P.join(' ')).split(' ').indexOf(q3)>-1){var s3={};try{s3=JSON.parse(localStorage.getItem('ib_state')||'{}')||{};}catch(e){}s3.lang=q3;if(s3.par===q3)s3.par='';localStorage.setItem('ib_state',JSON.stringify(s3));
+var qs=location.search.replace(/^\?/,'').split('&').filter(function(x){return x&&!/^lang321=/.test(x);}).join('&');history.replaceState(history.state,'',location.pathname+(qs?'?'+qs:'')+location.hash);}}}catch(e){}
 try{var raw=localStorage.getItem('ib_state');
 if(raw){var s=JSON.parse(raw||'{}');if(s&&typeof s.lang==='string')l=s.lang;}
 else{/* 第一次開啟：先看邀請連結帶的 ?lang=，否則依手機語言挑介面語言（之後以使用者自己的選擇為準） */
