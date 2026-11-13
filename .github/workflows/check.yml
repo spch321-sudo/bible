@@ -32,3 +32,5 @@ jobs:
         run: node scripts/studio-test.js
       - name: 原文字義測試
         run: node scripts/word-test.js
+      - name: 小智備援網址測試
+        run: node scripts/xzfb-test.js
