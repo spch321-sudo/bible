@@ -711,7 +711,7 @@ select.cardinput{appearance:none; -webkit-appearance:none;
 
 <script>
 /* 程式檔帶上更新時間戳（?u=…）載入：更新後重整的那一次一定抓到最新的 app.js，不會被瀏覽器或 CDN 的舊快取擋住 */
-(function(){var m=location.search.match(/[?&]u=(\d+)/);var V='2.74.11',U=(m?'&u='+m[1]:'');
+(function(){var m=location.search.match(/[?&]u=(\d+)/);var V='2.75.0',U=(m?'&u='+m[1]:'');
 /* v2.56.0：只載入「當前語言」的語言包（其餘在切換語言時才下載），首次載入少約 1MB */
 var P='ko ja id tl my vi th ms ar he el pt fa sw ta am uk bn hi ne ceb es fr de it ru'.split(' '),PF='ko ja id tl my vi th ms ar hi ne ceb es fr de it ru'.split(' '),l='zh';
 /* v2.74.10：空中團契／小智問答開連結時帶 ?lang321=（zh zs en ko ja id ceb），以帶入的語言開啟並記住；網址列移除 lang321 */
@@ -726,7 +726,8 @@ if(ql&&all.split(' ').indexOf(ql)>-1){l=ql;window.__IB_LANG_URL=1;}else if(b==='
 window.__IB_LANG0=l;}}catch(e){}
 function w(f){document.write('<script src="'+f+'?v='+V+U+'"><\/script>');}
 if(P.indexOf(l)>-1){w('lang-'+l+'.js');if(PF.indexOf(l)>-1)w('lang-pf.js');}
-w('app.js');
+/* v2.75.0：小智「用自己的免費額度」（xzkey.js）：包住 fetch，必須比 app.js 先載入 */
+w('xzkey.js');w('app.js');
 /* v2.58.2：小智回答逐句跟讀＋點句畫線外掛（xzm.js），放在 app.js 之後；壞了不影響宿主 */
 w('xzm.js');w('xzpar.js');w('xj.js');w('../321steward/k321acct.js');w('k321acct-addon.js');document.write('<script>try{XZM.install(XZM.preset.bb());}catch(e){}<\/script>');
 })();
