@@ -46,7 +46,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.75.1';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
+const VERSION = 'v2.76.0';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
    flex-basis:0），按鈕不准被擠扁（flex:0 0 auto）；長字串（網址、英文長字）也允許換行。 */
@@ -550,7 +550,7 @@ const DEFAULTS = { lang:'zh', par:'', font:0, theme:0, flow:false, shCh:true, sh
                    cardTpl:'plain', cardSize:'p', cardBorder:'none', cardFs:1.45, cardFont:'auto', cardInk:'',
                    cardTop:'', cardSign:'', cardTo:'親愛的家人：平安！', cardGreet:'', photoLast:'', photoMode:'full',
                    voice:{zh:0, zs:0, en:0, ko:0, ja:0, id:0, tl:0, my:0, vi:0, th:0, ms:0, ar:0, he:0, el:0, pt:0, fa:0, sw:0, ta:0, am:0, uk:0, bn:0, hi:0, ne:0, lo:0, ceb:0, es:0, fr:0, de:0, it:0, ru:0}, ttsAutoNext:false, ttsRate:1, beauty:true, planRemindOn:false,
-                   audience:'adult', alen:'mid', skbg:'none' };
+                   audience:'adult', alen:'mid', adepth:'auto', skbg:'none' };
 /* 「淨」鍵依序切換的四種組合：[整卷連讀?, 顯示章號?] */
 /* 「淨」鍵循環的四種常用讀法：[整卷連讀, 顯示章, 顯示節] */
 const VIEW_CYCLE = [[false, true, true], [false, true, false], [false, false, false], [true, false, false]];
@@ -581,6 +581,7 @@ function loadState(){
     if (!LANG_OPTS.some(o => o[0] === state.par) || state.par === state.lang) state.par = '';   // 並讀譯本：必須是有效語言、且不同於主要語言
     if (state.alen === 'brief') state.alen = 's'; else if (state.alen === 'full') state.alen = 'long';   // v2.45：三段改五段，舊設定對應過去
     if (!['xs','s','mid','long','xl'].includes(state.alen)) state.alen = 'mid';
+    if (!['auto','deep','fast'].includes(state.adepth)) state.adepth = 'auto';   // v2.76：小智用哪個模型（自動／一律深入／一律快速）
     if (!['none','buddhism','folk','yiguandao','muslim','atheist'].includes(state.skbg)) state.skbg = 'none';
   }catch(e){ state = Object.assign({}, DEFAULTS); }
 }
@@ -6804,6 +6805,7 @@ async function viewCompanion(v){
         <button class="qs-toggle" id="qsBtn" style="margin:0">💡 ${esc(L.examples)}</button>
       </div>
       <div class="segbtns" id="lenSeg" style="justify-content:flex-start;align-items:center;margin:0 0 6px"></div>
+      <div class="segbtns" id="depthSeg" style="justify-content:flex-start;align-items:center;margin:0 0 6px"></div>
       <div class="segbtns" id="bgSeg" hidden style="justify-content:flex-start;align-items:center;margin:0 0 6px"></div>
       <div class="aud-panel" id="audPanel" hidden style="margin:0 0 6px">
         <div class="segbtns" id="audSeg" style="justify-content:flex-start"></div>
@@ -6854,6 +6856,17 @@ async function viewCompanion(v){
     });
   };
   paintLen();
+  const paintDepth = () => {
+    const nm = DEPTH_NAME();
+    $('#depthSeg', v).innerHTML = `<span class="muted" style="font-size:12px;font-weight:700">${esc(L3('思考：', '思考：', 'Depth: '))}</span>`
+      + DEPTH_KEYS.map(k => `<button class="${state.adepth === k ? 'on' : ''}" data-k="${k}">${esc(nm[k])}</button>`).join('');
+    $$('#depthSeg button', v).forEach(b => b.onclick = () => {
+      if (state.adepth === b.dataset.k) return;
+      state.adepth = b.dataset.k; saveState(); paintDepth();
+      toast(L3('小智思考：', '小智思考：', 'Thinking: ') + nm[state.adepth], 1800);
+    });
+  };
+  paintDepth();
   function paintBg(){
     const el = $('#bgSeg', v); if (!el) return;
     el.hidden = state.audience !== 'seeker';
@@ -7227,6 +7240,22 @@ const SKBG_SYS = () => {
 };
 /* v2.45.0：小智回答長度——極短／短／中／長／極長（五段；預設「中」） */
 const LEN_KEYS = ['xs','s','mid','long','xl'];
+/* v2.76：小智分「快速／深入」兩個模型（Worker 依 tier 欄位選）。自動＝解經、爭議、關懷、長問題走深入，其餘走快速 */
+const DEPTH_KEYS = ['auto','deep','fast'];
+const DEPTH_NAME = () => ({ auto:L3('自動','自动','Auto'), deep:L3('深入','深入','Deep'), fast:L3('快速','快速','Fast') });
+const DEEP_RE = new RegExp('解經|釋經|原文|希臘|希伯來|原意|翻譯|矛盾|如何解釋|怎麼解釋|神學|教義|背景|同性|墮胎|安樂死|方言|靈恩|預定|揀選|三位一體|末世|被提|千禧|地獄|進化|創造論|離婚|再婚|女人.{0,6}(牧師|講道|教導|傳道)|失去救恩|拜祖|'
+  + '解经|释经|希腊|翻译|如何解释|怎么解释|教义|背景|堕胎|灵恩|拣选|地狱|进化|创造论|离婚|再婚|女人.{0,6}(牧师|讲道|教导|传道)|失去救恩|'
+  + '憂鬱|焦慮|輕生|不想活|自殺|活不下去|撐不下去|癌|去世|過世|離世|外遇|家暴|虐待|絕望|崩潰|哀慟|忧郁|焦虑|轻生|自杀|撑不下去|离世|绝望|崩溃|哀恸|'
+  + 'exegesis|greek|hebrew|contradict|predestin|tongues|homosex|abortion|suicid|depress|cancer|grief|divorce|hell\\b|trinity|rapture', 'i');
+/* 這一題要不要用深入模型。使用者手動選了就照選；自動時：原文字義模式、長問題、危機、關鍵字命中 → deep */
+function chatTier(text, src){
+  if (state.adepth === 'deep' || state.adepth === 'fast') return state.adepth;
+  const t = String(text || '');
+  if (src && src.word) return 'deep';
+  if (t.length >= 120) return 'deep';
+  if (typeof crisisHit === 'function' && crisisHit(t)) return 'deep';
+  return DEEP_RE.test(t) ? 'deep' : 'fast';
+}
 const LEN_NAME = () => ({ xs:L3('極短','极短','Very short'), s:L3('短','短','Short'), mid:L3('中','中','Medium'), long:L3('長','长','Long'), xl:L3('極長','极长','Very long') });
 const LEN_SYS = () => {
   const k = LEN_KEYS.includes(state.alen) ? state.alen : 'mid';
@@ -7693,14 +7722,15 @@ async function sendChat(text){
   while (msgs.length && msgs[0].role !== 'user') msgs.shift();    // 第一則一定要是使用者
   /* Worker 冷啟動時第一次呼叫常常會失敗，退幾步再試；真的連不上就把原因寫出來。
      回答被截斷（max_tokens）時，自動把已寫的內容當作上文，請小智從中斷處接著寫完。 */
-  let r = await chatCall(sys, msgs);
+  const tier = chatTier(text, srcNow);           // 整個回答（含接續）固定同一個模型
+  let r = await chatCall(sys, msgs, tier);
   let acc = r.out, why = r.why, stop = r.stop, n = 0;
   for (;;){
     const tr = acc ? chatTruncated(acc, stop) : '';
     if (!tr || n >= (tr === 'sure' ? 4 : 1)) break;
     n++;
     chatLog[chatLog.length - 1] = { role:'ai', src:srcNow, ok:false, cont:true, text:acc }; paintChat();
-    const r2 = await chatCall(sys, msgs.concat([{ role:'assistant', content:acc }, { role:'user', content:CONT_ASK() }]));
+    const r2 = await chatCall(sys, msgs.concat([{ role:'assistant', content:acc }, { role:'user', content:CONT_ASK() }]), tier);
     if (!r2.out) break;
     acc = chatJoin(acc, r2.out); stop = r2.stop;
   }
@@ -9289,7 +9319,7 @@ function foldAll(){
 }
 
 /* ---------- 小智回答：呼叫＋被截斷時自動接著寫 ---------- */
-async function chatCall(sys, msgs){
+async function chatCall(sys, msgs, tier){
   let out = '', why = '', stop = '';
   for (let a = 0; a <= CHAT_RETRY.length; a++){
     try{
@@ -9297,7 +9327,7 @@ async function chatCall(sys, msgs){
       let r, d;
       try{
         r = await fetch(API.chat, { method:'POST', headers:{'Content-Type':'application/json'}, signal: ac.signal,
-          body: JSON.stringify({ system: koSys(sys), messages: msgs }) });
+          body: JSON.stringify({ system: koSys(sys), messages: msgs, tier: tier || 'fast' }) });
         if (!r.ok) throw new Error('http ' + r.status);
         d = await r.json().catch(() => null);
       }catch(e){ throw (e && e.name === 'AbortError') ? new Error(L3('等太久了（逾時）', '等太久了（逾时）', 'timed out')) : e; }

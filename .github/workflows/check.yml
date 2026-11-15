@@ -34,3 +34,7 @@ jobs:
         run: node scripts/word-test.js
       - name: 小智備援網址測試
         run: node scripts/xzfb-test.js
+      - name: 小智 Worker 分流測試
+        run: node scripts/worker-test.js
+      - name: 小智分流判斷測試
+        run: node scripts/tier-test.js
