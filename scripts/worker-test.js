@@ -39,6 +39,20 @@ let bad = 0; const ck = (ok, name, extra) => { console.log((ok ? '✓ ' : '✗ '
   ck(x.models.length === 2 && x.r.status === 503 && x.r.headers.get('X-XZ-Fallback') === '0', '兩個都失敗 → 回第一個的錯誤');
   x = await run({ tier: 'fast', system: 's', messages: [] }, null, ['net', 'net']);
   ck(x.r.status === 502, '兩個都連不上 → 502');
+  /* 串流（v2.77） */
+  const sseTxt = 'event: content_block_delta\ndata: {"type":"content_block_delta","delta":{"type":"text_delta","text":"嗨"}}\n\n';
+  const runS = async (b, plan) => { seen = []; globalThis.__f = async (u, i) => { const bd = JSON.parse(i.body); seen.push(bd); const p = plan[seen.length - 1] || 200; if (p === 'net') throw new Error('net'); return p === 200 ? new Response(bd.stream ? sseTxt : okBody, { status: 200, headers: { 'content-type': bd.stream ? 'text/event-stream' : 'application/json' } }) : new Response('{"error":"x"}', { status: p }); }; const r = await W.fetch(mk(b), env); return { r, txt: await r.text() }; };
+  x = await runS({ tier: 'fast', stream: true, system: 's', messages: [] }, []);
+  ck(x.r.headers.get('content-type').indexOf('text/event-stream') === 0 && x.txt === sseTxt && seen[0].stream === true, 'stream:true → 回 SSE，內容原封不動、上游也要求串流');
+  ck(x.r.headers.get('X-XZ-Model') === M.f && x.r.headers.get('Cache-Control') === 'no-store', '串流回應帶模型標頭與 no-store');
+  x = await runS({ tier: 'fast', system: 's', messages: [] }, []);
+  ck(x.r.headers.get('content-type') === 'application/json' && !('stream' in seen[0]), '沒要 stream → 照舊回 JSON，上游不帶 stream');
+  x = await runS({ tier: 'fast', stream: 'yes', system: 's', messages: [] }, []);
+  ck(!('stream' in seen[0]), 'stream 不是 true（字串）→ 不當串流');
+  x = await runS({ tier: 'fast', stream: true, system: 's', messages: [] }, [529, 200]);
+  ck(seen.length === 2 && seen[1].model === M.d && x.txt === sseTxt && x.r.headers.get('X-XZ-Fallback') === '1', '串流時 Haiku 529 → 換 Sonnet 串流成功');
+  x = await runS({ tier: 'fast', stream: true, system: 's', messages: [] }, [400]);
+  ck(x.r.status === 400 && x.r.headers.get('content-type') === 'application/json', '串流時上游 400 → 回 JSON 錯誤，前端可讀');
   const g = await W.fetch(new Request('https://w.test/', { method: 'GET' }), env); ck(g.status === 405, 'GET → 405');
   const nk = await W.fetch(mk({}), {}); ck(nk.status === 500, '沒設金鑰 → 500');
   console.log(bad ? '\n✗ 有 ' + bad + ' 項失敗' : '\n全部通過'); process.exit(bad ? 1 : 0);

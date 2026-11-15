@@ -158,7 +158,7 @@
     var url = typeof input === 'string' ? input : (input && input.url) || '';
     if (!origFetch || !PROXY.test(url) || !active() || !init || String(init.method || 'GET').toUpperCase() !== 'POST' || typeof init.body !== 'string') return origFetch(input, init);
     var b; try { b = JSON.parse(init.body); } catch (e) { return origFetch(input, init); }
-    if (!b || !b.messages || b.stream) return origFetch(input, init);
+    if (!b || !b.messages) return origFetch(input, init);   /* v2.77：stream 旗標只是「前端也看得懂串流」，Gemini 這條照舊回 JSON，前端會自動辨識 */
     var c = cfg(), fb = c.fb !== false;
     var back = function (kind, status) {
       if (fb) { warnOnce(kind, T(kind === 'quota' ? 'fbToast' : 'errToast')); return origFetch(input, init); }

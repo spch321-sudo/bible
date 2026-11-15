@@ -4,8 +4,9 @@
 繁體中文．简体中文．English
 架構與功能沿用《321領導力》App（同一套 navy／gold 識別、五分頁、PWA）。
 
-版本：**v2.76.0**
+版本：**v2.77.0**
 
+- v2.77.0：**小智逐字顯示（串流）＋預設長度改「短」**：Worker 收到 `stream:true` 就把 Anthropic 的 SSE 串流直接接給前端；App 邊收邊畫（第一個字到才整頁重畫一次，之後只更新該則內文，約每 0.1 秒），中途斷線時把已收到的當作被截斷、自動接著寫完，閒置 30 秒才算逾時；Worker 回 JSON（舊 Worker、自備金鑰的 Gemini）時照舊一次顯示。`xzkey.js` 不再因為 `stream` 旗標而繞過自備金鑰。預設回答長度「中」→「短」（自己選過長度的人不受影響）。**Worker 需重新貼上 `worker/xiaozhi-proxy.js` 才有串流。**
 - v2.76.0：**小智雙模型分流**：App 依題型送 `tier`（`deep`／`fast`）給 Worker；自動模式下，解經／原文、爭議議題、關懷與危機、原文字義模式、120 字以上長問題走深入（Sonnet 5.5），其餘走快速（Haiku 5.5）；問小智面板新增「思考：自動／深入／快速」，手動選擇優先；一個回答（含接續）固定同一個模型。新增 `worker/xiaozhi-proxy.js`（Worker v2：依 tier 選模型、白名單擋掉指定 Opus 等貴模型、429／5xx 自動換另一個模型重試、回應帶 `X-XZ-Model`）。**Worker 要到 Cloudflare 手動貼上部署，App 單獨更新不會改變用哪個模型。** 新增 `scripts/worker-test.js`、`scripts/tier-test.js` 納入 CI。
 - v2.75.1：**小智備援網址（為中國大陸連不上 workers.dev 預備）**：新增 `xzfb.js`，包住 fetch，主網址失敗（連不上或 502／503／504／52x）時自動改用備援網址，並記住 24 小時內成功的那個；`BACKUPS` 目前為空＝行為與先前完全相同。要啟用：把 Worker 綁到自己的網域，把網址填進 `xzfb.js` 的 `BACKUPS`。新增 `scripts/xzfb-test.js` 納入 CI。
 - v2.75.0：**小智可用自己的免費額度**（`xzkey.js`，詳見下方 v2.75.0 段）。

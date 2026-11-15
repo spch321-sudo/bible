@@ -46,7 +46,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.76.0';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
+const VERSION = 'v2.77.0';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
    flex-basis:0），按鈕不准被擠扁（flex:0 0 auto）；長字串（網址、英文長字）也允許換行。 */
@@ -550,7 +550,7 @@ const DEFAULTS = { lang:'zh', par:'', font:0, theme:0, flow:false, shCh:true, sh
                    cardTpl:'plain', cardSize:'p', cardBorder:'none', cardFs:1.45, cardFont:'auto', cardInk:'',
                    cardTop:'', cardSign:'', cardTo:'親愛的家人：平安！', cardGreet:'', photoLast:'', photoMode:'full',
                    voice:{zh:0, zs:0, en:0, ko:0, ja:0, id:0, tl:0, my:0, vi:0, th:0, ms:0, ar:0, he:0, el:0, pt:0, fa:0, sw:0, ta:0, am:0, uk:0, bn:0, hi:0, ne:0, lo:0, ceb:0, es:0, fr:0, de:0, it:0, ru:0}, ttsAutoNext:false, ttsRate:1, beauty:true, planRemindOn:false,
-                   audience:'adult', alen:'mid', adepth:'auto', skbg:'none' };
+                   audience:'adult', alen:'s', adepth:'auto', skbg:'none' };
 /* 「淨」鍵依序切換的四種組合：[整卷連讀?, 顯示章號?] */
 /* 「淨」鍵循環的四種常用讀法：[整卷連讀, 顯示章, 顯示節] */
 const VIEW_CYCLE = [[false, true, true], [false, true, false], [false, false, false], [true, false, false]];
@@ -580,7 +580,8 @@ function loadState(){
     if (!['adult','teen','kid','seeker','elder','single_parent','single','parent','couple','pastor'].includes(state.audience)) state.audience = 'adult';
     if (!LANG_OPTS.some(o => o[0] === state.par) || state.par === state.lang) state.par = '';   // 並讀譯本：必須是有效語言、且不同於主要語言
     if (state.alen === 'brief') state.alen = 's'; else if (state.alen === 'full') state.alen = 'long';   // v2.45：三段改五段，舊設定對應過去
-    if (!['xs','s','mid','long','xl'].includes(state.alen)) state.alen = 'mid';
+    if (!['xs','s','mid','long','xl'].includes(state.alen)) state.alen = 's';
+    if (!state.alenSet && state.alen === 'mid') state.alen = 's';   // v2.77：預設改「短」（回答快）；自己點選過長度的人（alenSet）不受影響
     if (!['auto','deep','fast'].includes(state.adepth)) state.adepth = 'auto';   // v2.76：小智用哪個模型（自動／一律深入／一律快速）
     if (!['none','buddhism','folk','yiguandao','muslim','atheist'].includes(state.skbg)) state.skbg = 'none';
   }catch(e){ state = Object.assign({}, DEFAULTS); }
@@ -6850,7 +6851,7 @@ async function viewCompanion(v){
       + LEN_KEYS.map(k => `<button class="${state.alen === k ? 'on' : ''}" data-k="${k}">${esc(nm[k])}</button>`).join('');
     $$('#lenSeg button', v).forEach(b => b.onclick = () => {
       if (state.alen === b.dataset.k) return;
-      state.alen = b.dataset.k; saveState(); paintLen();
+      state.alen = b.dataset.k; state.alenSet = true; saveState(); paintLen();
       if (reAnswerLast(L3('已改成「', '已改成“', 'Switched to “') + nm[state.alen] + L3('」，重新回答中…', '”，重新回答中…', '” — answering again…'))) return;
       toast(L3('回答長度：', '回答长度：', 'Answer length: ') + nm[state.alen], 1800);
     });
@@ -7258,7 +7259,7 @@ function chatTier(text, src){
 }
 const LEN_NAME = () => ({ xs:L3('極短','极短','Very short'), s:L3('短','短','Short'), mid:L3('中','中','Medium'), long:L3('長','长','Long'), xl:L3('極長','极长','Very long') });
 const LEN_SYS = () => {
-  const k = LEN_KEYS.includes(state.alen) ? state.alen : 'mid';
+  const k = LEN_KEYS.includes(state.alen) ? state.alen : 's';
   const easy = (state.audience === 'kid' || state.audience === 'elder') && (k === 'long' || k === 'xl');
   if (isEP()){
     const T = {
@@ -7723,17 +7724,20 @@ async function sendChat(text){
   /* Worker 冷啟動時第一次呼叫常常會失敗，退幾步再試；真的連不上就把原因寫出來。
      回答被截斷（max_tokens）時，自動把已寫的內容當作上文，請小智從中斷處接著寫完。 */
   const tier = chatTier(text, srcNow);           // 整個回答（含接續）固定同一個模型
-  let r = await chatCall(sys, msgs, tier);
+  chatStreamReset();
+  let r = await chatCall(sys, msgs, tier, txt => chatStreamPaint(txt, srcNow));
   let acc = r.out, why = r.why, stop = r.stop, n = 0;
   for (;;){
     const tr = acc ? chatTruncated(acc, stop) : '';
     if (!tr || n >= (tr === 'sure' ? 4 : 1)) break;
     n++;
     chatLog[chatLog.length - 1] = { role:'ai', src:srcNow, ok:false, cont:true, text:acc }; paintChat();
-    const r2 = await chatCall(sys, msgs.concat([{ role:'assistant', content:acc }, { role:'user', content:CONT_ASK() }]), tier);
+    const base = acc;
+    const r2 = await chatCall(sys, msgs.concat([{ role:'assistant', content:acc }, { role:'user', content:CONT_ASK() }]), tier, txt => chatStreamPaint(chatJoin(base, txt), srcNow));
     if (!r2.out) break;
     acc = chatJoin(acc, r2.out); stop = r2.stop;
   }
+  chatStreamReset();
   chatLog[chatLog.length - 1] = { role:'ai', src:srcNow, ok: !!acc,
     text: acc || (t().chatErr + (why ? '（' + why + '）' : '')) };
   chatBusy = false; foldOld(); paintChat();
@@ -9319,22 +9323,63 @@ function foldAll(){
 }
 
 /* ---------- 小智回答：呼叫＋被截斷時自動接著寫 ---------- */
-async function chatCall(sys, msgs, tier){
+/* v2.77：逐字顯示。Worker 回 text/event-stream 就邊收邊畫；回 JSON（舊 Worker、自備金鑰）就照舊一次顯示 */
+const STREAM_OK = typeof ReadableStream === 'function' && typeof TextDecoder === 'function' && typeof Response !== 'undefined' && 'body' in Response.prototype;
+async function readSSE(resp, onDelta, idleMs, ac){
+  const rd = resp.body.getReader(), dec = new TextDecoder('utf-8');
+  let buf = '', out = '', stop = '', err = '', cut = false, idle = 0;
+  const arm = () => { clearTimeout(idle); idle = setTimeout(() => { try{ ac.abort(); }catch(e){} }, idleMs); };
+  const eat = blk => {
+    blk.split(/\r?\n/).forEach(line => {
+      if (line.indexOf('data:') !== 0) return;
+      let j; try{ j = JSON.parse(line.slice(5).trim()); }catch(e){ return; }
+      if (!j) return;
+      if (j.type === 'content_block_delta' && j.delta && j.delta.type === 'text_delta' && j.delta.text){ out += j.delta.text; if (onDelta) onDelta(out); }
+      else if (j.type === 'message_delta' && j.delta && j.delta.stop_reason) stop = j.delta.stop_reason;
+      else if (j.type === 'error') err = (j.error && j.error.message) || 'stream error';
+    });
+  };
+  arm();
+  try{
+    for (;;){
+      const x = await rd.read(); if (x.done) break;
+      arm();
+      buf += dec.decode(x.value, { stream:true });
+      let k;
+      while ((k = buf.search(/\r?\n\r?\n/)) >= 0){ const blk = buf.slice(0, k); buf = buf.slice(k).replace(/^\r?\n\r?\n/, ''); eat(blk); }
+    }
+    if (buf.trim()) eat(buf);
+  }catch(e){ cut = true; }
+  finally{ clearTimeout(idle); }
+  return { out, stop, err, cut };
+}
+async function chatCall(sys, msgs, tier, onDelta){
   let out = '', why = '', stop = '';
+  const wantStream = !!onDelta && STREAM_OK;
   for (let a = 0; a <= CHAT_RETRY.length; a++){
     try{
       const ac = new AbortController(), tm = setTimeout(() => ac.abort(), 75000);
-      let r, d;
+      let r, d, got = null;
       try{
         r = await fetch(API.chat, { method:'POST', headers:{'Content-Type':'application/json'}, signal: ac.signal,
-          body: JSON.stringify({ system: koSys(sys), messages: msgs, tier: tier || 'fast' }) });
+          body: JSON.stringify({ system: koSys(sys), messages: msgs, tier: tier || 'fast', stream: wantStream || undefined }) });
         if (!r.ok) throw new Error('http ' + r.status);
-        d = await r.json().catch(() => null);
+        const ct = (r.headers && r.headers.get && r.headers.get('content-type')) || '';
+        if (wantStream && /text\/event-stream/i.test(ct) && r.body && r.body.getReader){
+          clearTimeout(tm);                               // 已經開始收字了，改由「閒置 30 秒」把關
+          got = await readSSE(r, onDelta, 30000, ac);
+        } else d = await r.json().catch(() => null);
       }catch(e){ throw (e && e.name === 'AbortError') ? new Error(L3('等太久了（逾時）', '等太久了（逾时）', 'timed out')) : e; }
       finally{ clearTimeout(tm); }
-      out = extractReply(d);
-      stop = (d && (d.stop_reason || d.finish_reason ||
-             (d.choices && d.choices[0] && d.choices[0].finish_reason))) || '';
+      if (got){
+        out = got.out; stop = got.stop;
+        if (!out) throw new Error(got.err || L3('等太久了（逾時）', '等太久了（逾时）', 'timed out'));
+        if (got.cut || got.err) stop = 'max_tokens';      // 中途斷線：已收到的當作被截斷，交給「接著寫完」
+      } else {
+        out = extractReply(d);
+        stop = (d && (d.stop_reason || d.finish_reason ||
+               (d.choices && d.choices[0] && d.choices[0].finish_reason))) || '';
+      }
       if (!out) why = L3('回覆是空的', '回复是空的', 'empty reply');
       break;
     }catch(e){
@@ -9344,6 +9389,21 @@ async function chatCall(sys, msgs, tier){
     }
   }
   return { out, why, stop };
+}
+/* 逐字顯示：第一個字到就把「思想中」換成回答（只整頁重畫一次），之後只更新這一則的內文，約每 100 毫秒一次 */
+const CS = { shown:false, timer:0, txt:'' };
+function chatStreamReset(){ clearTimeout(CS.timer); CS.shown = false; CS.timer = 0; CS.txt = ''; }
+function chatStreamPaint(txt, src){
+  const i = chatLog.length - 1; if (i < 0 || !chatLog[i] || chatLog[i].role !== 'ai') return;
+  CS.txt = txt;
+  if (!CS.shown){
+    CS.shown = true; chatLog[i] = { role:'ai', src, ok:false, cont:true, text:txt }; paintChat();
+    setTimeout(() => { const el = document.getElementById('msg' + i); if (el) try{ el.scrollIntoView({ block:'start' }); }catch(e){} }, 80);
+    return;
+  }
+  chatLog[i].text = txt;
+  if (CS.timer) return;
+  CS.timer = setTimeout(() => { CS.timer = 0; const el = document.querySelector('#msg' + i + ' .msg-body'); if (el) el.innerHTML = mdToHtml(CS.txt); }, 100);
 }
 /* 回傳 stop_reason 為 max_tokens／length 就是被截斷；沒有 stop_reason 時，只在長文又沒有結束標點時才猜是被截斷 */
 function chatTruncated(text, stop){

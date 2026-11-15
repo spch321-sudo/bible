@@ -10,6 +10,7 @@
  *    改成只接受白名單內的模型；不在白名單就依 tier 決定
  *  · 上游 429／5xx／網路錯誤時，自動換另一個模型再試一次
  *  · 回應加 X-XZ-Model（實際用的模型）與 X-XZ-Fallback（有沒有換過），方便對帳
+ *  · v2.77：前端送 stream:true 時，回傳 SSE 串流（逐字顯示）；沒送就維持原本的 JSON 回應
  *  · 其餘行為不變：max_tokens 上限 1024、只轉 system 與 messages
  * ============================================================ */
 
@@ -66,14 +67,16 @@ export default {
     try { body = await request.json(); }
     catch (e) { return json({ error: "Invalid JSON" }, 400, cors); }
 
+    const wantStream = body.stream === true;
     const payload = {
       max_tokens: Math.min(Number(body.max_tokens) || 1000, 1024),
       system: typeof body.system === "string" ? body.system : "",
       messages: Array.isArray(body.messages) ? body.messages : []
     };
+    if (wantStream) payload.stream = true;
 
     const first = pickModel(body, env);
-    async function call(model) {
+    function call(model) {
       return fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: {
@@ -84,32 +87,34 @@ export default {
         body: JSON.stringify(Object.assign({ model: model }, payload))
       });
     }
-    function reply(upstream, text, model, fb) {
-      return new Response(text, {
-        status: upstream.status,
-        headers: Object.assign({}, cors, { "Content-Type": "application/json", "X-XZ-Model": model, "X-XZ-Fallback": fb ? "1" : "0" })
-      });
+    /* 試一個模型：成功或「換模型也沒用的錯誤（如 400）」→ 直接收下；429／5xx／連不上 → 標記可換 */
+    async function attempt(model) {
+      try {
+        const r = await call(model);
+        return { r: r, model: model, retry: !r.ok && !!RETRY_STATUS[r.status] };
+      } catch (e) { return { err: e, model: model, retry: true }; }
+    }
+    async function respond(a, fb) {
+      const h = Object.assign({}, cors, { "X-XZ-Model": a.model, "X-XZ-Fallback": fb ? "1" : "0" });
+      if (wantStream && a.r.ok && a.r.body) {
+        /* 逐字顯示：把上游的 SSE 原封不動接給前端，不緩衝 */
+        return new Response(a.r.body, { status: 200, headers: Object.assign(h, { "Content-Type": "text/event-stream; charset=utf-8", "Cache-Control": "no-store", "X-Accel-Buffering": "no" }) });
+      }
+      const text = await a.r.text();
+      return new Response(text, { status: a.r.status, headers: Object.assign(h, { "Content-Type": "application/json" }) });
     }
 
-    let up = null, text = "", err1 = null;
-    try {
-      up = await call(first);
-      text = await up.text();
-    } catch (e) { err1 = e; }
-
-    if (err1 || (up && RETRY_STATUS[up.status])) {
-      const second = otherModel(first);
-      try {
-        const up2 = await call(second);
-        const text2 = await up2.text();
-        if (up2.ok) return reply(up2, text2, second, true);
-        if (!up) return reply(up2, text2, second, true);   // 第一次連線就失敗、第二次回了錯誤：回第二次的錯誤
-      } catch (e2) {
-        if (!up) return json({ error: "Upstream error", detail: String(err1) + " | " + String(e2) }, 502, cors);
+    let a = await attempt(first), fb = false;
+    if (a.retry) {
+      const b2 = await attempt(otherModel(first));
+      if (b2.r && b2.r.ok) { a = b2; fb = true; }
+      else if (!a.r) {                                  // 第一次根本連不上：以第二次的結果為準
+        if (!b2.r) return json({ error: "Upstream error", detail: String(a.err) + " | " + String(b2.err) }, 502, cors);
+        a = b2; fb = true;
       }
     }
-    if (!up) return json({ error: "Upstream error", detail: String(err1) }, 502, cors);
-    return reply(up, text, first, false);
+    if (!a.r) return json({ error: "Upstream error", detail: String(a.err) }, 502, cors);
+    return respond(a, fb);
   }
 };
 
