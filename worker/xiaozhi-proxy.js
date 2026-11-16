@@ -11,6 +11,7 @@
  *  · 上游 429／5xx／網路錯誤時，自動換另一個模型再試一次
  *  · 回應加 X-XZ-Model（實際用的模型）與 X-XZ-Fallback（有沒有換過），方便對帳
  *  · v2.77：前端送 stream:true 時，回傳 SSE 串流（逐字顯示）；沒送就維持原本的 JSON 回應
+ *  · v2.77.2：送出時加 thinking:{type:"disabled"}（避免額度被「先思考」吃光而回空字串）；上游 400 且提到 thinking 時自動拿掉再送
  *  · 其餘行為不變：max_tokens 上限 1024、只轉 system 與 messages
  * ============================================================ */
 
@@ -76,7 +77,11 @@ export default {
     if (wantStream) payload.stream = true;
 
     const first = pickModel(body, env);
-    function call(model) {
+    /* 關掉「先思考」：max_tokens 只有 1024，模型若先花掉額度思考，就會回空字串（前端看到「回覆是空的」）。
+       若上游不接受這個欄位（400 且訊息提到 thinking），自動拿掉再送一次。 */
+    function send(model, withThinking) {
+      const p = Object.assign({ model: model }, payload);
+      if (withThinking) p.thinking = { type: "disabled" };
       return fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: {
@@ -84,8 +89,16 @@ export default {
           "x-api-key": env.ANTHROPIC_API_KEY,
           "anthropic-version": "2023-06-01"
         },
-        body: JSON.stringify(Object.assign({ model: model }, payload))
+        body: JSON.stringify(p)
       });
+    }
+    async function call(model) {
+      const r = await send(model, true);
+      if (r.status === 400) {
+        let t = ""; try { t = await r.clone().text(); } catch (e) {}
+        if (/thinking/i.test(t)) return send(model, false);
+      }
+      return r;
     }
     /* 試一個模型：成功或「換模型也沒用的錯誤（如 400）」→ 直接收下；429／5xx／連不上 → 標記可換 */
     async function attempt(model) {

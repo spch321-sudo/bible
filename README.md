@@ -4,8 +4,9 @@
 繁體中文．简体中文．English
 架構與功能沿用《321領導力》App（同一套 navy／gold 識別、五分頁、PWA）。
 
-版本：**v2.77.1**
+版本：**v2.77.2**
 
+- v2.77.2：**「回覆是空的」的處理**：①空回覆（只有思考、被長度上限截斷）會自動換另一個模型、改用非串流再試，錯誤訊息也會寫出 stop_reason 與內容種類（例如 `[max_tokens thinking]`）；②Worker（`worker/xiaozhi-proxy.js`）送出時加 `thinking:{type:"disabled"}`，避免 1024 的額度被「先思考」吃光；上游若因此回 400 會自動拿掉欄位。**Worker 要自己到 Cloudflare 重新貼上部署才會生效。**
 - v2.77.1：**小智連不上可以「重試」**：失敗的回答改顯示「🔄 重試」按鈕（取代收藏／分享等），按下去會移除這組失敗的問答並重新送出同一個問題；失敗的訊息也不再被當成上下文送給小智。另外：串流開了卻沒有任何字（空串流）或逾時，下一次自動改用非串流，不再顯示「等太久了（逾時）」就放棄。新增 `scripts/retry-test.js`。
 - v2.77.0：**小智逐字顯示（串流）＋預設長度改「短」**：Worker 收到 `stream:true` 就把 Anthropic 的 SSE 串流直接接給前端；App 邊收邊畫（第一個字到才整頁重畫一次，之後只更新該則內文，約每 0.1 秒），中途斷線時把已收到的當作被截斷、自動接著寫完，閒置 30 秒才算逾時；Worker 回 JSON（舊 Worker、自備金鑰的 Gemini）時照舊一次顯示。`xzkey.js` 不再因為 `stream` 旗標而繞過自備金鑰。預設回答長度「中」→「短」（自己選過長度的人不受影響）。**Worker 需重新貼上 `worker/xiaozhi-proxy.js` 才有串流。**
 - v2.76.0：**小智雙模型分流**：App 依題型送 `tier`（`deep`／`fast`）給 Worker；自動模式下，解經／原文、爭議議題、關懷與危機、原文字義模式、120 字以上長問題走深入（Sonnet 5.5），其餘走快速（Haiku 5.5）；問小智面板新增「思考：自動／深入／快速」，手動選擇優先；一個回答（含接續）固定同一個模型。新增 `worker/xiaozhi-proxy.js`（Worker v2：依 tier 選模型、白名單擋掉指定 Opus 等貴模型、429／5xx 自動換另一個模型重試、回應帶 `X-XZ-Model`）。**Worker 要到 Cloudflare 手動貼上部署，App 單獨更新不會改變用哪個模型。** 新增 `scripts/worker-test.js`、`scripts/tier-test.js` 納入 CI。

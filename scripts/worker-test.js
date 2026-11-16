@@ -28,6 +28,9 @@ let bad = 0; const ck = (ok, name, extra) => { console.log((ok ? '✓ ' : '✗ '
   ck(x.models[0] === 'claude-sonnet-4-6', '白名單內的舊代號照用（相容其他 App）');
   x = await run({ system: 's', messages: [], max_tokens: 99999, tier: 'x', evil: 'y' }, null, []);
   ck(x.last.max_tokens === 1024 && !('evil' in x.last) && !('tier' in x.last), 'max_tokens 上限 1024；多餘欄位不轉給上游');
+  ck(x.last.thinking && x.last.thinking.type === 'disabled', '送出時帶 thinking:disabled（避免額度被思考吃光）');
+  { const calls = []; globalThis.__f = async (u, i) => { const bd = JSON.parse(i.body); calls.push(bd); return bd.thinking ? new Response('{"error":{"message":"thinking is not supported for this model"}}', { status: 400 }) : new Response(okBody, { status: 200 }); };
+    const r = await W.fetch(mk({ system: 's', messages: [] }), env); ck(r.status === 200 && calls.length === 2 && !calls[1].thinking, '上游因 thinking 回 400 → 自動拿掉欄位再送一次', calls.length + ' calls'); }
 
   x = await run({ tier: 'fast', system: 's', messages: [] }, null, [529, 200]);
   ck(x.models.join() === M.f + ',' + M.d && x.r.status === 200 && x.r.headers.get('X-XZ-Fallback') === '1', 'Haiku 529 → 換 Sonnet 成功', x.models.join(' → '));

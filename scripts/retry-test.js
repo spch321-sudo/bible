@@ -13,10 +13,11 @@ let fail = 0; const ok = (c, m) => { console.log((c ? '✓ ' : '✗ ') + m); if 
   await pg.goto('http://localhost:' + srv.address().port + '/index.html'); await pg.waitForSelector('nav.tabbar');
   await pg.evaluate(() => { location.hash = '#/companion'; }); await pg.waitForSelector('#chatIn', { timeout: 15000 });
   const apiUrl = await pg.evaluate(() => API.chat); let mode = 'fail'; const log = [];
-  await pg.route(apiUrl, async r => { const j = JSON.parse(r.request().postData() || '{}'); log.push({ stream: !!j.stream, mode });
+  await pg.route(apiUrl, async r => { const j = JSON.parse(r.request().postData() || '{}'); log.push({ stream: !!j.stream, mode, tier: j.tier });
     const H = { 'access-control-allow-origin': '*' };
     if (mode === 'fail') return r.fulfill({ status: 500, headers: H, body: 'x' });
     if (mode === 'emptystream' && j.stream) return r.fulfill({ status: 200, headers: { ...H, 'content-type': 'text/event-stream' }, body: 'data: {"type":"message_start"}\n\ndata: {"type":"message_stop"}\n\n' });
+    if (mode === 'emptyjson' && j.tier !== 'fast') return r.fulfill({ status: 200, contentType: 'application/json', headers: H, body: JSON.stringify({ content: [{ type: 'thinking', thinking: 'hmm' }], stop_reason: 'max_tokens' }) });
     return r.fulfill({ status: 200, contentType: 'application/json', headers: H, body: JSON.stringify({ content: [{ type: 'text', text: '平安的回答。' }], stop_reason: 'end_turn' }) }); });
   await pg.evaluate(() => { sendChat('我心裡不平安'); });
   await pg.waitForSelector('.msg.ai .retry', { timeout: 30000 });
@@ -31,6 +32,11 @@ let fail = 0; const ok = (c, m) => { console.log((c ? '✓ ' : '✗ ') + m); if 
   await pg.evaluate(() => { sendChat('第二個問題'); });
   await pg.waitForFunction(() => /平安的回答/.test([...document.querySelectorAll('.msg.ai')].pop().innerText), null, { timeout: 20000 });
   ok(log.length >= 2 && log[0].stream === true && log[1].stream === false, '空串流後改用非串流並成功（' + log.map(x => x.stream ? 'S' : 'N').join('') + '）');
+  /* 空回覆（只有思考、被 max_tokens 截斷）：自動換另一個模型 */
+  mode = 'emptyjson'; log.length = 0;
+  await pg.evaluate(() => { state.adepth = 'deep'; sendChat('第三個問題'); });
+  await pg.waitForFunction(() => /平安的回答/.test([...document.querySelectorAll('.msg.ai')].pop().innerText), null, { timeout: 25000 });
+  ok(log.some(x => x.tier === 'deep') && log.some(x => x.tier === 'fast'), '空回覆後改用另一個模型成功（' + log.map(x => (x.stream ? 'S' : 'N') + ':' + x.tier).join(' ') + '）');
   ok(errs.length === 0, '沒有頁面錯誤 ' + errs.slice(0, 2));
   await b.close(); srv.close(); console.log(fail ? 'FAILS ' + fail : 'ALL OK'); process.exit(fail ? 1 : 0);
 })();
