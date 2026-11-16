@@ -46,7 +46,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.77.0';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
+const VERSION = 'v2.77.1';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
    flex-basis:0），按鈕不准被擠扁（flex:0 0 auto）；長字串（網址、英文長字）也允許換行。 */
@@ -6976,10 +6976,10 @@ function paintChat(){
     : `<div class="msg ai${msgFoldCls(m)}" id="msg${i}"><div class="msg-body">${mdToHtml(m.text)}</div><div class="xz-ver-slot">${m.ver || ''}</div>${m.cont
           ? `<div class="msg-cont">${esc(L3('小智還在接著寫…', '小智还在接着写…', 'Xiaozhi is still writing…'))}</div>` : msgMoreHtml(m, i)}
         <div class="msg-actions"${m.cont ? ' hidden' : ''}>
-          <button class="msg-act ${isFav(m.text) ? 'on' : ''}" data-a="fav" data-i="${i}">★ ${esc(L3('收藏', '收藏', 'Save'))}</button>
+          ${m.err && m.retryQ ? `<button class="msg-act retry" data-a="retry" data-i="${i}" style="font-weight:800;color:var(--accent)">🔄 ${esc(L3('重試', '重试', 'Try again'))}</button>` : `<button class="msg-act ${isFav(m.text) ? 'on' : ''}" data-a="fav" data-i="${i}">★ ${esc(L3('收藏', '收藏', 'Save'))}</button>
           <button class="msg-act" data-a="share" data-i="${i}">↗ ${esc(L3('分享', '分享', 'Share'))}</button>
           <button class="msg-act" data-a="card" data-i="${i}">🖼 ${esc(L3('做成美圖', '做成美图', 'Make a card'))}</button>
-          <button class="msg-act ${sayId === i ? 'on' : ''}" data-a="tts" data-i="${i}">${sayId === i ? '⏸' : '🔊'}</button>
+          <button class="msg-act ${sayId === i ? 'on' : ''}" data-a="tts" data-i="${i}">${sayId === i ? '⏸' : '🔊'}</button>`}
           <button class="msg-act" data-a="del" data-i="${i}">✕</button>
         </div>${fuHtml(m, i)}</div>`).join('');
   $$('.fu-chip', log).forEach(b => b.onclick = () => sendChat(b.dataset.q));
@@ -6988,6 +6988,11 @@ function paintChat(){
     const i = +b.dataset.i, m = chatLog[i];
     if (b.dataset.a === 'fav'){ toggleFav(m.text); paintChat(); }
     else if (b.dataset.a === 'del'){ chatLog.splice(i, 1); paintChat(); }
+    else if (b.dataset.a === 'retry'){
+      if (chatBusy) return; const q = m.retryQ; if (!q) return;
+      chatLog.splice(i, 1); if (chatLog[i - 1] && chatLog[i - 1].role === 'user' && chatLog[i - 1].text === q) chatLog.splice(i - 1, 1);
+      paintChat(); sendChat(q);
+    }
     else if (b.dataset.a === 'tts'){
       /* 再按一次就停；換一則就把上一則停掉。按下去立刻反白，不必等聲音出來 */
       if (sayId === i){ ttsSayStop(); return; }
@@ -7718,7 +7723,7 @@ async function sendChat(text){
           : isZS() ? `（读者目前在读：${bname(b)} 第 ${RD.ch} 章）`
                    : `（讀者目前在讀：${bname(b)} 第 ${RD.ch} 章）`) : '')
     + chapterSys();
-  const msgs = chatLog.filter(m => m.text !== t().thinking).slice(-12)
+  const msgs = chatLog.filter(m => m.text !== t().thinking && !m.err).slice(-12)
     .map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.text }));
   while (msgs.length && msgs[0].role !== 'user') msgs.shift();    // 第一則一定要是使用者
   /* Worker 冷啟動時第一次呼叫常常會失敗，退幾步再試；真的連不上就把原因寫出來。
@@ -7738,7 +7743,7 @@ async function sendChat(text){
     acc = chatJoin(acc, r2.out); stop = r2.stop;
   }
   chatStreamReset();
-  chatLog[chatLog.length - 1] = { role:'ai', src:srcNow, ok: !!acc,
+  chatLog[chatLog.length - 1] = { role:'ai', src:srcNow, ok: !!acc, err: !acc, retryQ: acc ? '' : text,
     text: acc || (t().chatErr + (why ? '（' + why + '）' : '')) };
   chatBusy = false; foldOld(); paintChat();
 }
@@ -9355,8 +9360,9 @@ async function readSSE(resp, onDelta, idleMs, ac){
 }
 async function chatCall(sys, msgs, tier, onDelta){
   let out = '', why = '', stop = '';
-  const wantStream = !!onDelta && STREAM_OK;
+  let noStream = false;
   for (let a = 0; a <= CHAT_RETRY.length; a++){
+    const wantStream = !!onDelta && STREAM_OK && !noStream;
     try{
       const ac = new AbortController(), tm = setTimeout(() => ac.abort(), 75000);
       let r, d, got = null;
@@ -9369,11 +9375,11 @@ async function chatCall(sys, msgs, tier, onDelta){
           clearTimeout(tm);                               // 已經開始收字了，改由「閒置 30 秒」把關
           got = await readSSE(r, onDelta, 30000, ac);
         } else d = await r.json().catch(() => null);
-      }catch(e){ throw (e && e.name === 'AbortError') ? new Error(L3('等太久了（逾時）', '等太久了（逾时）', 'timed out')) : e; }
+      }catch(e){ if (wantStream) noStream = true; throw (e && e.name === 'AbortError') ? new Error(L3('等太久了（逾時）', '等太久了（逾时）', 'timed out')) : e; }
       finally{ clearTimeout(tm); }
       if (got){
         out = got.out; stop = got.stop;
-        if (!out) throw new Error(got.err || L3('等太久了（逾時）', '等太久了（逾时）', 'timed out'));
+        if (!out){ noStream = true; throw new Error(got.err || L3('小智沒有回字（空串流）', '小智没有回字（空串流）', 'empty stream')); }
         if (got.cut || got.err) stop = 'max_tokens';      // 中途斷線：已收到的當作被截斷，交給「接著寫完」
       } else {
         out = extractReply(d);

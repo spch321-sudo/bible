@@ -38,3 +38,5 @@ jobs:
         run: node scripts/worker-test.js
       - name: 小智分流判斷測試
         run: node scripts/tier-test.js
+      - name: 小智重試與空串流測試
+        run: node scripts/retry-test.js
