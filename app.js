@@ -46,7 +46,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.77.3';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
+const VERSION = 'v2.77.4';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
    flex-basis:0），按鈕不准被擠扁（flex:0 0 auto）；長字串（網址、英文長字）也允許換行。 */
@@ -5249,17 +5249,23 @@ let studioItem = null, studioNote = null, blessBusy = false;
 
 /* 問小智一次就好（寫祝福、改內文共用），連不上會回 {out:'', why:'原因'} */
 async function aiRaw(sys, ask, ms){
-  let out = '', why = '';
+  let out = '', why = '', tier = '';
   for (let a = 0; a <= CHAT_RETRY.length; a++){
     const ac = (typeof AbortController !== 'undefined') ? new AbortController() : null;
     const tm = ac ? setTimeout(() => ac.abort(), ms || 60000) : 0;
     try{
-      const r = await fetch(API.chat, { method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ system: koSys(sys), messages:[{ role:'user', content: ask }] }), signal: ac ? ac.signal : undefined });
+      const body = { system: koSys(sys), messages:[{ role:'user', content: ask }] };
+      if (tier) body.tier = tier;
+      const r = await fetch(API.chat, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body), signal: ac ? ac.signal : undefined });
       if (!r.ok) throw new Error('http ' + r.status);
-      out = extractReply(await r.json().catch(() => null));
-      if (!out) why = L3('回覆是空的', '回复是空的', 'empty reply');
+      const d = await r.json().catch(() => null);
       clearTimeout(tm);
+      out = extractReply(d);
+      if (!out){
+        const ty = d && Array.isArray(d.content) ? d.content.map(x => x && x.type).join('+') : '';
+        why = L3('回覆是空的', '回复是空的', 'empty reply') + ' [' + ((d && d.stop_reason) || '?') + (ty ? ' ' + ty : '') + ']';
+        if (a < CHAT_RETRY.length){ tier = (tier === 'deep') ? 'fast' : 'deep'; await new Promise(rs => setTimeout(rs, CHAT_RETRY[a])); continue; }   // 空的：換另一個模型再試
+      }
       break;
     }catch(e){
       clearTimeout(tm);
