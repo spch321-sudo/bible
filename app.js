@@ -46,7 +46,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.77.2';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
+const VERSION = 'v2.77.3';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
    flex-basis:0），按鈕不准被擠扁（flex:0 0 auto）；長字串（網址、英文長字）也允許換行。 */
@@ -927,7 +927,7 @@ async function render0(){
   try{
     if (tab === 'today')          await viewToday(v);
     else if (tab === 'books')     await viewBooks(v, r[1]);
-    else if (tab === 'read')      { if (r[3] && parseInt(r[3], 10) > 0) jumpVerse = { b: r[1], c: parseInt(r[2] || '1', 10), v: parseInt(r[3], 10) }; await viewReader(v, r[1], parseInt(r[2] || '1', 10)); }
+    else if (tab === 'read')      { if (r[3] && parseInt(r[3], 10) > 0) jumpVerse = { b: r[1], c: parseInt(r[2] || '1', 10), v: parseInt(r[3], 10), v2: hlRange(parseInt(r[3], 10)), hold: hlHold() }; await viewReader(v, r[1], parseInt(r[2] || '1', 10)); }
     else if (tab === 'search')    await viewSearch(v);
     else if (tab === 'companion') await viewCompanion(v);
     else if (tab === 'team')      await viewTeam(v, r[1], r[2]);
@@ -1478,6 +1478,7 @@ function pickCss(){
     + '.pk-hint{font-size:12.5px;color:var(--ink-faint);margin:-4px 0 10px}'
     + '.vsbtn{border:1px solid var(--border);background:var(--surface);color:var(--ink);border-radius:8px;padding:10px 0;font-size:13.5px;font-weight:600;cursor:pointer}'
     + '.vsbtn:active{background:var(--accent);color:#fff}'
+    + '.sent.vhl{background:rgba(201,162,39,.30);box-shadow:0 0 0 2px rgba(201,162,39,.30);border-radius:4px;-webkit-box-decoration-break:clone;box-decoration-break:clone}'
     + '.sent.vflash{background:rgba(201,162,39,.32);border-radius:4px;transition:background 1.2s}';
   document.head.appendChild(st);
 }
@@ -1528,15 +1529,23 @@ async function viewVerses(v, bookId, ch){
   pickTabsBind(v);
 }
 /* 閱讀頁渲染完之後：捲到指定的那一節，並暫時亮一下 */
+function hlHold(){ try{ return new URLSearchParams(location.search).get('hl') === '1'; }catch(e){ return false; } }
+function hlRange(v){ try{ const n = parseInt(new URLSearchParams(location.search).get('hv2') || '0', 10); return n > v && n - v < 80 ? n : v; }catch(e){ return v; } }
 function applyJumpVerse(bookId){
   if (!jumpVerse || jumpVerse.b !== bookId) return false;
   const jv = jumpVerse; jumpVerse = null;
   const els = $$(`#reader .sent[data-c="${jv.c}"][data-v="${jv.v}"]`);
   if (!els.length) return false;
+  /* 從小智點經文進來（hl=1）：整段範圍用顏色持續標明，不會自己消失；一般跳節仍是亮一下 */
+  let all = els;
+  if (jv.hold){
+    all = $$(`#reader .sent[data-c="${jv.c}"]`).filter(e => { const n = +e.dataset.v; return n >= jv.v && n <= (jv.v2 || jv.v); });
+    if (!all.length) all = els;
+  }
   requestAnimationFrame(() => {
-    els[0].scrollIntoView({ block: jv.v <= 1 ? 'center' : 'center', behavior: 'auto' });
-    els.forEach(e => e.classList.add('vflash'));
-    setTimeout(() => els.forEach(e => e.classList.remove('vflash')), 2600);
+    els[0].scrollIntoView({ block: 'center', behavior: 'auto' });
+    if (jv.hold){ try{ pickCss(); }catch(e){} $$('#reader .sent.vhl').forEach(e => e.classList.remove('vhl')); all.forEach(e => e.classList.add('vhl')); }
+    else { els.forEach(e => e.classList.add('vflash')); setTimeout(() => els.forEach(e => e.classList.remove('vflash')), 2600); }
   });
   return true;
 }
