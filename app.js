@@ -46,7 +46,7 @@ const TTS_SIL = 140, TTS_SILC = 140, TTS_SILE = 260, TTS_RATE = '+0%';
    到 https://www.pexels.com/api/ 免費申請（登入後按 Your API Key 就看得到），
    把那一長串貼進下面的引號裡。留空的話「從免費圖庫選」會提醒你還沒設定。 */
 const PEXELS_KEY = 'ofCQ7i2mqaEddrACvvmzdgfrpZ90Z8gVOI9D6vYVf7uxWXCCtzQbj9yR';
-const VERSION = 'v2.77.4';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
+const VERSION = 'v2.77.5';/* v2.11.1 小螢幕補丁：iOS Safari 的 <input type="search">／<textarea> 有自己的預設寬度（約 20 個字），
    放進 flex 一列時最小寬度撐不下去，把旁邊的按鈕（例如搜尋鈕）推到畫面右邊外面看不到——
    外層又設了 overflow-x:hidden，所以只看到被切掉、不能捲。解法是讓這些欄位可以縮到 0（min-width:0、
    flex-basis:0），按鈕不准被擠扁（flex:0 0 auto）；長字串（網址、英文長字）也允許換行。 */
@@ -7706,7 +7706,7 @@ window.addEventListener('xzkey', () => { const b = document.getElementById('setX
 function extractReply(d){
   if (!d) return '';
   if (typeof d === 'string') return d;
-  if (Array.isArray(d.content) && d.content[0] && d.content[0].text) return d.content[0].text;
+  if (Array.isArray(d.content)){ let t = ''; for (const b of d.content){ if (b && typeof b.text === 'string' && (!b.type || b.type === 'text')) t += b.text; } if (t) return t; }   /* 前面可能有 thinking 區塊，所以要把所有文字區塊接起來 */
   if (d.reply) return d.reply;
   if (d.text) return d.text;
   if (d.message) return d.message;
