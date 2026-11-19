@@ -12,6 +12,7 @@
  *  · 回應加 X-XZ-Model（實際用的模型）與 X-XZ-Fallback（有沒有換過），方便對帳
  *  · v2.77：前端送 stream:true 時，回傳 SSE 串流（逐字顯示）；沒送就維持原本的 JSON 回應
  *  · v2.77.2：送出時加 thinking:{type:"disabled"}（避免額度被「先思考」吃光而回空字串）；上游 400 且提到 thinking 時自動拿掉再送
+ *  · v2.77.6：回應加 X-XZ-Worker 版本標頭（前端錯誤訊息會顯示，方便確認是否已部署新版）；非串流回覆若沒有任何文字（只有 thinking 被截斷）→ 以 2048 額度重送一次
  *  · 其餘行為不變：max_tokens 上限 1024、只轉 system 與 messages
  * ============================================================ */
 
@@ -34,7 +35,7 @@ function corsHeaders(origin) {
     "Access-Control-Allow-Origin": allow,
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Expose-Headers": "X-XZ-Model, X-XZ-Fallback",
+    "Access-Control-Expose-Headers": "X-XZ-Model, X-XZ-Fallback, X-XZ-Worker",
     "Access-Control-Max-Age": "86400",
     "Vary": "Origin"
   };
@@ -108,13 +109,25 @@ export default {
       } catch (e) { return { err: e, model: model, retry: true }; }
     }
     async function respond(a, fb) {
-      const h = Object.assign({}, cors, { "X-XZ-Model": a.model, "X-XZ-Fallback": fb ? "1" : "0" });
+      const h = Object.assign({}, cors, { "X-XZ-Model": a.model, "X-XZ-Fallback": fb ? "1" : "0", "X-XZ-Worker": "2.77.6" });
       if (wantStream && a.r.ok && a.r.body) {
         /* 逐字顯示：把上游的 SSE 原封不動接給前端，不緩衝 */
         return new Response(a.r.body, { status: 200, headers: Object.assign(h, { "Content-Type": "text/event-stream; charset=utf-8", "Cache-Control": "no-store", "X-Accel-Buffering": "no" }) });
       }
-      const text = await a.r.text();
-      return new Response(text, { status: a.r.status, headers: Object.assign(h, { "Content-Type": "application/json" }) });
+      let text = await a.r.text(), status = a.r.status;
+      if (a.r.ok) {
+        /* 回覆裡沒有任何文字（額度被思考用光）→ 放寬到 2048 再送一次 */
+        let empty = false;
+        try { const d = JSON.parse(text); empty = Array.isArray(d.content) && !d.content.some(function (x) { return x && x.type === "text" && x.text; }); } catch (e) {}
+        if (empty) {
+          try {
+            payload.max_tokens = 2048;
+            const r2 = await call(a.model);
+            if (r2.ok) { text = await r2.text(); status = r2.status; }
+          } catch (e) {}
+        }
+      }
+      return new Response(text, { status: status, headers: Object.assign(h, { "Content-Type": "application/json" }) });
     }
 
     let a = await attempt(first), fb = false;
